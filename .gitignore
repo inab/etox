@@ -12,11 +12,12 @@ web/js/*
 web/uploads/*
 codigoQuitado.php
 createElasticIndex.php
+composer.lock
 # -- Composer -----------------------------------------
 composer.phar
 
 # -- PHPUnit ------------------------------------------
-app/phpunit.xml  
+app/phpunit.xml
 
 # -- Editores -----------------------------------------
 # vim
