@@ -1,0 +1,78 @@
+<script>
+    $(".slidingDiv").hide();
+    $(".show_hide").show();
+
+    $('.show_hide').click(function(){
+    $(".slidingDiv").slideToggle('slow');
+    });
+
+    $(function(){
+        $(".advanceSearchButton").click(function() {
+            alert("search pressed!");
+        });
+    });
+</script>
+{% block javascripts_footer %}
+<script>
+    $("#bigSearch").click(function() {
+        //We setup the url to search for. We need origin, dominio and method
+        //Getting dominio:
+        alert("hola");
+        return false;
+        var visibility=$('.slidingDiv').css('display');
+        if (visibility!="none"){
+            var dominio = $('#searchby').find(":selected").text();
+            if (dominio==""){
+                alert("Please select what is the dominio of your search in the \"Search by\" select box");
+                return false;
+            }
+            //Getting origin:
+            var origin = $('#origin dd.active a').text();
+            if (origin==""){
+                alert("Please select if you are searching in Abstracts or in Pharmaceutical Reports or any other");
+                return false;
+            }
+            //Getting method:
+            var method = $('#methods dd.active a').text();
+            if (method==""){
+                alert("Please select between Dictionary, Metadata, Automatic Generation and Identities Recognition as the method used to extract the identities");
+                return false;
+            }else{
+                if (method=="Automatic Generation"){
+                    method="automatic";
+                }
+                if (method=="Identities Recognition"){
+                    method="identities";
+                }
+            }
+            //Getting typeOfEntity
+            //var typeOfEntity=$('input[name=type-of-entity]:checked', '.custom').val();
+            var typeOfEntity=$(".custom input[type='radio']:checked").val();
+            alert(typeOfEntity);
+            return false;
+        }
+        else{
+            var dominio="{{ default_dominio }}";
+            var origin="{{ default_origin }}";
+            var method="{{ default_method }}";
+            var typeOfEntity="{{ default_type_of_entity }}";
+        }
+        //Getting compound:
+        var compound = $('#tags').val();
+        if (method==""){
+            alert("Please type the compound to search for");
+            return false;
+        }
+        alert("ha llegado aqui!");
+        return false;
+        $('#bigSearch').attr('href','{{ path('search_interface_search') }}'+dominio+'/'+origin+'/'+method+'/'+typeOfEntity+'/'+compound+'/');
+    });
+
+    $(function() {
+        $( "#tags" ).autocomplete({
+            source: "{{ path('autocomplete') }}",
+            minLength:3,
+        });
+    });
+</script>
+{% endblock %}

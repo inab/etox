@@ -1,0 +1,174 @@
+/* Artfully masterminded by ZURB  */
+
+/* --------------------------------------------------
+   Table of Contents
+-----------------------------------------------------
+:: Shared Styles
+:: Header
+:: Footer
+:: Pagination
+:: Home
+:: Organismos
+
+*/
+
+
+/* -----------------------------------------
+   Shared Styles
+----------------------------------------- */
+#wrapper {
+    margin: 0 auto;
+    min-height: 100%;
+    padding: 0;
+    position: relative;
+}
+#wrapper a {
+    text-decoration: none;
+}
+section.content {
+    margin: 25px auto;
+    padding: 0 10px 180px;
+    text-align: left;
+    width: 940px;
+}
+#tags {
+    background-color: white;
+    font-size: 24px;
+    height: 30px;
+    width: 400px;
+}
+#bigSearch {
+    padding: 11px 20px;
+}
+a.curated:before {
+    color: #FF6600;
+    content: "✔";
+    font-size: 18px;
+    padding-right: 10px;
+}
+.rgt-arw:after {
+    content: "→";
+    font-size: 18px;
+    padding-left: 5px;
+}
+
+/* -----------------------------------------
+   Header
+----------------------------------------- */
+header#top {
+    margin: 0 auto;
+    padding: 40px 10px;
+    width: 900px;
+    min-height: 130px;
+}
+
+#applogo {
+    padding-left: 0;
+}
+#applogo a {
+    color: #FF6600;
+    float: left;
+    font-family: 'Kaushan Script',cursive;
+    font-size: 36px;
+    text-decoration: none;
+}
+header nav#access{
+    float: right;
+}
+header nav#access ul li{
+    display: inline;
+    margin-left: 0.5em;
+}
+header#top nav ul li a {
+    color: #000000;
+    display: inline-block;
+    font-size: 14px;
+    margin: 0 10px 0 0;
+    padding: 8px;
+}
+
+/* -----------------------------------------
+    Footer Styles
+----------------------------------------- */
+footer nav ul li{
+    display: inline;
+    margin-left: 0.5em;
+}
+footer#bottom {
+    background: none repeat scroll 0 0 #F1F1F1;
+    border-top: 1px solid #E0DFDF;
+    left: 0;
+    margin: 0;
+    padding: 20px 0;
+    position: absolute;
+    text-align: center;
+    width: 100%;
+    bottom: 20px;
+    height: 120px;
+}
+footer#bottom nav {
+    margin: 0 0 20px;
+}
+#bottom ul {
+    margin-left: 0;
+}
+#bottom li {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+/* -----------------------------------------
+    Pagination
+----------------------------------------- */
+
+.pagination .current {
+    font-weight: bold;
+}
+.pagination a, .pagination .current {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+/* -----------------------------------------
+    Home
+----------------------------------------- */
+section.content {
+    margin: 0 auto;
+    margin-top: 30px;
+    padding: 0 10px 180px;
+    text-align: left;
+    width: 940px;
+}
+.right-column ul {
+    margin: 0;
+    padding: 0;
+    text-align: left;
+}
+.right-column ul li {
+    line-height: 30px;
+    list-style: none outside none;
+    transition-duration: 0.6s;
+    white-space: nowrap;
+}
+.right-column ul li:hover {
+    background: none repeat scroll 0 0 #F8F8F8;
+    padding-left: 10px;
+}
+.right-column ul li:hover:before {
+    color: #000000;
+}
+.right-column ul li:before {
+    color: #F1F1F1;
+    content: "✔";
+    font-size: 18px;
+    padding-right: 10px;
+}
+
+/* -----------------------------------------
+    Home
+----------------------------------------- */
+
+.vis-break {
+    background: none repeat scroll 0 0 #F1F1F1;
+    border: 1px solid #E0DFDF;
+    padding: 10px;
+}

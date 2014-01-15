@@ -1,0 +1,558 @@
+{% extends '::frontend.html.twig' %}
+{# form_theme edit_form.evidenciaEntidad with 'EvidenciaBundle:Form:fields.html.twig' #}
+{% block article -%}
+        <div id="right-content">
+            <div id="evidenceText">
+                <h1>Curate evidencia #{{evidence.getId}}<small>(Curated {{ evidence.curated }} times)</small></h1>
+                {% set identificadorEvidencia=evidence.getId %}
+                {{ evidence.getTexto | highlightEntitiesDocuments (identificadorEvidencia)| raw }} <a href="{{ evidence.origen.url }}" id="pubmedId">Link to Pubmed</a>
+                Other evidences within the same article:
+                {% set contadorEvidencias=1 %}
+
+
+
+
+                <div class="btmspc-dbl">
+                    <small>
+                        <em>
+                            Entity mentions are highlighted as follows:
+                            <mark class="specie">Species</mark>
+                            ,
+                            <mark class="compound">Compounds</mark>
+                            ,
+                            <mark class="enzyme">Enzymes</mark>
+                            ,
+                            <mark class="protein">Proteins</mark>
+                            ,
+                            <mark class="cyp">Cytocromes</mark>
+                            ,
+                            <mark class="mutation">Mutations</mark>
+                            ,
+                            <mark class="go_term">Go terms</mark>
+                            ,
+                            <mark class="keyword">Keywords</mark>
+                            and
+                            <mark class="marker">Markers</mark>
+                        </em>
+                        . Curated evidences are indicated by:
+                        <a class="curated" href="#"> </a>
+                    </small>
+                </div>
+            </div>
+            <div id="content">
+                <form action="{# path('evidencia_compuesto_update', { 'id_compuesto': id_compuesto, 'id': entity.id }) }}" method="post" {{ form_enctype(edit_form) #}>
+                <input type="hidden" name="_method" value="PUT" />
+                <ul class="evidenciaEntidad-list" data-prototype="{{ form_widget(edit_form.evidenciaEntidad.vars.prototype) | e }}">
+                {% set contador=0 %}
+                {% for entidad in edit_form.evidenciaEntidad %}
+                    {% set tipoEntidad = entidad.vars['data'].getEntidad.getTipoEntidad.getTipo %}
+                    {% if tipoEntidad == "specie" %}
+                        <li class="specie">
+                            {% include 'specie.html.twig' %}
+                            {{ form_errors(entidad) }}
+                            {{ form_row(entidad) }}
+                            {{ form_rest(entidad) }}
+                        </li>
+                    {% elseif tipoEntidad == "cyp" %}
+                        <li class="cyp">
+                            {% include 'cyp.html.twig' %}
+                            {{ form_errors(entidad) }}
+                            {{ form_row(entidad) }}
+                            {{ form_rest(entidad) }}
+                        </li>
+                    {% elseif tipoEntidad == "cyp_dictionary" %}
+                        <li class="cyp">
+                            {% include 'cyp_dictionary.html.twig' %}
+                            {{ form_errors(entidad) }}
+                            {{ form_row(entidad) }}
+                            {{ form_rest(entidad) }}
+                        </li>
+                    {% elseif tipoEntidad == "cyp_rule_based" %}
+                        <li class="cyp">
+                            {% include 'cyp_dictionary.html.twig' %}
+                            {{ form_errors(entidad) }}
+                            {{ form_row(entidad) }}
+                            {{ form_rest(entidad) }}
+                        </li>
+                    {% elseif tipoEntidad == "marker" %}
+                        <li class="marker">
+                            {% include 'marker.html.twig' %}
+                            {{ form_errors(entidad) }}
+                            {{ form_row(entidad) }}
+                            {{ form_rest(entidad) }}
+                        </li>
+                    {% elseif tipoEntidad == "compound_dictionary" %}
+                        <li class="compound">
+                            {% include 'compound_dictionary.html.twig' %}
+                            {{ form_errors(entidad) }}
+                            {{ form_row(entidad) }}
+                            {{ form_rest(entidad) }}
+                        </li>
+                    {% elseif tipoEntidad == "compound_ner" %}
+                        <li class="compound">
+                            {% include 'compound_ner.html.twig' %}
+                            {{ form_errors(entidad) }}
+                            {{ form_row(entidad) }}
+                            {{ form_rest(entidad) }}
+                        </li>
+                    {% elseif tipoEntidad == "compound_mesh" %}
+                        <li class="compound">
+                            {% include 'compound_mesh.html.twig' %}
+                            {{ form_errors(entidad) }}
+                            {{ form_row(entidad) }}
+                            {{ form_rest(entidad) }}
+                        </li>
+                    {% elseif tipoEntidad == "go_term" %}
+                        <li class="go_term">
+                            {% include 'go_term.html.twig' %}
+                            {{ form_errors(entidad) }}
+                            {{ form_row(entidad) }}
+                            {{ form_rest(entidad) }}
+                        </li>
+                    {% elseif tipoEntidad == "protein" %}
+                        <li class="protein">
+                            {% include 'protein.html.twig' %}
+                            {{ form_errors(entidad) }}
+                            {{ form_row(entidad) }}
+                            {{ form_rest(entidad) }}
+                        </li>
+                    {% elseif tipoEntidad == "mutation" %}
+                        <li class="mutation">
+                            {% include 'mutation.html.twig' %}
+                            {{ form_errors(entidad) }}
+                            {{ form_row(entidad) }}
+                            {{ form_rest(entidad) }}
+                        </li>
+                    {% elseif tipoEntidad == "keyword" %}
+                        <li class="keyword">
+                            {% include 'keyword.html.twig' %}
+                            {{ form_errors(entidad) }}
+                            {{ form_row(entidad) }}
+                            {{ form_rest(entidad) }}
+                        </li>
+                    {% elseif tipoEntidad == "enzyme" %}
+                        <li class="enzyme">
+                            {% include 'enzyme.html.twig' %}
+                            {{ form_errors(entidad) }}
+                            {{ form_row(entidad) }}
+                            {{ form_rest(entidad) }}
+                        </li>
+                    {% elseif tipoEntidad == "enzyme_mesh" %}
+                        <li class="enzyme">
+                            {% include 'enzyme_mesh.html.twig' %}
+                            {{ form_errors(entidad) }}
+                            {{ form_row(entidad) }}
+                            {{ form_rest(entidad) }}
+                        </li>
+                    {% elseif tipoEntidad == "enzyme_dictionary" %}
+                        <li class="enzyme">
+                            {% include 'enzyme_dictionary.html.twig' %}
+                            {{ form_errors(entidad) }}
+                            {{ form_row(entidad) }}
+                            {{ form_rest(entidad) }}
+                        </li>
+                    {% endif %}
+                    {% set contador=contador+1 %}
+                {% endfor %}
+                </ul>
+
+                {{ form_rest(edit_form) }}
+
+                <p>
+                    <button type="submit">Edit</button>
+                </p>
+                </form>
+                <ul class="record_actions">
+
+                </ul>
+                <h2>Setup relations between entities</h2>
+            </div><!-- content  -->
+        </div><!-- right-content  -->
+        <div class="clear-both"></div>
+{% endblock %}
+{% block javascripts %}
+    <script>
+        function getChebiIDs(sfAction, contador)
+        {
+
+            $compuesto=$("input[id$='"+contador+"_textminingName']").val();
+            idTrigger="chebiID_"+$compuesto;
+
+            valorParametro=$compuesto;
+            if (valorParametro==""){
+                alert("Please insert compound name to search for chebId");
+                return false;
+            }
+
+            $.ajax(
+                  {
+                    url: sfAction,
+                    data: ({chebiName: valorParametro}),
+                    dataType: "json",
+                    beforeSend: function()
+                    {
+                        $('.loading_data').remove();
+                        newText=$("<span class='loading_data'> Loading data...</span>");
+                        $("#"+idTrigger).append(newText);
+                    },
+                    complete: function()
+                    {
+                        newText.remove();
+                        newText=$("<span class='loading_data'> Drag ChebiId and drop them inside input box.</span>");
+                        $("#"+idTrigger).append(newText);
+                    },
+                    success: function (data, status)
+                    {
+                        //Creamos un string con el listado de ChebiIDs que son links donde se mostrará la información.
+                        listOfChebiSearchs="<ul>";
+                        secondCounter=0;
+                        for(var i in data)
+                        {
+                            searchString="http://www.ebi.ac.uk/chebi/searchId.do?chebiId="+data[i];
+                            //listOfChebiSearchs=listOfChebiSearchs+"<span style='white-space:nowrap'><a href='"+searchString+"' id='chebiPopup_"+contador+"_"+secondCounter+"' class='chebiId'>"+data[i]+"</a></span>&nbsp;&nbsp;<span style='white-space:normal'></span>";
+                            listOfChebiSearchs=listOfChebiSearchs+"<li id='chebiDraggable_"+contador+"_"+secondCounter+"' class='chebiIdlist draggable'><a href='"+searchString+"' id='chebiPopup_"+contador+"_"+secondCounter+"' class='chebiId'>"+data[i]+"</a></li>";
+                            secondCounter=secondCounter+1;
+                        }
+                        listOfChebiSearchs=listOfChebiSearchs+"</ul>";
+                        $("#text_"+contador).html(listOfChebiSearchs);
+
+                        $('a[id^="chebiPopup_"]').popupWindow( {
+                            centerScreen:1,
+                            scrollbars:1,
+                            width: 835,
+                            height: 740
+                        } );
+                        $('.draggable').draggable( {
+                            cursor: 'move',
+                            containment: 'document',
+                            helper: 'clone'
+                        } );
+                    },
+                    error: function (data, status, e)
+                    {
+                        alert('Something happened loading requested data:.\n'+data.error);
+                    }
+                }
+            );
+        }
+
+
+
+
+        function getTaxId(sfAction, contador, from)
+        {
+            if (from=="fromInput"){
+
+                $organism=$("input[id^='textminingOrganismName_"+contador+"']").val();
+            }
+            else if (from=="fromEntity"){
+
+                $organism=$("input[id$='"+contador+"_textminingName']").val();
+            }
+            else if (from=="fromSearch"){
+
+                $organism=$("#textminingOrganismName_"+contador).val();
+            }
+            else if (from=="fromInputAdding"){
+
+                $organism=$("input[id$='"+contador+"_textminingName']").val();
+            }
+            idTrigger="taxId_"+$organism;
+            valorParametro=$organism;
+            if (valorParametro==""){
+                    alert("Please insert specie to search taxon id");
+                    return false;
+            }
+
+            $.ajax(
+                  {
+                    url: sfAction,
+                    data: ({textminingName: valorParametro}),
+                    dataType: "json",
+                    beforeSend: function()
+                    {
+                        $('.loading_data').remove();
+                        newText=$("<span class='loading_data'> Loading data...</span>");
+                        $("#"+idTrigger).append(newText);
+                    },
+                    complete: function()
+                    {
+                        newText.remove();
+                        newText=$("<span class='loading_data'><br/>Drag TaxId and drop it inside input box.</span>");
+                        $("#"+idTrigger).append(newText);
+                    },
+                    success: function (data, status)
+                    {
+                        //Creamos un string con el listado de ChebiIDs que son links donde se mostrará la información.
+                        listOfTaxIdSearchs="<ul>";
+                        secondCounter=0;
+                        for(var i in data)
+                        {
+                            searchString="http://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&id="+data[i];
+                            //listOfChebiSearchs=listOfChebiSearchs+"<span style='white-space:nowrap'><a href='"+searchString+"' id='chebiPopup_"+contador+"_"+secondCounter+"' class='chebiId'>"+data[i]+"</a></span>&nbsp;&nbsp;<span style='white-space:normal'></span>";
+                            listOfTaxIdSearchs=listOfTaxIdSearchs+"<li id='taxIdDraggable_"+contador+"_"+secondCounter+"' class='taxIdlist draggable'><a href='"+searchString+"' id='taxIdPopup_"+contador+"_"+secondCounter+"' class='taxId'>"+data[i]+"</a></li>";
+                            secondCounter=secondCounter+1;
+                        }
+                        listOfTaxIdSearchs=listOfTaxIdSearchs+"</ul>";
+                        $("#text_"+contador).html(listOfTaxIdSearchs);
+
+                        $('a[id^="taxIdPopup_"]').popupWindow( {
+                            centerScreen:1,
+                            scrollbars:1,
+                            width: 835,
+                            height: 740
+                        } );
+                        $('.draggable').draggable( {
+                            cursor: 'move',
+                            containment: 'document',
+                            helper: 'clone'
+                        } );
+                        if(from=="fromInput"){
+                            $('input[id^="taxId"]').droppable( {
+                                drop: handleDropEventOrganisms
+                            } );
+                        }
+                        else if (from=="fromSearch"){
+                            $('input[id^="taxId"]').droppable( {
+                                drop: handleDropEventOrganismsFromSearch
+                            } );
+                        }
+                        else if (from=="fromEntity"){
+                            $('input[id$="_organismo_idNCBI"]').droppable( {
+                                drop: handleDropEventOrganismsFromEntity
+                            } );
+                        }
+                        else if (from=="fromInputAdding"){
+                            $('input[id$="_organismo_idNCBI"]').droppable( {
+                                drop: handleDropEventOrganisms
+                            } );
+                        }
+
+                    },
+                    error: function (data, status, e)
+                    {
+                        alert('Something happened loading requested data:.\n'+data.error);
+                    }
+                }
+            );
+        }
+
+        $('input[id$="_compuesto_chebiId"]').droppable( {
+            drop: handleDropEventCompounds
+        } );
+
+        function handleDropEventCompounds( event, ui ) {
+            var draggable = ui.draggable;
+            draggableId=draggable.attr('id');
+            arrIds=draggableId.split("_");
+            idInput=arrIds[1];
+            selector="#etoxmicrome_evidenciabundle_evidenciatype_evidenciaEntidad_"+idInput+"_compuesto_chebiId";
+            oldValue=$(selector).val();
+            newValue=draggable.attr('id');
+            chebiId=$("#"+newValue).children().text();
+            if (oldValue==""){
+            newValue=chebiId;
+            }
+            else{
+                arrayOldChebiIds=oldValue.split("|");
+                for(var i = 0, len = arrayOldChebiIds.length; i < len; ++i) {
+                  if (chebiId==arrayOldChebiIds[i]){
+                    alert("You cannot insert duplicated Chebi Ids");
+                    return false;
+                  }
+                }
+
+                newValue=oldValue+"|"+chebiId;
+            }
+            $(selector).val(newValue);
+            //alert( 'The list ID "' + draggable.attr('id') + '" was dropped onto me!' );
+        }
+
+        $('input[id$="_organismo_idNCBI"]').droppable( {
+            drop: handleDropEventOrganisms
+        } );
+        function handleDropEventOrganisms( event, ui ) {
+            var draggable = ui.draggable;
+            draggableId=draggable.attr('id');
+            arrIds=draggableId.split("_");
+            idInput=arrIds[1];
+            selector="#etoxmicrome_evidenciabundle_evidenciatype_evidenciaEntidad_"+idInput+"_organismo_idNCBI";
+            oldValue=$(selector).val();
+            newValue=draggable.attr('id');
+            taxId=$("#"+newValue).children().text();
+            $(selector).val(taxId);
+            //alert( 'The list ID "' + draggable.attr('id') + '" was dropped onto me!' );
+        }
+        $('input[id^="taxId_"]').droppable( {
+            drop: handleDropEventOrganismsFromSearch
+        } );
+
+        function handleDropEventOrganismsFromSearch( event, ui ) {
+            var draggable = ui.draggable;
+            draggableId=draggable.attr('id');
+            arrIds=draggableId.split("_");
+            idInput=arrIds[1];
+            selector="#taxId_"+idInput;
+            oldValue=$(selector).val();
+            newValue=draggable.attr('id');
+            taxId=$("#"+newValue).children().text();;
+            $(selector).val(taxId);
+        }
+
+        function handleDropEventOrganismsFromEntity( event, ui ) {
+            var draggable = ui.draggable;
+            draggableId=draggable.attr('id');
+            arrIds=draggableId.split("_");
+            idInput=arrIds[1];
+            newValue=draggable.attr('id');
+            taxId=$("#"+newValue).children().text();;
+            $("input[id$='"+idInput+"_organismo_idNCBI']").val(taxId);
+        }
+
+
+        function getUniprotIds(sfAction, contador, from)
+        {
+            //First check if taxId is selected:
+            taxId=$("input[id^='taxId_"+contador+"']").val();
+            if (taxId==""){
+                alert("You need to search for a taxId first");
+                return false;
+            }
+            if(from=="fromSearch"){
+                enzymeName=$("input[id$='"+contador+"_textminingName']").val();
+            }
+            else if(from=="fromInput"){
+
+                enzymeName=$("input[id$='"+contador+"_textminingName']").val();
+            }
+            if(enzymeName==""){
+                alert("You need to insert the name of the enzyme you want to search its UniprotId");
+                return false;
+            }
+            idTrigger="getUniprotIds_"+contador;
+
+            $.ajax(
+                  {
+                    url: sfAction,
+                    data: ({taxId: taxId, enzymeName: enzymeName}),
+                    dataType: "json",
+                    beforeSend: function()
+                    {
+                        $('.loading_data').remove();
+                        newText=$("<span class='loading_data'> Loading data...</span>");
+                        $("#"+idTrigger).append(newText);
+                    },
+                    complete: function()
+                    {
+                        newText.remove();
+                        newText=$("<span class='loading_data'><br/>Drag TaxId and drop it inside input box.</span>");
+                        $("#"+idTrigger).append(newText);
+                    },
+                    success: function (data, status)
+                    {
+                        //Creamos un string con el listado de uniprotIDs que son links donde se mostrará la información.
+                        listOfUniprotIdSearchs="<ul>";
+                        secondCounter=0;
+                        for(var i in data)
+                        {
+                            uniprotId=data[i][0];
+                            uniprotText=data[i][1];
+                            searchString="http://www.uniprot.org/uniprot/"+uniprotId;
+                            listOfUniprotIdSearchs=listOfUniprotIdSearchs+"<li id='uniprotIdDraggable_"+contador+"_"+secondCounter+"' class='taxIdlist draggable'><a href='"+searchString+"' id='uniprotIdPopup_"+contador+"_"+secondCounter+"' class='taxId'>"+uniprotId+": "+uniprotText+"</a></li>";
+                            secondCounter=secondCounter+1;
+                        }
+                        listOfUniprotIdSearchs=listOfUniprotIdSearchs+"</ul>";
+                        $("#textUnitproId_"+contador).html(listOfUniprotIdSearchs);
+                        selector="a[id^='uniprotIdPopup_"+contador+"']";
+                        $(selector).popupWindow( {
+                            centerScreen:1,
+                            scrollbars:1,
+                            width: 835,
+                            height: 740
+                        } );
+                        $('.draggable').draggable( {
+                            cursor: 'move',
+                            containment: 'document',
+                            helper: 'clone'
+                        } );
+                        if(from=="fromSearch"){
+                            $('input[id$="_enzima_idUniprot"]').droppable( {
+                                drop: handleDropEventUniprot
+                            } );
+                        }
+                        else{
+                            $('input[id$="_enzima_idUniprot"]').droppable( {
+                                drop: handleDropEventUniprot
+                            } );
+                        }
+
+                    },
+                    error: function (data, status, e)
+                    {
+                        alert('Something happened loading requested data:.\n'+data.error);
+                    }
+                }
+            );
+        }
+        function handleDropEventUniprot( event, ui ) {
+            var draggable = ui.draggable;
+            draggableId=draggable.attr('id');
+            contador=(draggableId.split("_"))[1];
+            dragged=$("#"+draggableId).text();
+            uniprotId=(dragged.split(":"))[0];
+            selector="input[id$='"+contador+"_enzima_idUniprot']";
+            oldValue=$(selector).val();
+            if (oldValue==""){
+                newValue=uniprotId;
+            }
+            else{
+                newValue=oldValue+"|"+uniprotId;
+            }
+            $(selector).val(newValue);
+        }
+    </script>
+
+    <script src="{{ asset('javascripts/etoxmicrome.js') }}"></script>
+    <script>
+        $('#pubmedId').popupWindow( {
+            centerScreen:1,
+            scrollbars:1,
+            width: 835,
+            height: 740
+        } );
+        $('.otherEvidenceLink').popupWindow( {
+            centerScreen:1,
+            scrollbars:1,
+            width: 970,
+            height: 740
+        } );
+         $('.popupWindow').popupWindow( {
+            centerScreen:1,
+            scrollbars:1,
+            width: 835,
+            height: 550
+        } );
+         $(window).scroll(function(){
+            var aboveHeight=180;
+            //if scrolled down more than the header?s height
+                if ($(window).scrollTop() > aboveHeight){
+
+            // if yes, add ?fixed? class to the <div id="header-navigation">
+            // add padding top to the #content (value is same as the height of the nav)
+                 $('#evidenceText').addClass('fixed').css('top','0');
+                 $('#evidenceText').css('z-index','99');
+                 $('#evidenceText').css('left','50%');
+                 $('#evidenceText').css('margin-left','-240px');
+                 $('#content').css('margin-top','198px')
+                } else {
+
+            // when scroll up or less than aboveHeight, remove the ?fixed? class, and the padding-top
+                 $('#evidenceText').removeClass('fixed');
+                 $('#evidenceText').css('left','0%');
+                 $('#evidenceText').css('margin-left','0px');
+                 $('#content').css('margin-top','0px')
+
+                }
+         });
+    </script>
+{% endblock %}

@@ -1,0 +1,84 @@
+evidencia_metodo:
+    resource: "@EvidenciaMetodoBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+metodo:
+    resource: "@MetodoBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+user:
+    resource: "@UserBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+evidencia_dominio:
+    resource: "@EvidenciaDominioBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+dominio:
+    resource: "@DominioBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+origen:
+    resource: "@OrigenBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+evidencia:
+    resource: "@EvidenciaBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+entidad:
+    resource: "@EntidadBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+frontend:
+    resource: "@FrontendBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+fos_user_security:
+    resource: "@FOSUserBundle/Resources/config/routing/security.xml"
+
+fos_user_profile:
+    resource: "@FOSUserBundle/Resources/config/routing/profile.xml"
+    prefix: /profile
+
+fos_user_register:
+    resource: "@FOSUserBundle/Resources/config/routing/registration.xml"
+    prefix: /register
+
+fos_user_resetting:
+    resource: "@FOSUserBundle/Resources/config/routing/resetting.xml"
+    prefix: /resetting
+
+fos_user_change_password:
+    resource: "@FOSUserBundle/Resources/config/routing/change_password.xml"
+
+
+
+homepage:
+    pattern: /
+    defaults: { _controller: FrontendBundle:Default:home }
+
+curation_interface_search:
+    pattern: /search/
+    defaults: { _controller: FrontendBundle:Default:search, dominio:"hepatotoxicity"}
+
+curation_interface_search_dominio:
+    pattern: /search/{dominio}/
+    defaults: { _controller: FrontendBundle:Default:search}
+
+curation_interface_search_embryotoxicity:
+    pattern: /search/embryotoxicity/
+    defaults: { _controller: FrontendBundle:Default:embryotoxicity}
+
+autocomplete:
+    pattern:    /scripts/autocomplete/
+    defaults:   { _controller: FrontendBundle:Scripts:autocomplete }

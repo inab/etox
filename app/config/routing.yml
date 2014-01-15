@@ -1,0 +1,112 @@
+etox_microme_elastic_search:
+    resource: "@EtoxMicromeElasticSearchBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+etox_microme_entity2_abstract:
+    resource: "@EtoxMicromeEntity2AbstractBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+etox_microme_entity:
+    resource: "@EtoxMicromeEntityBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+etox_microme_toxic_endpoint:
+    resource: "@EtoxMicromeToxicEndpointBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+etox_microme_mesh_term:
+    resource: "@EtoxMicromeMeshTermBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+etox_microme_entity2_document:
+    resource: "@EtoxMicromeEntity2DocumentBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+etox_microme_document:
+    resource: "@EtoxMicromeDocumentBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+user:
+    resource: "@UserBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+frontend:
+    resource: "@FrontendBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+fos_user_security:
+    resource: "@FOSUserBundle/Resources/config/routing/security.xml"
+
+fos_user_profile:
+    resource: "@FOSUserBundle/Resources/config/routing/profile.xml"
+    prefix: /profile
+
+fos_user_register:
+    resource: "@FOSUserBundle/Resources/config/routing/registration.xml"
+    prefix: /register
+
+fos_user_resetting:
+    resource: "@FOSUserBundle/Resources/config/routing/resetting.xml"
+    prefix: /resetting
+
+fos_user_change_password:
+    resource: "@FOSUserBundle/Resources/config/routing/change_password.xml"
+
+
+
+homepage:
+    pattern: /
+    defaults: { _controller: FrontendBundle:Default:home }
+
+search_interface_search:
+    pattern: /search/
+    defaults: { _controller: FrontendBundle:Search:search}
+
+elasticSearch_keyword:
+    pattern: /search/keyword/{keyword}/
+    defaults: { _controller: FrontendBundle:Search:searchKeyword}
+
+search_interface_search_field:
+    pattern: /search/{field}/
+    defaults: { _controller: FrontendBundle:Search:searchField}
+
+search_interface_search_field_whatToSearch:
+    pattern: /search/{field}/{whatToSearch}/
+    defaults: { _controller: FrontendBundle:Search:searchFieldWhatToSearch}
+
+search_interface_search_field_whatToSearch_entityType:
+    pattern: /search/{field}/{whatToSearch}/{entityType}/
+    defaults: { _controller: FrontendBundle:Search:searchFieldWhatToSearchEntityType}
+
+search_interface_search_field_whatToSearch_entityType_entity:
+    pattern: /search/{field}/{whatToSearch}/{entityType}/{entityName}/
+    defaults: { _controller: FrontendBundle:Search:searchFieldWhatToSearchEntityTypeEntity}
+
+autocomplete:
+    pattern:    /scripts/autocomplete/
+    defaults:   { _controller: FrontendBundle:Scripts:autocomplete }
+
+export_abstracts:
+    pattern:    /export-abstracts/{field}/{whatToSearch}/{entityType}/{entityName}/
+    defaults:   { _controller: FrontendBundle:Search:searchFieldWhatToSearchEntityTypeEntity }
+
+export_documents:
+    pattern:    /export-documents/{field}/{whatToSearch}/{entityType}/{entityName}/
+    defaults:   { _controller: FrontendBundle:Search:searchFieldWhatToSearchEntityTypeEntity }
+
+download_route:
+    pattern:  /download/{filename}
+    defaults: { _controller: FrontendBundle:Download:download }
+
+curate_evidences_abstract:
+    pattern: /curate/abstract/{pmid}/
+    defaults: { _controller: FrontendBundle:Curate:showAbstract}

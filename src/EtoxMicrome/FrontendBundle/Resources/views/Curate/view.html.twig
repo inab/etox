@@ -1,0 +1,42 @@
+{% extends '::frontend.html.twig' %}
+{% block article -%}
+        <div id="right-content">
+            <div id="evidenceText">
+                <h1>Curate entities of Abstract (pmid: {{abstract.getPmid}})<small></small></h1>
+                {% set text = abstract.getText %}
+                {{ text | highlightEntitiesAbstracts (abstract)| raw }}
+                <div class="btmspc-dbl">
+                    <small>
+                        <em>
+                            Entity mentions are highlighted as follows:
+                            <mark class="specie">Species</mark>
+                            ,
+                            <mark class="compound">Compounds</mark>
+                            ,
+                            <mark class="enzyme">Enzymes</mark>
+                            ,
+                            <mark class="protein">Proteins</mark>
+                            ,
+                            <mark class="cyp">Cytocromes</mark>
+                            ,
+                            <mark class="mutation">Mutations</mark>
+                            ,
+                            <mark class="go_term">Go terms</mark>
+                            ,
+                            <mark class="keyword">Keywords</mark>
+                            and
+                            <mark class="marker">Markers</mark>
+                        </em>
+                        . Curated evidences are indicated by:
+                        <a class="curated" href="#"> </a>
+                    </small>
+                </div>
+            </div>
+            <div id="content">
+
+            </div><!-- content  -->
+        </div><!-- right-content  -->
+        <div class="clear-both"></div>
+{% endblock %}
+{% block javascripts %}
+{% endblock %}

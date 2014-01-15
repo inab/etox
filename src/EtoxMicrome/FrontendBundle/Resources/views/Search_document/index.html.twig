@@ -1,0 +1,111 @@
+{% extends '::frontend.html.twig' %}
+{% block title %}Listing Evidences {% endblock %}
+{% block article %}
+    {% include 'FrontendBundle:Search_document:tags_code.html.twig' %}
+    <div id="evidences">
+        {% set entityName=entity.getName %}
+        <a href="{{ path('export_abstracts',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'entityName': entityName, 'download': true}) }}">(Generate a file with results)</a>
+        {% set foundFor=entityType %}
+        {% if foundFor=="CompoundDict" %}
+            {% set foundFor="Compound" %}
+        {% endif %}
+        <h3>{{ field | capitalize }} evidences found for {{foundFor}}: {{ entityBackup }}</h3>
+        <div class="btmspc-dbl">
+            <small>
+                <em>
+                    Entity mentions are highlighted as follows:
+                    <mark class="specie">Species</mark>
+                    ,
+                    <mark class="compound">Compounds</mark>
+                    ,
+                    <mark class="enzyme">Enzymes</mark>
+                    ,
+                    <mark class="protein">Proteins</mark>
+                    ,
+                    <mark class="cyp">Cytocromes</mark>
+                    ,
+                    <mark class="mutation">Mutations</mark>
+                    ,
+                    <mark class="go_term">Go terms</mark>
+                    ,
+                    <mark class="keyword">Keywords</mark>
+                    and
+                    <mark class="marker">Markers</mark>
+                </em>
+                . Curated evidences are indicated by:
+                <a class="curated" href="#"> </a>
+            </small>
+        </div>
+        {% if arrayEntity2Abstract is defined %}
+            <a name="abstracts"></a>
+            <div class="jumpToDocuments">
+                <a href="#documents">(Jump to evidences found in Documents)</a>
+            </div>
+            <h3>Evidences found in Abstracts</h3>
+            {% for entity2Abstract in arrayEntity2Abstract %}
+                <div class="abstract">
+                    <p>
+                        {% set text = entity2Abstract.abstracts.getText %}
+                        {{ text | highlightEntitiesAbstracts (entity2Abstract.abstracts,entityBackup)| raw }}
+                        <small>
+                            {% set pmid = entity2Abstract.abstracts.getPmid %}
+                            [PMID:<a href="http://www.ncbi.nlm.nih.gov/pubmed/{{ pmid }}" target="_blank">{{ pmid }}</a>]
+                            {% set score = entity2Abstract.abstracts.getHepval %}
+                            {% set score = score|number_format(2) %}
+                            {% set score = score|colorCodingScore %}
+                            (score: {{ score |raw }})
+                            <a class="rgt-arw no-curated" href="{{ path('curate_evidences_abstract', {'pmid': entity2Abstract.getAbstracts.getPmid}) }}">Curate</a>
+                        </small>
+                    </p>
+                </div>
+            {% endfor %}
+
+            <!-- here pagination block for Abstracts -->
+
+           <div class="pagination">
+                {{ simple_paginator_render(
+                    'search_interface_search_field_whatToSearch_entityType_entity', 'abstracts',
+                        {
+                            'routeParams' : {'field' : field, 'whatToSearch' : whatToSearch, 'entityType' : entityType, 'entityName' : entityBackup},
+                            'container_class' : 'pagination'
+                        }
+                    )
+                }}
+            </div>
+        {% endif %}
+        {% set entityId = entity.getId %}
+        <a name="documents"></a>
+        <div class="jumpToDocuments">
+            <a href="#abstracts">(Jump to evidences found in Abstracts)</a>
+        </div>
+        <h3>Evidences found in Documents</h3>
+        {% for entity2Document in arrayEntity2Document %}
+            <div class="document">
+                <p>
+                    {% set text=entity2Document.document.getText %}
+                    {{ text | highlightEntitiesDocuments (entity2Document.document,entityBackup)| raw }}
+                    <small>
+                            {% set score = entity2Document.document.getHepval %}
+                            {% set score = score|number_format(2) %}
+                            {% set score = score|colorCodingScore %}
+                            (score: {{ score |raw }})
+                        </small>
+                </p>
+            </div>
+        {% endfor %}
+
+        <!-- here pagination block for Documents -->
+
+       <div class="pagination">
+            {{ simple_paginator_render(
+                'search_interface_search_field_whatToSearch_entityType_entity', 'documents',
+                    {
+                        'routeParams' : {'field' : field, 'whatToSearch' : whatToSearch, 'entityType' : entityType, 'entityName' : entityBackup},
+                        'container_class' : 'pagination'
+                    }
+                )
+            }}
+        </div>
+    </div>
+    {% include 'FrontendBundle:Search_document:scripts_code.html.twig' %}
+{% endblock %}

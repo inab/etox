@@ -1,0 +1,12 @@
+{% extends '::frontend.html.twig' %}
+{% block title %}Listing Evidences {% endblock %}
+{% block article %}
+    {% include 'FrontendBundle:Default:tags_code.html.twig' %}
+
+    <div id="evidences">
+        {% set entityName=entity %}
+        <h3>Follow this <a href="{{ path('download_route', { 'filename': filename }) }}">link</a> to download the file with the results in zip format</h3>
+        <!-- here pagination block for Documents -->
+    </div>
+    {% include 'FrontendBundle:Default:scripts_code.html.twig' %}
+{% endblock %}

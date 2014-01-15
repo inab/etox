@@ -1,0 +1,14 @@
+# This file is auto-generated during the composer install
+parameters:
+    database_driver: pdo_mysql
+    database_host: jabba.cnio.es
+    database_port: null
+    database_name: DataFixturesLimtox
+    database_user: limtox
+    database_password: 123.qwe
+    mailer_transport: gmail
+    mailer_user: vayatrendevida@gmail.com
+    mailer_password:
+    locale: en
+    secret: 'I have seen things people you wouldnt believe'
+    mailer_host: 127.0.0.1

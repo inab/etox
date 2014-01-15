@@ -1,0 +1,87 @@
+{% extends '::frontend.html.twig' %}
+{% block title %}Listing Evidences {% endblock %}
+{% block article %}
+    {% include 'FrontendBundle:Search_keyword:tags_code.html.twig' %}
+    <div id="evidences">
+        <h3>Evidences found for "{{ keyword }}" keyword</h3>
+        <div class="btmspc-dbl">
+            <small>
+                <em>
+                    Entity mentions are highlighted as follows:
+                    <mark class="specie">Species</mark>
+                    ,
+                    <mark class="compound">Compounds</mark>
+                    ,
+                    <mark class="enzyme">Enzymes</mark>
+                    ,
+                    <mark class="protein">Proteins</mark>
+                    ,
+                    <mark class="cyp">Cytocromes</mark>
+                    ,
+                    <mark class="mutation">Mutations</mark>
+                    ,
+                    <mark class="go_term">Go terms</mark>
+                    ,
+                    <mark class="keyword">Keywords</mark>
+                    and
+                    <mark class="marker">Markers</mark>
+                </em>
+                . Curated evidences are indicated by:
+                <a class="curated" href="#"> </a>
+            </small>
+        </div>
+        <div class="results-summary">
+            <table>
+                <tr>
+                    <td>Total of mentions:</td>
+                    <td>{{ resultSet.getTotalHits }} (Only 150 are displayed. Click to display the {{ resultSet.getTotalHits }})</td>
+                </tr>
+                <tr>
+                    <td>Max. score:</td>
+                    <td>{{ resultSet[0].getSource["hepval"] |number_format(2) }}</td>
+                </tr>
+                <tr>
+                    <td>Min. score:</td>
+                    <td>{{ resultSet[resultSet.getTotalHits - 1].getSource["hepval"] |number_format(2) }}</td>
+                </tr>
+            </table>
+        </div>
+        <div class="clear-both"></div>
+        {% set results=arrayResults.getResult %}
+        {% for result in results %}
+            <div class="document">
+                <p>
+                    {% set className = result.getClassName %}
+                    {{ className }}
+                    <br/>
+                    {{ result.getId }}
+                    <br/>
+                    {% set text=result.getText %}
+                    {% if className == "Abstracts" %}
+                        {{ text | highlightEntitiesAbstracts (result,keyword)| raw }}
+                    {% elseif className == "Document" %}
+                        {{ text | highlightEntitiesDocuments (result,keyword)| raw }}
+                    {% endif%}
+
+                    {{ result.getHepval |number_format(2) }}
+                </p>
+            </div>
+        {% endfor %}
+    </div>
+
+
+
+
+   <!-- here pagination block  -->
+    <div class="pagination">
+        {{ simple_paginator_render(
+            'elasticSearch_keyword', null,
+                {
+                    'routeParams' : {'keyword' : keyword},
+                    'container_class' : 'pagination'
+                }
+            )
+        }}
+    </div>
+    {% include 'FrontendBundle:Search_document:scripts_code.html.twig' %}
+{% endblock %}

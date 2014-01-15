@@ -1,0 +1,68 @@
+{% extends '::frontend.html.twig' %}
+{% block title %}Listing Evidences {% endblock %}
+{% block article %}
+    <div id="evidences">
+        <h3>Evidences found for "{{ keyword }}" keyword</h3>
+        <div class="btmspc-dbl">
+            <small>
+                <em>
+                    Entity mentions are highlighted as follows:
+                    <mark class="specie">Species</mark>
+                    ,
+                    <mark class="compound">Compounds</mark>
+                    ,
+                    <mark class="enzyme">Enzymes</mark>
+                    ,
+                    <mark class="protein">Proteins</mark>
+                    ,
+                    <mark class="cyp">Cytocromes</mark>
+                    ,
+                    <mark class="mutation">Mutations</mark>
+                    ,
+                    <mark class="go_term">Go terms</mark>
+                    ,
+                    <mark class="keyword">Keywords</mark>
+                    and
+                    <mark class="marker">Markers</mark>
+                </em>
+                . Curated evidences are indicated by:
+                <a class="curated" href="#"> </a>
+            </small>
+        </div>
+        {% for data in pagerfanta.currentPageResults %}
+            <div class="document">
+                <p>
+                    {% set className = data.getClassName %}
+                    {% if className=="Document" %}
+                        {% set text= data.getText | highlightEntitiesDocuments (data,field)| raw %}
+                        {{ text | highlightKeywordText(keyword) | raw }}
+                    {% endif %}
+
+
+                    {% if className=="Abstracts" %}
+                        <div class="titleDocument">{{ data.getTitle }}</div>
+                        {% set text = data.getText | highlightEntitiesAbstracts (data,field)| raw %}
+                        {{ text | highlightKeywordText(keyword) | raw }}
+                        <small>
+                            [PMID:
+                            <a href="http://www.ncbi.nlm.nih.gov/pubmed/{{ data.getPmid }}" target="_blank">{{ data.getPmid }}</a>
+                            ]
+                        </small>
+                    {% endif %}
+                </p>
+            </div>
+        {% endfor %}
+
+    </div>
+
+
+
+
+   <!-- here pagination block  -->
+
+   <div class="pagination">
+    <div class="pagerfanta">{{ pagerfanta(pagerfanta, 'default') }}</div>
+   </div>
+    {% include 'FrontendBundle:Search_keyword:tags_code.html.twig' %}
+    {% include 'FrontendBundle:Search_document:scripts_code.html.twig' %}
+{% endblock %}

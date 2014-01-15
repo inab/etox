@@ -1,0 +1,103 @@
+<div class="ui-widget">
+    <div class="vis-break cntrtxt">
+        <input id="tags" class="ui-autocomplete-input text" onclick="this.value=''" placeholder="e.g. {{ default_entityName }}" aria-haspopup="true" aria-autocomplete="list" role="textbox" autocomplete="off" value="{{ default_entityName }}">
+
+        <a id="bigSearch" class="button orange" >Search</a>
+        <a href="#" class="show_hide">Advance Search</a>
+
+    </div>
+</div>
+
+{% set arrayReports=['epar','emea','nda','fulltext'] %}
+{% set arrayCompounds=['CompoundDict','CompoundMesh','CompoundNer'] %}
+<div class="advanceSearch">
+    <form class="custom">
+        <fieldset>
+            <legend>Select the data origin:</legend>
+                <div class="large-4 columns">
+                    {% if kind=="pubmedAbstracts" or kind=="PubmedAbstracts" %}
+                        <label for="radioKind"><input name="kind" type="radio" id="radioKind" style="display:none;" CHECKED value="pubmedAbstracts"><span class="custom radio checked"></span> Pubmed abstracts</label>
+                    {% else %}
+                        <label for="radioKind"><input name="kind" type="radio" id="radioKind" style="display:none;" value="pubmedAbstracts"><span class="custom radio"></span> Pubmed abstracts</label>
+                    {% endif %}
+                    {% if kind=="sentences" or kind=="Sentences" %}
+                        <label for="radioKind"><input name="kind" type="radio" id="radioKind" style="display:none;" CHECKED value="sentences"><span class="custom radio checked"></span> Sentences</label>
+                    {% else %}
+                        <label for="radioKind"><input name="kind" type="radio" id="radioKind" style="display:none;" value="sentences"><span class="custom radio"></span> Sentences</label>
+                    {% endif %}
+                    {% if kind=="pubmedSentences" or kind=="PubmedSentences" %}
+                        <label for="radioKind"><input name="kind" type="radio" id="radioKind" style="display:none;" CHECKED value="pubmedSentences"><span class="custom radio checked"></span> Pubmed sentences</label>
+                    {% else %}
+                        <label for="radioKind"><input name="kind" type="radio" id="radioKind" style="display:none;" value="pubmedSentences"><span class="custom radio"></span> Pubmed sentences</label>
+                    {% endif %}
+                    {% if kind=="fulltextSentences" or kind=="FulltextSentences" %}
+                        <label for="radioKind"><input name="kind" type="radio" id="radioKind" style="display:none;" CHECKED value="fulltextSentences"><span class="custom radio checked"></span> Fulltext sentences</label>
+                    {% else %}
+                        <label for="radioKind"><input name="kind" type="radio" id="radioKind" style="display:none;" value="fulltextSentences"><span class="custom radio"></span> Fulltext sentences</label>
+                    {% endif %}
+                    {% if kind=="epar" or kind=="Epar" %}
+                        <label for="radioKind"><input name="kind" type="radio" id="radioKind" style="display:none;" CHECKED value="epar"><span class="custom radio checked"></span> epar</label>
+                    {% else %}
+                        <label for="radioKind"><input name="kind" type="radio" id="radioKind" style="display:none;" value="epar"><span class="custom radio"></span> epar</label>
+                    {% endif %}
+                    {% if kind=="nda" or kind=="Nda" %}
+                        <label for="radioKind"><input name="kind" type="radio" id="radioKind" style="display:none;" CHECKED value="nda"><span class="custom radio checked"></span> nda</label>
+                    {% else %}
+                        <label for="radioKind"><input name="kind" type="radio" id="radioKind" style="display:none;" value="nda"><span class="custom radio"></span> nda</label>
+                    {% endif %}
+                </div>
+        </fieldset>
+        <fieldset>
+            <legend>Select type of search:</legend>
+                <div class="large-4 columns">
+                    {% if entityType in arrayCompounds %}
+                        <label for="radio1"><input name="type-of-entity" type="radio" id="radio1" style="display:none;" CHECKED value="Compound"><span class="custom radio checked"></span> Compound</label>
+                    {% else %}
+                        <label for="radio1"><input name="type-of-entity" type="radio" id="radio1" style="display:none;" value="Compound"><span class="custom radio"></span> Compound</label>
+                    {% endif %}
+
+                    {% if entityType=="cyp" or entityType=="Cyp" %}
+                        <label for="radio1"><input name="type-of-entity" type="radio" id="radio1" style="display:none;" value="Cyp"><span class="custom radio"></span> CYPs</label>
+                    {% else %}
+                        <label for="radio1"><input name="type-of-entity" type="radio" id="radio1" style="display:none;" value="Cyp"><span class="custom radio"></span> CYPs</label>
+                    {% endif %}
+                    {% if entityType=="marker" or entityType=="Marker" %}
+                        <label for="radio1"><input name="type-of-entity" type="radio" id="radio1" style="display:none;" value="Marker"><span class="custom radio"></span> Markers</label>
+                    {% else %}
+                        <label for="radio1"><input name="type-of-entity" type="radio" id="radio1" style="display:none;" value="Marker"><span class="custom radio"></span> Markers</label>
+                    {% endif %}
+
+                    {% if entityType=="specie" or entityType=="specie" %}
+                        <label for="radio1"><input name="type-of-entity" type="radio" id="radio1" style="display:none;" value="Specie"><span class="custom radio"></span> Specie</label>
+                    {% else %}
+                        <label for="radio1"><input name="type-of-entity" type="radio" id="radio1" style="display:none;" value="Specie"><span class="custom radio"></span> Specie</label>
+                    {% endif %}
+                    {% if entityType=="enzyme" or entityType=="Enzyme" %}
+                        <label for="radio1"><input name="type-of-entity" type="radio" id="radio1" style="display:none;" value="Enzyme"><span class="custom radio"></span> Enzyme</label>
+                    {% else %}
+                        <label for="radio1"><input name="type-of-entity" type="radio" id="radio1" style="display:none;" value="Enzyme"><span class="custom radio"></span> Enzyme</label>
+                    {% endif %}
+                    {% if entityType=="protein" or entityType=="Protein" %}
+                        <label for="radio1"><input name="type-of-entity" type="radio" id="radio1" style="display:none;" value="Protein"><span class="custom radio"></span> Protein</label>
+                    {% else %}
+                        <label for="radio1"><input name="type-of-entity" type="radio" id="radio1" style="display:none;" value="Protein"><span class="custom radio"></span> Protein</label>
+                    {% endif %}
+                    {% if entityType=="mutation" or entityType=="Mutation" %}
+                        <label for="radio1"><input name="type-of-entity" type="radio" id="radio1" style="display:none;" value="Mutation"><span class="custom radio"></span> Mutation</label>
+                    {% else %}
+                        <label for="radio1"><input name="type-of-entity" type="radio" id="radio1" style="display:none;" value="Mutation"><span class="custom radio"></span> Mutation</label>
+                    {% endif %}
+                    {% if entityType=="goterm" or entityType=="Goterm" %}
+                        <label for="radio1"><input name="type-of-entity" type="radio" id="radio1" style="display:none;" value="Goterm"><span class="custom radio"></span> GO Terms</label>
+                    {% else %}
+                        <label for="radio1"><input name="type-of-entity" type="radio" id="radio1" style="display:none;" value="Goterm"><span class="custom radio"></span> GO Terms</label>
+                    {% endif %}
+                    {% if entityType=="keyword" or entityType=="Keyword" %}
+                        <label for="radio1"><input name="type-of-entity" type="radio" id="radio1" style="display:none;" value="Keyword"><span class="custom radio"></span> Keywords</label>
+                    {% else %}
+                        <label for="radio1"><input name="type-of-entity" type="radio" id="radio1" style="display:none;" value="Keyword"><span class="custom radio"></span> Keywords</label>
+                    {% endif %}
+                </div>
+        </fieldset>
+    </form>
+</div>

@@ -1,0 +1,61 @@
+{% extends '::frontend.html.twig' %}
+{% block title %}Listing Evidences {% endblock %}
+{% block article %}
+    {% include 'FrontendBundle:Search:tags_code.html.twig' %}
+    <div id="evidences">
+        {% set entityName=entity.getName %}
+        <h3>{{ field | capitalize }} evidences found for {{entityType}}: {{ entityName }}</h3>
+        <div class="btmspc-dbl">
+            <small>
+                <em>
+                    Entity mentions are highlighted as follows:
+                    <mark class="specie">Species</mark>
+                    ,
+                    <mark class="compound">Compounds</mark>
+                    ,
+                    <mark class="enzyme">Enzymes</mark>
+                    ,
+                    <mark class="protein">Proteins</mark>
+                    ,
+                    <mark class="cyp">Cytocromes</mark>
+                    ,
+                    <mark class="mutation">Mutations</mark>
+                    ,
+                    <mark class="go_term">Go terms</mark>
+                    ,
+                    <mark class="keyword">Keywords</mark>
+                    and
+                    <mark class="marker">Markers</mark>
+                </em>
+                . Curated evidences are indicated by:
+                <a class="curated" href="#"> </a>
+            </small>
+        </div>
+        {% set entityId = entity.getId %}
+        {% for entity2Document in arrayEntity2Document %}
+            <div class="document">
+                <p>
+                    {% set text=entity2Document.document.getText %}
+                    {{ text | highlightEntitiesDocuments (entity2Document.document,field)| raw }}
+                </p>
+            </div>
+        {% endfor %}
+    </div>
+
+
+
+
+   <!-- here pagination block  -->
+
+   <div class="pagination">
+        {{ simple_paginator_render(
+            'search_interface_search_field_kind_entityType_entityName', null,
+                {
+                    'routeParams' : {'field' : field, 'kind' : kind, 'entityType' : entityType, 'entityName' : entityName},
+                    'container_class' : 'pagination'
+                }
+            )
+        }}
+    </div>
+
+{% endblock %}

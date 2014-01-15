@@ -1,0 +1,45 @@
+{% block javascripts_footer %}
+    <script>
+        $(".bigSearch").click(function() {
+            //We setup the url to search for. We need field(hepatotoxicity, other),searchInto(document,abstract), WhatToSearch(name, id, structure, canonical...), entityType (Compound, Cyp, Marker...etc) and entityName
+            //Getting field:
+            var field = ($('#searchby').find(":selected").text()).toLowerCase();
+            if (field==""){
+                alert("Please select what is the field of your search in the \"Search by\" select box");
+                return false;
+            }
+            var entityType=$('.tabs dd.active a').attr('name');
+            //Getting whatToSearch and entityName depends on entityType:
+            switch(entityType){
+                case "keyword":
+                    entityName = $('#tags-keywords').val();
+                    if (entityName==""){
+                        alert("Please type the entity to search for");
+                        return false;
+                    }
+                    else{
+                        alert("call search/keyword/whatever");
+                        $('#bigSearch').attr('href','{{ path('curation_interface_search') }}'+'keyword/'+entityName+'/');
+                    }
+                    break;
+                case "compound":
+                case "compoundDict":
+                    whatToSearch=$('input[name=compoundWhatToSearch]:checked').val();
+                    entityName = $('#tags-compounds').val();
+                    break;
+                case "cytochrome":
+                    whatToSearch=$('input[name=cytochromeWhatToSearch]:checked').val();
+                    entityName = $('#tags-cytochromes').val();
+                    break;
+                case "marker":
+                    whatToSearch=$('input[name=markerWhatToSearch]:checked').val();
+                    entityName = $('#tags-markers').val();
+                    break;
+            }
+
+            //Once we have all the parameters required for the search, we generate the route
+            $('.bigSearch').attr('href','{{ path('curation_interface_search') }}'+field+'/'+whatToSearch+'/'+entityType+'/'+entityName+'/');
+
+        });
+    </script>
+{% endblock %}

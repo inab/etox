@@ -1,0 +1,5 @@
+<strong>Compound found:</strong><br/>
+{% set textminingName = entidad.vars['data'].getTextminingName %}
+{% set idTrigger = "chebiID_" ~ textminingName %}
+<a href="#" id="{{ idTrigger }}" name="chebiId_{{ contador }}" onclick="getChebiIDs('{{ path('homepage') }}','{{ contador }}')">(Search ChebiIDs)</a>
+<div id="text_{{ contador }}" class="chebi_links"></div>
