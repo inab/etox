@@ -43,6 +43,41 @@
             <a class="button orange bigSearch" >Search</a>
         </div>
     </div>
+    <div class="advanceSearch">
+        <form class="custom">
+            <fieldset>
+                <legend>What are you searching?</legend>
+                    <div class="large-4 columns">
+                        {% if whatToSearch is not defined %}
+                            {% set whatToSearch = default_whatToSearch %}
+                        {% endif %}
+                        {% if whatToSearch=="any" %}
+                            <label for="radioWhatToSearch"><input name="keywordWhatToSearch" type="radio" id="radioKeywordWhatToSearch" style="display:none;" CHECKED value="any"><span class="custom radio"></span> Any</label>
+                        {% else %}
+                            <label for="radioWhatToSearch"><input name="keywordWhatToSearch" type="radio" id="radioKeywordWhatToSearch" style="display:none;" value="any"><span class="custom radio"></span> Any</label>
+                        {% endif %}
+
+                        {% if whatToSearch=="withCompound" %}
+                            <label for="radioWhatToSearch"><input name="keywordWhatToSearch" type="radio" id="radioKeywordWhatToSearch" style="display:none;" CHECKED value="withCompound"><span class="custom radio checked"></span> With compounds</label>
+                        {% else %}
+                            <label for="radioWhatToSearch"><input name="keywordWhatToSearch" type="radio" id="radioKeywordWhatToSearch" style="display:none;" value="withCompound"><span class="custom radio"></span> With Compounds</label>
+                        {% endif %}
+
+                        {% if whatToSearch=="withCytochrome" %}
+                            <label for="radioWhatToSearch"><input name="keywordWhatToSearch" type="radio" id="radioKeywordWhatToSearch" style="display:none;" CHECKED value="withCytochrome"><span class="custom radio"></span> With cytochromes</label>
+                        {% else %}
+                            <label for="radioWhatToSearch"><input name="keywordWhatToSearch" type="radio" id="radioKeywordWhatToSearch" style="display:none;" value="withCytochrome"><span class="custom radio"></span> With cytochromes</label>
+                        {% endif %}
+
+                        {% if whatToSearch=="withMarker" %}
+                            <label for="radioWhatToSearch"><input name="keywordWhatToSearch" type="radio" id="radioKeywordWhatToSearch" style="display:none;" CHECKED value="withCytochrome"><span class="custom radio"></span> With markers</label>
+                        {% else %}
+                            <label for="radioWhatToSearch"><input name="keywordWhatToSearch" type="radio" id="radioKeywordWhatToSearch" style="display:none;" value="withCytochrome"><span class="custom radio"></span> With markers</label>
+                        {% endif %}
+                    </div>
+            </fieldset>
+        </form>
+    </div>
   </li>
     {% if entityType in arrayCompounds %}
         <li class="active" id="compoundsTab">
