@@ -30,25 +30,30 @@
                 <a class="curated" href="#"> </a>
             </small>
         </div>
+        <a name="abstracts"></a>
+        <div class="jumpToDocuments">
+            <a href="#documents">(Jump to evidences found in Documents)</a>
+        </div>
+        <h3>Evidences found in Abstracts</h3>
         <div class="results-summary">
             <table>
                 <tr>
                     <td>Total of mentions:</td>
-                    <td>{{ resultSet.getTotalHits }} (Only 150 are displayed. Click to display the {{ resultSet.getTotalHits }})</td>
+                    <td>{{ resultSetAbstracts.getTotalHits }} (Displayed first 150. Click here to display the {{ resultSetAbstracts.getTotalHits }})</td>
                 </tr>
                 <tr>
                     <td>Max. score:</td>
-                    <td>{{ resultSet[0].getSource["hepval"] |number_format(2) }}</td>
+                    <td>{{ resultSetAbstracts[0].getSource["hepval"] |number_format(2) }}</td>
                 </tr>
                 <tr>
                     <td>Min. score:</td>
-                    <td>{{ resultSet[resultSet.getTotalHits - 1].getSource["hepval"] |number_format(2) }}</td>
+                    {% set last_index = resultSetAbstracts | length -1 %}
+                    <td>{{ resultSetAbstracts[last_index].getSource["hepval"] |number_format(2) }}</td>
                 </tr>
             </table>
         </div>
         <div class="clear-both"></div>
-        {% set results=arrayResults.getResult %}
-        {% for result in results %}
+        {% for result in arrayResultsAbs %}
             <div class="document">
                 <p>
                     {% set className = result.getClassName %}
@@ -67,15 +72,64 @@
                 </p>
             </div>
         {% endfor %}
-    </div>
+        <!-- here pagination block for abstracts -->
+        <div class="pagination">
+            {{ simple_paginator_render(
+                'elasticSearch_keyword', 'abstracts',
+                    {
+                        'routeParams' : {'keyword' : keyword},
+                        'container_class' : 'pagination'
+                    }
+                )
+            }}
+        </div>
+        <a name="documents"></a>
+        <div class="jumpToDocuments">
+            <a href="#abstracts">(Jump to evidences found in Abstracts)</a>
+        </div>
+        <h3>Evidences found in Documents</h3>
+        <div class="results-summary">
+            <table>
+                <tr>
+                    <td>Total of mentions:</td>
+                    <td>{{ resultSetDocuments.getTotalHits }} (Displayed first 150. Click here to display the {{ resultSetDocuments.getTotalHits }})</td>
+                </tr>
+                <tr>
+                    <td>Max. score:</td>
+                    <td>{{ resultSetDocuments[0].getSource["hepval"] |number_format(2) }}</td>
+                </tr>
+                <tr>
+                    <td>Min. score:</td>
+                    {% set last_index = resultSetDocuments | length -1 %}
+                    <td>{{ resultSetDocuments[last_index].getSource["hepval"] |number_format(2) }}</td>
+                </tr>
+            </table>
+        </div>
+        <div class="clear-both"></div>
+        {% for result in arrayResultsDoc %}
+            <div class="document">
+                <p>
+                    {% set className = result.getClassName %}
+                    {{ className }}
+                    <br/>
+                    {{ result.getId }}
+                    <br/>
+                    {% set text=result.getText %}
+                    {% if className == "Abstracts" %}
+                        {{ text | highlightEntitiesAbstracts (result,keyword)| raw }}
+                    {% elseif className == "Document" %}
+                        {{ text | highlightEntitiesDocuments (result,keyword)| raw }}
+                    {% endif%}
 
-
-
-
-   <!-- here pagination block  -->
+                    {{ result.getHepval |number_format(2) }}
+                </p>
+            </div>
+        {% endfor %}
+    </div><!-- #evidences -->
+    <!-- here pagination block for documents  -->
     <div class="pagination">
         {{ simple_paginator_render(
-            'elasticSearch_keyword', null,
+            'elasticSearch_keyword', 'documents',
                 {
                     'routeParams' : {'keyword' : keyword},
                     'container_class' : 'pagination'

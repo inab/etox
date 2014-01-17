@@ -700,9 +700,14 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
         ));
     }
 
-
     public function searchKeywordAction($keyword)
     {
+        $message="llega aqui";
+        if (isset($_GET['page'])) {
+            $page=$_GET['page'];
+        }else {
+            $page=null;
+        }
         $message="llega aqui";
         if (isset($_GET['page'])) {
             $page=$_GET['page'];
@@ -714,14 +719,12 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
         $searchInto=$this->container->getParameter('etoxMicrome.default_searchInto');//{"abstract","document"}
         $entityType= "keyword";//{"specie","compound","enzyme","protein","cyp","mutation","goterm","keyword","marker"}
         //ld($keyword);
-
         /** var Elastica\Type */
-        $finder = $this->container->get('fos_elastica.finder.etoxindex');//To search all index
+        $finder = $this->container->get('fos_elastica.finder.etoxindex.abstracts');//To search all index
+        $finderDoc = $this->container->get('fos_elastica.finder.etoxindex.documents');//To search all index
         $paginator = $this->get('ideup.simple_paginator');
-        $paginator->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'));
-        $paginator->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'));
-
-
+        //$paginator->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'));
+        //$paginator->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'));
 
         $elasticaQueryString  = new \Elastica\Query\QueryString();
         //'And' or 'Or' default : 'Or'
@@ -732,34 +735,49 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
         $elasticaQuery  = new \Elastica\Query();
         $elasticaQuery->setSort(array('hepval' => array('order' => 'desc')));
         $elasticaQuery->setQuery($elasticaQueryString);
-        $elasticaQuery->setSize(10000);
-
-
-        /** var Elastica\Type */
-        $userType = $this->container->get('fos_elastica.index.etoxindex');
-
-        /** var Elastica\ResultSet */
-        $resultSet = $userType->search($elasticaQuery);
 
         //$size=10;
         //$elasticaQuery->setSize($size);
         //$totalResults=$finder->find($elasticaQuery);
-        //ldd($totalResults);
+        //ldd($elasticaQuery);
 
         //Search on the index.
+
         $elasticaQuery->setSize($this->container->getParameter('etoxMicrome.total_documents_elasticsearch_retrieval'));
-        $arrayResults = $paginator->paginate($finder->find($elasticaQuery));
-        //ldd($arrayResults);
+
+        /** We get resultSet to get values for summary**/
+        $abstractsInfo = $this->container->get('fos_elastica.index.etoxindex.abstracts');
+        $documentsInfo = $this->container->get('fos_elastica.index.etoxindex.documents');
+        /** var Elastica\ResultSet */
+        $resultSetAbstracts = $abstractsInfo->search($elasticaQuery);
+        $resultSetDocuments = $documentsInfo->search($elasticaQuery);
 
 
+
+        $arrayAbstracts=$finder->find($elasticaQuery);
+        $arrayResultsAbs = $paginator
+            ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), 'abstracts')
+            ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), 'abstracts')
+            ->paginate($arrayAbstracts,'abstracts')
+            ->getResult()
+        ;
+        $arrayDocuments=$finderDoc->find($elasticaQuery);
+        $arrayResultsDoc = $paginator
+            ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), 'documents')
+            ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), 'documents')
+            ->paginate($arrayDocuments,'documents')
+            ->getResult()
+        ;
 
         return $this->render('FrontendBundle:Search_keyword:index.html.twig', array(
             'field' => $field,
             'searchInto' => $searchInto,
             'entityType' => $entityType,
             'keyword' => $keyword,
-            'arrayResults' => $arrayResults,
-            'resultSet' => $resultSet,
+            'arrayResultsAbs' => $arrayResultsAbs,
+            'arrayResultsDoc' => $arrayResultsDoc,
+            'resultSetAbstracts' => $resultSetAbstracts,
+            'resultSetDocuments' => $resultSetDocuments,
             ));
     }
     public function embryotoxicityAction()

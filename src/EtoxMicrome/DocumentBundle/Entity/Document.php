@@ -405,6 +405,51 @@ class Document
     }
 
     /**
+     * Set setHepKeywordTermNorm2document
+     *
+     * @return integer
+     */
+    public function setHepKeywordTermNorm2document($hepKeywordTermNorm2document)
+    {
+        $this->hepKeywordTermNorm2document =$hepKeywordTermNorm2document;
+        return $this;
+    }
+
+    /**
+     * Get hepKeywordTermNorm2document
+     *
+     * @return integer
+     */
+    public function getHepKeywordTermNorm2document()
+    {
+        return $this->hepKeywordTermNorm2document;
+    }
+
+
+
+
+    /**
+     * Set hepKeywordTermVariant2document
+     *
+     * @return integer
+     */
+    public function setHepKeywordTermVariant2document($hepKeywordTermVariant2document)
+    {
+        $this->hepKeywordTermVariant2document =$hepKeywordTermVariant2document;
+        return $this;
+    }
+
+    /**
+     * Get hepKeywordTermVariant2document
+     *
+     * @return integer
+     */
+    public function getHepKeywordTermVariant2document()
+    {
+        return $this->hepKeywordTermVariant2document;
+    }
+
+    /**
      * Get className
      *
      * @return string

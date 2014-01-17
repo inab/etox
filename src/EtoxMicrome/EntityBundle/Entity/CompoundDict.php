@@ -127,10 +127,19 @@ class CompoundDict
     private $name2struct;
 
     /**
+     * @var text
+     *
+     * @ORM\Column(name="structure", type="text", nullable=true)
+     */
+
+    private $structure;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="created", type="datetime")
      */
+
     private $created;
 
     /**
