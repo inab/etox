@@ -12,4 +12,20 @@ use Doctrine\ORM\EntityRepository;
  */
 class HepKeywordTermVariant2DocumentRepository extends EntityRepository
 {
+
+    public function findHepKeywordTermVariant2Document($document)
+    {
+        //Function to search all the entities involved in a particular sentence in order to highlight them
+        $documentId=$document->getId();
+
+        $em = $this->getEntityManager();
+        $consulta = $em->createQuery('
+            SELECT t2d
+            FROM EtoxMicromeEntity2DocumentBundle:HepKeywordTermVariant2Document t2d
+            WHERE t2d.document = :documentId
+        ');
+        $consulta->setParameter('documentId', $documentId);
+        return $consulta->execute();
+    }
+
 }

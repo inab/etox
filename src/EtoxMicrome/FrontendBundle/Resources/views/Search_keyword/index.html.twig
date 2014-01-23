@@ -3,139 +3,173 @@
 {% block article %}
     {% include 'FrontendBundle:Search_keyword:tags_code.html.twig' %}
     <div id="evidences">
-        <h3>Evidences found for "{{ keyword }}" keyword</h3>
-        <div class="btmspc-dbl">
-            <small>
-                <em>
-                    Entity mentions are highlighted as follows:
-                    <mark class="specie">Species</mark>
-                    ,
-                    <mark class="compound">Compounds</mark>
-                    ,
-                    <mark class="enzyme">Enzymes</mark>
-                    ,
-                    <mark class="protein">Proteins</mark>
-                    ,
-                    <mark class="cyp">Cytocromes</mark>
-                    ,
-                    <mark class="mutation">Mutations</mark>
-                    ,
-                    <mark class="go_term">Go terms</mark>
-                    ,
-                    <mark class="keyword">Keywords</mark>
-                    and
-                    <mark class="marker">Markers</mark>
-                </em>
-                . Curated evidences are indicated by:
-                <a class="curated" href="#"> </a>
-            </small>
-        </div>
-        <a name="abstracts"></a>
-        <div class="jumpToDocuments">
-            <a href="#documents">(Jump to evidences found in Documents)</a>
-        </div>
-        <h3>Evidences found in Abstracts</h3>
-        <div class="results-summary">
-            <table>
-                <tr>
-                    <td>Total of mentions:</td>
-                    <td>{{ resultSetAbstracts.getTotalHits }} (Displayed first 150. Click here to display the {{ resultSetAbstracts.getTotalHits }})</td>
-                </tr>
-                <tr>
-                    <td>Max. score:</td>
-                    <td>{{ resultSetAbstracts[0].getSource["hepval"] |number_format(2) }}</td>
-                </tr>
-                <tr>
-                    <td>Min. score:</td>
-                    {% set last_index = resultSetAbstracts | length -1 %}
-                    <td>{{ resultSetAbstracts[last_index].getSource["hepval"] |number_format(2) }}</td>
-                </tr>
-            </table>
-        </div>
-        <div class="clear-both"></div>
-        {% for result in arrayResultsAbs %}
-            <div class="document">
-                <p>
-                    {% set className = result.getClassName %}
-                    {{ className }}
-                    <br/>
-                    {{ result.getId }}
-                    <br/>
-                    {% set text=result.getText %}
-                    {% if className == "Abstracts" %}
-                        {{ text | highlightEntitiesAbstracts (result,keyword)| raw }}
-                    {% elseif className == "Document" %}
-                        {{ text | highlightEntitiesDocuments (result,keyword)| raw }}
-                    {% endif%}
+        {% if resultSetDocuments.getTotalHits != 0 %}
+            <div id="documentsResults">
+                <a name="documents"></a>
+                {% if whatToSearch not in ["withCytochromes", "withMarkers"] %}
+                    <div class="jumpToDocuments">
+                        <a href="#" id="jumpToAbstracts">(Jump to Abstracts)</a>
+                    </div>
+                {% endif %}
 
-                    {{ result.getHepval |number_format(2) }}
-                </p>
-            </div>
-        {% endfor %}
-        <!-- here pagination block for abstracts -->
-        <div class="pagination">
-            {{ simple_paginator_render(
-                'elasticSearch_keyword', 'abstracts',
-                    {
-                        'routeParams' : {'keyword' : keyword},
-                        'container_class' : 'pagination'
-                    }
-                )
-            }}
-        </div>
-        <a name="documents"></a>
-        <div class="jumpToDocuments">
-            <a href="#abstracts">(Jump to evidences found in Abstracts)</a>
-        </div>
-        <h3>Evidences found in Documents</h3>
-        <div class="results-summary">
-            <table>
-                <tr>
-                    <td>Total of mentions:</td>
-                    <td>{{ resultSetDocuments.getTotalHits }} (Displayed first 150. Click here to display the {{ resultSetDocuments.getTotalHits }})</td>
-                </tr>
-                <tr>
-                    <td>Max. score:</td>
-                    <td>{{ resultSetDocuments[0].getSource["hepval"] |number_format(2) }}</td>
-                </tr>
-                <tr>
-                    <td>Min. score:</td>
-                    {% set last_index = resultSetDocuments | length -1 %}
-                    <td>{{ resultSetDocuments[last_index].getSource["hepval"] |number_format(2) }}</td>
-                </tr>
-            </table>
-        </div>
-        <div class="clear-both"></div>
-        {% for result in arrayResultsDoc %}
-            <div class="document">
-                <p>
-                    {% set className = result.getClassName %}
-                    {{ className }}
-                    <br/>
-                    {{ result.getId }}
-                    <br/>
-                    {% set text=result.getText %}
-                    {% if className == "Abstracts" %}
-                        {{ text | highlightEntitiesAbstracts (result,keyword)| raw }}
-                    {% elseif className == "Document" %}
-                        {{ text | highlightEntitiesDocuments (result,keyword)| raw }}
-                    {% endif%}
+                <h3>Ranked sentences in Documents for "{{ keyword }}" keyword</h3>
+                <div class="btmspc-dbl">
+                    <small>
+                        <em>
+                            Entity mentions are highlighted as follows:
+                            <mark class="compound">Compounds</mark>, <mark class="cyp">CYPs</mark>, <mark class="marker">Markers</mark>, <mark class="term">Terms</mark>, <mark class="specie">Species</mark>
+                        </em>
+                        . Curated evidences are indicated by:
+                        <a class="curated" href="#"> </a>
+                    </small>
+                </div>
+                <div class="results-summary">
 
-                    {{ result.getHepval |number_format(2) }}
-                </p>
+                    <table>
+                        <tr>
+                            <td>Total of mentions:</td>
+                            <td>{{ resultSetDocuments.getTotalHits }} (Displayed first 150. Click here to display the {{ resultSetDocuments.getTotalHits }})</td>
+                        </tr>
+                        <tr>
+                            <td>Max. score:</td>
+                            <td>{{ resultSetDocuments[0].getSource["hepval"] |number_format(2) }}</td>
+                        </tr>
+                        <tr>
+                            <td>Min. score:</td>
+                            {% set last_index = resultSetDocuments | length -1 %}
+                            <td>{{ resultSetDocuments[last_index].getSource["hepval"] |number_format(2) }}</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="clear-both"></div>
+                {% set contador = 1 %}
+                {% for result in arrayResultsDoc %}
+                    <div class="document {{ cycle(['odd', 'even'], contador) }}">
+                        {% set contador = contador + 1 %}
+                        <p>
+                            {% set className = result.getClassName %}
+                            {# result.getId #}
+                            {% set score = result.getHepval | number_format(2)%}
+                            {% set score = score|colorCodingScore %}
+                            (score: {{ score |raw }})
+                            {% set text=result.getText %}
+                            {% if className == 'Abstracts' %}
+
+                                {{ text | highlightEntitiesAbstracts (result,keyword)| raw }}
+                                {% set pmid=result.getPmid %}
+                                {% set link="http://www.ncbi.nlm.nih.gov/pubmed/" ~ pmid %}
+                                {% set imageRoute = 'images/pubmed.jpg' %}
+                            {% elseif className == 'Document' or className == 'DocumentWithCompound' or className == 'DocumentWithCytochrome' or className == 'DocumentWithMarker'%}
+                                {% set kind = result.getKind %}
+                                {% if kind == "pubmed" %}
+                                    {% set pmid=result.getUid %}
+                                    {% set link="http://www.ncbi.nlm.nih.gov/pubmed/" ~ pmid %}
+                                    {% set imageRoute = 'images/pubmed.jpg' %}
+                                {% elseif kind == "fulltext" %}
+                                    {% set pmid=result.getUid %}
+                                    {% set arrayPmid = pmid|split('_') %}
+                                    {% set pmidCut = arrayPmid[1] %}
+                                    {% set link="http://www.ncbi.nlm.nih.gov/pubmed/" ~ pmidCut %}
+                                    {% set imageRoute = 'images/pubmed.jpg' %}
+                                {% elseif kind == "nda" %}
+                                    {% set link="http://www.fda.gov" %}
+                                    {% set imageRoute = 'images/fda.jpg' %}
+                                {% elseif kind == "epar" %}
+                                    {% set link="http://www.fda.gov" %}
+                                    {% set imageRoute = 'images/fda.jpg' %}
+                                {% endif %}
+                                {{ text | highlightEntitiesDocuments (result,keyword)| raw }}
+                            {% endif%}
+                            {% if link is defined %}
+                                <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/></a>
+                            {% endif %}
+                        </p>
+                    </div>
+                {% endfor %}
+                <!-- here pagination block for documents  -->
+                <div class="pagination">
+                    {{ simple_paginator_render(
+                        'elasticSearch_keyword', 'documents',
+                            {
+                                'routeParams' : {'keyword' : keyword, 'whatToSearch' : whatToSearch},
+                                'container_class' : 'pagination'
+                            }
+                        )
+                    }}
+                </div>
             </div>
-        {% endfor %}
-    </div><!-- #evidences -->
-    <!-- here pagination block for documents  -->
-    <div class="pagination">
-        {{ simple_paginator_render(
-            'elasticSearch_keyword', 'documents',
-                {
-                    'routeParams' : {'keyword' : keyword},
-                    'container_class' : 'pagination'
-                }
-            )
-        }}
-    </div>
+        {% endif %}
+        {% if resultSetAbstracts | length != 0 %}
+            {% if resultSetAbstracts.getTotalHits != 0 %}
+                <div id="abstractsResults">
+                    <a name="abstracts"></a>
+                    <div class="jumpToDocuments">
+                        <a href="#" id="jumpToDocuments"">(Jump to Documents)</a>
+                    </div>
+                    <h3>Ranked sentences in Abstracts for "{{ keyword }}" keyword</h3>
+                    <div class="btmspc-dbl">
+                        <small>
+                            <em>
+                                Entity mentions are highlighted as follows:
+                                <mark class="compound">Compounds</mark>, <mark class="cyp">CYPs</mark>, <mark class="marker">Markers</mark>, <mark class="keyword">Keywords</mark>, <mark class="specie">Species</mark>
+                            </em>
+                            . Curated evidences are indicated by:
+                            <a class="curated" href="#"> </a>
+                        </small>
+                    </div>
+                    <div class="results-summary">
+                        <table>
+                            <tr>
+                                <td>Total of mentions:</td>
+                                <td>{{ resultSetAbstracts.getTotalHits }} (Displayed first 150. Click here to display the {{ resultSetAbstracts.getTotalHits }})</td>
+                            </tr>
+                            <tr>
+                                <td>Max. score:</td>
+                                <td>{{ resultSetAbstracts[0].getSource["hepval"] |number_format(2) }}</td>
+                            </tr>
+                            <tr>
+                                <td>Min. score:</td>
+                                {% set last_index = resultSetAbstracts | length -1 %}
+                                <td>{{ resultSetAbstracts[last_index].getSource["hepval"] |number_format(2) }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="clear-both"></div>
+                    {% set contador = 1 %}
+                    {% for result in arrayResultsAbs %}
+                        <div class="document {{ cycle(['odd', 'even'], contador) }}">
+                            {% set contador = contador + 1 %}
+                            <p>
+                                {% set className = result.getClassName %}
+                                {% set imageRoute = 'images/pubmed.jpg' %}
+                                {% set score = result.getHepval | number_format(2)%}
+                                {% set score = score|colorCodingScore %}
+                                (score: {{ score |raw }})
+
+                                {% set text=result.getText %}
+                                {% if className == "Abstracts" or className == "AbstractWithCompound" %}
+                                    {{ text | highlightEntitiesAbstracts (result,keyword)| raw }}
+                                {% elseif className == "Document" %}
+                                    {{ text | highlightEntitiesDocuments (result,keyword)| raw }}
+                                {% endif%}
+                                {% set pmid = result.getPmid %}
+                                <a href="http://www.ncbi.nlm.nih.gov/pubmed/{{ pmid }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/></a>
+                            </p>
+                        </div>
+                    {% endfor %}
+                    <!-- here pagination block for abstracts -->
+                    <div class="pagination">
+                        {{ simple_paginator_render(
+                            'elasticSearch_keyword', 'abstracts',
+                                {
+                                    'routeParams' : {'keyword' : keyword, 'whatToSearch' : whatToSearch},
+                                    'container_class' : 'pagination'
+                                }
+                            )
+                        }}
+                    </div>
+                </div>
+            {% endif %}
+        {% endif %}
     {% include 'FrontendBundle:Search_document:scripts_code.html.twig' %}
 {% endblock %}

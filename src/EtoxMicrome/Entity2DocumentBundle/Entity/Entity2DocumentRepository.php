@@ -50,7 +50,7 @@ class Entity2DocumentRepository extends EntityRepository
             ORDER BY d.$valToSearch desc
             ";
 
-        ld($sql);
+        //ld($sql);
         $query = $this->_em->createQuery($sql);
         $query->setParameter("arrayEntityName", $arrayEntityName);
         $query->setParameter('entityType', $entityType);
@@ -62,7 +62,6 @@ class Entity2DocumentRepository extends EntityRepository
     {
         //Function to search all the entities involved in a particular sentence in order to highlight them
         $documentId=$document->getId();
-        //ld($documentId);
 
         $em = $this->getEntityManager();
         $consulta = $em->createQuery('

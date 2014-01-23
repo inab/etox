@@ -8,10 +8,14 @@
                 alert("Please select what is the field of your search in the \"Search by\" select box");
                 return false;
             }
+            if(field=="select one"){
+                field="hepatotoxicity";
+            }
             var entityType=$('.tabs dd.active a').attr('name');
             //Getting whatToSearch and entityName depends on entityType:
             switch(entityType){
                 case "keyword":
+                    whatToSearch = $('input[name=keywordWhatToSearch]:checked').val();
                     entityName = $('#tags-keywords').val();
 
                     if (entityName==""){
@@ -19,7 +23,8 @@
                         return false;
                     }
                     else{
-                        $('.bigSearch').attr('href','{{ path('search_interface_search') }}'+'keyword/'+entityName+'/');
+                        link="{{ path('search_interface_search') }}"+"keyword"+"/"+entityName+"/"+whatToSearch+"/";
+                        $('.bigSearch').attr('href',link);
                     }
                     break;
                 case "compound":
@@ -30,6 +35,8 @@
                         alert("You have to type a Compound name, id or structure to continue");
                         return false;
                     }
+                    link='{{ path('search_interface_search') }}'+field+'/'+whatToSearch+'/'+entityType+'/'+entityName+'/';
+                    $('.bigSearch').attr('href',link);
                     break;
                 case "cytochrome":
                     whatToSearch=$('input[name=cytochromeWhatToSearch]:checked').val();
@@ -38,6 +45,7 @@
                         alert("You have to type a Cytochrome name, id or canonical to continue");
                         return false;
                     }
+                    $('.bigSearch').attr('href','{{ path('search_interface_search') }}'+field+'/'+whatToSearch+'/'+entityType+'/'+entityName+'/');
                     break;
                 case "marker":
                     whatToSearch=$('input[name=markerWhatToSearch]:checked').val();
@@ -46,12 +54,25 @@
                         alert("You have to type a Marker name, id or structure to continue");
                         return false;
                     }
+                    $('.bigSearch').attr('href','{{ path('search_interface_search') }}'+field+'/'+whatToSearch+'/'+entityType+'/'+entityName+'/');
                     break;
             }
 
             //Once we have all the parameters required for the search, we generate the route
-            $('.bigSearch').attr('href','{{ path('search_interface_search') }}'+field+'/'+whatToSearch+'/'+entityType+'/'+entityName+'/');
 
+
+        });
+
+        $("#jumpToAbstracts").click(function(e) {
+            e.preventDefault();
+            $('#documentsResults').slideToggle();
+            $('#abstractsResults').slideToggle();
+
+        });
+        $("#jumpToDocuments").click(function(e) {
+            e.preventDefault();
+            $('#abstractsResults').slideToggle();
+            $('#documentsResults').slideToggle();
         });
     </script>
 {% endblock %}

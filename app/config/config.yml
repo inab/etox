@@ -28,6 +28,7 @@ twig:
         default_field:  "hepatotoxicity"
         default_searchInto:  "document"
         default_whatToSearch:  "name"
+        default_whatToSearch_keyword:  "any"
         default_kind:  "pubmed"
         default_entityType: "CompoundDict"
         default_entityName:  "Troglitazone"
@@ -144,6 +145,75 @@ fos_elastica:
                             insert: true
                             update: true
                             delete: true
+                abstractsWithCompounds:
+                    mappings:
+                        id: { boost: 1, type: integer }
+                        pmid: { boost: 2, type: string }
+                        title: { boost: 3, type: string, analyzer: my_analyzer }
+                        text: { boost: 5, type: string, analyzer: my_analyzer }
+                        hepval: { boost: 3, type: float }
+                    persistence:
+                        driver: orm
+                        model: EtoxMicrome\DocumentBundle\Entity\AbstractWithCompound
+                        provider: ~
+                        finder: ~
+                        listener:
+                            insert: true
+                            update: true
+                            delete: true
+                documentsWithCompounds:
+                    mappings:
+                        id: { type: integer }
+                        kind: { type: string }
+                        uid: { type: string, analyzer: my_analyzer }
+                        sentenceId: { type: string, analyzer: my_analyzer }
+                        text: { boost: 5, type: string, analyzer: my_analyzer }
+                        hepval: { type: float }
+                    persistence:
+                        driver: orm
+                        model: EtoxMicrome\DocumentBundle\Entity\DocumentWithCompound
+                        provider: ~
+                        finder: ~
+                        listener:
+                            insert: true
+                            update: true
+                            delete: true
+                        elastica_to_model_transformer:
+                            ignore_missing: true
+                documentsWithCytochromes:
+                    mappings:
+                        id: { type: integer }
+                        kind: { type: string }
+                        uid: { type: string, analyzer: my_analyzer }
+                        sentenceId: { type: string, analyzer: my_analyzer }
+                        text: { boost: 5, type: string, analyzer: my_analyzer }
+                        hepval: { type: float }
+                    persistence:
+                        driver: orm
+                        model: EtoxMicrome\DocumentBundle\Entity\DocumentWithCytochrome
+                        provider: ~
+                        finder: ~
+                        listener:
+                            insert: true
+                            update: true
+                            delete: true
+                documentsWithMarkers:
+                    mappings:
+                        id: { type: integer }
+                        kind: { type: string }
+                        uid: { type: string, analyzer: my_analyzer }
+                        sentenceId: { type: string, analyzer: my_analyzer }
+                        text: { boost: 5, type: string, analyzer: my_analyzer }
+                        hepval: { type: float }
+                    persistence:
+                        driver: orm
+                        model: EtoxMicrome\DocumentBundle\Entity\DocumentWithMarker
+                        provider: ~
+                        finder: ~
+                        listener:
+                            insert: true
+                            update: true
+                            delete: true
             settings:
                 index:
                   analysis:
@@ -161,6 +231,7 @@ parameters:
     etoxMicrome.default_searchInto:  "document"
     etoxMicrome.default_kind:  "pubmed"
     etoxMicrome.default_whatToSearch:  "name"
+    etoxMicrome.default_whatToSearch_keyword: "any"
     etoxMicrome.default_entityType: "CompoundDict"
     etoxMicrome.default_entityName:  "Troglitazone"
     etoxMicrome.default_keywordSearch:  "Hepatotoxic"

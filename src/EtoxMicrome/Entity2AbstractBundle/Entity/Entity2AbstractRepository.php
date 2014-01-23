@@ -59,7 +59,6 @@ class Entity2AbstractRepository extends EntityRepository
     {
         //Function to search all the entities involved in a particular sentence in order to highlight them
         $abstractId=$abstract->getId();
-        //ld($abstractId);
 
         $em = $this->getEntityManager();
         $consulta = $em->createQuery('

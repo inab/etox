@@ -31,7 +31,7 @@ class CompoundDictRepository extends EntityRepository
         }
         if(count($compound)!=1){
             $errorMessage="There are more than one entityName for '$entityName'";
-            ldd($errorMessage);
+            //ldd($errorMessage);
         }
         //We return all the Compounds with the entityName given. By now we supose its only one entity!!!
         $entity=$compound[0];
@@ -56,7 +56,7 @@ class CompoundDictRepository extends EntityRepository
         }
         if(count($compound)!=1){
             $errorMessage="There are more than one entityName for '$entityName'";
-            ld($errorMessage);
+            //ld($errorMessage);
         }
         //We return all the CompoundDict with the entityName given. By now we supose its only one entity!!!
         $entity=$compound[0];
@@ -116,7 +116,7 @@ class CompoundDictRepository extends EntityRepository
         }
         if(count($compound)!=1){
             $errorMessage="There are more than one entityId for '$entityId'";
-            ld($errorMessage);
+            //ld($errorMessage);
         }
         //We return only one entity. Later on we will make the query expansion so we will collect all of them
         $entity=$compound[0];
@@ -141,7 +141,7 @@ class CompoundDictRepository extends EntityRepository
         }
         if(count($compound)!=1){
             $errorMessage="There are more than one entities for '$structureText'";
-            ld($errorMessage);
+            //ld($errorMessage);
         }
         //We return only one entity. Later on we will make the query expansion so we will collect all of them
         $entity=$compound[0];

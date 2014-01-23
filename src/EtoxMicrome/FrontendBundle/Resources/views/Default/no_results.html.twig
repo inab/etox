@@ -5,28 +5,21 @@
 
     <div id="evidences">
         {% set entityName=entity %}
-        <h3>No {{ field | capitalize }} evidences found for "{{ entityName }}" {{entityType}}</h3>
+        {% set entityTypeBackup= entityType %}
+        {% if entityTypeBackup=="CompoundDict" %}
+            {% set entityTypeBackup="Compound" %}
+        {% endif %}
+
+        {% if entityTypeBackup=="keyword" %}
+            {% set entityTypeBackup="" %}
+        {% endif %}
+
+        <h3>No {{ field | capitalize }} evidences found for {{entityTypeBackup}}s when searching {{ whatToSearch }} "{{ entityName }}" </h3>
         <div class="btmspc-dbl">
             <small>
                 <em>
                     Entity mentions are highlighted as follows:
-                    <mark class="specie">Species</mark>
-                    ,
-                    <mark class="compound">Compounds</mark>
-                    ,
-                    <mark class="enzyme">Enzymes</mark>
-                    ,
-                    <mark class="protein">Proteins</mark>
-                    ,
-                    <mark class="cyp">Cytocromes</mark>
-                    ,
-                    <mark class="mutation">Mutations</mark>
-                    ,
-                    <mark class="go_term">Go terms</mark>
-                    ,
-                    <mark class="keyword">Keywords</mark>
-                    and
-                    <mark class="marker">Markers</mark>
+                    <mark class="compound">Compounds</mark>, <mark class="cyp">CYPs</mark>, <mark class="marker">Markers</mark>, <mark class="keyword">Keywords</mark>, <mark class="specie">Species</mark>
                 </em>
                 . Curated evidences are indicated by:
                 <a class="curated" href="#"> </a>
@@ -35,5 +28,5 @@
 
         <!-- here pagination block for Documents -->
     </div>
-    {% include 'FrontendBundle:Default:scripts_code.html.twig' %}
+    {% include 'FrontendBundle:Search_document:scripts_code.html.twig' %}
 {% endblock %}

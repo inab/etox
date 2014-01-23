@@ -53,4 +53,19 @@ class DocumentRepository extends EntityRepository
 
         return $query->getResult();
     }
+
+    public function getDocumentFromDocumentWith($document)
+    {
+        //Function to search all the entities involved in a particular sentence in order to highlight them
+        $sentenceId=$document->getSentenceId();
+        $em = $this->getEntityManager();
+        $consulta = $em->createQuery('
+            SELECT d
+            FROM EtoxMicromeDocumentBundle:Document d
+            WHERE d.sentenceId = :sentenceId
+        ');
+        $consulta->setParameter('sentenceId', $sentenceId);
+        $consulta->setMaxResults(1);
+        return $consulta->execute();
+    }
 }

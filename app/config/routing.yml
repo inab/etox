@@ -72,7 +72,7 @@ search_interface_search:
     defaults: { _controller: FrontendBundle:Search:search}
 
 elasticSearch_keyword:
-    pattern: /search/keyword/{keyword}/
+    pattern: /search/keyword/{keyword}/{whatToSearch}/
     defaults: { _controller: FrontendBundle:Search:searchKeyword}
 
 search_interface_search_field:

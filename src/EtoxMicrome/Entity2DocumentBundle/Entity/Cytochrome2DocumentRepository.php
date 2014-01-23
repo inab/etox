@@ -50,7 +50,7 @@ class Cytochrome2DocumentRepository extends EntityRepository
             AND d.$valToSearch is not NULL
             ORDER BY d.$valToSearch desc
             ";
-        ld($sql);
+        //ld($sql);
         $query = $this->_em->createQuery($sql);
         $query->setParameter("arrayNames", $arrayNames);
         $query->setParameter("arrayCanonicals", $arrayCanonicals);
@@ -58,17 +58,16 @@ class Cytochrome2DocumentRepository extends EntityRepository
 
     }
 
-    public function findEntity2DocumentFromDocument($document)
+    public function findCytochrome2DocumentFromDocument($document)
     {
         //Function to search all the entities involved in a particular sentence in order to highlight them
         $documentId=$document->getId();
-        //ld($documentId);
 
         $em = $this->getEntityManager();
         $consulta = $em->createQuery('
-            SELECT e2d
-            FROM EtoxMicromeEntity2DocumentBundle:Entity2Document e2d
-            WHERE e2d.document = :documentId
+            SELECT c2d
+            FROM EtoxMicromeEntity2DocumentBundle:Cytochrome2Document c2d
+            WHERE c2d.document = :documentId
         ');
         $consulta->setParameter('documentId', $documentId);
         return $consulta->execute();

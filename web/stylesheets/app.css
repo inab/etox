@@ -254,7 +254,7 @@ mark.mutation{
 mark.go_term{
     background-color: #F9FDD5;
 }
-mark.keyword{
+mark.term{
     background-color: #ffd0fd;
 }
 mark.marker{
@@ -400,7 +400,9 @@ li.marker{
 
 
 
-
+#abstractsResults{
+    /*display: none;*/
+}
 
 
 
@@ -429,7 +431,7 @@ td.horizontal-header{
 }
 .document {
     border-bottom: 1px dotted #E0DFDF;
-    margin-bottom: 10px;
+    padding-top: 10px;
 }
 .titleDocument{
     font-style: italic;
@@ -438,6 +440,15 @@ td.horizontal-header{
 }
 .jumpToDocuments{
     float: right;
+}
+.even{
+    background-color: #F1F1F1;
+}
+.odd{
+
+}
+img.outlinkLogo{
+    vertical-align: top;
 }
 /* -----------------------------------------
     Content

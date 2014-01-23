@@ -12,7 +12,7 @@
             <h1 id="applogo">
                 <a rel="home" href="{{ path('homepage') }}">
                     <img src="{{ asset('images/limtox_logo.png') }}" border="0" />
-                    LimTox
+                    Lim<span style="color:#1b3d65">Tox</span>
                 </a>
 
             </h1>
@@ -22,7 +22,8 @@
                     {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
                         <li><a href="{{ path('homepage') }}">User Area</a></li>
                     {% endif %}
-                    <li><a href="mailto:mkrallinger@cnio.es">Feedback</a></li>
+                    <li><a href="https://www.surveymonkey.com/" target="_blank">Feedback</a></li>
+                    <li><a href="mailto:mkrallinger@cnio.es">Contact</a></li>
                     <li><strong>Search by:</strong> </li>
                     <li>
                         <select accesskey="S" id="searchby" onchange="goToPage()">

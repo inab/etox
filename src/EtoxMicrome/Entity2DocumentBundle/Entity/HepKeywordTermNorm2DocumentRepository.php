@@ -12,4 +12,20 @@ use Doctrine\ORM\EntityRepository;
  */
 class HepKeywordTermNorm2DocumentRepository extends EntityRepository
 {
+
+    public function findHepKeywordTermNorm2Document($document)
+    {
+        //Function to search Terms normalized involved in a particular sentence in order to highlight them
+        $documentId=$document->getId();
+
+        $em = $this->getEntityManager();
+        $consulta = $em->createQuery('
+            SELECT t2d
+            FROM EtoxMicromeEntity2DocumentBundle:HepKeywordTermNorm2Document t2d
+            WHERE t2d.document = :documentId
+        ');
+        $consulta->setParameter('documentId', $documentId);
+        return $consulta->execute();
+    }
+
 }
