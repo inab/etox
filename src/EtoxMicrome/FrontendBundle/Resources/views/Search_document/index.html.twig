@@ -15,7 +15,7 @@
             {% if entityType in ["Cytochrome", "Marker"] %}
             {% else %}
                 <div class="jumpToDocuments">
-                    <a href="#" id="jumpToAbstracts">(Jump to Abstracts)</a>
+                    <a href="#" id="jumpToAbstracts">(View abstracts)</a>
                 </div>
             {% endif %}
             <h3>Ranked sentences in Documents for {{foundFor}}: {{ entityBackup }}</h3>
@@ -23,7 +23,7 @@
                 <small>
                     <em>
                         Entity mentions are highlighted as follows:
-                        <mark class="compound">Compounds</mark>, <mark class="cyp">CYPs</mark>, <mark class="marker">Markers</mark>, <mark class="term">Terms</mark>, <mark class="specie">Species</mark>
+                        <mark class="termSearched">What you searched</mark>, <mark class="compound">Compounds</mark>, <mark class="cyp">CYPs</mark>, <mark class="marker">Markers</mark>, <mark class="term">Terms</mark>, <mark class="specie">Species</mark>
                     </em>
                     . Curated evidences are indicated by:
                     <a class="curated" href="#"> </a>
@@ -61,7 +61,7 @@
 
                         </small>
                         {% set text=entity2Document.document.getText %}
-                        {{ text | highlightEntitiesDocuments (entity2Document.document,entityBackup)| raw }}
+                        {{ text | highlightEntitiesDocuments (entity2Document.document,entityBackup,field,whatToSearch,entityType)| raw }}
                         <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/></a>
                     </p>
                 </div>
@@ -84,14 +84,14 @@
             <div id="abstractsResults">
                 <a name="abstracts"></a>
                 <div class="jumpToDocuments">
-                    <a href="#documents" id="jumpToDocuments">(Jump to Documents)</a>
+                    <a href="#documents" id="jumpToDocuments">(View sentences)</a>
                 </div>
                 <h3>Ranked sentences in Abstracts for {{foundFor}}: {{ entityBackup }}</h3>
                 <div class="btmspc-dbl">
                     <small>
                         <em>
                             Entity mentions are highlighted as follows:
-                            <mark class="compound">Compounds</mark>, <mark class="cyp">CYPs</mark>, <mark class="marker">Markers</mark>, <mark class="keyword">Keywords</mark>, <mark class="specie">Species</mark>
+                            <mark class="termSearched">What you searched</mark>, <mark class="compound">Compounds</mark>, <mark class="cyp">CYPs</mark>, <mark class="marker">Markers</mark>, <mark class="keyword">Keywords</mark>, <mark class="specie">Species</mark>
                         </em>
                         . Curated evidences are indicated by:
                         <a class="curated" href="#"> </a>
@@ -108,7 +108,7 @@
                             (score: {{ score |raw }})
                             {% set imageRoute = 'images/pubmed.jpg' %}
                             {% set text = entity2Abstract.abstracts.getText %}
-                            {{ text | highlightEntitiesAbstracts (entity2Abstract.abstracts,entityBackup)| raw }}
+                            {{ text | highlightEntitiesAbstracts (entity2Abstract.abstracts,entityBackup,field,whatToSearch,entityType)| raw }}
                             <small>
                                 {% set pmid = entity2Abstract.abstracts.getPmid %}
                                 <a href="http://www.ncbi.nlm.nih.gov/pubmed/{{ pmid }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo" /></a>

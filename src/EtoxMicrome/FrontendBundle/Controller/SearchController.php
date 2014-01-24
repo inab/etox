@@ -680,15 +680,13 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
             if (($entityType=="CompoundDict") and (count($arrayEntityId)==1)){
                 $arrayEntityId=$this->queryExpansion($entity, "CompoundMesh", $whatToSearch);
             }
-        }else{
-            //We don't have entities. We render the template with No results
+        }else{//We don't have entities. We render the template with No results
             return $this->render('FrontendBundle:Default:no_results.html.twig', array(
                 'field' => $field,
                 'whatToSearch' => $whatToSearch,
                 'entityType' => $entityType,
                 'entity' => $entityBackup,
             ));
-
         }
         $arrayEntityId=array_unique($arrayEntityId);//We get rid of the duplicates
         if($entityType=="Cytochrome"){
