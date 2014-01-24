@@ -249,6 +249,7 @@ services:
         class: EtoxMicrome\DocumentBundle\Twig\Extension\UtilityExtension
         arguments:
             doctrine: "@doctrine"
+            router: "@router"
         tags:
             - { name: twig.extension }
     utility:

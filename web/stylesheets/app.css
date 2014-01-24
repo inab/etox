@@ -260,7 +260,12 @@ mark.term{
 mark.marker{
     background-color:#dffcff;
 }
-
+mark.marker a{
+    color:#000;
+}
+mark.compound a{
+    color: #000;
+}
 .btmspc-dbl{
     margin-bottom: 0;
 }
@@ -401,7 +406,7 @@ li.marker{
 
 
 #abstractsResults{
-    /*display: none;*/
+    display: none;
 }
 
 
