@@ -12,6 +12,24 @@ use Doctrine\ORM\EntityRepository;
  */
 class HepKeywordTermVariant2DocumentRepository extends EntityRepository
 {
+    public function getValToSearch($field)
+    {
+        switch ($field) {
+            case "hepatotoxicity":
+                $valToSearch="hepval";
+                break;
+            case "cardiotoxicity":
+                $valToSearch="cardval";
+                break;
+            case "nephrotoxicity":
+                $valToSearch="nephval";
+                break;
+            case "phospholipidosis":
+                $valToSearch="phosval";
+                break;
+        }
+        return $valToSearch;
+    }
 
     public function findHepKeywordTermVariant2Document($document)
     {
@@ -28,4 +46,60 @@ class HepKeywordTermVariant2DocumentRepository extends EntityRepository
         return $consulta->execute();
     }
 
+    public function getHepKeywordTermVariant2DocumentFromField($field, $typeOfEntity, $arrayNames)
+    {
+        return $this->getHepKeywordTermVariant2DocumentFromFieldDQL($field, $typeOfEntity, $arrayNames)->getResult();
+    }
+
+    public function getHepKeywordTermVariant2DocumentFromFieldDQL($field, $entityType, $arrayNames)
+    {
+        //ld($field);
+        //ld($entityType);
+        //ldd($arrayNames);
+        $valToSearch=$this->getValToSearch($field);//"i.e hepval, embval... etc"
+        //We have to create a query that searchs all over the entityIds inside the $arrayEntityId
+        $sql="SELECT m2d,d
+            FROM EtoxMicromeEntity2DocumentBundle:HepKeywordTermVariant2Document m2d
+            JOIN m2d.document d
+            WHERE m2d.hepKeywordTerm IN (:arrayNames)
+            ORDER BY d.$valToSearch desc
+            ";
+        //ld($sql);
+        $query = $this->_em->createQuery($sql);
+        $query->setParameter("arrayNames", $arrayNames);
+        return $query;
+
+    }
+
+    public function updateHepKeywordTermVariant2DocumentCuration($marker2DocumentId, $action)
+    {
+        /*Here we get the marker2Document and the action to take for the curation value.
+        $action can be check or cross.
+        If $action==check, then we have to add one to the curation field of the marker2Document register
+        If $action==cross, then we have to substract one to the curation field of the marker2Document register
+
+        After that, taking into account the curation value, we have to generate the html to render inside the curation
+        */
+
+
+        $em = $this->getEntityManager();
+        $marker2Document=$em->getRepository('EtoxMicromeEntity2DocumentBundle:HepKeywordTermVariant2Document')->findOneById($marker2DocumentId);
+        if (!$marker2Document) {
+            throw $this->createNotFoundException(
+                "Cannot curate this HepKeywordTermVariant2Document $marker2DocumentId"
+            );
+        }
+        else{
+            $curation=$marker2Document->getCuration();
+            if ($action=="check"){
+                $marker2Document->setCuration($curation + 1);
+            }elseif($action=="cross"){
+                $marker2Document->setCuration($curation - 1);
+            }
+            $em->flush();
+            $curationReturn=$marker2Document->getCuration();
+            return($curationReturn);
+        }
+        return ($curationReturn);
+    }
 }

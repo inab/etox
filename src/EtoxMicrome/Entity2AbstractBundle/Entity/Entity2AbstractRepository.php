@@ -69,4 +69,149 @@ class Entity2AbstractRepository extends EntityRepository
         $consulta->setParameter('abstractId', $abstractId);
         return $consulta->execute();
     }
+
+    public function updateEntity2AbstractCuration($entity2AbstractId, $action)
+    {
+        /*Here we get the entity2Abstract and the action to take for the curation value.
+        $action can be check or cross.
+        If $action==check, then we have to add one to the curation field of the Entity2Abstract register
+        If $action==cross, then we have to substract one to the curation field of the Entity2Abstract register
+
+        After that, taking into account the curation value, we have to generate the html to render inside the curation
+        */
+
+        //ld($entity2AbstractId);
+        //ldd($action);
+
+        $em = $this->getEntityManager();
+        $entity2Abstract=$em->getRepository('EtoxMicromeEntity2AbstractBundle:Entity2Abstract')->findOneById($entity2AbstractId);
+        if (!$entity2Abstract) {
+            throw $this->createNotFoundException(
+                "Cannot curate this Entity2Abstract $entity2AbstractId"
+            );
+        }
+        else{
+            $curation=$entity2Abstract->getCuration();
+            if ($action=="check"){
+                $entity2Abstract->setCuration($curation + 1);
+            }elseif($action=="cross"){
+                $entity2Abstract->setCuration($curation - 1);
+            }
+            $em->flush();
+            $curationReturn=$entity2Abstract->getCuration();
+            return($curationReturn);
+        }
+        return ($curationReturn);
+    }
+
+    public function getEntitySummary($entity2AbstractId, $qualifier){
+        $em = $this->getEntityManager();
+        $dictionary=array();
+        $stringOutput="";
+
+        if ($qualifier=="CompoundDict"){
+            $entity2Document=$em->getRepository('EtoxMicromeEntity2AbstractBundle:Entity2Abstract')->findOneById($entity2AbstractId);
+            $nameEntity=$entity2Document->getName();
+            $entity=$em->getRepository("EtoxMicromeEntityBundle:CompoundDict")->findOneByName($nameEntity);
+            //Once we have the entity itself we have to create a dictionary to save with key=field, value=field_value which can be processed to create the string to the mouseover
+            $name=$entity->getName();
+            if($name!=""){
+                $dictionary["name"]=$name;
+            }
+            $chemIdPlus=$entity->getChemIdPlus();
+            if($chemIdPlus!=""){
+                $dictionary["chemIdPlus"]=$chemIdPlus;
+            }
+            $chebi=$entity->getChebi();
+            if($chebi!=""){
+                $dictionary["chebi"]=$chebi;
+            }
+            $inChi=$entity->getInChi();
+            if($inChi!=""){
+                $dictionary["inChi"]=$inChi;
+            }
+            $drugBank=$entity->getDrugBank();
+            if($drugBank!=""){
+                $dictionary["drugBank"]=$drugBank;
+            }
+            $humanMetabolome=$entity->getHumanMetabolome();
+            if($humanMetabolome!=""){
+                $dictionary["humanMetabolome"]=$humanMetabolome;
+            }
+            $keggCompound=$entity->getKeggCompound();
+            if($keggCompound!=""){
+                $dictionary["keggCompound"]=$keggCompound;
+            }
+            $keggDrug=$entity->getKeggDrug();
+            if($keggDrug!=""){
+                $dictionary["keggDrug"]=$keggDrug;
+            }
+            $mesh=$entity->getMesh();
+            if($mesh!=""){
+                $dictionary["mesh"]=$mesh;
+            }
+            $nrDbIds=$entity->getNrDbIds();
+            if($nrDbIds!=""){
+                $dictionary["nrDbIds"]=$nrDbIds;
+            }
+            $smile=$entity->getSmile();
+            if($smile!=""){
+                $dictionary["smile"]=$smile;
+            }
+
+        }
+
+        if($qualifier=="Marker"){
+            $entity2Document=$em->getRepository('EtoxMicromeEntity2AbstractBundle:Entity2Abstract')->findOneById($entity2AbstractId);
+            $nameEntity=$entity2Document->getName();
+            $entity=$em->getRepository("EtoxMicromeEntityBundle:Marker")->findOneByName($nameEntity);
+            //Once we have the entity itself we have to create a dictionary to save with key=field, value=field_value which can be processed to create the string to the mouseover
+            $name=$entity->getName();
+            if($name!=""){
+                $dictionary["name"]=$name;
+            }
+            $tax=$entity->getTax();
+            if($tax!=""){
+                $dictionary["tax"]=$tax;
+            }
+            $markerType=$entity->getMarkerType();
+            if($markerType!=""){
+                $dictionary["markerType"]=$markerType;
+            }
+        }
+
+        if($qualifier=="Specie"){
+            $entity2Document=$em->getRepository('EtoxMicromeEntity2AbstractBundle:Entity2Abstract')->findOneById($entity2AbstractId);
+            $nameEntity=$entity2Document->getName();
+            $entity=$em->getRepository("EtoxMicromeEntityBundle:Specie")->findOneByName($nameEntity);
+            //Once we have the entity itself we have to create a dictionary to save with key=field, value=field_value which can be processed to create the string to the mouseover
+            $name=$entity->getName();
+            if($name!=""){
+                $dictionary["name"]=$name;
+            }
+            $nameClass=$entity->getNameClass();
+            if($nameClass!=""){
+                $dictionary["nameClass"]=$nameClass;
+            }
+            $ncbiTaxId=$entity->getNcbiTaxId();
+            if($ncbiTaxId!=""){
+                $dictionary["NCBItaxId"]=$ncbiTaxId;
+            }
+            $specieCategory=$entity->getSpecieCategory();
+            if($specieCategory!=""){
+                $dictionary["specieCategory"]=$specieCategory;
+            }
+            $specieTox=$entity->getSpecieTox();
+            if($specieTox!=""){
+                $dictionary["specieTox"]=$specieTox;
+            }
+        }
+
+        foreach($dictionary as $key => $value){
+            if ($value!=""){
+                $stringOutput=$stringOutput."$key: $value<br/>";
+            }
+        }
+        return ($stringOutput);
+    }
 }

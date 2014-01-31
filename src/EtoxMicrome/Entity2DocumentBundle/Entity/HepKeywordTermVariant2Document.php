@@ -55,6 +55,13 @@ class HepKeywordTermVariant2Document
     private $kind;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="curation", type="integer", nullable=true)
+     */
+    private $curation;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="created", type="datetime")
@@ -164,6 +171,52 @@ class HepKeywordTermVariant2Document
     public function getDocument()
     {
         return $this->document;
+    }
+
+    /**
+     * Set kind
+     *
+     * @param string $kind
+     * @return HepKeywordTermNorm2Document
+     */
+    public function setKind($kind)
+    {
+        $this->kind = $kind;
+
+        return $this;
+    }
+
+    /**
+     * Get kind
+     *
+     * @return string
+     */
+    public function getKind()
+    {
+        return $this->kind;
+    }
+
+    /**
+     * Set curation
+     *
+     * @param integer $curation
+     * @return HepKeywordTermVariant2Document
+     */
+    public function setCuration($curation)
+    {
+        $this->curation = $curation;
+
+        return $this;
+    }
+
+    /**
+     * Get curation
+     *
+     * @return integer
+     */
+    public function getCuration()
+    {
+        return $this->curation;
     }
 
     /**

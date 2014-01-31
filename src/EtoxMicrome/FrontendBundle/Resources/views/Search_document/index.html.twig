@@ -34,7 +34,6 @@
                 <div class="document {{ cycle(['odd', 'even'], contador) }}">
                     {% set contador = contador + 1 %}
                     <p>
-                        <small>
                             {% set kind = entity2Document.document.getKind %}
                             {% set score = entity2Document.document.getHepval %}
                             {% set score = score|number_format(2) %}
@@ -43,26 +42,37 @@
                             {% if kind == "pubmed" %}
                                 {% set pmid=entity2Document.document.getUid %}
                                 {% set link="http://www.ncbi.nlm.nih.gov/pubmed/" ~ pmid %}
-                                {% set imageRoute = 'images/pubmed.jpg' %}
+                                {% set imageRoute = 'images/pubmed.png' %}
                             {% elseif kind == "fulltext" %}
                                 {% set pmid=entity2Document.document.getUid %}
                                 {% set arrayPmid = pmid|split('_') %}
                                 {% set pmidCut = arrayPmid[1] %}
                                 {% set link="http://www.ncbi.nlm.nih.gov/pubmed/" ~ pmidCut %}
-                                {% set imageRoute = 'images/pubmed.jpg' %}
+                                {% set imageRoute = 'images/fulltext.png' %}
                             {% elseif kind == "nda" %}
                                 {% set link="http://www.fda.gov" %}
-                                {% set imageRoute = 'images/fda.jpg' %}
+                                {% set imageRoute = 'images/nda.png' %}
                             {% elseif kind == "epar" %}
                                 {% set link="http://www.fda.gov" %}
-                                {% set imageRoute = 'images/fda.jpg' %}
+                                {% set imageRoute = 'images/epar.png' %}
                             {% endif %}
-                            (score: {{ score |raw }})
 
-                        </small>
+                            <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/></a>
+                            {{ score |raw }}.
+
                         {% set text=entity2Document.document.getText %}
-                        {{ text | highlightEntitiesDocuments (entity2Document.document,entityBackup,field,whatToSearch,entityType)| raw }}
-                        <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/></a>
+                        {{ text | highlightEntitiesDocuments (entity2Document.document,entityBackup,field,whatToSearch, source, entityType)| raw }}
+                        <small>
+                            {% set curation=entity2Document.getCuration %}
+                            {% if curation is empty %}
+                                {% set curation=0 %}
+                            {% endif %}
+                            {% set curationHtml= curation | setCurationHtml(entity2Document.getId(), entityType, "document") %}
+                            <div id="free-curation-{{ entity2Document.getId }}">
+                                (Annotate relation: {{ curationHtml | raw }} )
+                            </div>
+                        </small>
+
                     </p>
                 </div>
             {% endfor %}
@@ -71,9 +81,9 @@
 
            <div class="pagination">
                 {{ simple_paginator_render(
-                    'search_interface_search_field_whatToSearch_entityType_entity', 'documents',
+                    'search_interface_search_field_whatToSearch_entityType_source_entity', 'documents',
                         {
-                            'routeParams' : {'field' : field, 'whatToSearch' : whatToSearch, 'entityType' : entityType, 'entityName' : entityBackup},
+                            'routeParams' : {'field' : field, 'whatToSearch' : whatToSearch, 'entityType' : entityType, 'source' : source, 'entityName' : entityBackup},
                             'container_class' : 'pagination'
                         }
                     )
@@ -86,7 +96,7 @@
                 <div class="jumpToDocuments">
                     <a href="#documents" id="jumpToDocuments">(View sentences)</a>
                 </div>
-                <h3>Ranked sentences in Abstracts for {{foundFor}}: {{ entityBackup }}</h3>
+                <h3>Ranked Abstracts for {{foundFor}}: {{ entityBackup }}</h3>
                 <div class="btmspc-dbl">
                     <small>
                         <em>
@@ -105,16 +115,22 @@
                             {% set score = entity2Abstract.abstracts.getHepval %}
                             {% set score = score|number_format(2) %}
                             {% set score = score|colorCodingScore %}
-                            (score: {{ score |raw }})
-                            {% set imageRoute = 'images/pubmed.jpg' %}
+                            {% set imageRoute = 'images/pubmed.png' %}
+                            {% set pmid = entity2Abstract.abstracts.getPmid %}
+                            <a href="http://www.ncbi.nlm.nih.gov/pubmed/{{ pmid }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo" /></a>
+                            {{ score |raw }}.
                             {% set text = entity2Abstract.abstracts.getText %}
-                            {{ text | highlightEntitiesAbstracts (entity2Abstract.abstracts,entityBackup,field,whatToSearch,entityType)| raw }}
-                            <small>
-                                {% set pmid = entity2Abstract.abstracts.getPmid %}
-                                <a href="http://www.ncbi.nlm.nih.gov/pubmed/{{ pmid }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo" /></a>
-
-                                <a class="rgt-arw no-curated" href="{{ path('curate_evidences_abstract', {'pmid': entity2Abstract.getAbstracts.getPmid}) }}">Curate</a>
-                            </small>
+                            {{ text | highlightEntitiesAbstracts (entity2Abstract.abstracts,entityBackup,field,whatToSearch,source,entityType)| raw }}
+                             <small>
+                                {% set curation=entity2Abstract.getCuration %}
+                                {% if curation is empty %}
+                                    {% set curation=0 %}
+                                {% endif %}
+                                {% set curationHtml= curation | setCurationHtml(entity2Abstract.getId(), entityType, "abstract") %}
+                                <div id="free-curation-{{ entity2Abstract.getId }}">
+                                    (Annotate relation: {{ curationHtml | raw }} )
+                                </div>
+                        </small>
                         </p>
                     </div>
                 {% endfor %}
@@ -123,9 +139,9 @@
 
                <div class="pagination">
                     {{ simple_paginator_render(
-                        'search_interface_search_field_whatToSearch_entityType_entity', 'abstracts',
+                        'search_interface_search_field_whatToSearch_entityType_source_entity', 'abstracts',
                             {
-                                'routeParams' : {'field' : field, 'whatToSearch' : whatToSearch, 'entityType' : entityType, 'entityName' : entityBackup},
+                                'routeParams' : {'field' : field, 'whatToSearch' : whatToSearch, 'entityType' : entityType, 'source' : source, 'entityName' : entityBackup},
                                 'container_class' : 'pagination'
                             }
                         )

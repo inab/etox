@@ -50,7 +50,7 @@ class CompoundDictRepository extends EntityRepository
         $compound=$query->getResult();
         if(count($compound)==0){
             $errorMessage="There is no entity with that name ($entityName)";
-            ld($errorMessage);
+            //ld($errorMessage);
             $entity=array();
             return $entity;
         }
@@ -110,16 +110,16 @@ class CompoundDictRepository extends EntityRepository
         $compound=$query->getResult();
         if(count($compound)==0){
             $errorMessage="There is no entity with that entityId ($entityId)";
-            ld($errorMessage);
+            //ld($errorMessage);
             $entity=array();
             return $entity;
         }
-        if(count($compound)!=1){
+        elseif(count($compound)!=1){
             $errorMessage="There are more than one entityId for '$entityId'";
+            $entity=$compound[0];
             //ld($errorMessage);
         }
         //We return only one entity. Later on we will make the query expansion so we will collect all of them
-        $entity=$compound[0];
         return $entity;
     }
 
@@ -137,14 +137,15 @@ class CompoundDictRepository extends EntityRepository
         $compound=$query->getResult();
         if(count($compound)==0){
             $errorMessage="There is no entity with that structure ($structureText)";
-            ld($errorMessage);
+            $entity=array();
         }
-        if(count($compound)!=1){
+        elseif(count($compound)!=1){
             $errorMessage="There are more than one entities for '$structureText'";
+            $entity=$compound[0];
             //ld($errorMessage);
         }
         //We return only one entity. Later on we will make the query expansion so we will collect all of them
-        $entity=$compound[0];
+
         return $entity;
     }
 }

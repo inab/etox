@@ -72,7 +72,7 @@ search_interface_search:
     defaults: { _controller: FrontendBundle:Search:search}
 
 elasticSearch_keyword:
-    pattern: /search/keyword/{keyword}/{whatToSearch}/
+    pattern: /search/keyword/{whatToSearch}/{source}/{keyword}/
     defaults: { _controller: FrontendBundle:Search:searchKeyword}
 
 search_interface_search_field:
@@ -87,9 +87,13 @@ search_interface_search_field_whatToSearch_entityType:
     pattern: /search/{field}/{whatToSearch}/{entityType}/
     defaults: { _controller: FrontendBundle:Search:searchFieldWhatToSearchEntityType}
 
-search_interface_search_field_whatToSearch_entityType_entity:
-    pattern: /search/{field}/{whatToSearch}/{entityType}/{entityName}/
-    defaults: { _controller: FrontendBundle:Search:searchFieldWhatToSearchEntityTypeEntity}
+search_interface_search_field_whatToSearch_entityType_source:
+    pattern: /search/{field}/{whatToSearch}/{entityType}/{source}/
+    defaults: { _controller: FrontendBundle:Search:searchFieldWhatToSearchEntityTypeSource}
+
+search_interface_search_field_whatToSearch_entityType_source_entity:
+    pattern: /search/{field}/{whatToSearch}/{entityType}/{source}/{entityName}/
+    defaults: { _controller: FrontendBundle:Search:searchFieldWhatToSearchEntityTypeSourceEntity}
 
 autocomplete:
     pattern:    /scripts/autocomplete/
@@ -110,3 +114,19 @@ download_route:
 curate_evidences_abstract:
     pattern: /curate/abstract/{pmid}/
     defaults: { _controller: FrontendBundle:Curate:showAbstract}
+
+ajax_entity2document_curation:
+    pattern: /curate/entity2document/{entity2Document}/{action}/
+    defaults: { _controller: EtoxMicromeEntity2DocumentBundle:Curation:addCurationEntity2Document}
+
+ajax_entity2abstract_curation:
+    pattern: /curate/entity2abstract/{entity2Abstract}/{action}/
+    defaults: { _controller: EtoxMicromeEntity2AbstractBundle:Curation:addCurationEntity2Abstract}
+
+ajax_cytochrome2document_curation:
+    pattern: /curate/cytochrome2document/{cytochrome2Document}/{action}/
+    defaults: { _controller: EtoxMicromeEntity2DocumentBundle:Curation:addCurationCytochrome2Document}
+
+ajax_marker2document_curation:
+    pattern: /curate/marker2document/{marker2Document}/{action}/
+    defaults: { _controller: EtoxMicromeEntity2DocumentBundle:Curation:addCurationMarker2Document}

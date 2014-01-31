@@ -77,10 +77,20 @@ class Document
     private $phosval;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="patternCount", type="integer", nullable=true)
+     */
+    //private $patternCount;
+
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="created", type="datetime")
      */
+
+
 
     private $created;
 
@@ -314,6 +324,29 @@ class Document
     public function getPhosval()
     {
         return $this->phosval;
+    }
+
+    /**
+     * Set patternCount
+     *
+     * @param integer $patternCount
+     * @return Document
+     */
+    public function setPatternCount($patternCount)
+    {
+        $this->patternCount = $patternCount;
+
+        return $this;
+    }
+
+    /**
+     * Get patternCount
+     *
+     * @return integer
+     */
+    public function getPatternCount()
+    {
+        return $this->patternCount;
     }
 
     /**

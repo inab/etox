@@ -23,8 +23,8 @@
         <link rel="stylesheet" href="{{ asset('stylesheets/pagerfantaDefault.css') }}" type="text/css" media="all" />
         <script src="{{ asset('javascripts/vendor/jquery.js') }}"></script>
         <script src="{{ asset('javascripts/foundation/modernizr.foundation.js') }}"></script>
-
-        <!-- Pagerfanta CSS -->
+        <script src="{{ asset('javascripts/foundation/foundation.min.js') }}"></script>
+        <script src="{{ asset('javascripts/foundation/jquery.foundation.tooltips.js') }}"></script>
 
 
         {% block stylesheets %}
@@ -36,7 +36,7 @@
         <div id="wrapper">
             {% block body %}{% endblock %}
             <script src="{{ asset('javascripts/jquery.popupWindow.js') }}"></script>
-            <script src="{{ asset('javascripts/foundation/foundation.min.js') }}"></script>
+
             <script src="{{ asset('javascripts/jquery-ui-1.9.js') }}"></script>
             <script src="{{ asset('javascripts/foundation/app.js') }}"></script>
             <script src="{{ asset('javascripts/foundation/foundation-datepicker.js') }}"></script>

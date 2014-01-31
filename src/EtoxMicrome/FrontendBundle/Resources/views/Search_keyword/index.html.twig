@@ -51,40 +51,42 @@
                             {# result.getId #}
                             {% set score = result.getHepval | number_format(2)%}
                             {% set score = score|colorCodingScore %}
-                            (score: {{ score |raw }})
                             {% set text=result.getText %}
                             {% if className == 'Abstracts' %}
 
-                                {{ text | highlightEntitiesAbstracts (result, keyword, field, whatToSearch, entityType)| raw }}
+                                {{ text | highlightEntitiesAbstracts (result, keyword, field, whatToSearch, source, entityType)| raw }}
                                 {% set pmid=result.getPmid %}
                                 {% set link="http://www.ncbi.nlm.nih.gov/pubmed/" ~ pmid %}
-                                {% set imageRoute = 'images/pubmed.jpg' %}
+                                {% set imageRoute = 'images/pubmed.png' %}
                             {% elseif className == 'Document' or className == 'DocumentWithCompound' or className == 'DocumentWithCytochrome' or className == 'DocumentWithMarker'%}
                                 {% set kind = result.getKind %}
                                 {% if kind == "pubmed" %}
                                     {% set pmid=result.getUid %}
                                     {% set link="http://www.ncbi.nlm.nih.gov/pubmed/" ~ pmid %}
-                                    {% set imageRoute = 'images/pubmed.jpg' %}
+                                    {% set imageRoute = 'images/pubmed.png' %}
                                 {% elseif kind == "fulltext" %}
                                     {% set pmid=result.getUid %}
                                     {% set arrayPmid = pmid|split('_') %}
                                     {% set pmidCut = arrayPmid[1] %}
                                     {% set link="http://www.ncbi.nlm.nih.gov/pubmed/" ~ pmidCut %}
-                                    {% set imageRoute = 'images/pubmed.jpg' %}
+                                    {% set imageRoute = 'images/fulltext.png' %}
                                 {% elseif kind == "nda" %}
                                     {% set link="http://www.fda.gov" %}
-                                    {% set imageRoute = 'images/fda.jpg' %}
+                                    {% set imageRoute = 'images/nda.png' %}
                                 {% elseif kind == "epar" %}
                                     {% set link="http://www.fda.gov" %}
-                                    {% set imageRoute = 'images/fda.jpg' %}
+                                    {% set imageRoute = 'images/epar.png' %}
                                 {% endif %}
-                                {%set text = text | highlightEntitiesDocuments (result,keyword,field,whatToSearch,entityType)%}
-                                {{ text | raw  }}
+                                {%set text = text | highlightEntitiesDocuments (result,keyword,field,whatToSearch,source,entityType)%}
 
                             {% endif%}
                             {% if link is defined %}
                                 <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/></a>
                             {% endif %}
+                            {{ score |raw }}.
+                            {{ text | raw  }}
+
+
                         </p>
                     </div>
                 {% endfor %}
@@ -93,7 +95,7 @@
                     {{ simple_paginator_render(
                         'elasticSearch_keyword', 'documents',
                             {
-                                'routeParams' : {'keyword' : keyword, 'whatToSearch' : whatToSearch},
+                                'routeParams' : {'keyword' : keyword, 'whatToSearch' : whatToSearch, 'source' : source},
                                 'container_class' : 'pagination'
                             }
                         )
@@ -108,7 +110,7 @@
                     <div class="jumpToDocuments">
                         <a href="#" id="jumpToDocuments"">(View sentences)</a>
                     </div>
-                    <h3>Ranked sentences in Abstracts for "{{ keyword }}" keyword</h3>
+                    <h3>Ranked Abstracts for "{{ keyword }}" keyword</h3>
                     <div class="btmspc-dbl">
                         <small>
                             <em>
@@ -143,21 +145,21 @@
                             {% set contador = contador + 1 %}
                             <p>
                                 {% set className = result.getClassName %}
-                                {% set imageRoute = 'images/pubmed.jpg' %}
+                                {% set imageRoute = 'images/pubmed.png' %}
                                 {% set score = result.getHepval | number_format(2)%}
                                 {% set score = score|colorCodingScore %}
-                                (score: {{ score |raw }})
+
 
                                 {% set text=result.getText %}
                                 {% if className == "Abstracts" or className == "AbstractWithCompound" %}
-                                    {{ text | highlightEntitiesAbstracts (result,keyword,field,whatToSearch,entityType)| raw }}
+                                    {% set text = text | highlightEntitiesAbstracts (result,keyword,field,whatToSearch,source,entityType) %}
                                 {% elseif className == "Document" %}
                                     {%set text = text | highlightEntitiesDocuments (result,keyword,field,whatToSearch,entityType)%}
-                                    {{ field }}
-                                    {{ text | raw  }}
                                 {% endif%}
                                 {% set pmid = result.getPmid %}
                                 <a href="http://www.ncbi.nlm.nih.gov/pubmed/{{ pmid }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/></a>
+                                {{ score |raw }}.
+                                {{ text | raw  }}
                             </p>
                         </div>
                     {% endfor %}
@@ -166,7 +168,7 @@
                         {{ simple_paginator_render(
                             'elasticSearch_keyword', 'abstracts',
                                 {
-                                    'routeParams' : {'keyword' : keyword, 'whatToSearch' : whatToSearch},
+                                    'routeParams' : {'keyword' : keyword, 'whatToSearch' : whatToSearch, 'source' : source},
                                     'container_class' : 'pagination'
                                 }
                             )

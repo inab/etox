@@ -71,6 +71,13 @@ class Cytochrome2Document
     private $cypsCanonical;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="curation", type="integer", nullable=true)
+     */
+    private $curation;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="created", type="datetime")
@@ -247,6 +254,29 @@ class Cytochrome2Document
     public function getCypsCanonical()
     {
         return $this->cypsCanonical;
+    }
+
+    /**
+     * Set curation
+     *
+     * @param integer $curation
+     * @return Cytochrome2Document
+     */
+    public function setCuration($curation)
+    {
+        $this->curation = $curation;
+
+        return $this;
+    }
+
+    /**
+     * Get curation
+     *
+     * @return integer
+     */
+    public function getCuration()
+    {
+        return $this->curation;
     }
 
     /**

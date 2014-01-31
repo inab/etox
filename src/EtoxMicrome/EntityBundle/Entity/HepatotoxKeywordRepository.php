@@ -17,18 +17,16 @@ class HepatotoxKeywordRepository extends EntityRepository
         $message="Inside getEntityFromId at TermRepository";
         $query = $this->_em->createQuery("
             SELECT a
-            FROM EtoxMicromeEntityBundle:Term a
+            FROM EtoxMicromeEntityBundle:HepatotoxKeyword a
             WHERE a.id= :entityId
         ");
         $query->setParameter('entityId', $entityId);
         $term=$query->getResult();
         if(count($term)==0){
             $errorMessage="There is no entity with that name ('$entityName')";
-            ldd($errorMessage);
         }
         if(count($term)!=1){
             $errorMessage="There are more than one entityName for '$entityName'";
-            ldd($errorMessage);
         }
         //We return all the Compounds with the entityName given. By now we supose its only one entity!!!
         $entity=$term[0];
@@ -40,21 +38,45 @@ class HepatotoxKeywordRepository extends EntityRepository
         $message="Inside getEntityFromName at TermRepository";
         $query = $this->_em->createQuery("
             SELECT a
-            FROM EtoxMicromeEntityBundle:Term a
-            WHERE a.name= :entityName
+            FROM EtoxMicromeEntityBundle:HepatotoxKeyword a
+            WHERE a.term= :entityName
         ");
         $query->setParameter('entityName', $entityName);
         $term=$query->getResult();
         if(count($term)==0){
             $errorMessage="There is no entity with that name ($entityName)";
-            ldd($errorMessage);
+            $entity=array();
+            return $entity;
         }
         if(count($term)!=1){
             $errorMessage="There are more than one entityName for '$entityName'";
-            ldd($errorMessage);
         }
         //We return all the CompoundDict with the entityName given. By now we supose its only one entity!!!
         $entity=$term[0];
         return $entity;
+    }
+
+    public function getIdFromGenericField($key, $value, $arrayEntityId)
+    {
+        $message="Inside getEntityIdFromName at HepatotoxKeywordRepository";
+        $query = $this->_em->createQuery("
+            SELECT h
+            FROM EtoxMicromeEntityBundle:HepatotoxKeyword h
+            WHERE h.$key= :value
+        ");
+        $query->setParameter('value', $value);
+        $compounds=$query->getResult();
+        if(count($compounds)==0){
+            return $arrayEntityId;
+        }
+        else{
+            $errorMessage="There are at least one hepatotoxTerm for $key = $value";
+            //ld($errorMessage);
+            foreach($compounds as $compound){
+                $arrayEntityId[]=$compound->getId();
+            }
+        }
+        //We return all the Compounds with the entityName given. By now we supose its only one entity!!!
+        return $arrayEntityId;
     }
 }

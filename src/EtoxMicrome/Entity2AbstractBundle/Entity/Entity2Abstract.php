@@ -49,6 +49,13 @@ class Entity2Abstract
     private $tagMethod;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="curation", type="integer", nullable=true)
+     */
+    private $curation;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="created", type="datetime")
@@ -157,6 +164,29 @@ class Entity2Abstract
     public function getTagMethod()
     {
         return $this->tagMethod;
+    }
+
+    /**
+     * Set curation
+     *
+     * @param integer $curation
+     * @return Entity2Do
+     */
+    public function setCuration($curation)
+    {
+        $this->curation = $curation;
+
+        return $this;
+    }
+
+    /**
+     * Get curation
+     *
+     * @return integer
+     */
+    public function getCuration()
+    {
+        return $this->curation;
     }
 
     /**

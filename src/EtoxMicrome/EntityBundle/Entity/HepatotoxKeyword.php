@@ -204,6 +204,29 @@ class HepatotoxKeyword
     }
 
     /**
+     * Set norm
+     *
+     * @param string $norm
+     * @return HepatotoxKeyword
+     */
+    public function setNorm($norm)
+    {
+        $this->norm = $norm;
+
+        return $this;
+    }
+
+    /**
+     * Get norm
+     *
+     * @return string
+     */
+    public function getNorm()
+    {
+        return $this->norm;
+    }
+
+    /**
      * Set pos
      *
      * @param string $pos
@@ -545,5 +568,15 @@ class HepatotoxKeyword
     public function getUpdated()
     {
         return $this->updated;
+    }
+
+    /**
+     * Get name
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->term;
     }
 }

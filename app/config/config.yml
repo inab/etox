@@ -32,12 +32,14 @@ twig:
         default_kind:  "pubmed"
         default_entityType: "CompoundDict"
         default_entityName:  "Troglitazone"
+        default_compound:  "Troglitazone"
         default_entityId: "CHEBI:9753"
-        default_keywordSearch:  "Chlorzoxazone"
+        default_keywordSearch:  "Lymphocite"
         default_cytochromeName: "CYPs21-a2"
         default_cytochromeId: "A1A5B1"
-        default_markerName:  "bilirubin"
+        default_markerName:  "hepatic lymphoma"
         default_markerId:   "CID 5280352"
+        default_source:   "pubmed"
 
 
 
@@ -234,9 +236,11 @@ parameters:
     etoxMicrome.default_whatToSearch_keyword: "any"
     etoxMicrome.default_entityType: "CompoundDict"
     etoxMicrome.default_entityName:  "Troglitazone"
-    etoxMicrome.default_keywordSearch:  "Hepatotoxic"
+    etoxMicrome.default_keywordSearch:  "Lymphocite"
     etoxMicrome.default_cytochromeName: "CYPs21-a2"
-    etoxMicrome.default_markerName:  "Transaminases"
+    etoxMicrome.default_markerName:  "hepatic lymphoma"
+    etoxMicrome.default_source:  "pubmed"
+    etoxMicrome.default_compound:  "Troglitazone"
 
     etoxMicrome.total_documents_elasticsearch_retrieval: 150
 

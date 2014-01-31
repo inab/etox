@@ -65,6 +65,33 @@ class SearchController extends Controller
         return $score;
     }
 
+    public function performIntersectionArrayDocuments($arrayDocuments_1, $arrayDocuments_2)
+    {
+        //This function receives two arrays of objects with different types, documentsWithCompounds and documentsWithCytochromes
+        //Returns an array with the intersection based in the id of each document
+        $message="inside performIntersectionArrayDocuments";
+        $count1=count($arrayDocuments_1);
+        $count2=count($arrayDocuments_2);
+        $intersectionArray=array();
+        //First of all we return an empty array if any arrayDocuments... is empty because there won't be intersection
+        if($count1==0 or $count2==0){
+            return $intersectionArray;
+        }
+        //We create an array with the ids of the second array: $arrayIds
+        $arrayIds=array();
+        foreach($arrayDocuments_2 as $document){
+            array_push($arrayIds, $document->getId());
+        }
+        //Now we iterate over the first array and if an id exists inside $arrayIds it will take part of the intersection array
+        foreach($arrayDocuments_1 as $document){
+            $documentId=$document->getId();
+            if(in_array($documentId, $arrayIds)){
+                array_push($intersectionArray, $document);
+            }
+        }
+        return $intersectionArray;
+    }
+
     public function queryExpansionCompoundDict($entity, $entityType, $whatToSearch){
             $message="query expansion CompoundDict whatToSearch-> name";
             //CompoundDict query expansion. We get all the possible id related to the $entity->name
@@ -200,27 +227,22 @@ class SearchController extends Controller
         return $arrayEntityId;
     }
 
-    public function queryExpansionMarker($entity, $entityType, $whatToSearch){
+    public function queryExpansionHepatotoxKeyword($entity, $entityType, $whatToSearch){
         $message="inside queryExpansionMarker";
         //CompoundDict query expansion. We get all the possible id related to the name
         $dictionaryIds=array();
         $arrayEntityId=array();
         //We create a dictionary with key=numberOfId, value=id. We keep it only if it's not "". After we will iterate over this pairs to extend the query
 
-        //Query expansion for Cytochromes differs dependingo on the $whatToSearch parameter.
+        //Query expansion for HepatotoxKeyword differs dependingo on the $whatToSearch parameter.
         if($whatToSearch=="name"){
-            //we have to search for entityIds and canonicals with this same name
-            $dictionaryIds['entityId']=$entity->getEntityId();
+            //we have to search for same norm as this term
+            $dictionaryIds['norm']=$entity->getNorm();
 
         }elseif($whatToSearch=="id"){
             //we have to search for names with this same entityId
-            $dictionaryIds['entityId']=$entity->getEntityId();
-
-        }elseif($whatToSearch=="structure"){
-            //we have to search for canonicals with this same canonical
-
+            $dictionaryIds['EFPIA']=$entity->getEFPIA();
         }
-
 
         $arrayTmp=array();
         foreach ($dictionaryIds as $key => $value) {
@@ -256,9 +278,9 @@ class SearchController extends Controller
                 //Cytochrome query expansion
                 $arrayEntityId=$this->queryExpansionCytochrome($entity, $entityType, $whatToSearch);
                 break;
-            case "Marker":
+            case "HepatotoxKeyword":
                 //Marker query expansion
-                $arrayEntityId=$this->queryExpansionMarker($entity, $entityType, $whatToSearch);
+                $arrayEntityId=$this->queryExpansionHepatotoxKeyword($entity, $entityType, $whatToSearch);
                 break;
 
 
@@ -278,9 +300,10 @@ class SearchController extends Controller
         $field = $this->container->getParameter('etoxMicrome.default_field');//{"hepatotoxicity","embryotoxicity", etc...}
         $whatToSearch = $this->container->getParameter('etoxMicrome.default_whatToSearch');//{"name","id", "structure", "canonical"}
         $entityType= $this->container->getParameter('etoxMicrome.default_entityType');//{compound","cyp","marker","keyword"}
+        $source= $this->container->getParameter('etoxMicrome.default_source');//{"pubmed","fulltext","nda","epar"}
         $entityName = $this->container->getParameter('etoxMicrome.default_entityName');
 
-        return($this->searchFieldWhatToSearchEntityTypeEntityAction($field, $whatToSearch, $entityType, $entityName));
+        return($this->searchFieldWhatToSearchEntityTypeSourceEntityAction($field, $whatToSearch, $entityType, $source, $entityName));
     }
 
     public function searchFieldAction($field)
@@ -288,10 +311,11 @@ class SearchController extends Controller
         //$field = $this->container->getParameter('etoxMicrome.default_field');//{"hepatotoxicity","embryotoxicity", etc...}
         $whatToSearch = $this->container->getParameter('etoxMicrome.default_whatToSearch');//{"name","id", "structure", "canonical"}
         $entityType= $this->container->getParameter('etoxMicrome.default_entityType');//{compound","cyp","marker","keyword"}
+        $source= $this->container->getParameter('etoxMicrome.default_source');//{"pubmed","fulltext","nda","epar"}
         $entityName = $this->container->getParameter('etoxMicrome.default_entityName');
         $em = $this->getDoctrine()->getManager();
 
-        return($this->searchFieldWhatToSearchEntityTypeEntityAction($field, $whatToSearch, $entityType, $entityName));
+        return($this->searchFieldWhatToSearchEntityTypeSourceEntityAction($field, $whatToSearch, $entityType, $source, $entityName));
     }
 
     public function searchFieldWhatToSearchAction($field, $whatToSearch)
@@ -299,9 +323,10 @@ class SearchController extends Controller
        //$field = $this->container->getParameter('etoxMicrome.default_field');//{"hepatotoxicity","embryotoxicity", etc...}
         //$whatToSearch = $this->container->getParameter('etoxMicrome.default_whatToSearch');//{"name","id", "structure", "canonical"}
         $entityType= $this->container->getParameter('etoxMicrome.default_entityType');//{compound","cyp","marker","keyword"}
+        $source= $this->container->getParameter('etoxMicrome.default_source');//{"pubmed","fulltext","nda","epar"}
         $entityName = $this->container->getParameter('etoxMicrome.default_entityName');
 
-        return($this->searchFieldWhatToSearchEntityTypeEntityAction($field, $whatToSearch, $entityType, $entityName));
+        return($this->searchFieldWhatToSearchEntityTypeSourceEntityAction($field, $whatToSearch, $entityType, $source, $entityName));
     }
 
     public function searchFieldWhatToSearchEntityTypeAction($field, $searchInto, $whatToSearch, $entityType)
@@ -309,12 +334,24 @@ class SearchController extends Controller
         //$field = $this->container->getParameter('etoxMicrome.default_field');//{"hepatotoxicity","embryotoxicity", etc...}
         //$whatToSearch = $this->container->getParameter('etoxMicrome.default_whatToSearch');//{"name","id", "structure", "canonical"}
         //$entityType= $this->container->getParameter('etoxMicrome.default_entityType');//{compound","cyp","marker","keyword"}
+        $source= $this->container->getParameter('etoxMicrome.default_source');//{"pubmed","fulltext","nda","epar"}
         $entityName = $this->container->getParameter('etoxMicrome.default_entityName');
         $em = $this->getDoctrine()->getManager();
 
-        return($this->searchFieldWhatToSearchEntityTypeEntityAction($field, $whatToSearch, $entityType, $entityName));
+        return($this->searchFieldWhatToSearchEntityTypeSourceEntityAction($field, $whatToSearch, $entityType, $source, $entityName));
     }
 
+    public function searchFieldWhatToSearchEntityTypeSourceAction($field, $searchInto, $whatToSearch, $entityType, $source)
+    {
+        //$field = $this->container->getParameter('etoxMicrome.default_field');//{"hepatotoxicity","embryotoxicity", etc...}
+        //$whatToSearch = $this->container->getParameter('etoxMicrome.default_whatToSearch');//{"name","id", "structure", "canonical"}
+        //$entityType= $this->container->getParameter('etoxMicrome.default_entityType');//{compound","cyp","marker","keyword"}
+        //$source= $this->container->getParameter('etoxMicrome.default_source');//{"pubmed","fulltext","nda","epar"}
+        $entityName = $this->container->getParameter('etoxMicrome.default_entityName');
+        $em = $this->getDoctrine()->getManager();
+
+        return($this->searchFieldWhatToSearchEntityTypeSourceEntityAction($field, $whatToSearch, $entityType, $source, $entityName));
+    }
     public function writeFileWithArrayAbstractDocument($arrayEntity2Abstract, $arrayEntity2Document, $field, $whatToSearch, $entityType, $entityName)
     {
         $message="inside writeFileWithArrayAbstractDocument";
@@ -557,11 +594,12 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
 
     }
 
-    public function searchFieldWhatToSearchEntityTypeEntityAction($field, $whatToSearch, $entityType, $entityName)
+    public function searchFieldWhatToSearchEntityTypeSourceEntityAction($field, $whatToSearch, $entityType, $source, $entityName)
     {
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //////In this lines we check if the user wants to download the results of the searching process. If so, the exportFunction is called//////
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        $message="llega aqui";
         $request = $this->get('request');
         $download=$request->query->get('download');
         if ($download==true){
@@ -575,7 +613,6 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
             ));
         exit();
         }
-
         //$field = $this->container->getParameter('etoxMicrome.default_field');//{"hepatotoxicity","embryotoxicity", etc...}
         //$whatToSearch = $this->container->getParameter('etoxMicrome.default_whatToSearch');//{"name","id", "structure", "canonical"}
         //$entityType= $this->container->getParameter('etoxMicrome.default_entityType');//{compound","cyp","marker","keyword"}
@@ -587,9 +624,10 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
         //First of all we have to find the entityId of the entity received...
         //As we know the entityType, we can get the repository to search into...
         $entityType=ucfirst($entityType);
-
-
         $entityBackup=$entityName;
+        if($entityType=="Marker"){
+            $entityType="HepatotoxKeyword";
+        }
         if($whatToSearch=="name"){
             //We get the entity from the entity
             $entity=$em->getRepository('EtoxMicromeEntityBundle:'.$entityType)->getEntityFromName($entityName);
@@ -613,15 +651,7 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
             ///  We prepare a elasticsearch and use the search/keyword interface////////////////////
             ////////////////////////////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////////////////////////////
-            if($whatToSearch=="any"){
-                //We have to make a free search against elastica abstracts and documents indexes
-                $finder = $this->container->get('fos_elastica.finder.etoxindex.abstracts');
-                $finderDoc = $this->container->get('fos_elastica.finder.etoxindex.documents');
-            }elseif($whatToSearch=="withCompounds"){
-                //We have to make a free search against elastica abstracts and documents indexes
-                $finder = false;
-                $finderDoc = $this->container->get('fos_elastica.finder.etoxindex.documents');
-            }
+
             $elasticaQueryString  = new \Elastica\Query\QueryString();
             //'And' or 'Or' default : 'Or'
             $elasticaQueryString->setDefaultOperator('AND');
@@ -630,35 +660,161 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
             $elasticaQuery  = new \Elastica\Query();
             $elasticaQuery->setSort(array('hepval' => array('order' => 'desc')));
             $elasticaQuery->setQuery($elasticaQueryString);
-
             //Search on the index.
             $elasticaQuery->setSize($this->container->getParameter('etoxMicrome.total_documents_elasticsearch_retrieval'));
-
-            /** We get resultSet to get values for summary**/
             if($whatToSearch=="any"){
-                $abstractsInfo = $this->container->get('fos_elastica.index.etoxindex.abstracts');
-                $resultSetAbstracts = $abstractsInfo->search($elasticaQuery);
-                $arrayAbstracts=$finder->find($elasticaQuery);
-                $arrayResultsAbs = $paginator
-                    ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), 'abstracts')
-                    ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), 'abstracts')
-                    ->paginate($arrayAbstracts,'abstracts')
-                    ->getResult()
-                ;
+                if($entityType=="CompoundDict"){
+                    //We have to make a free search against elastica documentsWithCompounds and abstractsWithCompounds index
+                    $finder = $this->container->get('fos_elastica.finder.etoxindex.abstractsWithCompounds');
+                    $finderDoc = $this->container->get('fos_elastica.finder.etoxindex.documentsWithCompounds');
+                    /** We get resultSet to get values for summary**/
+                    $abstractsInfo = $this->container->get('fos_elastica.index.etoxindex.abstractsWithCompounds');
+                    $resultSetAbstracts = $abstractsInfo->search($elasticaQuery);
+                    $arrayAbstracts=$finder->find($elasticaQuery);
+                    $arrayResultsAbs = $paginator
+                        ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), 'abstracts')
+                        ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), 'abstracts')
+                        ->paginate($arrayAbstracts,'abstracts')
+                        ->getResult()
+                    ;
+                    $documentsInfo = $this->container->get('fos_elastica.index.etoxindex.documentsWithCompounds');
+                    $resultSetDocuments = $documentsInfo->search($elasticaQuery);
+                    $arrayDocuments=$finderDoc->find($elasticaQuery);
+                    $arrayResultsDoc = $paginator
+                        ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), 'documents')
+                        ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), 'documents')
+                        ->paginate($arrayDocuments,'documents')
+                        ->getResult()
+                    ;
+                }
+                if($entityType=="Cytochrome"){
+                    //We have to make a free search against elastica documentsWithCytochromes indexes
+                    $finder = false;
+                    $finderDoc = $this->container->get('fos_elastica.finder.etoxindex.documentsWithCytochromes');
+                    $resultSetAbstracts = false;
+                    $arrayResultsAbs =array();
+                    $documentsInfo = $this->container->get('fos_elastica.index.etoxindex.documentsWithCytochromes');
+                    $resultSetDocuments = $documentsInfo->search($elasticaQuery);
+                    $arrayDocuments=$finderDoc->find($elasticaQuery);
+                    $arrayResultsDoc = $paginator
+                        ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), 'documents')
+                        ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), 'documents')
+                        ->paginate($arrayDocuments,'documents')
+                        ->getResult()
+                    ;
+                }
+                if($entityType=="HepatotoxKeyword"){
+                    //We have to make a free search against elastica documentsWithMarkers indexes
+                    $finder = false;
+                    $finderDoc = $this->container->get('fos_elastica.finder.etoxindex.documentsWithMarkers');
+                    $resultSetAbstracts = false;
+                    $arrayResultsAbs =array();
+                    $documentsInfo = $this->container->get('fos_elastica.index.etoxindex.documentsWithMarkers');
+                    $resultSetDocuments = $documentsInfo->search($elasticaQuery);
+                    $arrayDocuments=$finderDoc->find($elasticaQuery);
+                    $arrayResultsDoc = $paginator
+                        ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), 'documents')
+                        ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), 'documents')
+                        ->paginate($arrayDocuments,'documents')
+                        ->getResult()
+                    ;
+                }
             }elseif($whatToSearch=="withCompounds"){
-                $resultSetAbstracts = false;
-                $arrayResultsAbs =array();
+                if($entityType=="Cytochrome"){
+                    //We have to make a free search against the intersection of documentsWithCompounds with documentsWithCytochromes
+                    //In order to perform the intersection we change the size of the results
+                    $elasticaQuery->setSize(1500);
+                    $finder = false;
+                    $finderDocWithCompounds = $this->container->get('fos_elastica.finder.etoxindex.documentsWithCompounds');
+                    $finderDocWithCytochromes = $this->container->get('fos_elastica.finder.etoxindex.documentsWithCytochromes');
+                    $resultSetAbstracts = false;
+                    $arrayResultsAbs =array();
+                    $documentsInfo = $this->container->get('fos_elastica.index.etoxindex.documentsWithCompounds');
+                    $resultSetDocuments = $documentsInfo->search($elasticaQuery);
+                    $arrayDocumentsWithCompounds=$finderDocWithCompounds->find($elasticaQuery);
+                    $arrayDocumentsWithCytochromes=$finderDocWithCytochromes->find($elasticaQuery);
+                    $arrayDocumentsIntersection=$this->performIntersectionArrayDocuments($arrayDocumentsWithCompounds, $arrayDocumentsWithCytochromes);
+                    $arrayResultsDoc = $paginator
+                        ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), 'documents')
+                        ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), 'documents')
+                        ->paginate($arrayDocumentsIntersection,'documents')
+                        ->getResult()
+                    ;
+                    //We restore size to its default value
+                    $elasticaQuery->setSize($this->container->getParameter('etoxMicrome.total_documents_elasticsearch_retrieval'));
+                }
+                if($entityType=="HepatotoxKeyword"){
+                    //We have to make a free search against the intersection of documentsWithCompounds with documentsWithMarkers
+                    //In order to perform the intersection we change the size of the results
+                    $elasticaQuery->setSize(1500);
+                    $finder = false;
+                    $finderDocWithCompounds = $this->container->get('fos_elastica.finder.etoxindex.documentsWithCompounds');
+                    $finderDocWithMarkers = $this->container->get('fos_elastica.finder.etoxindex.documentsWithMarkers');
+                    $resultSetAbstracts = false;
+                    $arrayResultsAbs =array();
+                    $documentsInfo = $this->container->get('fos_elastica.index.etoxindex.documentsWithMarkers');
+                    $resultSetDocuments = $documentsInfo->search($elasticaQuery);
+                    $arrayDocumentsWithCompounds=$finderDocWithCompounds->find($elasticaQuery);
+                    $arrayDocumentsWithMarkers=$finderDocWithMarkers->find($elasticaQuery);
+                    $arrayDocumentsIntersection=$this->performIntersectionArrayDocuments($arrayDocumentsWithCompounds, $arrayDocumentsWithMarkers);
+                    $arrayResultsDoc = $paginator
+                        ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), 'documents')
+                        ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), 'documents')
+                        ->paginate($arrayDocumentsIntersection,'documents')
+                        ->getResult()
+                    ;
+                    //We restore size to its default value
+                    $elasticaQuery->setSize($this->container->getParameter('etoxMicrome.total_documents_elasticsearch_retrieval'));
+                }
+            }elseif($whatToSearch=="withCytochromes"){
+                if($entityType=="CompoundDict"){
+                    //We have to make a free search against the intersection of documentsWithCompounds with documentsWithCytochromes
+                    //In order to perform the intersection we change the size of the results
+                    $elasticaQuery->setSize(1500);
+                    $finder = false;
+                    $finderDocWithCompounds = $this->container->get('fos_elastica.finder.etoxindex.documentsWithCompounds');
+                    $finderDocWithCytochromes = $this->container->get('fos_elastica.finder.etoxindex.documentsWithCytochromes');
+                    $resultSetAbstracts = false;
+                    $arrayResultsAbs =array();
+                    $documentsInfo = $this->container->get('fos_elastica.index.etoxindex.documentsWithCompounds');
+                    $resultSetDocuments = $documentsInfo->search($elasticaQuery);
+                    $arrayDocumentsWithCompounds=$finderDocWithCompounds->find($elasticaQuery);
+                    $arrayDocumentsWithCytochromes=$finderDocWithCytochromes->find($elasticaQuery);
+                    $arrayDocumentsIntersection=$this->performIntersectionArrayDocuments($arrayDocumentsWithCompounds, $arrayDocumentsWithCytochromes);
+                    $arrayResultsDoc = $paginator
+                        ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), 'documents')
+                        ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), 'documents')
+                        ->paginate($arrayDocumentsIntersection,'documents')
+                        ->getResult()
+                    ;
+                    //We restore size to its default value
+                    $elasticaQuery->setSize($this->container->getParameter('etoxMicrome.total_documents_elasticsearch_retrieval'));
+                }
+            }elseif($whatToSearch=="withMarkers"){
+                if($entityType=="CompoundDict"){
+                    //We have to make a free search against the intersection of documentsWithCompounds with documentsWithCytochromes
+                    //In order to perform the intersection we change the size of the results
+                    $elasticaQuery->setSize(1500);
+                    $finder = false;
+                    $finderDocWithCompounds = $this->container->get('fos_elastica.finder.etoxindex.documentsWithCompounds');
+                    $finderDocWithMarkers = $this->container->get('fos_elastica.finder.etoxindex.documentsWithMarkers');
+                    $resultSetAbstracts = false;
+                    $arrayResultsAbs =array();
+                    $documentsInfo = $this->container->get('fos_elastica.index.etoxindex.documentsWithCompounds');
+                    $resultSetDocuments = $documentsInfo->search($elasticaQuery);
+                    $arrayDocumentsWithCompounds=$finderDocWithCompounds->find($elasticaQuery);
+                    $arrayDocumentsWithMarkers=$finderDocWithMarkers->find($elasticaQuery);
+                    $arrayDocumentsIntersection=$this->performIntersectionArrayDocuments($arrayDocumentsWithCompounds, $arrayDocumentsWithMarkers);
+                    $arrayResultsDoc = $paginator
+                        ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), 'documents')
+                        ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), 'documents')
+                        ->paginate($arrayDocumentsIntersection,'documents')
+                        ->getResult()
+                    ;
+                    //We restore size to its default value
+                    $elasticaQuery->setSize($this->container->getParameter('etoxMicrome.total_documents_elasticsearch_retrieval'));
+                }
             }
-            $documentsInfo = $this->container->get('fos_elastica.index.etoxindex.documents');
-            /** var Elastica\ResultSet */
-            $resultSetDocuments = $documentsInfo->search($elasticaQuery);
-            $arrayDocuments=$finderDoc->find($elasticaQuery);
-            $arrayResultsDoc = $paginator
-                ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), 'documents')
-                ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), 'documents')
-                ->paginate($arrayDocuments,'documents')
-                ->getResult()
-            ;
             return $this->render('FrontendBundle:Search_keyword:index.html.twig', array(
                 'field' => $field,
                 'entityType' => $entityType,
@@ -668,6 +824,8 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                 'resultSetAbstracts' => $resultSetAbstracts,
                 'resultSetDocuments' => $resultSetDocuments,
                 'whatToSearch' => $whatToSearch,
+                'source' => $source,
+                'entityName' => $entityName,
                 ));
         }
         ////////////////////////////////////////////////////////////////////////////////////////
@@ -686,6 +844,7 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                 'whatToSearch' => $whatToSearch,
                 'entityType' => $entityType,
                 'entity' => $entityBackup,
+                'entityName' => $entityName,
             ));
         }
         $arrayEntityId=array_unique($arrayEntityId);//We get rid of the duplicates
@@ -713,7 +872,12 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
             $em = $this->getDoctrine()->getManager();
             foreach($arrayEntityId as $entityId){
                 $entidad=$em->getRepository('EtoxMicromeEntityBundle:'.$entityType)->getEntityFromId($entityId);
-                $arrayEntityName[]=($entidad->getName());
+                if($entityType=="CompoundDict"){
+                    $arrayEntityName[]=($entidad->getName());
+                }elseif($entityType=="HepatotoxKeyword"){
+                    $arrayEntityName[]=($entidad->getTerm());
+                }
+
             }
             $arrayEntityName=array_unique($arrayEntityName);//We get rid of the duplicates
             if($entityType=="CompoundDict" or $entityType=="CompoundMesh"){
@@ -734,27 +898,32 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                     'field' => $field,
                     'whatToSearch' => $whatToSearch,
                     'entityType' => $entityType,
+                    'source' => $source,
                     'entity' => $entity,
                     'entityBackup' => $entityBackup,
                     'arrayEntity2Document' => $arrayEntity2Document,
                     'arrayEntity2Abstract' => $arrayEntity2Abstract,
+                    'entityName' => $entityName,
                 ));
             }else{//Neither Compounds nor Cytochromes
                 //We just search into Documents
-                $arrayEntity2Document = $paginator
+                if($entityType=="HepatotoxKeyword"){
+                    $arrayEntity2Document = $paginator
                     ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "documents")
                     ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "documents")
-                    ->paginate($em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntity2DocumentFromFieldDQL($field, $entityType, $arrayEntityName), 'documents')
+                    ->paginate($em->getRepository('EtoxMicromeEntity2DocumentBundle:HepKeywordTermVariant2Document')->getHepKeywordTermVariant2DocumentFromFieldDQL($field, $entityType, $arrayEntityName), 'documents')
                     ->getResult()
                 ;
-
+                }
                 return $this->render('FrontendBundle:Search_document:index.html.twig', array(
                     'field' => $field,
                     'whatToSearch' => $whatToSearch,
                     'entityType' => $entityType,
+                    'source' => $source,
                     'entity' => $entity,
                     'entityBackup' => $entityBackup,
                     'arrayEntity2Document' => $arrayEntity2Document,
+                    'entityName' => $entityName,
                 ));
             }
         }
@@ -762,13 +931,15 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
         'field' => $field,
         'whatToSearch' => $whatToSearch,
         'entityType' => $entityType,
+        'source' => $source,
         'entity' => $entity,
         'entityBackup' => $entityBackup,
         'arrayEntity2Document' => $arrayEntity2Document,
+        'entityName' => $entityName,
         ));
     }
 
-    public function searchKeywordAction($keyword, $whatToSearch)
+    public function searchKeywordAction($whatToSearch, $source, $keyword)
     {
         if (isset($_GET['page'])) {
             $page=$_GET['page'];
@@ -849,15 +1020,18 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
             ->paginate($arrayDocuments,'documents')
             ->getResult()
         ;
+        $entityName=$keyword;
         return $this->render('FrontendBundle:Search_keyword:index.html.twig', array(
             'field' => $field,
             'entityType' => $entityType,
+            'source' => $source,
             'keyword' => $keyword,
             'arrayResultsAbs' => $arrayResultsAbs,
             'arrayResultsDoc' => $arrayResultsDoc,
             'resultSetAbstracts' => $resultSetAbstracts,
             'resultSetDocuments' => $resultSetDocuments,
             'whatToSearch' => $whatToSearch,
+            'entityName' => $entityName,
             ));
     }
     public function embryotoxicityAction()

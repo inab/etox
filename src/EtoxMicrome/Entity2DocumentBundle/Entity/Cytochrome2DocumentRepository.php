@@ -72,4 +72,38 @@ class Cytochrome2DocumentRepository extends EntityRepository
         $consulta->setParameter('documentId', $documentId);
         return $consulta->execute();
     }
+
+    public function updateCytochrome2DocumentCuration($cytochrome2DocumentId, $action)
+    {
+        /*Here we get the cytochrome2Document and the action to take for the curation value.
+        $action can be check or cross.
+        If $action==check, then we have to add one to the curation field of the Cytochrome2Document register
+        If $action==cross, then we have to substract one to the curation field of the Cytochrome2Document register
+
+        After that, taking into account the curation value, we have to generate the html to render inside the curation
+        */
+
+        //ld($entity2DocumentId);
+        //ldd($action);
+
+        $em = $this->getEntityManager();
+        $cytochrome2Document=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Cytochrome2Document')->findOneById($cytochrome2DocumentId);
+        if (!$cytochrome2Document) {
+            throw $this->createNotFoundException(
+                "Cannot curate this Cytochrome2Document $cytochrome2DocumentId"
+            );
+        }
+        else{
+            $curation=$cytochrome2Document->getCuration();
+            if ($action=="check"){
+                $cytochrome2Document->setCuration($curation + 1);
+            }elseif($action=="cross"){
+                $cytochrome2Document->setCuration($curation - 1);
+            }
+            $em->flush();
+            $curationReturn=$cytochrome2Document->getCuration();
+            return($curationReturn);
+        }
+        return ($curationReturn);
+    }
 }
