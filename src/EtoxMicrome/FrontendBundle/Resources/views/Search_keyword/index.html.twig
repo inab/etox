@@ -42,56 +42,62 @@
                     </table>
                 </div>
                 <div class="clear-both"></div>
-                {% set contador = 1 %}
-                {% for result in arrayResultsDoc %}
-                    <div class="document {{ cycle(['odd', 'even'], contador) }}">
-                        {% set contador = contador + 1 %}
-                        <p>
+                <table id="tableResultsElastic" class="tablesorter">
+                <thead>
+                    <th>Source</th>
+                    <th>Score</th>
+                    <th>Sentence</th>
+                </thead>
+                <tbody>
+                    {% set contador = 1 %}
+                    {% for result in arrayResultsDoc %}
+                        <tr class="document {{ cycle(['odd', 'even'], contador) }}">
+                            {% set contador = contador + 1 %}
                             {% set className = result.getClassName %}
-                            {# result.getId #}
+                            {% set text=result.getText %}
                             {% set score = result.getHepval | number_format(2)%}
                             {% set score = score|colorCodingScore %}
-                            {% set text=result.getText %}
                             {% if className == 'Abstracts' %}
-
-                                {{ text | highlightEntitiesDocuments (result, keyword, field, whatToSearch, source, entityType)| raw }}
+                                {{ text | highlightEntitiesAbstracts (result, keyword, field, whatToSearch, source, entityType)| raw }}
                                 {% set pmid=result.getPmid %}
                                 {% set link="http://www.ncbi.nlm.nih.gov/pubmed/" ~ pmid %}
                                 {% set imageRoute = 'images/pubmed.png' %}
+
                             {% elseif className == 'Document' or className == 'DocumentWithCompound' or className == 'DocumentWithCytochrome' or className == 'DocumentWithMarker'%}
                                 {% set kind = result.getKind %}
                                 {% if kind == "pubmed" %}
                                     {% set pmid=result.getUid %}
                                     {% set link="http://www.ncbi.nlm.nih.gov/pubmed/" ~ pmid %}
                                     {% set imageRoute = 'images/pubmed.png' %}
-                                    <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/></a>
                                 {% elseif kind == "fulltext" %}
                                     {% set pmid=result.getUid %}
                                     {% set arrayPmid = pmid|split('_') %}
                                     {% set pmidCut = arrayPmid[1] %}
                                     {% set link="http://www.ncbi.nlm.nih.gov/pubmed/" ~ pmidCut %}
                                     {% set imageRoute = 'images/fulltext.png' %}
-                                    <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/></a>
                                 {% elseif kind == "nda" %}
                                     {% set link="http://www.fda.gov" %}
                                     {% set imageRoute = 'images/nda.png' %}
-                                    <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/></a>
                                 {% elseif kind == "epar" %}
                                     {% set link="http://www.fda.gov" %}
                                     {% set imageRoute = 'images/epar.png' %}
-                                    <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/></a>
                                 {% endif %}
                                 {%set text = text | highlightEntitiesDocuments (result,keyword,field,whatToSearch,source,entityType)%}
-
                             {% endif%}
-                            {{ score |raw }}.
-                            {{ text | raw  }}
-
-
-                        </p>
-                    </div>
+                            <td class="center">
+                                <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/></a>
+                            </td>
+                            <td class="center">
+                                {{ score  | raw}}
+                            </td>
+                            <td>
+                                {{ text | raw }}
+                            </td>
+                        </tr>
                 {% endfor %}
-                <!-- here pagination block for documents  -->
+                </tbody>
+            </table>
+            <!-- here pagination block for documents  -->
                 <div class="pagination">
                     {{ simple_paginator_render(
                         'elasticSearch_keyword', 'documents',
@@ -140,30 +146,60 @@
                         </table>
                     </div>
                     <div class="clear-both"></div>
-                    {% set contador = 1 %}
-                    {% for result in arrayResultsAbs %}
-                        <div class="document {{ cycle(['odd', 'even'], contador) }}">
-                            {% set contador = contador + 1 %}
-                            <p>
-                                {% set className = result.getClassName %}
-                                {% set imageRoute = 'images/pubmed.png' %}
-                                {% set score = result.getHepval | number_format(2)%}
-                                {% set score = score|colorCodingScore %}
-
-
-                                {% set text=result.getText %}
-                                {% if className == "Abstracts" or className == "AbstractWithCompound" %}
-                                    {% set text = text | highlightEntitiesAbstracts (result,keyword,field,whatToSearch,source,entityType) %}
-                                {% elseif className == "Document" %}
-                                    {%set text = text | highlightEntitiesDocuments (result,keyword,field,whatToSearch,entityType)%}
-                                {% endif%}
-                                {% set pmid = result.getPmid %}
-                                <a href="http://www.ncbi.nlm.nih.gov/pubmed/{{ pmid }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/></a>
-                                {{ score |raw }}.
-                                {{ text | raw  }}
-                            </p>
-                        </div>
-                    {% endfor %}
+                    <table id="tableResultsElastic" class="tablesorter">
+                        <thead>
+                            <th>Source</th>
+                            <th>Score</th>
+                            <th>Sentence</th>
+                        </thead>
+                        <tbody>
+                            {% set contador = 1 %}
+                            {% for result in arrayResultsAbs %}
+                                <tr class="document {{ cycle(['odd', 'even'], contador) }}">
+                                    {% set contador = contador + 1 %}
+                                    {% set className = result.getClassName %}
+                                    {% set text=result.getText %}
+                                    {% set score = result.getHepval | number_format(2)%}
+                                    {% set score = score|colorCodingScore %}
+                                    {% if className == "Abstracts" or className == "AbstractWithCompound" %}
+                                        {% set text = text | highlightEntitiesAbstracts (result, keyword, field, whatToSearch, source, entityType)| raw %}
+                                        {% set pmid=result.getPmid %}
+                                        {% set link="http://www.ncbi.nlm.nih.gov/pubmed/" ~ pmid %}
+                                        {% set imageRoute = 'images/pubmed.png' %}
+                                    {% elseif className == 'Document' or className == 'DocumentWithCompound' or className == 'DocumentWithCytochrome' or className == 'DocumentWithMarker'%}
+                                        {% set kind = result.getKind %}
+                                        {% if kind == "pubmed" %}
+                                            {% set pmid=result.getUid %}
+                                            {% set link="http://www.ncbi.nlm.nih.gov/pubmed/" ~ pmid %}
+                                            {% set imageRoute = 'images/pubmed.png' %}
+                                        {% elseif kind == "fulltext" %}
+                                            {% set pmid=result.getUid %}
+                                            {% set arrayPmid = pmid|split('_') %}
+                                            {% set pmidCut = arrayPmid[1] %}
+                                            {% set link="http://www.ncbi.nlm.nih.gov/pubmed/" ~ pmidCut %}
+                                            {% set imageRoute = 'images/fulltext.png' %}
+                                        {% elseif kind == "nda" %}
+                                            {% set link="http://www.fda.gov" %}
+                                            {% set imageRoute = 'images/nda.png' %}
+                                        {% elseif kind == "epar" %}
+                                            {% set link="http://www.fda.gov" %}
+                                            {% set imageRoute = 'images/epar.png' %}
+                                        {% endif %}
+                                        {%set text = text | highlightEntitiesDocuments (result,keyword,field,whatToSearch,source,entityType)%}
+                                    {% endif%}
+                                    <td class="center">
+                                        <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/></a>
+                                    </td>
+                                    <td class="center">
+                                        {{ score  | raw}}
+                                    </td>
+                                    <td>
+                                        {{ text | raw }}
+                                    </td>
+                                </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
                     <!-- here pagination block for abstracts -->
                     <div class="pagination">
                         {{ simple_paginator_render(

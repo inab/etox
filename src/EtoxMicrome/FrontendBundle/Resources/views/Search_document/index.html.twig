@@ -43,61 +43,61 @@
                     {% for entity2Document in arrayEntity2Document %}
                         <tr class="document {{ cycle(['odd', 'even'], contador) }}">
                             {% set contador = contador + 1 %}
-                                {% set kind = entity2Document.document.getKind %}
-                                {% set score = entity2Document.document.getHepval %}
-                                {% set score = score|number_format(2) %}
-                                {% set score = score|colorCodingScore %}
-                                <td>
-                                {% if kind == "pubmed" %}
-                                    {% set pmid=entity2Document.document.getUid %}
-                                    {% set link="http://www.ncbi.nlm.nih.gov/pubmed/" ~ pmid %}
-                                    {% set imageRoute = 'images/pubmed.png' %}
-                                    {% set sid=entity2Document.document.getSentenceId %}
-                                    <span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='Pubmed link:{{ link }}<br>uid: {{ pmid }}<br/>sid: {{ sid }}<br/>'>
-                                            <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/></a>
-                                        </span>
-                                {% elseif kind == "fulltext" %}
-                                    {% set pmid=entity2Document.document.getUid %}
-                                    {% set arrayPmid = pmid|split('_') %}
-                                    {% set pmidCut = arrayPmid[1] %}
-                                    {% set link="http://www.ncbi.nlm.nih.gov/pubmed/" ~ pmidCut %}
-                                    {% set imageRoute = 'images/fulltext.png' %}
-                                    <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/></a>
-                                {% elseif kind == "nda" %}
-                                    {% set link="http://www.fda.gov" %}
-                                    {% set imageRoute = 'images/nda.png' %}
-                                    <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/></a>
-                                {% elseif kind == "epar" %}
-                                    {% set link="http://www.fda.gov" %}
-                                    {% set imageRoute = 'images/epar.png' %}
-                                    <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/></a>
-                                {% endif %}
-                                </td>
-                                <td class="center">
-                                    {{ score |raw }}
-                                </td>
-                                <td class="center">
-                                    {{ score |raw }}
-                                </td>
-                                <td class="center">
-                                    {{ score |raw }}
-                                </td>
-                                {% set text=entity2Document.document.getText %}
-                                <td>
-                                    {{ text | highlightEntitiesDocuments (entity2Document.document,entityBackup,field,whatToSearch, source, entityType)| raw }}
-                                </td>
-                                <td class="center">
-                                    <small>
-                                        {% set curation=entity2Document.getCuration %}
-                                        {% if curation is empty %}
-                                            {% set curation=0 %}
-                                        {% endif %}
-                                        {% set curationHtml= curation | setCurationHtml(entity2Document.getId(), entityType, "document") %}
-                                        <div id="free-curation-{{ entity2Document.getId }}">
-                                            {{ curationHtml | raw }}
-                                        </div>
-                                    </small>
-                                </td>
+                            {% set kind = entity2Document.document.getKind %}
+                            {% set score = entity2Document.document.getHepval %}
+                            {% set score = score|number_format(2) %}
+                            {% set score = score|colorCodingScore %}
+                            <td>
+                            {% if kind == "pubmed" %}
+                                {% set pmid=entity2Document.document.getUid %}
+                                {% set link="http://www.ncbi.nlm.nih.gov/pubmed/" ~ pmid %}
+                                {% set imageRoute = 'images/pubmed.png' %}
+                                {% set sid=entity2Document.document.getSentenceId %}
+                                <span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='Pubmed link:{{ link }}<br>uid: {{ pmid }}<br/>sid: {{ sid }}<br/>'>
+                                        <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/></a>
+                                    </span>
+                            {% elseif kind == "fulltext" %}
+                                {% set pmid=entity2Document.document.getUid %}
+                                {% set arrayPmid = pmid|split('_') %}
+                                {% set pmidCut = arrayPmid[1] %}
+                                {% set link="http://www.ncbi.nlm.nih.gov/pubmed/" ~ pmidCut %}
+                                {% set imageRoute = 'images/fulltext.png' %}
+                                <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/></a>
+                            {% elseif kind == "nda" %}
+                                {% set link="http://www.fda.gov" %}
+                                {% set imageRoute = 'images/nda.png' %}
+                                <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/></a>
+                            {% elseif kind == "epar" %}
+                                {% set link="http://www.fda.gov" %}
+                                {% set imageRoute = 'images/epar.png' %}
+                                <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/></a>
+                            {% endif %}
+                            </td>
+                            <td class="center">
+                                {{ score |raw }}
+                            </td>
+                            <td class="center">
+                                {{ score |raw }}
+                            </td>
+                            <td class="center">
+                                {{ score |raw }}
+                            </td>
+                            {% set text=entity2Document.document.getText %}
+                            <td>
+                                {{ text | highlightEntitiesDocuments (entity2Document.document,entityBackup,field,whatToSearch, source, entityType)| raw }}
+                            </td>
+                            <td class="center">
+                                <small>
+                                    {% set curation=entity2Document.getCuration %}
+                                    {% if curation is empty %}
+                                        {% set curation=0 %}
+                                    {% endif %}
+                                    {% set curationHtml= curation | setCurationHtml(entity2Document.getId(), entityType, "document") %}
+                                    <div id="free-curation-{{ entity2Document.getId }}">
+                                        {{ curationHtml | raw }}
+                                    </div>
+                                </small>
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>
