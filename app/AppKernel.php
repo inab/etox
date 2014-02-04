@@ -22,7 +22,6 @@ class AppKernel extends Kernel
             new EtoxMicrome\FrontendBundle\FrontendBundle(),
             new FOS\UserBundle\FOSUserBundle(),
             new FOS\ElasticaBundle\FOSElasticaBundle(),
-            new WhiteOctober\PagerfantaBundle\WhiteOctoberPagerfantaBundle(),
             new EtoxMicrome\UserBundle\UserBundle(),
             new EtoxMicrome\DocumentBundle\EtoxMicromeDocumentBundle(),
             new EtoxMicrome\EntityBundle\EtoxMicromeEntityBundle(),

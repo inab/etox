@@ -261,25 +261,32 @@ class Entity2DocumentRepository extends EntityRepository
 
         if($qualifier=="Cytochrome"){
             $cytochrome2Document=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Cytochrome2Document')->findOneById($entity2DocumentId);
-            $mention=$cytochrome2Document->getCypsMention();
-            if($mention!=""){
-                $dictionary["Mention"]=$mention;
+            $cytochromeName=$cytochrome2Document->getCypsMention();
+            $cytochrome=$em->getRepository('EtoxMicromeEntityBundle:Cytochrome')->findOneByName($cytochromeName);
+
+            $entityId=$cytochrome->getEntityId();
+            if($entityId!=""){
+                $dictionary["Entity Id"]=$entityId;
             }
-            $baseName=$cytochrome2Document->getBaseName();
-            if($baseName!=""){
-                $dictionary["Base Name"]=$baseName;
+            $name=$cytochrome->getName();
+            if($name!=""){
+                $dictionary["Name"]=$name;
             }
-            $rootName=$cytochrome2Document->getRootName();
-            if($rootName!=""){
-                $dictionary["Root Name"]=$rootName;
+            $type=$cytochrome->getType();
+            if($type!=""){
+                $dictionary["Type"]=$type;
             }
-            $canonical=$cytochrome2Document->getCypsCanonical();
+            $tax=$cytochrome->getTax();
+            if($tax!=""){
+                $dictionary["Tax"]=$tax;
+            }
+            $score=$cytochrome->getScore();
+            if($score!=""){
+                $dictionary["Score"]=round($score,3);
+            }
+            $canonical=$cytochrome->getCanonical();
             if($canonical!=""){
                 $dictionary["Canonical"]=$canonical;
-            }
-            $tagMethod=$cytochrome2Document->getTagMethod();
-            if($tagMethod!=""){
-                $dictionary["Tag Method"]=$tagMethod;
             }
         }
 

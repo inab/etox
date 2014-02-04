@@ -285,7 +285,7 @@ mark.enzyme {
 mark.protein{
     background-color: #bcf5ff;
 }
-mark.cyp{
+mark.cytochrome{
     background-color: #ffcfcf;
 }
 mark.mutation{
@@ -295,7 +295,7 @@ mark.go_term{
     background-color: #F9FDD5;
 }
 mark.term{
-    background-color: #ffd0fd;
+    background-color: #d597fb;
 }
 mark.marker{
     background-color:#dffcff;
@@ -470,6 +470,17 @@ td.horizontal-header{
 /* -----------------------------------------
     Listing evidences
 ----------------------------------------- */
+#tableResults th{
+    text-align: center;
+    min-width: 70px;
+    padding: 6px 0px 6px 6px;
+}
+#tableResults td{
+    vertical-align: middle;
+}
+#tableResults td.center{
+    text-align: center;
+}
 .abstract {
     border-bottom: 1px dotted #E0DFDF;
     margin-bottom: 10px;

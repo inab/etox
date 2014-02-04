@@ -70,8 +70,11 @@ class SearchController extends Controller
         //This function receives two arrays of objects with different types, documentsWithCompounds and documentsWithCytochromes
         //Returns an array with the intersection based in the id of each document
         $message="inside performIntersectionArrayDocuments";
+
         $count1=count($arrayDocuments_1);
         $count2=count($arrayDocuments_2);
+        //ld($count1);
+        //ld($count2);
         $intersectionArray=array();
         //First of all we return an empty array if any arrayDocuments... is empty because there won't be intersection
         if($count1==0 or $count2==0){
@@ -227,7 +230,7 @@ class SearchController extends Controller
         return $arrayEntityId;
     }
 
-    public function queryExpansionHepatotoxKeyword($entity, $entityType, $whatToSearch){
+    public function queryExpansionMarker($entity, $entityType, $whatToSearch){
         $message="inside queryExpansionMarker";
         //CompoundDict query expansion. We get all the possible id related to the name
         $dictionaryIds=array();
@@ -236,12 +239,12 @@ class SearchController extends Controller
 
         //Query expansion for HepatotoxKeyword differs dependingo on the $whatToSearch parameter.
         if($whatToSearch=="name"){
-            //we have to search for same norm as this term
-            $dictionaryIds['norm']=$entity->getNorm();
+            //we have to search for all the names that have the same entityId
+            $dictionaryIds['entityId']=$entity->getEntityId();
 
         }elseif($whatToSearch=="id"){
             //we have to search for names with this same entityId
-            $dictionaryIds['EFPIA']=$entity->getEFPIA();
+            $dictionaryIds['name']=$entity->getName();
         }
 
         $arrayTmp=array();
@@ -278,9 +281,9 @@ class SearchController extends Controller
                 //Cytochrome query expansion
                 $arrayEntityId=$this->queryExpansionCytochrome($entity, $entityType, $whatToSearch);
                 break;
-            case "HepatotoxKeyword":
+            case "Marker":
                 //Marker query expansion
-                $arrayEntityId=$this->queryExpansionHepatotoxKeyword($entity, $entityType, $whatToSearch);
+                $arrayEntityId=$this->queryExpansionMarker($entity, $entityType, $whatToSearch);
                 break;
 
 
@@ -625,9 +628,6 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
         //As we know the entityType, we can get the repository to search into...
         $entityType=ucfirst($entityType);
         $entityBackup=$entityName;
-        if($entityType=="Marker"){
-            $entityType="HepatotoxKeyword";
-        }
         if($whatToSearch=="name"){
             //We get the entity from the entity
             $entity=$em->getRepository('EtoxMicromeEntityBundle:'.$entityType)->getEntityFromName($entityName);
@@ -644,7 +644,6 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
             //We get the entity from the smile
             $entity=$em->getRepository('EtoxMicromeEntityBundle:'.$entityType)->searchEntityGivenAnStructureText($entityName);
         }elseif($whatToSearch=="any" or $whatToSearch=="withCompounds"){
-
             ////////////////////////////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////////////////////////////
             ///  If we are searching for Cytochromes or Markers, with the any or WithCompounds//////
@@ -703,7 +702,7 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                         ->getResult()
                     ;
                 }
-                if($entityType=="HepatotoxKeyword"){
+                if($entityType=="Marker"){
                     //We have to make a free search against elastica documentsWithMarkers indexes
                     $finder = false;
                     $finderDoc = $this->container->get('fos_elastica.finder.etoxindex.documentsWithMarkers');
@@ -743,7 +742,7 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                     //We restore size to its default value
                     $elasticaQuery->setSize($this->container->getParameter('etoxMicrome.total_documents_elasticsearch_retrieval'));
                 }
-                if($entityType=="HepatotoxKeyword"){
+                if($entityType=="Marker"){
                     //We have to make a free search against the intersection of documentsWithCompounds with documentsWithMarkers
                     //In order to perform the intersection we change the size of the results
                     $elasticaQuery->setSize(1500);
@@ -831,10 +830,12 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
         ////////////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////////
+        //ld($entity);
         if(count($entity)!=0){
             #We have the entityId. We need to do a QUERY EXPANSION depending on the typeOfEntity we have
             $arrayEntityId=$this->queryExpansion($entity, $entityType, $whatToSearch);
             //WARNING!! If the query expansion with a CompoundDict doesn't return any entity, we do the expansion with CompoundMesh!!
+            //ld($arrayEntityId);
             if (($entityType=="CompoundDict") and (count($arrayEntityId)==1)){
                 $arrayEntityId=$this->queryExpansion($entity, "CompoundMesh", $whatToSearch);
             }
@@ -847,6 +848,7 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                 'entityName' => $entityName,
             ));
         }
+
         $arrayEntityId=array_unique($arrayEntityId);//We get rid of the duplicates
         if($entityType=="Cytochrome"){
             //We create an array of cytochromes from an array with their enityId
@@ -874,8 +876,8 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                 $entidad=$em->getRepository('EtoxMicromeEntityBundle:'.$entityType)->getEntityFromId($entityId);
                 if($entityType=="CompoundDict"){
                     $arrayEntityName[]=($entidad->getName());
-                }elseif($entityType=="HepatotoxKeyword"){
-                    $arrayEntityName[]=($entidad->getTerm());
+                }elseif($entityType=="Marker"){
+                    $arrayEntityName[]=($entidad->getName());
                 }
 
             }
@@ -907,11 +909,11 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                 ));
             }else{//Neither Compounds nor Cytochromes
                 //We just search into Documents
-                if($entityType=="HepatotoxKeyword"){
+                if($entityType=="Marker"){
                     $arrayEntity2Document = $paginator
                     ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "documents")
                     ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "documents")
-                    ->paginate($em->getRepository('EtoxMicromeEntity2DocumentBundle:HepKeywordTermVariant2Document')->getHepKeywordTermVariant2DocumentFromFieldDQL($field, $entityType, $arrayEntityName), 'documents')
+                    ->paginate($em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntity2DocumentFromFieldDQL($field, $entityType, $arrayEntityName), 'documents')
                     ->getResult()
                 ;
                 }

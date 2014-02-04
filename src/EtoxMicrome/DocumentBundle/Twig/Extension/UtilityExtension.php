@@ -124,106 +124,105 @@ class UtilityExtension extends \Twig_Extension
         $arrayHighlighted=array();
 
         //With arrayHepKeywordTermVariant2Document we can highlight Hepatotoxicity Terms
-        if($entityType=="HepKeywordTermVariant"){
-            $arrayHepKeywordTermVariant2Document = $em->getRepository('EtoxMicromeEntity2DocumentBundle:HepKeywordTermVariant2Document')->findHepKeywordTermVariant2Document($document);
-            foreach ($arrayHepKeywordTermVariant2Document as $term2Document){
-                $entityName=$term2Document->getTermVariant();
-                //ld($entityName);
-                //ld($entityBackup);
-                //If the name==entityBackup, we don't do anything, we'll change it at the end
-                $term2DocumentId=$term2Document->getId();
-                if (strcasecmp($entityName, $entityBackup) != 0) {
-                    $numberWords=str_word_count($entityName, 0, '0..9()=-');
+        $arrayHepKeywordTermVariant2Document = $em->getRepository('EtoxMicromeEntity2DocumentBundle:HepKeywordTermVariant2Document')->findHepKeywordTermVariant2Document($document);
+        foreach ($arrayHepKeywordTermVariant2Document as $term2Document){
+            $entityName=$term2Document->getTermVariant();
+            //ld($entityName);
+            //ld($entityBackup);
+            //If the name==entityBackup, we don't do anything, we'll change it at the end
+            $term2DocumentId=$term2Document->getId();
+            if (strcasecmp($entityName, $entityBackup) != 0) {
+                $numberWords=str_word_count($entityName, 0, '0..9()=-');
 
-                    if($numberWords==1){
-                        //We search a possible place/s for the highlight iterating over the arrayText taking into account the arrayHighlighted positions already highlighted
-                        $arrayPlaces=$this->findPlaceSingleWord($entityName,$arrayText,$arrayHighlighted);
-                        //Once the positions are knwon, we do the replacement inside the positions of the $arrayText and keep the track of the position
-                        foreach($arrayPlaces as $place){
-                            array_push($arrayHighlighted, $place);
-                            $text=$arrayText[$place];
-                            $text = str_ireplace($entityName, '<mark class="term">'.$entityName.'</mark>', $text);
+                if($numberWords==1){
+                    //We search a possible place/s for the highlight iterating over the arrayText taking into account the arrayHighlighted positions already highlighted
+                    $arrayPlaces=$this->findPlaceSingleWord($entityName,$arrayText,$arrayHighlighted);
+                    //Once the positions are knwon, we do the replacement inside the positions of the $arrayText and keep the track of the position
+                    foreach($arrayPlaces as $place){
+                        array_push($arrayHighlighted, $place);
+                        $text=$arrayText[$place];
+                        $text = str_ireplace($entityName, '<mark class="term">'.$entityName.'</mark>', $text);
+                        $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermVariant");
+                        $text = str_ireplace($entityName, "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'>".$entityName."</span>", $text);
+                        $arrayText[$place]=$text;
+                        array_push($arrayHighlighted, $place);
+                    }
+
+                }else{
+                    //This is when the entityName is made by more than one word
+                    //We search a range of positions for the highlight iterating over the arrayText taking into account the arrayHighlighted positions already highlighted
+                    $place=$this->findPlaceSeveralWords($entityName,$arrayText,$arrayHighlighted);
+                    if($place!=-1){
+                        //There is a place to make the highlight, starting at $place and finishing at $numberEntityName=str_word_count($entityName, 0);
+                        $numberEntityName=str_word_count($entityName, 0, '0..9()=-');
+                        $arrayEntityName=str_word_count($entityName, 1, '0..9()=-');
+                        //We mark the first
+                        $text=$arrayText[$place];
+                        $text = str_ireplace($arrayEntityName[0], '<mark class="term">'.$arrayEntityName[0], $text);
+                        $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermVariant");
+                        $text = str_ireplace($arrayEntityName[0], "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'>".$arrayEntityName[0], $text);
+                        $arrayText[$place]=$text;
+                        //Mark the last
+                        $text=$arrayText[$place+$numberEntityName-1];
+                        $text = str_ireplace($arrayEntityName[$numberEntityName-1], $arrayEntityName[$numberEntityName-1]."</span></mark>", $text);
+                        $arrayText[$place+$numberEntityName-1]=$text;
+                        //Add all range to arrayHighlighted
+                        foreach(range($place,$place+$numberEntityName-1) as $i){
+                            array_push($arrayHighlighted, $i);
+                        }
+                    }
+
+                }
+            }else{
+                //We haven't changed color for entityBackup case insensitive search of entities. We change it now.
+                //$text = str_ireplace($entityBackup, '<mark class="termSearched">'.$entityBackup.'</mark>', $text);
+                $numberWords=str_word_count($entityName, 0, '0..9()=-');
+                if($numberWords==1){
+                    $arrayPlaces=$this->findPlaceSingleWord($entityName,$arrayText,$arrayHighlighted);
+                    foreach($arrayPlaces as $place){
+                        array_push($arrayHighlighted, $place);
+                        $text=$arrayText[$place];
+                        $text = str_ireplace($entityBackup, '<mark class="termSearched">'.$entityBackup.'</mark>', $text);
+                        if($entityType=="HepKeywordTermVariant"){
                             $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermVariant");
-                            $text = str_ireplace($entityName, "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'>".$entityName."</span>", $text);
-                            $arrayText[$place]=$text;
+                        }elseif($entityType=="HepKeywordTermNorm"){
+                            $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermNorm");
+                        }elseif($entityType=="HepatotoxKeyword"){
+                            $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepatotoxKeyword");
                         }
 
-                    }else{
-                        //This is when the entityName is made by more than one word
-                        //We search a range of positions for the highlight iterating over the arrayText taking into account the arrayHighlighted positions already highlighted
-                        $place=$this->findPlaceSeveralWords($entityName,$arrayText,$arrayHighlighted);
-                        if($place!=-1){
-                            //There is a place to make the highlight, starting at $place and finishing at $numberEntityName=str_word_count($entityName, 0);
-                            $numberEntityName=str_word_count($entityName, 0, '0..9()=-');
-                            $arrayEntityName=str_word_count($entityName, 1, '0..9()=-');
-                            //We mark the first
-                            $text=$arrayText[$place];
-                            $text = str_ireplace($arrayEntityName[0], '<mark class="term">'.$arrayEntityName[0], $text);
-                            $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermVariant");
-                            $text = str_ireplace($arrayEntityName[0], "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'>".$arrayEntityName[0], $text);
-                            $arrayText[$place]=$text;
-                            //Mark the last
-                            $text=$arrayText[$place+$numberEntityName-1];
-                            $text = str_ireplace($arrayEntityName[$numberEntityName-1], $arrayEntityName[$numberEntityName-1]."</span></mark>", $text);
-                            $arrayText[$place+$numberEntityName-1]=$text;
-                            //Add all range to arrayHighlighted
-                            foreach(range($place,$place+$numberEntityName-1) as $i){
-                                array_push($arrayHighlighted, $i);
-                            }
-                        }
-
+                        $text = str_ireplace($entityBackup, "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'>".$entityBackup."</span>", $text);
+                        $arrayText[$place]=$text;
+                        array_push($arrayHighlighted, $place);
                     }
                 }else{
-                    //We haven't changed color for entityBackup case insensitive search of entities. We change it now.
-                    //$text = str_ireplace($entityBackup, '<mark class="termSearched">'.$entityBackup.'</mark>', $text);
-                    $numberWords=str_word_count($entityName, 0, '0..9()=-');
-                    if($numberWords==1){
-                        $arrayPlaces=$this->findPlaceSingleWord($entityName,$arrayText,$arrayHighlighted);
-                        foreach($arrayPlaces as $place){
-                            array_push($arrayHighlighted, $place);
-                            $text=$arrayText[$place];
-                            $text = str_ireplace($entityBackup, '<mark class="termSearched">'.$entityBackup.'</mark>', $text);
-                            if($entityType=="HepKeywordTermVariant"){
-                                $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermVariant");
-                            }elseif($entityType=="HepKeywordTermNorm"){
-                                $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermNorm");
-                            }elseif($entityType=="HepatotoxKeyword"){
-                                $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepatotoxKeyword");
-                            }
-
-                            $text = str_ireplace($entityBackup, "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'>".$entityBackup."</span>", $text);
-                            $arrayText[$place]=$text;
+                    $place=$this->findPlaceSeveralWords($entityName,$arrayText,$arrayHighlighted);
+                    if($place!=-1){
+                        //There is a place to make the highlight, starting at $place and finishing at $numberEntityName=str_word_count($entityName, 0);
+                        $numberEntityName=str_word_count($entityName, 0, '0..9()=-');
+                        $arrayEntityName=str_word_count($entityName, 1, '0..9()=-');
+                        //We mark the first
+                        $text=$arrayText[$place];
+                        if($entityType=="HepKeywordTermVariant"){
+                            $text = str_ireplace($arrayEntityName[0], '<mark class="termSearched">'.$arrayEntityName[0], $text);
+                            $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermVariant");
+                        }elseif($entityType=="HepKeywordTermNorm"){
+                            $text = str_ireplace($arrayEntityName[0], '<mark class="termSearched">'.$arrayEntityName[0], $text);
+                            $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermNorm");
+                        }elseif($entityType=="HepatotoxKeyword"){
+                            $text = str_ireplace($arrayEntityName[0], '<mark class="termSearched">'.$arrayEntityName[0], $text);
+                            $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepatotoxKeyword");
                         }
-                    }else{
-                        $place=$this->findPlaceSeveralWords($entityName,$arrayText,$arrayHighlighted);
-                        if($place!=-1){
-                            //There is a place to make the highlight, starting at $place and finishing at $numberEntityName=str_word_count($entityName, 0);
-                            $numberEntityName=str_word_count($entityName, 0, '0..9()=-');
-                            $arrayEntityName=str_word_count($entityName, 1, '0..9()=-');
-                            //We mark the first
-                            $text=$arrayText[$place];
-                            ldd($entityType);
-                            if($entityType=="HepKeywordTermVariant"){
-                                $text = str_ireplace($arrayEntityName[0], '<mark class="termSearched">'.$arrayEntityName[0], $text);
-                                $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermVariant");
-                            }elseif($entityType=="HepKeywordTermNorm"){
-                                $text = str_ireplace($arrayEntityName[0], '<mark class="termSearched">'.$arrayEntityName[0], $text);
-                                $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermNorm");
-                            }elseif($entityType=="HepatotoxKeyword"){
-                                $text = str_ireplace($arrayEntityName[0], '<mark class="termSearched">'.$arrayEntityName[0], $text);
-                                $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepatotoxKeyword");
-                            }
 
-                            $text = str_ireplace($arrayEntityName[0], "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'>".$arrayEntityName[0], $text);
-                            $arrayText[$place]=$text;
-                            //Mark the last
-                            $text=$arrayText[$place+$numberEntityName-1];
-                            $text = str_ireplace($arrayEntityName[$numberEntityName-1], $arrayEntityName[$numberEntityName-1]."</span></mark>", $text);
-                            $arrayText[$place+$numberEntityName-1]=$text;
-                            //Add all range to arrayHighlighted
-                            foreach(range($place,$place+$numberEntityName-1) as $i){
-                                array_push($arrayHighlighted, $i);
-                            }
+                        $text = str_ireplace($arrayEntityName[0], "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'>".$arrayEntityName[0], $text);
+                        $arrayText[$place]=$text;
+                        //Mark the last
+                        $text=$arrayText[$place+$numberEntityName-1];
+                        $text = str_ireplace($arrayEntityName[$numberEntityName-1], $arrayEntityName[$numberEntityName-1]."</span></mark>", $text);
+                        $arrayText[$place+$numberEntityName-1]=$text;
+                        //Add all range to arrayHighlighted
+                        foreach(range($place,$place+$numberEntityName-1) as $i){
+                            array_push($arrayHighlighted, $i);
                         }
                     }
                 }
@@ -249,12 +248,11 @@ class UtilityExtension extends \Twig_Extension
                     foreach($arrayPlaces as $place){
                         array_push($arrayHighlighted, $place);
                         $text=$arrayText[$place];
-                        $text = str_ireplace($entityName, '<mark class="cyp">'.$entityName.'</mark>', $text);
+                        $text = str_ireplace($entityName, '<mark class="cytochrome">'.$entityName.'</mark>', $text);
                         $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($cytochrome2DocumentId,"Cytochrome");
                         $text = str_ireplace($entityName, "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'>".$entityName."</span>", $text);
                         $arrayText[$place]=$text;
                     }
-
                 }else{
                     //This is when the entityName is made by more than one word
                     //We search a range of positions for the highlight iterating over the arrayText taking into account the arrayHighlighted positions already highlighted
@@ -265,7 +263,7 @@ class UtilityExtension extends \Twig_Extension
                         $arrayEntityName=str_word_count($entityName, 1, '0..9()=-');
                         //We mark the first
                         $text=$arrayText[$place];
-                        $text = str_ireplace($arrayEntityName[0], '<mark class="cyp">'.$arrayEntityName[0], $text);
+                        $text = str_ireplace($arrayEntityName[0], '<mark class="cytochrome">'.$arrayEntityName[0], $text);
                         $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($cytochrome2DocumentId,"Cytochrome");
                         $text = str_ireplace($arrayEntityName[0], "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'>".$arrayEntityName[0], $text);
                         $arrayText[$place]=$text;
@@ -320,228 +318,112 @@ class UtilityExtension extends \Twig_Extension
         }
 
         //With arrayHepKeywordTermNorm2Document we can highlight Hepatotoxicity Terms
-        if($entityType=="HepKeywordTermNorm"){
-            $arrayHepKeywordTermNorm2Document = $em->getRepository('EtoxMicromeEntity2DocumentBundle:HepKeywordTermNorm2Document')->findHepKeywordTermNorm2Document($document);
-            foreach ($arrayHepKeywordTermNorm2Document as $term2Document){
-                $entityName=$term2Document->getHepKeywordNorm();
-                //ld($entityName);
-                $term2DocumentId=$term2Document->getId();
-                //If the name==entityBackup, we don't do anything, we'll change it at the end
-                if (strcasecmp($entityName, $entityBackup) != 0) {
-                    $numberWords=str_word_count($entityName, 0, '0..9()=-');
-                    //ld($numberWords);
-                    if($numberWords==1){
-                        //We search a possible place/s for the highlight iterating over the arrayText taking into account the arrayHighlighted positions already highlighted
-                        $arrayPlaces=$this->findPlaceSingleWord($entityName,$arrayText,$arrayHighlighted);
-                        //Once the positions are knwon, we do the replacement inside the positions of the $arrayText and keep the track of the position
-                        foreach($arrayPlaces as $place){
-                            array_push($arrayHighlighted, $place);
-                            $text=$arrayText[$place];
-                            $text = str_ireplace($entityName, '<mark class="term">'.$entityName.'</mark>', $text);
-                            $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermNorm");
-                            $text = str_ireplace($entityName, "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'>".$entityName."</span>", $text);
-                            $arrayText[$place]=$text;
-                        }
-
-                    }else{
-                        //This is when the entityName is made by more than one word
-                        //We search a range of positions for the highlight iterating over the arrayText taking into account the arrayHighlighted positions already highlighted
-                        $place=$this->findPlaceSeveralWords($entityName,$arrayText,$arrayHighlighted);
-                        if($place!=-1){
-                            //There is a place to make the highlight, starting at $place and finishing at $numberEntityName=str_word_count($entityName, 0);
-                            $numberEntityName=str_word_count($entityName, 0, '0..9()=-');
-                            $arrayEntityName=str_word_count($entityName, 1, '0..9()=-');
-                            //We mark the first
-                            $text=$arrayText[$place];
-                            $text = str_ireplace($arrayEntityName[0], '<mark class="term">'.$arrayEntityName[0], $text);
-                            $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermNorm");
-                            $text = str_ireplace($arrayEntityName[0], "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'>".$arrayEntityName[0], $text);
-                            $arrayText[$place]=$text;
-                            //Mark the last
-                            $text=$arrayText[$place+$numberEntityName-1];
-                            $text = str_ireplace($arrayEntityName[$numberEntityName-1], $arrayEntityName[$numberEntityName-1]."</span></mark>", $text);
-                            $arrayText[$place+$numberEntityName-1]=$text;
-                            //Add all range to arrayHighlighted
-                            foreach(range($place,$place+$numberEntityName-1) as $i){
-                                array_push($arrayHighlighted, $i);
-                            }
-                        }
+        $arrayHepKeywordTermNorm2Document = $em->getRepository('EtoxMicromeEntity2DocumentBundle:HepKeywordTermNorm2Document')->findHepKeywordTermNorm2Document($document);
+        foreach ($arrayHepKeywordTermNorm2Document as $term2Document){
+            $entityName=$term2Document->getHepKeywordNorm();
+            //ld($entityName);
+            $term2DocumentId=$term2Document->getId();
+            //If the name==entityBackup, we don't do anything, we'll change it at the end
+            if (strcasecmp($entityName, $entityBackup) != 0) {
+                $numberWords=str_word_count($entityName, 0, '0..9()=-');
+                //ld($numberWords);
+                if($numberWords==1){
+                    //We search a possible place/s for the highlight iterating over the arrayText taking into account the arrayHighlighted positions already highlighted
+                    $arrayPlaces=$this->findPlaceSingleWord($entityName,$arrayText,$arrayHighlighted);
+                    //Once the positions are knwon, we do the replacement inside the positions of the $arrayText and keep the track of the position
+                    foreach($arrayPlaces as $place){
+                        array_push($arrayHighlighted, $place);
+                        $text=$arrayText[$place];
+                        $text = str_ireplace($entityName, '<mark class="term">'.$entityName.'</mark>', $text);
+                        $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermNorm");
+                        $text = str_ireplace($entityName, "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'>".$entityName."</span>", $text);
+                        $arrayText[$place]=$text;
                     }
-                    $text = str_ireplace($entityName, '<mark class="term">'.$entityName.'</mark>', $text);
-                    //$mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermNorm");
 
-                    //$text = str_ireplace($entityName, "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'>".$entityName."</span>", $text);
                 }else{
-                    //We haven't changed color for entityBackup case insensitive search of entities. We change it now.
-                    //$text = str_ireplace($entityBackup, '<mark class="termSearched">'.$entityBackup.'</mark>', $text);
-                    $message="entra aqui";
-                    $numberWords=str_word_count($entityName, 0, '0..9()=-');
-                    if($numberWords==1){
-                        $arrayPlaces=$this->findPlaceSingleWord($entityName,$arrayText,$arrayHighlighted);
-                        foreach($arrayPlaces as $place){
-                            array_push($arrayHighlighted, $place);
-                            $text=$arrayText[$place];
-                            $text = str_ireplace($entityBackup, '<mark class="termSearched">'.$entityBackup.'</mark>', $text);
-                            if($entityType=="HepKeywordTermVariant"){
-                                $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermVariant");
-                            }elseif($entityType=="HepKeywordTermNorm"){
-                                $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermNorm");
-                            }elseif($entityType=="HepatotoxKeyword"){
-                                $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepatotoxKeyword");
-                            }
-
-                            $text = str_ireplace($entityBackup, "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'>".$entityBackup."</span>", $text);
-                            $arrayText[$place]=$text;
-                        }
-                    }else{
-                        $place=$this->findPlaceSeveralWords($entityName,$arrayText,$arrayHighlighted);
-                        if($place!=-1){
-                            //There is a place to make the highlight, starting at $place and finishing at $numberEntityName=str_word_count($entityName, 0);
-                            $numberEntityName=str_word_count($entityName, 0, '0..9()=-');
-                            $arrayEntityName=str_word_count($entityName, 1, '0..9()=-');
-                            //We mark the first
-                            $text=$arrayText[$place];
-                            ld($entityType);
-                            if($entityType=="HepKeywordTermVariant"){
-                                $text = str_ireplace($arrayEntityName[0], '<mark class="termSearched">'.$arrayEntityName[0], $text);
-                                $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermVariant");
-                            }elseif($entityType=="HepKeywordTermNorm"){
-                                $text = str_ireplace($arrayEntityName[0], '<mark class="termSearched">'.$arrayEntityName[0], $text);
-                                $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermNorm");
-                            }elseif($entityType=="HepatotoxKeyword"){
-                                $text = str_ireplace($arrayEntityName[0], '<mark class="termSearched">'.$arrayEntityName[0], $text);
-                                $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepatotoxKeyword");
-                            }
-
-                            $text = str_ireplace($arrayEntityName[0], "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'>".$arrayEntityName[0], $text);
-                            $arrayText[$place]=$text;
-                            //Mark the last
-                            $text=$arrayText[$place+$numberEntityName-1];
-                            $text = str_ireplace($arrayEntityName[$numberEntityName-1], $arrayEntityName[$numberEntityName-1]."</span></mark>", $text);
-                            $arrayText[$place+$numberEntityName-1]=$text;
-                            //Add all range to arrayHighlighted
-                            foreach(range($place,$place+$numberEntityName-1) as $i){
-                                array_push($arrayHighlighted, $i);
-                            }
+                    //This is when the entityName is made by more than one word
+                    //We search a range of positions for the highlight iterating over the arrayText taking into account the arrayHighlighted positions already highlighted
+                    $place=$this->findPlaceSeveralWords($entityName,$arrayText,$arrayHighlighted);
+                    if($place!=-1){
+                        //There is a place to make the highlight, starting at $place and finishing at $numberEntityName=str_word_count($entityName, 0);
+                        $numberEntityName=str_word_count($entityName, 0, '0..9()=-');
+                        $arrayEntityName=str_word_count($entityName, 1, '0..9()=-');
+                        //We mark the first
+                        $text=$arrayText[$place];
+                        $text = str_ireplace($arrayEntityName[0], '<mark class="term">'.$arrayEntityName[0], $text);
+                        $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermNorm");
+                        $text = str_ireplace($arrayEntityName[0], "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'>".$arrayEntityName[0], $text);
+                        $arrayText[$place]=$text;
+                        //Mark the last
+                        $text=$arrayText[$place+$numberEntityName-1];
+                        $text = str_ireplace($arrayEntityName[$numberEntityName-1], $arrayEntityName[$numberEntityName-1]."</span></mark>", $text);
+                        $arrayText[$place+$numberEntityName-1]=$text;
+                        //Add all range to arrayHighlighted
+                        foreach(range($place,$place+$numberEntityName-1) as $i){
+                            array_push($arrayHighlighted, $i);
                         }
                     }
                 }
-                //We also add a link around the Term in order to search co-mentioned terms
+                $text = str_ireplace($entityName, '<mark class="term">'.$entityName.'</mark>', $text);
+                //$mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermNorm");
 
-
-            }
-        }
-
-        if ($entityType=="HepatotoxKeyword"){
-            $arrayHepKeywordTermNorm2Document = $em->getRepository('EtoxMicromeEntity2DocumentBundle:HepKeywordTermNorm2Document')->findHepKeywordTermNorm2Document($document);
-            foreach ($arrayHepKeywordTermNorm2Document as $term2Document){
-                $entityName=$term2Document->getHepKeywordNorm();
-                //ld($entityName);
-                //ld($entityBackup);
-                $term2DocumentId=$term2Document->getId();
-                //If the name==entityBackup, we don't do anything, we'll change it at the end
-                if (strcasecmp($entityName, $entityBackup) != 0) {
-                    $numberWords=str_word_count($entityName, 0, '0..9()=-');
-                    //ld($numberWords);
-                    if($numberWords==1){
-                        //We search a possible place/s for the highlight iterating over the arrayText taking into account the arrayHighlighted positions already highlighted
-                        $arrayPlaces=$this->findPlaceSingleWord($entityName,$arrayText,$arrayHighlighted);
-                        //Once the positions are knwon, we do the replacement inside the positions of the $arrayText and keep the track of the position
-                        foreach($arrayPlaces as $place){
-                            array_push($arrayHighlighted, $place);
-                            $text=$arrayText[$place];
-                            $text = str_ireplace($entityName, '<mark class="term">'.$entityName.'</mark>', $text);
+                //$text = str_ireplace($entityName, "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'>".$entityName."</span>", $text);
+            }else{
+                //We haven't changed color for entityBackup case insensitive search of entities. We change it now.
+                //$text = str_ireplace($entityBackup, '<mark class="termSearched">'.$entityBackup.'</mark>', $text);
+                $message="entra aqui";
+                $numberWords=str_word_count($entityName, 0, '0..9()=-');
+                if($numberWords==1){
+                    $arrayPlaces=$this->findPlaceSingleWord($entityName,$arrayText,$arrayHighlighted);
+                    foreach($arrayPlaces as $place){
+                        array_push($arrayHighlighted, $place);
+                        $text=$arrayText[$place];
+                        $text = str_ireplace($entityBackup, '<mark class="termSearched">'.$entityBackup.'</mark>', $text);
+                        if($entityType=="HepKeywordTermVariant"){
+                            $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermVariant");
+                        }elseif($entityType=="HepKeywordTermNorm"){
                             $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermNorm");
-                            $text = str_ireplace($entityName, "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'>".$entityName."</span>", $text);
-                            $arrayText[$place]=$text;
+                        }elseif($entityType=="HepatotoxKeyword"){
+                            $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepatotoxKeyword");
                         }
 
-                    }else{
-                        //This is when the entityName is made by more than one word
-                        //We search a range of positions for the highlight iterating over the arrayText taking into account the arrayHighlighted positions already highlighted
-                        $place=$this->findPlaceSeveralWords($entityName,$arrayText,$arrayHighlighted);
-                        if($place!=-1){
-                            //There is a place to make the highlight, starting at $place and finishing at $numberEntityName=str_word_count($entityName, 0);
-                            $numberEntityName=str_word_count($entityName, 0, '0..9()=-');
-                            $arrayEntityName=str_word_count($entityName, 1, '0..9()=-');
-                            //We mark the first
-                            $text=$arrayText[$place];
-                            $text = str_ireplace($arrayEntityName[0], '<mark class="term">'.$arrayEntityName[0], $text);
-                            $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermNorm");
-                            $text = str_ireplace($arrayEntityName[0], "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'>".$arrayEntityName[0], $text);
-                            $arrayText[$place]=$text;
-                            //Mark the last
-                            $text=$arrayText[$place+$numberEntityName-1];
-                            $text = str_ireplace($arrayEntityName[$numberEntityName-1], $arrayEntityName[$numberEntityName-1]."</span></mark>", $text);
-                            $arrayText[$place+$numberEntityName-1]=$text;
-                            //Add all range to arrayHighlighted
-                            foreach(range($place,$place+$numberEntityName-1) as $i){
-                                array_push($arrayHighlighted, $i);
-                            }
-                        }
+                        $text = str_ireplace($entityBackup, "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'>".$entityBackup."</span>", $text);
+                        $arrayText[$place]=$text;
                     }
-                    $text = str_ireplace($entityName, '<mark class="term">'.$entityName.'</mark>', $text);
-                    //$mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermNorm");
-
-                    //$text = str_ireplace($entityName, "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'>".$entityName."</span>", $text);
                 }else{
-                    //We haven't changed color for entityBackup case insensitive search of entities. We change it now.
-                    //$text = str_ireplace($entityBackup, '<mark class="termSearched">'.$entityBackup.'</mark>', $text);
-                    $numberWords=str_word_count($entityName, 0, '0..9()=-');
-                    if($numberWords==1){
-                        $arrayPlaces=$this->findPlaceSingleWord($entityName,$arrayText,$arrayHighlighted);
-                        foreach($arrayPlaces as $place){
-                            array_push($arrayHighlighted, $place);
-                            $text=$arrayText[$place];
-                            $text = str_ireplace($entityBackup, '<mark class="termSearched">'.$entityBackup.'</mark>', $text);
-                            if($entityType=="HepKeywordTermVariant"){
-                                $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermVariant");
-                            }elseif($entityType=="HepKeywordTermNorm"){
-                                $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermNorm");
-                            }elseif($entityType=="HepatotoxKeyword"){
-                                $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepatotoxKeyword");
-                            }
-
-                            $text = str_ireplace($entityBackup, "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'>".$entityBackup."</span>", $text);
-                            $arrayText[$place]=$text;
+                    $place=$this->findPlaceSeveralWords($entityName,$arrayText,$arrayHighlighted);
+                    if($place!=-1){
+                        //There is a place to make the highlight, starting at $place and finishing at $numberEntityName=str_word_count($entityName, 0);
+                        $numberEntityName=str_word_count($entityName, 0, '0..9()=-');
+                        $arrayEntityName=str_word_count($entityName, 1, '0..9()=-');
+                        //We mark the first
+                        $text=$arrayText[$place];
+                        ld($entityType);
+                        if($entityType=="HepKeywordTermVariant"){
+                            $text = str_ireplace($arrayEntityName[0], '<mark class="termSearched">'.$arrayEntityName[0], $text);
+                            $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermVariant");
+                        }elseif($entityType=="HepKeywordTermNorm"){
+                            $text = str_ireplace($arrayEntityName[0], '<mark class="termSearched">'.$arrayEntityName[0], $text);
+                            $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermNorm");
+                        }elseif($entityType=="HepatotoxKeyword"){
+                            $text = str_ireplace($arrayEntityName[0], '<mark class="termSearched">'.$arrayEntityName[0], $text);
+                            $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepatotoxKeyword");
                         }
-                    }else{
-                        $place=$this->findPlaceSeveralWords($entityName,$arrayText,$arrayHighlighted);
-                        if($place!=-1){
-                            //There is a place to make the highlight, starting at $place and finishing at $numberEntityName=str_word_count($entityName, 0);
-                            $numberEntityName=str_word_count($entityName, 0, '0..9()=-');
-                            $arrayEntityName=str_word_count($entityName, 1, '0..9()=-');
-                            //We mark the first
-                            $text=$arrayText[$place];
-                            //ld($entityType);
-                            if($entityType=="HepKeywordTermVariant"){
-                                $text = str_ireplace($arrayEntityName[0], '<mark class="termSearched">'.$arrayEntityName[0], $text);
-                                $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermVariant");
-                            }elseif($entityType=="HepKeywordTermNorm"){
-                                $text = str_ireplace($arrayEntityName[0], '<mark class="termSearched">'.$arrayEntityName[0], $text);
-                                $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermNorm");
-                            }elseif($entityType=="HepatotoxKeyword"){
-                                $text = str_ireplace($arrayEntityName[0], '<mark class="termSearched">'.$arrayEntityName[0], $text);
-                                $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepatotoxKeyword");
-                            }
 
-                            $text = str_ireplace($arrayEntityName[0], "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'>".$arrayEntityName[0], $text);
-                            $arrayText[$place]=$text;
-                            //Mark the last
-                            $text=$arrayText[$place+$numberEntityName-1];
-                            $text = str_ireplace($arrayEntityName[$numberEntityName-1], $arrayEntityName[$numberEntityName-1]."</span></mark>", $text);
-                            $arrayText[$place+$numberEntityName-1]=$text;
-                            //Add all range to arrayHighlighted
-                            foreach(range($place,$place+$numberEntityName-1) as $i){
-                                array_push($arrayHighlighted, $i);
-                            }
+                        $text = str_ireplace($arrayEntityName[0], "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'>".$arrayEntityName[0], $text);
+                        $arrayText[$place]=$text;
+                        //Mark the last
+                        $text=$arrayText[$place+$numberEntityName-1];
+                        $text = str_ireplace($arrayEntityName[$numberEntityName-1], $arrayEntityName[$numberEntityName-1]."</span></mark>", $text);
+                        $arrayText[$place+$numberEntityName-1]=$text;
+                        //Add all range to arrayHighlighted
+                        foreach(range($place,$place+$numberEntityName-1) as $i){
+                            array_push($arrayHighlighted, $i);
                         }
                     }
                 }
-                //We also add a link around the Term in order to search co-mentioned terms
-
-
             }
+            //We also add a link around the Term in order to search co-mentioned terms
         }
 
 
@@ -727,10 +609,12 @@ class UtilityExtension extends \Twig_Extension
             }else{
                 //We haven't changed color for entityBackup case insensitive search of entities. We change it now.
                 //$text = str_ireplace($entityBackup, '<mark class="termSearched">'.$entityBackup.'</mark>', $text);
-                $message="entra aqui";
                 $numberWords=str_word_count($entityName, 0, '0..9()=-');
+                //ld($numberWords);
+                //ld($arrayText);
                 if($numberWords==1){
                     $arrayPlaces=$this->findPlaceSingleWord($entityName,$arrayText,$arrayHighlighted);
+                    //ld($arrayPlaces);
                     foreach($arrayPlaces as $place){
                         array_push($arrayHighlighted, $place);
                         $text=$arrayText[$place];
@@ -744,6 +628,7 @@ class UtilityExtension extends \Twig_Extension
                         }
                         $text = str_ireplace($entityBackup, "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'>".$entityBackup."</span>", $text);
                         $arrayText[$place]=$text;
+
                     }
                 }else{
                     $place=$this->findPlaceSeveralWords($entityName,$arrayText,$arrayHighlighted);
@@ -1186,7 +1071,7 @@ class UtilityExtension extends \Twig_Extension
                 }
 
             }
-        }elseif($entityType=="HepatotoxKeyword"){
+        }elseif($entityType=="Marker"){
             if($source=="document")
             {
                 $marker2Document=$entity2Document;

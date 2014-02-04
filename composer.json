@@ -29,7 +29,7 @@
         "friendsofsymfony/jsrouting-bundle": "~1.1",
         "friendsofsymfony/user-bundle": "*",
         "friendsofsymfony/elastica-bundle": "3.0.*@dev",
-        "white-october/pagerfanta-bundle": "dev-master"
+        "knplabs/knp-paginator-bundle": "~2.4"
 
     },
     "scripts": {

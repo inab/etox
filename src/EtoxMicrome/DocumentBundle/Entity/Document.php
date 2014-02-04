@@ -77,9 +77,9 @@ class Document
     private $phosval;
 
     /**
-     * @var integer
+     * @var float
      *
-     * @ORM\Column(name="patternCount", type="integer", nullable=true)
+     * @ORM\Column(name="patternCount", type="float", nullable=true)
      */
     //private $patternCount;
 
@@ -89,10 +89,7 @@ class Document
      *
      * @ORM\Column(name="created", type="datetime")
      */
-
-
-
-    private $created;
+     private $created;
 
     /**
      * @var \DateTime

@@ -54,7 +54,7 @@
                             {% set text=result.getText %}
                             {% if className == 'Abstracts' %}
 
-                                {{ text | highlightEntitiesAbstracts (result, keyword, field, whatToSearch, source, entityType)| raw }}
+                                {{ text | highlightEntitiesDocuments (result, keyword, field, whatToSearch, source, entityType)| raw }}
                                 {% set pmid=result.getPmid %}
                                 {% set link="http://www.ncbi.nlm.nih.gov/pubmed/" ~ pmid %}
                                 {% set imageRoute = 'images/pubmed.png' %}
@@ -64,25 +64,26 @@
                                     {% set pmid=result.getUid %}
                                     {% set link="http://www.ncbi.nlm.nih.gov/pubmed/" ~ pmid %}
                                     {% set imageRoute = 'images/pubmed.png' %}
+                                    <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/></a>
                                 {% elseif kind == "fulltext" %}
                                     {% set pmid=result.getUid %}
                                     {% set arrayPmid = pmid|split('_') %}
                                     {% set pmidCut = arrayPmid[1] %}
                                     {% set link="http://www.ncbi.nlm.nih.gov/pubmed/" ~ pmidCut %}
                                     {% set imageRoute = 'images/fulltext.png' %}
+                                    <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/></a>
                                 {% elseif kind == "nda" %}
                                     {% set link="http://www.fda.gov" %}
                                     {% set imageRoute = 'images/nda.png' %}
+                                    <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/></a>
                                 {% elseif kind == "epar" %}
                                     {% set link="http://www.fda.gov" %}
                                     {% set imageRoute = 'images/epar.png' %}
+                                    <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/></a>
                                 {% endif %}
                                 {%set text = text | highlightEntitiesDocuments (result,keyword,field,whatToSearch,source,entityType)%}
 
                             {% endif%}
-                            {% if link is defined %}
-                                <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/></a>
-                            {% endif %}
                             {{ score |raw }}.
                             {{ text | raw  }}
 
@@ -115,7 +116,7 @@
                         <small>
                             <em>
                                 Entity mentions are highlighted as follows:
-                                <mark class="termSearched">What you searched</mark>, <mark class="compound">Compounds</mark>, <mark class="cyp">CYPs</mark>, <mark class="marker">Markers</mark>, <mark class="keyword">Keywords</mark>, <mark class="specie">Species</mark>
+                                <mark class="termSearched">What you searched</mark>, <mark class="compound">Compounds</mark>, <mark class="cyp">CYPs</mark>, <mark class="marker">Markers</mark>, <mark class="term">Terms</mark>, <mark class="specie">Species</mark>
                             </em>
                             . Curated evidences are indicated by:
                             <a class="curated" href="#"> </a>

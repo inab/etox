@@ -18,7 +18,7 @@
     <dd><a href="#cytochromes" name="cytochrome">Cytochromes</a></dd>
   {% endif %}
 
-  {% if entityType in ["HepatotoxKeyword", "HepatotoxKeyword"] %}
+  {% if entityType in ["Marker", "marker"] %}
     <dd class="active"><a href="#markers" name="marker">Markers</a></dd>
   {% else %}
     <dd class="hide-for-small"><a href="#markers" name="marker">Markers</a></dd>
@@ -341,7 +341,7 @@
         </div>
     </div>
   </li>
-    {% if entityType in ["HepatotoxKeyword", "hepatotoxKeyword"] %}
+    {% if entityType in ["marker", "Marker"] %}
         <li class="active" id="markersTab">
     {% else %}
         <li id="markersTab">
