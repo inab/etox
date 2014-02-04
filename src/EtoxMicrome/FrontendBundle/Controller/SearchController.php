@@ -83,11 +83,11 @@ class SearchController extends Controller
         //We create an array with the ids of the second array: $arrayIds
         $arrayIds=array();
         foreach($arrayDocuments_2 as $document){
-            array_push($arrayIds, $document->getId());
+            array_push($arrayIds, $document->getSentenceId());
         }
         //Now we iterate over the first array and if an id exists inside $arrayIds it will take part of the intersection array
         foreach($arrayDocuments_1 as $document){
-            $documentId=$document->getId();
+            $documentId=$document->getSentenceId();
             if(in_array($documentId, $arrayIds)){
                 array_push($intersectionArray, $document);
             }
@@ -643,7 +643,7 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
         }elseif(($whatToSearch=="smile") or ($whatToSearch == "inChi")){
             //We get the entity from the smile
             $entity=$em->getRepository('EtoxMicromeEntityBundle:'.$entityType)->searchEntityGivenAnStructureText($entityName);
-        }elseif($whatToSearch=="any" or $whatToSearch=="withCompounds"){
+        }elseif($whatToSearch=="any" or $whatToSearch=="withCompounds" or $whatToSearch=="withCytochromes" or $whatToSearch=="withMarkers"){
             ////////////////////////////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////////////////////////////
             ///  If we are searching for Cytochromes or Markers, with the any or WithCompounds//////

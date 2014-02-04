@@ -113,8 +113,13 @@ class Entity2AbstractRepository extends EntityRepository
             $entity2Document=$em->getRepository('EtoxMicromeEntity2AbstractBundle:Entity2Abstract')->findOneById($entity2AbstractId);
             $nameEntity=$entity2Document->getName();
             $entity=$em->getRepository("EtoxMicromeEntityBundle:CompoundDict")->findOneByName($nameEntity);
+            if($entity==null){
+                $stringOutput="";
+                return $stringOutput;
+            }
             //Once we have the entity itself we have to create a dictionary to save with key=field, value=field_value which can be processed to create the string to the mouseover
             $name=$entity->getName();
+
             if($name!=""){
                 $dictionary["name"]=$name;
             }
@@ -158,7 +163,6 @@ class Entity2AbstractRepository extends EntityRepository
             if($smile!=""){
                 $dictionary["smile"]=$smile;
             }
-
         }
 
         if($qualifier=="Marker"){

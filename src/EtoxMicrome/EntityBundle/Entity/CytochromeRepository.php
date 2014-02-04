@@ -111,7 +111,6 @@ class CytochromeRepository extends EntityRepository
     public function searchEntityGivenACanonical($canonical)
     {
         $message="Inside searchEntityGivenACanonical at CytochromeRepository";
-        //ldd($message);
         $query = $this->_em->createQuery("
             SELECT c
             FROM EtoxMicromeEntityBundle:Cytochrome c
@@ -120,12 +119,12 @@ class CytochromeRepository extends EntityRepository
         $query->setParameter('canonical', $canonical);
         $compound=$query->getResult();
         if(count($compound)==0){
-            $errorMessage="There is no entity with that entityId ($entityId)";
+            $errorMessage="There is no entity with that canonical ($canonical)";
             $entity=array();
             return $entity;
         }
         if(count($compound)!=1){
-            $errorMessage="There are more than one entityId for '$entityId'";
+            $errorMessage="There are more than one canonical for '$canonical'";
 
         }
         //We return only one entity. Later on we will make the query expansion so we will collect all of them

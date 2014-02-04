@@ -183,11 +183,11 @@ class UtilityExtension extends \Twig_Extension
                         array_push($arrayHighlighted, $place);
                         $text=$arrayText[$place];
                         $text = str_ireplace($entityBackup, '<mark class="termSearched">'.$entityBackup.'</mark>', $text);
-                        if($entityType=="HepKeywordTermVariant"){
+                        if($entityType=="keyword"){
                             $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermVariant");
-                        }elseif($entityType=="HepKeywordTermNorm"){
+                        }elseif($entityType=="keyword"){
                             $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermNorm");
-                        }elseif($entityType=="HepatotoxKeyword"){
+                        }elseif($entityType=="keyword"){
                             $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepatotoxKeyword");
                         }
 
@@ -701,8 +701,6 @@ class UtilityExtension extends \Twig_Extension
 
 
         $arrayEntity2Abstract = $em->getRepository('EtoxMicromeEntity2AbstractBundle:Entity2Abstract')->findEntity2AbstractFromAbstract($abstract);
-        //ld($arrayEntity2Abstract);
-        //ld($arrayEntity2Abstract);
         foreach ($arrayEntity2Abstract as $entity2Abstract){
 
             $entityName=$entity2Abstract->getName();//We get the name
@@ -710,7 +708,6 @@ class UtilityExtension extends \Twig_Extension
             $entity2AbstractId=$entity2Abstract->getId();
             //If the name==entityBackup, we don't do anything, we'll change it at the end
             //ld($entityName);
-            //ld($qualifier);
             if (strcasecmp($entityName, $entityBackup) != 0) {
                 //sustituimos en el text
                 switch ($qualifier) {
@@ -820,7 +817,6 @@ class UtilityExtension extends \Twig_Extension
                             //We search a possible place/s for the highlight iterating over the arrayText taking into account the arrayHighlighted positions already highlighted
                             $arrayPlaces=$this->findPlaceSingleWord($entityName,$arrayText,$arrayHighlighted);
                             //Once the positions are knwon, we do the replacement inside the positions of the $arrayText and keep the track of the position
-                            ld($arrayPlaces);
                             foreach($arrayPlaces as $place){
                                 $message="entra aqui";
                                 array_push($arrayHighlighted, $place);
