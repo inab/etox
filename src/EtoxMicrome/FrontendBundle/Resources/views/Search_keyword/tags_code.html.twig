@@ -188,6 +188,12 @@
                         <label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" value="withMarkers"><span class="custom radio"></span> With Markers</label>
                     {% endif %}
 
+                    {% if whatToSearch=="compoundsTermsRelations" %}
+                        <label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" CHECKED value="compoundsTermsRelations"><span class="custom radio"></span> Relations</label>
+                    {% else %}
+                        <label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" value="compoundsTermsRelations"><span class="custom radio"></span> Relations</label>
+                    {% endif %}
+
                 </fieldset>
             </form>
         </div>
@@ -297,6 +303,12 @@
                     {% else %}
                         <label for="radioWhatToSearch"><input name="cytochromeWhatToSearch" type="radio" id="radioCytochromeWhatToSearch" style="display:none;" value="withCompounds"><span class="custom radio"></span> With Compounds</label>
                     {% endif %}
+
+                    {% if whatToSearch=="compoundsCytochromesRelations" %}
+                        <label for="radioWhatToSearch"><input name="cytochromeWhatToSearch" type="radio" id="radioCytochromeWhatToSearch" style="display:none;" CHECKED value="compoundsCytochromesRelations"><span class="custom radio"></span> Relations</label>
+                    {% else %}
+                        <label for="radioWhatToSearch"><input name="cytochromeWhatToSearch" type="radio" id="radioCytochromeWhatToSearch" style="display:none;" value="compoundsCytochromesRelations"><span class="custom radio"></span> Relations</label>
+                    {% endif %}
                 </fieldset>
             </form>
         </div>
@@ -394,6 +406,12 @@
                         <label for="radioWhatToSearch"><input name="markerWhatToSearch" type="radio" id="radioMarkerWhatToSearch" style="display:none;" CHECKED value="withCompounds"><span class="custom radio checked"></span> With Compounds</label>
                     {% else %}
                         <label for="radioWhatToSearch"><input name="markerWhatToSearch" type="radio" id="radioMarkerWhatToSearch" style="display:none;" value="withCompounds"><span class="custom radio"></span> With Compounds</label>
+                    {% endif %}
+
+                    {% if whatToSearch=="compoundsMarkersRelations" %}
+                        <label for="radioWhatToSearch"><input name="markerWhatToSearch" type="radio" id="radioMarkerWhatToSearch" style="display:none;" CHECKED value="compoundsMarkersRelations"><span class="custom radio checked"></span> Relations</label>
+                    {% else %}
+                        <label for="radioWhatToSearch"><input name="markerWhatToSearch" type="radio" id="radioMarkerWhatToSearch" style="display:none;" value="compoundsMarkersRelations"><span class="custom radio"></span> Relations</label>
                     {% endif %}
                 </fieldset>
             </form>

@@ -1,0 +1,79 @@
+{% extends '::frontend.html.twig' %}
+{% block title %}Listing Evidences {% endblock %}
+{% block article %}
+    {% include 'FrontendBundle:Search_document:tags_code.html.twig' %}
+    <div id="evidences">
+        {% set entityName=entity.getName %}
+        <a href="{{ path('export_abstracts',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'entityName': entityName, 'download': true}) }}">(Generate a file with results)</a>
+        {% set foundFor=entityType %}
+        {% if foundFor=="CompoundDict" %}
+            {% set foundFor="Compound" %}
+        {% endif %}
+        {% set entityId = entity.getId %}
+        <div id="documentsResults">
+            <a name="documents"></a>
+            {% if entityType in ["Cytochrome", "Marker"] %}
+            {% else %}
+                <div class="jumpToDocuments">
+                    <a href="#" id="jumpToAbstracts">(View abstracts)</a>
+                </div>
+            {% endif %}
+            <h3>Ranked sentences in Documents for {{foundFor}}: {{ entityBackup }}</h3>
+            <div class="btmspc-dbl">
+                <small>
+                    <em>
+                        Entity mentions are highlighted as follows:
+                        <mark class="termSearched">What you searched</mark>, <mark class="compound">Compounds</mark>, <mark class="cytochrome">CYPs</mark>, <mark class="marker">Markers</mark>, <mark class="term">Terms</mark>, <mark class="specie">Species</mark>
+                    </em>
+                    . Curated evidences are indicated by:
+                    <a class="curated" href="#"> </a>
+                </small>
+            </div>
+            <table id="tableResults" class="tablesorter">
+                <thead>
+                    <th>Type</th>
+                    <th>Evidence</th>
+                    <th>Sentence</th>
+                </thead>
+                <tbody>
+                    {% set contador = 1 %}
+                    {% for entity2Document in arrayEntity2Document %}
+                        <tr class="document {{ cycle(['odd', 'even'], contador) }}">
+                            {% set contador = contador + 1 %}
+                            {# set kind = entity2Document.document.getKind #}
+                            {# set score = entity2Document.document.getHepval #}
+                            {# set score = score|number_format(2) #}
+                            {# set score = score|colorCodingScore #}
+                            {% set score= entity2Document.getRelationScore %}
+                            <td class="center">
+                                {{ entity2Document.getRelationType }}
+                            </td>
+                            <td>
+                                {{ entity2Document.getRelationEvidence }}
+                            </td>
+                            {% set text=entity2Document.getSentence %}
+                            <td>
+                                {# text | highlightEntitiesDocuments (entity2Document.document,entityBackup,field,whatToSearch, source, entityType)| raw #}
+                                {{ text | highlightRelations (entity2Document.getSentenceId,entityBackup, whatToSearch)| raw }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+
+            <!-- here pagination block for Documents -->
+
+           <div class="pagination">
+                {{ simple_paginator_render(
+                    'search_interface_search_field_whatToSearch_entityType_source_entity', 'documents',
+                        {
+                            'routeParams' : {'field' : field, 'whatToSearch' : whatToSearch, 'entityType' : entityType, 'source' : source, 'entityName' : entityBackup},
+                            'container_class' : 'pagination'
+                        }
+                    )
+                }}
+            </div>
+        </div>
+    {% include 'FrontendBundle:Search_document:scripts_code.html.twig' %}
+{% endblock %}

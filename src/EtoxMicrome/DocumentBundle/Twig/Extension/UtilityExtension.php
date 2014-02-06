@@ -28,6 +28,8 @@ class UtilityExtension extends \Twig_Extension
         'highlightKeywordText' => new \Twig_Filter_Method($this, 'highlightKeywordText'),
         'colorCodingScore' => new \Twig_Filter_Method($this, 'colorCodingScore'),
         'setCurationHtml' => new \Twig_Filter_Method($this, 'setCurationHtml'),
+        'highlightRelations' => new \Twig_Filter_Method($this, 'highlightRelations'),
+
         );
     }
 
@@ -941,6 +943,49 @@ class UtilityExtension extends \Twig_Extension
         $message="highlightKeywordText!!!";
         $text = str_ireplace($keyword, '<mark class="keyword">'.$keyword.'</mark>', $text);
         return ($text);
+    }
+
+    public function highlightRelations($text,$sentenceId,$entityBackup, $whatToSearch)
+    {
+        //Cutre highlight para salir del paso durante la live demo del viernes 7 de febrero 2014
+        //We have to search for all the relations that are with the same sentenceId
+        $em=$this->doctrine->getManager();
+        if($whatToSearch=="compoundsTermsRelations"){
+            $arrayRelations=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Compound2Term2Document')->getAllRelationsFromSentenceId($sentenceId)->getResult();
+            //For each relation we have to highlight a Compound and a Term
+            foreach($arrayRelations as $relation){
+                $compound=$relation->getCompound();
+                $term=$relation->getTerm();
+                $text=str_ireplace($compound, "<mark class='compound'>$compound</mark>", $text);
+                $text=str_ireplace($term, "<mark class='term'>$term</mark>", $text);
+            }
+        }
+
+        if($whatToSearch=="compoundsCytochromesRelations"){
+            $arrayRelations=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Compound2Cyp2Document')->getAllRelationsFromSentenceId($sentenceId)->getResult();
+            //For each relation we have to highlight a Compound and a Cyp
+            foreach($arrayRelations as $relation){
+                $compound=$relation->getCompound();
+                $cyp=$relation->getCyp();
+                $text=str_ireplace($compound, "<mark class='compound'>$compound</mark>", $text);
+                $text=str_ireplace($cyp, "<mark class='cytochrome'>$cyp</mark>", $text);
+            }
+        }
+
+        if($whatToSearch=="compoundsMarkersRelations"){
+            $arrayRelations=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Compound2Marker2Document')->getAllRelationsFromSentenceId($sentenceId)->getResult();
+            //For each relation we have to highlight a Compound and a Marker
+            foreach($arrayRelations as $relation){
+                $compound=$relation->getCompound();
+                $marker=$relation->getLiverMarkerName();
+                $text=str_ireplace($compound, "<mark class='compound'>$compound</mark>", $text);
+                $text=str_ireplace($marker, "<mark class='marker'>$marker</mark>", $text);
+            }
+        }
+        return($text);
+
+
+
     }
 
     public function colorCodingScore($score)

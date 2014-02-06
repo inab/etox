@@ -826,6 +826,124 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                 'source' => $source,
                 'entityName' => $entityName,
                 ));
+        }elseif($whatToSearch=="compoundsTermsRelations"){
+            if($entityType=="CompoundDict"){
+                $entity=$em->getRepository('EtoxMicromeEntityBundle:'.$entityType)->getEntityFromName($entityName);
+                if(count($entity)==0){
+                    //We don't have entities. We render the template with No results
+                    return $this->render('FrontendBundle:Default:no_results.html.twig', array(
+                        'field' => $field,
+                        'whatToSearch' => $whatToSearch,
+                        'entityType' => $entityType,
+                        'entity' => $entityBackup,
+                        'entityName' => $entityName,
+                    ));
+                }
+                $arrayEntityName=array();
+                array_push($arrayEntityName, $entityName);
+                $arrayEntity2Document = $paginator
+                    ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "documents")
+                    ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "documents")
+                    ->paginate($em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getCompound2Term2DocumentFromFieldDQL($field, $entityType, $arrayEntityName), 'documents')
+                    ->getResult()
+                ;
+                $arrayEntity2Abstract = $paginator
+                    ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "abstracts")
+                    ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "abstracts")
+                    ->paginate($em->getRepository('EtoxMicromeEntity2AbstractBundle:Entity2Abstract')->getCompound2Term2DocumentFromFieldDQL($field, "CompoundMesh", $arrayEntityName), 'abstracts')
+                    ->getResult()
+                ;
+                return $this->render('FrontendBundle:Search_document:indexRelations.html.twig', array(
+                    'field' => $field,
+                    'whatToSearch' => $whatToSearch,
+                    'entityType' => $entityType,
+                    'source' => $source,
+                    'entity' => $entity,
+                    'entityBackup' => $entityBackup,
+                    'arrayEntity2Document' => $arrayEntity2Document,
+                    'arrayEntity2Abstract' => $arrayEntity2Abstract,
+                    'entityName' => $entityName,
+                ));
+            }
+        }elseif($whatToSearch=="compoundsCytochromesRelations"){
+            if($entityType=="Cytochrome"){
+                $entity=$em->getRepository('EtoxMicromeEntityBundle:'.$entityType)->getEntityFromName($entityName);
+                if(count($entity)==0){
+                    //We don't have entities. We render the template with No results
+                    return $this->render('FrontendBundle:Default:no_results.html.twig', array(
+                        'field' => $field,
+                        'whatToSearch' => $whatToSearch,
+                        'entityType' => $entityType,
+                        'entity' => $entityBackup,
+                        'entityName' => $entityName,
+                    ));
+                }
+                $arrayEntityName=array();
+                array_push($arrayEntityName, $entityName);
+                $arrayEntity2Document = $paginator
+                    ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "documents")
+                    ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "documents")
+                    ->paginate($em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getCompound2Cytochrome2DocumentFromFieldDQL($field, $entityType, $arrayEntityName), 'documents')
+                    ->getResult()
+                ;
+                $arrayEntity2Abstract = $paginator
+                    ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "abstracts")
+                    ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "abstracts")
+                    ->paginate($em->getRepository('EtoxMicromeEntity2AbstractBundle:Entity2Abstract')->getCompound2Cytochrome2DocumentFromFieldDQL($field, "CompoundMesh", $arrayEntityName), 'abstracts')
+                    ->getResult()
+                ;
+                return $this->render('FrontendBundle:Search_document:indexRelations.html.twig', array(
+                    'field' => $field,
+                    'whatToSearch' => $whatToSearch,
+                    'entityType' => $entityType,
+                    'source' => $source,
+                    'entity' => $entity,
+                    'entityBackup' => $entityBackup,
+                    'arrayEntity2Document' => $arrayEntity2Document,
+                    'arrayEntity2Abstract' => $arrayEntity2Abstract,
+                    'entityName' => $entityName,
+                ));
+            }
+        }elseif($whatToSearch=="compoundsMarkersRelations"){
+            if($entityType=="Marker"){
+
+                $entity=$em->getRepository('EtoxMicromeEntityBundle:'.$entityType)->getEntityFromName($entityName);
+                if(count($entity)==0){
+                    //We don't have entities. We render the template with No results
+                    return $this->render('FrontendBundle:Default:no_results.html.twig', array(
+                        'field' => $field,
+                        'whatToSearch' => $whatToSearch,
+                        'entityType' => $entityType,
+                        'entity' => $entityBackup,
+                        'entityName' => $entityName,
+                    ));
+                }
+                $arrayEntityName=array();
+                array_push($arrayEntityName, $entityName);
+                $arrayEntity2Document = $paginator
+                    ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "documents")
+                    ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "documents")
+                    ->paginate($em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getCompound2Marker2DocumentFromFieldDQL($field, $entityType, $arrayEntityName), 'documents')
+                    ->getResult()
+                ;
+                $arrayEntity2Abstract = $paginator
+                    ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "abstracts")
+                    ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "abstracts")
+                    ->paginate($em->getRepository('EtoxMicromeEntity2AbstractBundle:Entity2Abstract')->getCompound2Marker2DocumentFromFieldDQL($field, "CompoundMesh", $arrayEntityName), 'abstracts')
+                    ->getResult()
+                ;
+                return $this->render('FrontendBundle:Search_document:indexRelations.html.twig', array(
+                    'field' => $field,
+                    'whatToSearch' => $whatToSearch,
+                    'entityType' => $entityType,
+                    'source' => $source,
+                    'entity' => $entity,
+                    'entityBackup' => $entityBackup,
+                    'arrayEntity2Document' => $arrayEntity2Document,
+                    'arrayEntity2Abstract' => $arrayEntity2Abstract,
+                    'entityName' => $entityName,
+                ));
+            }
         }
         ////////////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////////

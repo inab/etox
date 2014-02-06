@@ -147,6 +147,8 @@ fos_elastica:
                             insert: true
                             update: true
                             delete: true
+                        elastica_to_model_transformer:
+                            ignore_missing: true
                 abstractsWithCompounds:
                     mappings:
                         id: { boost: 1, type: integer }
@@ -163,6 +165,8 @@ fos_elastica:
                             insert: true
                             update: true
                             delete: true
+                        elastica_to_model_transformer:
+                            ignore_missing: true
                 documentsWithCompounds:
                     mappings:
                         id: { type: integer }
@@ -199,6 +203,8 @@ fos_elastica:
                             insert: true
                             update: true
                             delete: true
+                        elastica_to_model_transformer:
+                            ignore_missing: true
                 documentsWithMarkers:
                     mappings:
                         id: { type: integer }
@@ -216,6 +222,8 @@ fos_elastica:
                             insert: true
                             update: true
                             delete: true
+                        elastica_to_model_transformer:
+                            ignore_missing: true
             settings:
                 index:
                   analysis:

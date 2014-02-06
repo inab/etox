@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Document
  *
- * @ORM\Table(indexes={ @ORM\Index(name="uid_index", columns={"uid"}), @ORM\Index(name="kind_index", columns={"kind"}), @ORM\Index(name="sentenceId_index", columns={"sentenceId"}), @ORM\Index(name="hepval_index", columns={"hepval"}), @ORM\Index(name="cardval_index", columns={"cardval"}), @ORM\Index(name="nephval_index", columns={"nephval"}), @ORM\Index(name="phosval_index", columns={"phosval"}) })
+ * @ORM\Table(indexes={ @ORM\Index(name="uid_index", columns={"uid"}), @ORM\Index(name="kind_index", columns={"kind"}), @ORM\Index(name="sentenceId_index", columns={"sentenceId"}), @ORM\Index(name="hepval_index", columns={"hepval"}), @ORM\Index(name="cardval_index", columns={"cardval"}), @ORM\Index(name="nephval_index", columns={"nephval"}), @ORM\Index(name="phosval_index", columns={"phosval"}) } , name="DocumentOLD")
  * @ORM\Entity(repositoryClass="EtoxMicrome\DocumentBundle\Entity\DocumentRepository")
  */
 class Document
@@ -81,8 +81,28 @@ class Document
      *
      * @ORM\Column(name="patternCount", type="float", nullable=true)
      */
-    //private $patternCount;
+    private $patternCount;
 
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="ruleScore", type="float", nullable=true)
+     */
+    //private $ruleScore;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="termNormScore", type="float", nullable=true)
+     */
+    //private $termNormScore;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="termVarScore", type="float", nullable=true)
+     */
+    //private $termVarScore;
 
     /**
      * @var \DateTime
@@ -120,13 +140,14 @@ class Document
 
 
 
-
     /**
     * Constructor de la clase
     **/
     public function __construct() {
         $this->entity2document = new \Doctrine\Common\Collections\ArrayCollection();
         $this->cytochrome2document = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->hepKeywordTermNorm2document = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->hepKeywordTermVariant2document = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -326,7 +347,7 @@ class Document
     /**
      * Set patternCount
      *
-     * @param integer $patternCount
+     * @param float $patternCount
      * @return Document
      */
     public function setPatternCount($patternCount)
@@ -339,11 +360,80 @@ class Document
     /**
      * Get patternCount
      *
-     * @return integer
+     * @return float
      */
     public function getPatternCount()
     {
         return $this->patternCount;
+    }
+
+    /**
+     * Set ruleScore
+     *
+     * @param float $ruleScore
+     * @return Document
+     */
+    public function setRuleScore($ruleScore)
+    {
+        $this->ruleScore = $ruleScore;
+
+        return $this;
+    }
+
+    /**
+     * Get ruleScore
+     *
+     * @return float
+     */
+    public function getRuleScore()
+    {
+        return $this->ruleScore;
+    }
+
+    /**
+     * Set termNormScore
+     *
+     * @param float $termNormScore
+     * @return Document
+     */
+    public function setTermNormScore($termNormScore)
+    {
+        $this->termNormScore = $termNormScore;
+
+        return $this;
+    }
+
+    /**
+     * Get termNormScore
+     *
+     * @return float
+     */
+    public function getTermNormScore()
+    {
+        return $this->termNormScore;
+    }
+
+    /**
+     * Set termVarScore
+     *
+     * @param float $termVarScore
+     * @return Document
+     */
+    public function setTermVarScore($termVarScore)
+    {
+        $this->termVarScore = $termVarScore;
+
+        return $this;
+    }
+
+    /**
+     * Get termVarScore
+     *
+     * @return float
+     */
+    public function getTermVarScore()
+    {
+        return $this->termVarScore;
     }
 
     /**

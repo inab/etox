@@ -55,6 +55,72 @@ class Entity2AbstractRepository extends EntityRepository
 
     }
 
+    public function getCompound2Term2DocumentFromField($field, $typeOfEntity, $arrayEntityName)
+    {
+        return $this->getCompound2Term2DocumentFromFieldDQL($field, $typeOfEntity, $arrayEntityName)->getResult();
+    }
+
+    public function getCompound2Term2DocumentFromFieldDQL($field, $entityType, $arrayEntityName)
+    {//("hepatotoxicity","pubmed","CompoundDict",arrayEntityId)
+        $valToSearch=$this->getValToSearch($field);//"i.e hepval, embval... etc"
+        //We have to create a query that searchs all over the entityIds inside the $arrayEntityId
+        $sql="SELECT c2t2d
+            FROM EtoxMicromeEntity2DocumentBundle:Compound2Term2Document c2t2d
+            WHERE c2t2d.compound IN (:arrayEntityName)
+            ORDER BY c2t2d.relationScore desc
+            ";
+
+        //ld($sql);
+        $query = $this->_em->createQuery($sql);
+        $query->setParameter("arrayEntityName", $arrayEntityName);
+        return $query;
+
+    }
+
+    public function getCompound2Cytochrome2DocumentFromField($field, $typeOfEntity, $arrayEntityName)
+    {
+        return $this->getCompound2Cytochrome2DocumentFromFieldDQL($field, $typeOfEntity, $arrayEntityName)->getResult();
+    }
+
+    public function getCompound2Cytochrome2DocumentFromFieldDQL($field, $entityType, $arrayEntityName)
+    {//("hepatotoxicity","pubmed","CompoundDict",arrayEntityId)
+        $valToSearch=$this->getValToSearch($field);//"i.e hepval, embval... etc"
+        //We have to create a query that searchs all over the entityIds inside the $arrayEntityId
+        $sql="SELECT c2t2d
+            FROM EtoxMicromeEntity2DocumentBundle:Compound2Cyp2Document c2t2d
+            WHERE c2t2d.cyp IN (:arrayEntityName)
+            ORDER BY c2t2d.relationScore desc
+            ";
+
+        //ld($sql);
+        $query = $this->_em->createQuery($sql);
+        $query->setParameter("arrayEntityName", $arrayEntityName);
+        return $query;
+
+    }
+
+    public function getCompound2Marker2DocumentFromField($field, $typeOfEntity, $arrayEntityName)
+    {
+        return $this->getCompound2Marker2DocumentFromFieldDQL($field, $typeOfEntity, $arrayEntityName)->getResult();
+    }
+
+    public function getCompound2Marker2DocumentFromFieldDQL($field, $entityType, $arrayEntityName)
+    {//("hepatotoxicity","pubmed","CompoundDict",arrayEntityId)
+        $valToSearch=$this->getValToSearch($field);//"i.e hepval, embval... etc"
+        //We have to create a query that searchs all over the entityIds inside the $arrayEntityId
+        $sql="SELECT c2m2d
+            FROM EtoxMicromeEntity2DocumentBundle:Compound2Marker2Document c2m2d
+            WHERE c2m2d.liverMarkerName IN (:arrayEntityName)
+            ORDER BY c2m2d.relationScore desc
+            ";
+
+        //ld($sql);
+        $query = $this->_em->createQuery($sql);
+        $query->setParameter("arrayEntityName", $arrayEntityName);
+        return $query;
+
+    }
+
     public function findEntity2AbstractFromAbstract($abstract)
     {
         //Function to search all the entities involved in a particular sentence in order to highlight them
