@@ -31,16 +31,36 @@ class Entity2AbstractRepository extends EntityRepository
         return $valToSearch;
     }
 
-    public function getEntity2AbstractFromField($field, $typeOfEntity, $arrayEntityName)
+    public function getOrderBy($orderBy, $valToSearch)
     {
-        return $this->getEntity2AbstractFromFieldDQL($field, $typeOfEntity, $arrayEntityName)->getResult();
+        switch ($orderBy) {
+            case "score":
+                $orderBy=$valToSearch;
+                break;
+            case "pattern":
+                $orderBy="patternCount";
+                break;
+            case "rule":
+                $orderBy="ruleScore";
+                break;
+            case "term":
+                $orderBy="hepTermVarScore";
+                break;
+        }
+        return $orderBy;
     }
 
-    public function getEntity2AbstractFromFieldDQL($field, $entityType, $arrayEntityName)
+    public function getEntity2AbstractFromField($field, $typeOfEntity, $arrayEntityName, $orderBy)
+    {
+        return $this->getEntity2AbstractFromFieldDQL($field, $typeOfEntity, $arrayEntityName, $orderBy)->getResult();
+    }
+
+    public function getEntity2AbstractFromFieldDQL($field, $entityType, $arrayEntityName, $orderBy)
     {//("hepatotoxicity","CompoundDict",arrayEntityId)
         $message="inside getEntity2AbstractFromFieldDQL";
         $valToSearch=$this->getValToSearch($field);//"i.e hepval, embval... etc"
-        $sql="SELECT e2a,a
+        $orderBy=$this->getOrderBy($orderBy, $valToSearch);
+        /*$sql="SELECT e2a,a
             FROM EtoxMicromeEntity2AbstractBundle:Entity2Abstract e2a
             JOIN e2a.abstracts a
             WHERE e2a.name IN (:arrayEntityName)
@@ -48,9 +68,25 @@ class Entity2AbstractRepository extends EntityRepository
             AND a.$valToSearch is not NULL
             ORDER BY a.$valToSearch desc
             ";
+        */
+        $sql="SELECT e2a
+            FROM EtoxMicromeEntity2AbstractBundle:Entity2Abstract e2a
+            WHERE e2a.name IN (:arrayEntityName)
+            AND e2a.qualifier = :entityType
+            AND e2a.$valToSearch is not NULL
+            ORDER BY e2a.$orderBy desc
+            ";
         $query = $this->_em->createQuery($sql);
         $query->setParameter("arrayEntityName", $arrayEntityName);
         $query->setParameter('entityType', $entityType);
+        $query->setMaxResults(10);
+        /*
+        $rawSql = $query->getSql();
+        print_r(array(
+            'parameters' => $query->getParameters(),
+        ));
+        ldd($rawSql);
+        */
         return $query;
 
     }

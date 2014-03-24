@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * MolecularMechanism
  *
- * @ORM\Table(indexes={@ORM\Index(name="entity_index", columns={"entityId"}),@ORM\Index(name="name_index", columns={"name"}) })
+ * @ORM\Table(indexes={@ORM\Index(name="molecularMechanism_entity_index", columns={"""entityId"""}),@ORM\Index(name="molecularMechanism_name_index", columns={"name"}) } )
  * @ORM\Entity(repositoryClass="EtoxMicrome\EntityBundle\Entity\MolecularMechanismRepository")
  */
 class MolecularMechanism
@@ -24,7 +24,7 @@ class MolecularMechanism
     /**
      * @var string
      *
-     * @ORM\Column(name="entityId", type="string", length=255)
+     * @ORM\Column(name="""entityId""", type="string", length=255)
      */
     private $entityId;
 

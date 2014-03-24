@@ -2,6 +2,8 @@
 {% block title %}Listing Evidences {% endblock %}
 {% block article %}
     {% include 'FrontendBundle:Search_keyword:tags_code.html.twig' %}
+    {% set tooltipCounter=1 %}
+    {% set stringStickyTooltip = "" %}
     <div id="evidences">
         {% if resultSetDocuments.getTotalHits != 0 %}
             <div id="documentsResults">
@@ -17,7 +19,7 @@
                     <small>
                         <em>
                             Entity mentions are highlighted as follows:
-                            <mark class="termSearched">What you searched</mark>, <mark class="compound">Compounds</mark>, <mark class="cytochrome">CYPs</mark>, <mark class="marker">Markers</mark>, <mark class="term">Terms</mark>, <mark class="specie">Species</mark>
+                            <mark class="termSearched">What you searched</mark>, <mark class="compound">Compounds</mark>, <mark class="cytochrome">Cytochromes</mark>, <mark class="marker">Markers</mark>, <mark class="term">Terms</mark>, <mark class="specie">Species</mark>
                         </em>
                         . Curated evidences are indicated by:
                         <a class="curated" href="#"> </a>
@@ -45,7 +47,12 @@
                 <table id="tableResultsElastic" class="tablesorter">
                 <thead>
                     <th>Source</th>
-                    <th>Score</th>
+                    <th><a href="{{ path('elasticSearch_keyword',{'whatToSearch': whatToSearch, 'source': source, 'keyword': keyword, 'orderBy': 'score'}) }}">Score</a></th>
+
+                    <th><a href="{{ path('elasticSearch_keyword',{'whatToSearch': whatToSearch, 'source': source, 'keyword': keyword, 'orderBy': 'pattern'}) }}">Pattern</a></th>
+
+                    <th><a href="{{ path('elasticSearch_keyword',{'whatToSearch': whatToSearch, 'source': source, 'keyword': keyword, 'orderBy': 'rule'}) }}">Rule</a></th>
+                    <th><a href="{{ path('elasticSearch_keyword',{'whatToSearch': whatToSearch, 'source': source, 'keyword': keyword, 'orderBy': 'term'}) }}">Term</a></th>
                     <th>Sentence</th>
                 </thead>
                 <tbody>
@@ -57,6 +64,12 @@
                             {% set text=result.getText %}
                             {% set score = result.getHepval | number_format(2)%}
                             {% set score = score|colorCodingScore %}
+                            {% set patternCount = result.getPatternCount %}
+                            {% set patternCount = patternCount|colorCodingScore %}
+                            {% set ruleScore = result.getRuleScore %}
+                            {% set ruleScore = ruleScore|colorCodingScore %}
+                            {% set termScore = result.getHepTermVarScore %}
+                            {% set termScore = termScore|colorCodingScore %}
                             {% if className == 'Abstracts' %}
                                 {{ text | highlightEntitiesAbstracts (result, keyword, field, whatToSearch, source, entityType)| raw }}
                                 {% set pmid=result.getPmid %}
@@ -67,28 +80,55 @@
                                 {% set kind = result.getKind %}
                                 {% if kind == "pubmed" %}
                                     {% set pmid=result.getUid %}
+                                    {% set sid=result.getSentenceId %}
                                     {% set link="http://www.ncbi.nlm.nih.gov/pubmed/" ~ pmid %}
                                     {% set imageRoute = 'images/pubmed.png' %}
+                                    <td class="center">
+                                    <span data-tooltip='sticky{{ tooltipCounter }}'>
+                                        <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/></a>
+                                    </span>
+                                    </td>
+                                    {% set tooltip =  "<div id='sticky"~tooltipCounter~"' class='atip' >Pubmed link: <a href='"~link ~"'>"~link~"</a><br>Pubmed Id: "~ pmid ~"<br/>Sentence Id: "~ sid ~"<br/></div>" %}
+                                    {% set tooltipCounter = tooltipCounter + 1 %}
+                                    {% set stringStickyTooltip = stringStickyTooltip ~ tooltip  %}
                                 {% elseif kind == "fulltext" %}
                                     {% set pmid=result.getUid %}
                                     {% set arrayPmid = pmid|split('_') %}
                                     {% set pmidCut = arrayPmid[1] %}
                                     {% set link="http://www.ncbi.nlm.nih.gov/pubmed/" ~ pmidCut %}
                                     {% set imageRoute = 'images/fulltext.png' %}
+                                    <td class="center">
+                                        <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/></a>
+                                    </td>
                                 {% elseif kind == "nda" %}
                                     {% set link="http://www.fda.gov" %}
                                     {% set imageRoute = 'images/nda.png' %}
+                                    <td class="center">
+                                        <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/></a>
+                                    </td>
                                 {% elseif kind == "epar" %}
                                     {% set link="http://www.fda.gov" %}
                                     {% set imageRoute = 'images/epar.png' %}
+                                    <td class="center">
+                                        <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/></a>
+                                    </td>
                                 {% endif %}
-                                {%set text = text | highlightEntitiesDocuments (result,keyword,field,whatToSearch,source,entityType)%}
+                                {% set arrayText= text | highlightEntitiesDocuments (result,keyword,field,whatToSearch, source, entityType, tooltipCounter) %}
+                                {% set text = arrayText[0] | raw %}
+                                {% set stringStickyTooltip = stringStickyTooltip ~ arrayText[1] %}
+                                {% set tooltipCounter = arrayText[2] %}
                             {% endif%}
                             <td class="center">
-                                <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/></a>
+                                {{ score  | raw}}
                             </td>
                             <td class="center">
-                                {{ score  | raw}}
+                                {{ patternCount  | raw}}
+                            </td>
+                            <td class="center">
+                                {{ ruleScore  | raw}}
+                            </td>
+                            <td class="center">
+                                {{ termScore  | raw}}
                             </td>
                             <td>
                                 {{ text | raw }}
@@ -162,7 +202,10 @@
                                     {% set score = result.getHepval | number_format(2)%}
                                     {% set score = score|colorCodingScore %}
                                     {% if className == "Abstracts" or className == "AbstractWithCompound" %}
-                                        {% set text = text | highlightEntitiesAbstracts (result, keyword, field, whatToSearch, source, entityType)| raw %}
+                                        {% set arrayText= text | highlightEntitiesAbstracts (result,keyword,field,whatToSearch, source, entityType, tooltipCounter) %}
+                                        {% set text = arrayText[0] | raw %}
+                                        {% set stringStickyTooltip = stringStickyTooltip ~ arrayText[1] %}
+                                        {% set tooltipCounter = arrayText[2] %}
                                         {% set pmid=result.getPmid %}
                                         {% set link="http://www.ncbi.nlm.nih.gov/pubmed/" ~ pmid %}
                                         {% set imageRoute = 'images/pubmed.png' %}
@@ -185,7 +228,10 @@
                                             {% set link="http://www.fda.gov" %}
                                             {% set imageRoute = 'images/epar.png' %}
                                         {% endif %}
-                                        {%set text = text | highlightEntitiesDocuments (result,keyword,field,whatToSearch,source,entityType)%}
+                                        {% set arrayText= text | highlightEntitiesDocuments (result,keyword,field,whatToSearch, source, entityType, tooltipCounter) %}
+                                        {% set text = arrayText[0] | raw %}
+                                        {% set stringStickyTooltip = stringStickyTooltip ~ arrayText[1] %}
+                                        {% set tooltipCounter = arrayText[2] %}
                                     {% endif%}
                                     <td class="center">
                                         <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/></a>
@@ -214,5 +260,12 @@
                 </div>
             {% endif %}
         {% endif %}
+        {# Here we rebuild the stringStickyTooltip inside its container divs #}
+        <div id="mystickytooltip" class="stickytooltip">
+            <div style="padding:5px">
+                {{ stringStickyTooltip | raw }}
+            </div>
+            <div class="stickystatus"></div>
+        </div>
     {% include 'FrontendBundle:Search_document:scripts_code.html.twig' %}
 {% endblock %}

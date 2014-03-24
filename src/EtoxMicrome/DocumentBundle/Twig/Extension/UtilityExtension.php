@@ -61,9 +61,8 @@ class UtilityExtension extends \Twig_Extension
         //Then we extend the comparisson until the last place returning the isConsecutive boolean
         $isConsecutive=true;
         foreach($arrayStartingPlaces as $startingPlace){
-            //ld($startingPlace);
             $counter=0;
-            for($i=$startingPlace;$i<$startingPlace+$numberOfEntityNames;$i++){
+            for($i=$startingPlace;($i<$startingPlace+$numberOfEntityNames) and ($i<count($arrayText)) ;$i++){
                 //ld($arrayText[$i]);
                 //ld($arrayEntityNames[$counter]);
                 if(strcasecmp($arrayText[$i], $arrayEntityNames[$counter])==0){
@@ -87,8 +86,9 @@ class UtilityExtension extends \Twig_Extension
 
     }
 
-    public function highlightEntitiesDocuments($text,$document,$entityBackup, $field, $whatToSearch, $source, $entityType)
+    public function highlightEntitiesDocuments($text,$document,$entityBackup, $field, $whatToSearch, $source, $entityType, $tooltipCounter)
     {
+        //This function should return an array with both, $array[0] = the text highlighted, $array[1] = the html for the divs containing the sticky tooltips and $array[2] = the tooltipCounter number
         //the parameters $field, $whatToSearch, $entityType are used to create the url to link the entities to a search of theirshelves
         $message="highlightEntitiesDocuments!!!";
         //ld($text);
@@ -98,7 +98,7 @@ class UtilityExtension extends \Twig_Extension
         //ld($document);
         $em=$this->doctrine->getManager();
         //We need all the entities involved in the same document
-
+        $mouseoverDivs="";
 
         //Sometimes $document is not a Document but a DocumentWithCompound or DocumentWithCytochrome etc...
         $className=$document->getClassName();
@@ -122,11 +122,12 @@ class UtilityExtension extends \Twig_Extension
 
         */
         $arrayText=str_word_count($text, 1, '0..9()=-');
-        //ld($arrayText);
+
         $arrayHighlighted=array();
 
         //With arrayHepKeywordTermVariant2Document we can highlight Hepatotoxicity Terms
         $arrayHepKeywordTermVariant2Document = $em->getRepository('EtoxMicromeEntity2DocumentBundle:HepKeywordTermVariant2Document')->findHepKeywordTermVariant2Document($document);
+
         foreach ($arrayHepKeywordTermVariant2Document as $term2Document){
             $entityName=$term2Document->getTermVariant();
             //ld($entityName);
@@ -145,7 +146,11 @@ class UtilityExtension extends \Twig_Extension
                         $text=$arrayText[$place];
                         $text = str_ireplace($entityName, '<mark class="term">'.$entityName.'</mark>', $text);
                         $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermVariant");
-                        $text = str_ireplace($entityName, "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'>".$entityName."</span>", $text);
+                        $mouseoverDivs=$mouseoverDivs."<div id=\"sticky$tooltipCounter\"  class=\"atip\">$mouseoverSummary</div>";
+                        //We generate the route to a free search with the entityName.
+                        $link=$this->generator->generate('elasticSearch_keyword', array('whatToSearch' => $whatToSearch, 'source' => $source, 'keyword' => $entityName,));
+                        $text = str_ireplace($entityName, "<span data-tooltip=\"sticky$tooltipCounter\"><a href=\"$link\">".$entityName."</a></span>", $text);
+                        $tooltipCounter=$tooltipCounter+1;
                         $arrayText[$place]=$text;
                         array_push($arrayHighlighted, $place);
                     }
@@ -155,23 +160,30 @@ class UtilityExtension extends \Twig_Extension
                     //We search a range of positions for the highlight iterating over the arrayText taking into account the arrayHighlighted positions already highlighted
                     $place=$this->findPlaceSeveralWords($entityName,$arrayText,$arrayHighlighted);
                     if($place!=-1){
-                        //There is a place to make the highlight, starting at $place and finishing at $numberEntityName=str_word_count($entityName, 0);
+                        //There is a place to make the highlight, starting at $place and finishing at $numberEntityName=str_word_count($entityName, 0); We have to take into account that the place cannot be at the end if the end of the entityName is falling outside the array...
                         $numberEntityName=str_word_count($entityName, 0, '0..9()=-');
-                        $arrayEntityName=str_word_count($entityName, 1, '0..9()=-');
-                        //We mark the first
-                        $text=$arrayText[$place];
-                        $text = str_ireplace($arrayEntityName[0], '<mark class="term">'.$arrayEntityName[0], $text);
-                        $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermVariant");
-                        $text = str_ireplace($arrayEntityName[0], "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'>".$arrayEntityName[0], $text);
-                        $arrayText[$place]=$text;
-                        //Mark the last
-                        $text=$arrayText[$place+$numberEntityName-1];
-                        $text = str_ireplace($arrayEntityName[$numberEntityName-1], $arrayEntityName[$numberEntityName-1]."</span></mark>", $text);
-                        $arrayText[$place+$numberEntityName-1]=$text;
-                        //Add all range to arrayHighlighted
-                        foreach(range($place,$place+$numberEntityName-1) as $i){
-                            array_push($arrayHighlighted, $i);
+                        if($place+$numberEntityName<=count($arrayText)){//Only in this case is possible to find the entityName inside the text, otherwise it will fall outside the array with undefined offset error
+                            $arrayEntityName=str_word_count($entityName, 1, '0..9()=-');
+                            //We mark the first
+                            $text=$arrayText[$place];
+                            $text = str_ireplace($arrayEntityName[0], '<mark class="term">'.$arrayEntityName[0], $text);
+                            $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermVariant");
+                            $mouseoverDivs=$mouseoverDivs."<div id=\"sticky$tooltipCounter\" class=\"atip\">$mouseoverSummary</div>";
+                            //We generate the route to a free search with the entityName.
+                            $link=$this->generator->generate('elasticSearch_keyword', array('whatToSearch' => $whatToSearch, 'source' => $source, 'keyword' => $entityName,));
+                            $text = str_ireplace($arrayEntityName[0], "<span data-tooltip=\"sticky$tooltipCounter\"><a href=\"$link\">".$arrayEntityName[0], $text);
+                            $tooltipCounter=$tooltipCounter+1;
+                            $arrayText[$place]=$text;
+                            //Mark the last
+                            $text=$arrayText[$place+$numberEntityName-1];
+                            $text = str_ireplace($arrayEntityName[$numberEntityName-1], $arrayEntityName[$numberEntityName-1]."</a></span></mark>", $text);
+                            $arrayText[$place+$numberEntityName-1]=$text;
+                            //Add all range to arrayHighlighted
+                            foreach(range($place,$place+$numberEntityName-1) as $i){
+                                array_push($arrayHighlighted, $i);
+                            }
                         }
+
                     }
 
                 }
@@ -192,8 +204,11 @@ class UtilityExtension extends \Twig_Extension
                         }elseif($entityType=="keyword"){
                             $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepatotoxKeyword");
                         }
+                        $link=$this->generator->generate('elasticSearch_keyword', array('whatToSearch' => $whatToSearch, 'source' => $source, 'keyword' => $entityBackup,));
+                        $text = str_ireplace($entityBackup, "<span data-tooltip=\"sticky$tooltipCounter\"><a href=\"$link\">".$entityBackup."</a></span>", $text);
+                        $mouseoverDivs=$mouseoverDivs."<div id=\"sticky$tooltipCounter\" class=\"atip\">$mouseoverSummary</div>";
 
-                        $text = str_ireplace($entityBackup, "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'>".$entityBackup."</span>", $text);
+                        $tooltipCounter=$tooltipCounter+1;
                         $arrayText[$place]=$text;
                         array_push($arrayHighlighted, $place);
                     }
@@ -202,29 +217,34 @@ class UtilityExtension extends \Twig_Extension
                     if($place!=-1){
                         //There is a place to make the highlight, starting at $place and finishing at $numberEntityName=str_word_count($entityName, 0);
                         $numberEntityName=str_word_count($entityName, 0, '0..9()=-');
-                        $arrayEntityName=str_word_count($entityName, 1, '0..9()=-');
-                        //We mark the first
-                        $text=$arrayText[$place];
-                        if($entityType=="HepKeywordTermVariant"){
-                            $text = str_ireplace($arrayEntityName[0], '<mark class="termSearched">'.$arrayEntityName[0], $text);
-                            $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermVariant");
-                        }elseif($entityType=="HepKeywordTermNorm"){
-                            $text = str_ireplace($arrayEntityName[0], '<mark class="termSearched">'.$arrayEntityName[0], $text);
-                            $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermNorm");
-                        }elseif($entityType=="HepatotoxKeyword"){
-                            $text = str_ireplace($arrayEntityName[0], '<mark class="termSearched">'.$arrayEntityName[0], $text);
-                            $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepatotoxKeyword");
-                        }
+                        if($place+$numberEntityName<=count($arrayText)){//Only in this case is possible to find the entityName inside the text, otherwise it will fall outside the array with undefined offset error
+                            $arrayEntityName=str_word_count($entityName, 1, '0..9()=-');
+                            //We mark the first
+                            $text=$arrayText[$place];
+                            if($entityType=="HepKeywordTermVariant"){
+                                $text = str_ireplace($arrayEntityName[0], '<mark class="termSearched">'.$arrayEntityName[0], $text);
+                                $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermVariant");
+                            }elseif($entityType=="HepKeywordTermNorm"){
+                                $text = str_ireplace($arrayEntityName[0], '<mark class="termSearched">'.$arrayEntityName[0], $text);
+                                $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermNorm");
+                            }elseif($entityType=="HepatotoxKeyword"){
+                                $text = str_ireplace($arrayEntityName[0], '<mark class="termSearched">'.$arrayEntityName[0], $text);
+                                $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepatotoxKeyword");
+                            }
+                            $link=$this->generator->generate('elasticSearch_keyword', array('whatToSearch' => $whatToSearch, 'source' => $source, 'keyword' => $entityBackup,));
+                            $text = str_ireplace($arrayEntityName[0], "<span data-tooltip=\"sticky$tooltipCounter\"><a href=\"$link\">".$arrayEntityName[0], $text);
+                            $mouseoverDivs=$mouseoverDivs."<div id=\"sticky$tooltipCounter\" class=\"atip\">$mouseoverSummary</div>";
 
-                        $text = str_ireplace($arrayEntityName[0], "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'>".$arrayEntityName[0], $text);
-                        $arrayText[$place]=$text;
-                        //Mark the last
-                        $text=$arrayText[$place+$numberEntityName-1];
-                        $text = str_ireplace($arrayEntityName[$numberEntityName-1], $arrayEntityName[$numberEntityName-1]."</span></mark>", $text);
-                        $arrayText[$place+$numberEntityName-1]=$text;
-                        //Add all range to arrayHighlighted
-                        foreach(range($place,$place+$numberEntityName-1) as $i){
-                            array_push($arrayHighlighted, $i);
+                            $tooltipCounter=$tooltipCounter+1;
+                            $arrayText[$place]=$text;
+                            //Mark the last
+                            $text=$arrayText[$place+$numberEntityName-1];
+                            $text = str_ireplace($arrayEntityName[$numberEntityName-1], $arrayEntityName[$numberEntityName-1]."</a></span></mark>", $text);
+                            $arrayText[$place+$numberEntityName-1]=$text;
+                            //Add all range to arrayHighlighted
+                            foreach(range($place,$place+$numberEntityName-1) as $i){
+                                array_push($arrayHighlighted, $i);
+                            }
                         }
                     }
                 }
@@ -252,7 +272,11 @@ class UtilityExtension extends \Twig_Extension
                         $text=$arrayText[$place];
                         $text = str_ireplace($entityName, '<mark class="cytochrome">'.$entityName.'</mark>', $text);
                         $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($cytochrome2DocumentId,"Cytochrome");
-                        $text = str_ireplace($entityName, "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'>".$entityName."</span>", $text);
+                        $link=$this->generator->generate('search_interface_search_field_whatToSearch_entityType_source_entity', array('field' => $field, 'whatToSearch' => $whatToSearch, 'entityType' => 'Cytochrome', 'source' => $source, 'entityName' => $entityName,));
+                        $text = str_ireplace($entityName, "<span data-tooltip=\"sticky$tooltipCounter\"><a href=\"$link\">".$entityName."</a></span>", $text);
+                        $mouseoverDivs=$mouseoverDivs."<div id=\"sticky$tooltipCounter\" class=\"atip\">$mouseoverSummary</div>";
+
+                        $tooltipCounter=$tooltipCounter+1;
                         $arrayText[$place]=$text;
                     }
                 }else{
@@ -262,20 +286,26 @@ class UtilityExtension extends \Twig_Extension
                     if($place!=-1){
                         //There is a place to make the highlight, starting at $place and finishing at $numberEntityName=str_word_count($entityName, 0);
                         $numberEntityName=str_word_count($entityName, 0, '0..9()=-');
-                        $arrayEntityName=str_word_count($entityName, 1, '0..9()=-');
-                        //We mark the first
-                        $text=$arrayText[$place];
-                        $text = str_ireplace($arrayEntityName[0], '<mark class="cytochrome">'.$arrayEntityName[0], $text);
-                        $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($cytochrome2DocumentId,"Cytochrome");
-                        $text = str_ireplace($arrayEntityName[0], "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'>".$arrayEntityName[0], $text);
-                        $arrayText[$place]=$text;
-                        //Mark the last
-                        $text=$arrayText[$place+$numberEntityName-1];
-                        $text = str_ireplace($arrayEntityName[$numberEntityName-1], $arrayEntityName[$numberEntityName-1]."</span></mark>", $text);
-                        $arrayText[$place+$numberEntityName-1]=$text;
-                        //Add all range to arrayHighlighted
-                        foreach(range($place,$place+$numberEntityName-1) as $i){
-                            array_push($arrayHighlighted, $i);
+                        if($place+$numberEntityName<=count($arrayText)){//Only in this case is possible to find the entityName inside the text, otherwise it will fall outside the array with undefined offset error
+                            $arrayEntityName=str_word_count($entityName, 1, '0..9()=-');
+                            //We mark the first
+                            $text=$arrayText[$place];
+                            $text = str_ireplace($arrayEntityName[0], '<mark class="cytochrome">'.$arrayEntityName[0], $text);
+                            $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($cytochrome2DocumentId,"Cytochrome");
+                            $link=$this->generator->generate('search_interface_search_field_whatToSearch_entityType_source_entity', array('field' => $field, 'whatToSearch' => $whatToSearch, 'entityType' => 'Cytochrome', 'source' => $source, 'entityName' => $entityName, ));
+                            $text = str_ireplace($arrayEntityName[0], "<span data-tooltip=\"sticky$tooltipCounter\"><a href=\"$link\">".$arrayEntityName[0], $text);
+                            $mouseoverDivs=$mouseoverDivs."<div id=\"sticky$tooltipCounter\" class=\"atip\">$mouseoverSummary</div>";
+
+                            $tooltipCounter=$tooltipCounter+1;
+                            $arrayText[$place]=$text;
+                            //Mark the last
+                            $text=$arrayText[$place+$numberEntityName-1];
+                            $text = str_ireplace($arrayEntityName[$numberEntityName-1], $arrayEntityName[$numberEntityName-1]."</a></span></mark>", $text);
+                            $arrayText[$place+$numberEntityName-1]=$text;
+                            //Add all range to arrayHighlighted
+                            foreach(range($place,$place+$numberEntityName-1) as $i){
+                                array_push($arrayHighlighted, $i);
+                            }
                         }
                     }
                 }
@@ -291,7 +321,11 @@ class UtilityExtension extends \Twig_Extension
                         $text=$arrayText[$place];
                         $text = str_ireplace($entityBackup, '<mark class="termSearched">'.$entityBackup.'</mark>', $text);
                         $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($cytochrome2DocumentId,"Cytochrome");
-                        $text = str_ireplace($entityBackup, "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'>".$entityBackup."</span>", $text);
+                        $link=$this->generator->generate('search_interface_search_field_whatToSearch_entityType_source_entity', array('field' => $field, 'whatToSearch' => $whatToSearch, 'entityType' => 'Cytochrome', 'source' => $source, 'entityName' => $entityName, ));
+                        $text = str_ireplace($entityBackup, "<span data-tooltip=\"sticky$tooltipCounter\"><a href=\"$link\">".$entityBackup."</a></span>", $text);
+                        $mouseoverDivs=$mouseoverDivs."<div id=\"sticky$tooltipCounter\" class=\"atip\">$mouseoverSummary</div>";
+
+                        $tooltipCounter=$tooltipCounter+1;
                         $arrayText[$place]=$text;
                     }
                 }else{
@@ -299,20 +333,26 @@ class UtilityExtension extends \Twig_Extension
                     if($place!=-1){
                         //There is a place to make the highlight, starting at $place and finishing at $numberEntityName=str_word_count($entityName, 0);
                         $numberEntityName=str_word_count($entityName, 0, '0..9()=-');
-                        $arrayEntityName=str_word_count($entityName, 1, '0..9()=-');
-                        //We mark the first
-                        $text=$arrayText[$place];
-                        $text = str_ireplace($arrayEntityName[0], '<mark class="termSearched">'.$arrayEntityName[0], $text);
-                        $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($cytochrome2DocumentId,"Cytochrome");
-                        $text = str_ireplace($arrayEntityName[0], "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'>".$arrayEntityName[0], $text);
-                        $arrayText[$place]=$text;
-                        //Mark the last
-                        $text=$arrayText[$place+$numberEntityName-1];
-                        $text = str_ireplace($arrayEntityName[$numberEntityName-1], $arrayEntityName[$numberEntityName-1]."</span></mark>", $text);
-                        $arrayText[$place+$numberEntityName-1]=$text;
-                        //Add all range to arrayHighlighted
-                        foreach(range($place,$place+$numberEntityName-1) as $i){
-                            array_push($arrayHighlighted, $i);
+                        if($place+$numberEntityName<=count($arrayText)){//Only in this case is possible to find the entityName inside the text, otherwise it will fall outside the array with undefined offset error
+                            $arrayEntityName=str_word_count($entityName, 1, '0..9()=-');
+                            //We mark the first
+                            $text=$arrayText[$place];
+                            $text = str_ireplace($arrayEntityName[0], '<mark class="termSearched">'.$arrayEntityName[0], $text);
+                            $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($cytochrome2DocumentId,"Cytochrome");
+                            $link=$this->generator->generate('search_interface_search_field_whatToSearch_entityType_source_entity', array('field' => $field, 'whatToSearch' => $whatToSearch, 'entityType' => 'Cytochrome', 'source' => $source, 'entityName' => $entityName, ));
+                            $text = str_ireplace($arrayEntityName[0], "<span data-tooltip=\"sticky$tooltipCounter\"><a href=\"$link\">".$arrayEntityName[0], $text);
+                            $mouseoverDivs=$mouseoverDivs."<div id=\"sticky$tooltipCounter\" class=\"atip\">$mouseoverSummary</div>";
+
+                            $tooltipCounter=$tooltipCounter+1;
+                            $arrayText[$place]=$text;
+                            //Mark the last
+                            $text=$arrayText[$place+$numberEntityName-1];
+                            $text = str_ireplace($arrayEntityName[$numberEntityName-1], $arrayEntityName[$numberEntityName-1]."</a></span></mark>", $text);
+                            $arrayText[$place+$numberEntityName-1]=$text;
+                            //Add all range to arrayHighlighted
+                            foreach(range($place,$place+$numberEntityName-1) as $i){
+                                array_push($arrayHighlighted, $i);
+                            }
                         }
                     }
                 }
@@ -338,7 +378,12 @@ class UtilityExtension extends \Twig_Extension
                         $text=$arrayText[$place];
                         $text = str_ireplace($entityName, '<mark class="term">'.$entityName.'</mark>', $text);
                         $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermNorm");
-                        $text = str_ireplace($entityName, "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'>".$entityName."</span>", $text);
+                        //We generate the route to a free search with the entityName.
+                        $link=$this->generator->generate('elasticSearch_keyword', array('whatToSearch' => $whatToSearch, 'source' => $source, 'keyword' => $entityName, ));
+                        $text = str_ireplace($entityName, "<span data-tooltip=\"sticky$tooltipCounter\"><a href=\"$link\">".$entityName."</a></span>", $text);
+                        $mouseoverDivs=$mouseoverDivs."<div id=\"sticky$tooltipCounter\" class=\"atip\">$mouseoverSummary</div>";
+
+                        $tooltipCounter=$tooltipCounter+1;
                         $arrayText[$place]=$text;
                     }
 
@@ -349,21 +394,29 @@ class UtilityExtension extends \Twig_Extension
                     if($place!=-1){
                         //There is a place to make the highlight, starting at $place and finishing at $numberEntityName=str_word_count($entityName, 0);
                         $numberEntityName=str_word_count($entityName, 0, '0..9()=-');
-                        $arrayEntityName=str_word_count($entityName, 1, '0..9()=-');
-                        //We mark the first
-                        $text=$arrayText[$place];
-                        $text = str_ireplace($arrayEntityName[0], '<mark class="term">'.$arrayEntityName[0], $text);
-                        $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermNorm");
-                        $text = str_ireplace($arrayEntityName[0], "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'>".$arrayEntityName[0], $text);
-                        $arrayText[$place]=$text;
-                        //Mark the last
-                        $text=$arrayText[$place+$numberEntityName-1];
-                        $text = str_ireplace($arrayEntityName[$numberEntityName-1], $arrayEntityName[$numberEntityName-1]."</span></mark>", $text);
-                        $arrayText[$place+$numberEntityName-1]=$text;
-                        //Add all range to arrayHighlighted
-                        foreach(range($place,$place+$numberEntityName-1) as $i){
-                            array_push($arrayHighlighted, $i);
+                        if($place+$numberEntityName<=count($arrayText)){//Only in this case is possible to find the entityName inside the text, otherwise it will fall outside the array with undefined offset error_get_last()
+                            $arrayEntityName=str_word_count($entityName, 1, '0..9()=-');
+                            //We mark the first
+                            $text=$arrayText[$place];
+                            $text = str_ireplace($arrayEntityName[0], '<mark class="term">'.$arrayEntityName[0], $text);
+                            $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermNorm");
+                            //We generate the route to a free search with the entityName.
+                            $link=$this->generator->generate('elasticSearch_keyword', array('whatToSearch' => $whatToSearch, 'source' => $source, 'keyword' => $entityName, ));
+                            $text = str_ireplace($arrayEntityName[0], "<span data-tooltip=\"sticky$tooltipCounter\"><a href=\"$link\">".$arrayEntityName[0], $text);
+                            $mouseoverDivs=$mouseoverDivs."<div id=\"sticky$tooltipCounter\" class=\"atip\">$mouseoverSummary</div>";
+
+                            $tooltipCounter=$tooltipCounter+1;
+                            $arrayText[$place]=$text;
+                            //Mark the last
+                            $text=$arrayText[$place+$numberEntityName-1];
+                            $text = str_ireplace($arrayEntityName[$numberEntityName-1], $arrayEntityName[$numberEntityName-1]."</a></span></mark>", $text);
+                            $arrayText[$place+$numberEntityName-1]=$text;
+                            //Add all range to arrayHighlighted
+                            foreach(range($place,$place+$numberEntityName-1) as $i){
+                                array_push($arrayHighlighted, $i);
+                            }
                         }
+
                     }
                 }
                 $text = str_ireplace($entityName, '<mark class="term">'.$entityName.'</mark>', $text);
@@ -373,7 +426,6 @@ class UtilityExtension extends \Twig_Extension
             }else{
                 //We haven't changed color for entityBackup case insensitive search of entities. We change it now.
                 //$text = str_ireplace($entityBackup, '<mark class="termSearched">'.$entityBackup.'</mark>', $text);
-                $message="entra aqui";
                 $numberWords=str_word_count($entityName, 0, '0..9()=-');
                 if($numberWords==1){
                     $arrayPlaces=$this->findPlaceSingleWord($entityName,$arrayText,$arrayHighlighted);
@@ -388,8 +440,11 @@ class UtilityExtension extends \Twig_Extension
                         }elseif($entityType=="HepatotoxKeyword"){
                             $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepatotoxKeyword");
                         }
+                        $link=$this->generator->generate('elasticSearch_keyword', array('whatToSearch' => $whatToSearch, 'source' => $source, 'keyword' => $entityName, ));
+                        $text = str_ireplace($entityBackup, "<span data-tooltip=\"sticky$tooltipCounter\"><a href=\"$link\">".$entityBackup."</a></span>", $text);
+                        $mouseoverDivs=$mouseoverDivs."<div id=\"sticky$tooltipCounter\" class=\"atip\">$mouseoverSummary</div>";
 
-                        $text = str_ireplace($entityBackup, "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'>".$entityBackup."</span>", $text);
+                        $tooltipCounter=$tooltipCounter+1;
                         $arrayText[$place]=$text;
                     }
                 }else{
@@ -397,30 +452,34 @@ class UtilityExtension extends \Twig_Extension
                     if($place!=-1){
                         //There is a place to make the highlight, starting at $place and finishing at $numberEntityName=str_word_count($entityName, 0);
                         $numberEntityName=str_word_count($entityName, 0, '0..9()=-');
-                        $arrayEntityName=str_word_count($entityName, 1, '0..9()=-');
-                        //We mark the first
-                        $text=$arrayText[$place];
-                        ld($entityType);
-                        if($entityType=="HepKeywordTermVariant"){
-                            $text = str_ireplace($arrayEntityName[0], '<mark class="termSearched">'.$arrayEntityName[0], $text);
-                            $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermVariant");
-                        }elseif($entityType=="HepKeywordTermNorm"){
-                            $text = str_ireplace($arrayEntityName[0], '<mark class="termSearched">'.$arrayEntityName[0], $text);
-                            $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermNorm");
-                        }elseif($entityType=="HepatotoxKeyword"){
-                            $text = str_ireplace($arrayEntityName[0], '<mark class="termSearched">'.$arrayEntityName[0], $text);
-                            $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepatotoxKeyword");
-                        }
-
-                        $text = str_ireplace($arrayEntityName[0], "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'>".$arrayEntityName[0], $text);
-                        $arrayText[$place]=$text;
-                        //Mark the last
-                        $text=$arrayText[$place+$numberEntityName-1];
-                        $text = str_ireplace($arrayEntityName[$numberEntityName-1], $arrayEntityName[$numberEntityName-1]."</span></mark>", $text);
-                        $arrayText[$place+$numberEntityName-1]=$text;
-                        //Add all range to arrayHighlighted
-                        foreach(range($place,$place+$numberEntityName-1) as $i){
-                            array_push($arrayHighlighted, $i);
+                        if($place+$numberEntityName<=count($arrayText)){//Only in this case is possible to find the entityName inside the text, otherwise it will fall outside the array with undefined offset error_get_last()
+                            $arrayEntityName=str_word_count($entityName, 1, '0..9()=-');
+                            //We mark the first
+                            $text=$arrayText[$place];
+                            ld($entityType);
+                            if($entityType=="HepKeywordTermVariant"){
+                                $text = str_ireplace($arrayEntityName[0], '<mark class="termSearched">'.$arrayEntityName[0], $text);
+                                $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermVariant");
+                            }elseif($entityType=="HepKeywordTermNorm"){
+                                $text = str_ireplace($arrayEntityName[0], '<mark class="termSearched">'.$arrayEntityName[0], $text);
+                                $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermNorm");
+                            }elseif($entityType=="HepatotoxKeyword"){
+                                $text = str_ireplace($arrayEntityName[0], '<mark class="termSearched">'.$arrayEntityName[0], $text);
+                                $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepatotoxKeyword");
+                            }
+                            $link=$this->generator->generate('elasticSearch_keyword', array('whatToSearch' => $whatToSearch, 'source' => $source, 'keyword' => $entityName, ));
+                            $text = str_ireplace($arrayEntityName[0], "<span data-tooltip=\"sticky$tooltipCounter\"><a href=\"$link\">".$arrayEntityName[0], $text);
+                            $mouseoverDivs=$mouseoverDivs."<div id=\"sticky$tooltipCounter\" class=\"atip\" >$mouseoverSummary</div>";
+                            $tooltipCounter=$tooltipCounter+1;
+                            $arrayText[$place]=$text;
+                            //Mark the last
+                            $text=$arrayText[$place+$numberEntityName-1];
+                            $text = str_ireplace($arrayEntityName[$numberEntityName-1], $arrayEntityName[$numberEntityName-1]."</a></span></mark>", $text);
+                            $arrayText[$place+$numberEntityName-1]=$text;
+                            //Add all range to arrayHighlighted
+                            foreach(range($place,$place+$numberEntityName-1) as $i){
+                                array_push($arrayHighlighted, $i);
+                            }
                         }
                     }
                 }
@@ -444,8 +503,6 @@ class UtilityExtension extends \Twig_Extension
                 //ld($qualifier);
                 switch ($qualifier) {
                     case 'Marker':
-                        $alert="entra en Marker";
-                        //ld($alert);
                         $numberWords=str_word_count($entityName, 0, '0..9()=-');
                         //ld($numberWords);
                         if($numberWords==1){
@@ -467,7 +524,10 @@ class UtilityExtension extends \Twig_Extension
                                     )
                                 );
                                 $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($entity2DocumentId, "Marker");
-                                $text = str_ireplace($entityName, "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'><a href='$url'>".$entityName."</a></span>", $text);
+                                $text = str_ireplace($entityName, "<span data-tooltip=\"sticky$tooltipCounter\"><a href=\"$url\">".$entityName."</a></span>", $text);
+                                $mouseoverDivs=$mouseoverDivs."<div id=\"sticky$tooltipCounter\" class=\"atip\">$mouseoverSummary</div>";
+
+                                $tooltipCounter=$tooltipCounter+1;
                                 $arrayText[$place]=$text;
                             }
 
@@ -478,20 +538,35 @@ class UtilityExtension extends \Twig_Extension
                             if($place!=-1){
                                 //There is a place to make the highlight, starting at $place and finishing at $numberEntityName=str_word_count($entityName, 0);
                                 $numberEntityName=str_word_count($entityName, 0, '0..9()=-');
-                                $arrayEntityName=str_word_count($entityName, 1, '0..9()=-');
-                                //We mark the first
-                                $text=$arrayText[$place];
-                                $text = str_ireplace($arrayEntityName[0], '<mark class="marker">'.$arrayEntityName[0], $text);
-                                $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($entity2DocumentId,"Marker");
-                                $text = str_ireplace($arrayEntityName[0], "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'>".$arrayEntityName[0], $text);
-                                $arrayText[$place]=$text;
-                                //Mark the last
-                                $text=$arrayText[$place+$numberEntityName-1];
-                                $text = str_ireplace($arrayEntityName[$numberEntityName-1], $arrayEntityName[$numberEntityName-1]."</span></mark>", $text);
-                                $arrayText[$place+$numberEntityName-1]=$text;
-                                //Add all range to arrayHighlighted
-                                foreach(range($place,$place+$numberEntityName-1) as $i){
-                                    array_push($arrayHighlighted, $i);
+                                if($place+$numberEntityName<=count($arrayText)){//Only in this case is possible to find the entityName inside the text, otherwise it will fall outside the array with undefined offset error_get_last()
+                                    $arrayEntityName=str_word_count($entityName, 1, '0..9()=-');
+                                    //We mark the first
+                                    $text=$arrayText[$place];
+                                    $url = $this->generator->generate(
+                                        'search_interface_search_field_whatToSearch_entityType_source_entity',
+                                        array(
+                                            'field' => $field,
+                                            'whatToSearch' => $whatToSearch,
+                                            'entityType' => "marker",
+                                            'source' => $source,
+                                            'entityName' => $entityName,
+                                        )
+                                    );
+                                    $text = str_ireplace($arrayEntityName[0], '<mark class="marker">'.$arrayEntityName[0], $text);
+                                    $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($entity2DocumentId,"Marker");
+                                    $text = str_ireplace($arrayEntityName[0], "<span data-tooltip=\"sticky$tooltipCounter\"><a href=\"$url\">".$arrayEntityName[0], $text);
+                                    $mouseoverDivs=$mouseoverDivs."<div id=\"sticky$tooltipCounter\" class=\"atip\">$mouseoverSummary</div>";
+
+                                    $tooltipCounter=$tooltipCounter+1;
+                                    $arrayText[$place]=$text;
+                                    //Mark the last
+                                    $text=$arrayText[$place+$numberEntityName-1];
+                                    $text = str_ireplace($arrayEntityName[$numberEntityName-1], $arrayEntityName[$numberEntityName-1]."</a></span></mark>", $text);
+                                    $arrayText[$place+$numberEntityName-1]=$text;
+                                    //Add all range to arrayHighlighted
+                                    foreach(range($place,$place+$numberEntityName-1) as $i){
+                                        array_push($arrayHighlighted, $i);
+                                    }
                                 }
                             }
 
@@ -511,7 +586,10 @@ class UtilityExtension extends \Twig_Extension
                                 $text=$arrayText[$place];
                                 $text = str_ireplace($entityName, '<mark class="specie">'.$entityName.'</mark>', $text);
                                 $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($entity2DocumentId, "Specie");
-                                $text = str_ireplace($entityName, "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'>".$entityName."</span>", $text);
+                                $text = str_ireplace($entityName, "<span data-tooltip=\"sticky$tooltipCounter\">".$entityName."</span>", $text);
+                                $mouseoverDivs=$mouseoverDivs."<div id=\"sticky$tooltipCounter\" class=\"atip\">$mouseoverSummary</div>";
+
+                                $tooltipCounter=$tooltipCounter+1;
                                 $arrayText[$place]=$text;
                             }
 
@@ -522,20 +600,25 @@ class UtilityExtension extends \Twig_Extension
                             if($place!=-1){
                                 //There is a place to make the highlight, starting at $place and finishing at $numberEntityName=str_word_count($entityName, 0);
                                 $numberEntityName=str_word_count($entityName, 0, '0..9()=-');
-                                $arrayEntityName=str_word_count($entityName, 1, '0..9()=-');
-                                //We mark the first
-                                $text=$arrayText[$place];
-                                $text = str_ireplace($arrayEntityName[0], '<mark class="specie">'.$arrayEntityName[0], $text);
-                                $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($entity2DocumentId,"Specie");
-                                $text = str_ireplace($arrayEntityName[0], "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'>".$arrayEntityName[0], $text);
-                                $arrayText[$place]=$text;
-                                //Mark the last
-                                $text=$arrayText[$place+$numberEntityName-1];
-                                $text = str_ireplace($arrayEntityName[$numberEntityName-1], $arrayEntityName[$numberEntityName-1]."</span></mark>", $text);
-                                $arrayText[$place+$numberEntityName-1]=$text;
-                                //Add all range to arrayHighlighted
-                                foreach(range($place,$place+$numberEntityName-1) as $i){
-                                    array_push($arrayHighlighted, $i);
+                                if($place+$numberEntityName<=count($arrayText)){//Only in this case is possible to find the entityName inside the text, otherwise it will fall outside the array with undefined offset error_get_last()
+                                    $arrayEntityName=str_word_count($entityName, 1, '0..9()=-');
+                                    //We mark the first
+                                    $text=$arrayText[$place];
+                                    $text = str_ireplace($arrayEntityName[0], '<mark class="specie">'.$arrayEntityName[0], $text);
+                                    $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($entity2DocumentId,"Specie");
+                                    $text = str_ireplace($arrayEntityName[0], "<span data-tooltip=\"sticky$tooltipCounter\">".$arrayEntityName[0], $text);
+                                    $mouseoverDivs=$mouseoverDivs."<div id=\"sticky$tooltipCounter\" class=\"atip\">$mouseoverSummary</div>";
+
+                                    $tooltipCounter=$tooltipCounter+1;
+                                    $arrayText[$place]=$text;
+                                    //Mark the last
+                                    $text=$arrayText[$place+$numberEntityName-1];
+                                    $text = str_ireplace($arrayEntityName[$numberEntityName-1], $arrayEntityName[$numberEntityName-1]."</span></mark>", $text);
+                                    $arrayText[$place+$numberEntityName-1]=$text;
+                                    //Add all range to arrayHighlighted
+                                    foreach(range($place,$place+$numberEntityName-1) as $i){
+                                        array_push($arrayHighlighted, $i);
+                                    }
                                 }
                             }
                         }
@@ -566,7 +649,10 @@ class UtilityExtension extends \Twig_Extension
                                     )
                                 );
                                 $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($entity2DocumentId, "CompoundDict");
-                                $text = str_ireplace($entityName, "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'><a href='$url'>".$entityName."</a></span>", $text);
+                                $text = str_ireplace($entityName, "<span data-tooltip=\"sticky$tooltipCounter\"><a href=\"$url\">".$entityName."</a></span>", $text);
+                                $mouseoverDivs=$mouseoverDivs."<div id=\"sticky$tooltipCounter\" class=\"atip\">$mouseoverSummary</div>";
+
+                                $tooltipCounter=$tooltipCounter+1;
                                 $arrayText[$place]=$text;
                             }
 
@@ -587,23 +673,27 @@ class UtilityExtension extends \Twig_Extension
                                     )
                                 );
                                 $numberEntityName=str_word_count($entityName, 0, '0..9()=-');
-                                $arrayEntityName=str_word_count($entityName, 1, '0..9()=-');
-                                //We mark the first
-                                $text=$arrayText[$place];
-                                $text = str_ireplace($arrayEntityName[0], '<mark class="compound">'.$arrayEntityName[0], $text);
-                                $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($entity2DocumentId,"CompoundDict");
-                                $text = str_ireplace($arrayEntityName[0], "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'><a href='$url'>".$arrayEntityName[0], $text);
-                                $arrayText[$place]=$text;
-                                //Mark the last
-                                $text=$arrayText[$place+$numberEntityName-1];
-                                $text = str_ireplace($arrayEntityName[$numberEntityName-1], $arrayEntityName[$numberEntityName-1]."</a></span></mark>", $text);
-                                $arrayText[$place+$numberEntityName-1]=$text;
-                                //Add all range to arrayHighlighted
-                                foreach(range($place,$place+$numberEntityName-1) as $i){
-                                    array_push($arrayHighlighted, $i);
+                                if($place+$numberEntityName<=count($arrayText)){//Only in this case is possible to find the entityName inside the text, otherwise it will fall outside the array with undefined offset error_get_last()
+                                    $arrayEntityName=str_word_count($entityName, 1, '0..9()=-');
+                                    //We mark the first
+                                    $text=$arrayText[$place];
+                                    $text = str_ireplace($arrayEntityName[0], '<mark class="compound">'.$arrayEntityName[0], $text);
+                                    $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($entity2DocumentId,"CompoundDict");
+                                    $text = str_ireplace($arrayEntityName[0], "<span data-tooltip=\"sticky$tooltipCounter\"><a href=\"$url\">".$arrayEntityName[0], $text);
+                                    $mouseoverDivs=$mouseoverDivs."<div id=\"sticky$tooltipCounter\" class=\"atip\">$mouseoverSummary</div>";
+
+                                    $tooltipCounter=$tooltipCounter+1;
+                                    $arrayText[$place]=$text;
+                                    //Mark the last
+                                    $text=$arrayText[$place+$numberEntityName-1];
+                                    $text = str_ireplace($arrayEntityName[$numberEntityName-1], $arrayEntityName[$numberEntityName-1]."</a></span></mark>", $text);
+                                    $arrayText[$place+$numberEntityName-1]=$text;
+                                    //Add all range to arrayHighlighted
+                                    foreach(range($place,$place+$numberEntityName-1) as $i){
+                                        array_push($arrayHighlighted, $i);
+                                    }
                                 }
                             }
-
                         }
                         //ld($text);
                         break;
@@ -628,8 +718,21 @@ class UtilityExtension extends \Twig_Extension
                         }elseif($entityType=="Specie"){
                             $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($entity2DocumentId,"Specie");
                         }
-                        $text = str_ireplace($entityBackup, "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'>".$entityBackup."</span>", $text);
+                        $url = $this->generator->generate(
+                            'search_interface_search_field_whatToSearch_entityType_source_entity',
+                            array(
+                                'field' => $field,
+                                'whatToSearch' => $whatToSearch,
+                                'entityType' => "compoundDict",
+                                'source' => $source,
+                                'entityName' => $entityBackup,
+                            )
+                        );
+                        $text = str_ireplace($entityBackup, "<span data-tooltip=\"sticky$tooltipCounter\"><a href=\"$url\">".$entityBackup."</a></span>", $text);
                         $arrayText[$place]=$text;
+                        $mouseoverDivs=$mouseoverDivs."<div id=\"sticky$tooltipCounter\" class=\"atip\">$mouseoverSummary</div>";
+
+                        $tooltipCounter=$tooltipCounter+1;
 
                     }
                 }else{
@@ -637,29 +740,42 @@ class UtilityExtension extends \Twig_Extension
                     if($place!=-1){
                         //There is a place to make the highlight, starting at $place and finishing at $numberEntityName=str_word_count($entityName, 0);
                         $numberEntityName=str_word_count($entityName, 0, '0..9()=-');
-                        $arrayEntityName=str_word_count($entityName, 1, '0..9()=-');
-                        //We mark the first
-                        $text=$arrayText[$place];
-                        if($entityType=="CompoundDict"){
-                            $text = str_ireplace($arrayEntityName[0], '<mark class="termSearched">'.$arrayEntityName[0], $text);
-                            $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($entity2DocumentId,"CompoundDict");
-                        }elseif($entityType=="Marker"){
-                            $text = str_ireplace($arrayEntityName[0], '<mark class="termSearched">'.$arrayEntityName[0], $text);
-                            $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($entity2DocumentId,"Marker");
-                        }elseif($entityType=="Specie"){
-                            $text = str_ireplace($arrayEntityName[0], '<mark class="termSearched">'.$arrayEntityName[0], $text);
-                            $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($entity2DocumentId,"Specie");
-                        }
-
-                        $text = str_ireplace($arrayEntityName[0], "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'>".$arrayEntityName[0], $text);
-                        $arrayText[$place]=$text;
-                        //Mark the last
-                        $text=$arrayText[$place+$numberEntityName-1];
-                        $text = str_ireplace($arrayEntityName[$numberEntityName-1], $arrayEntityName[$numberEntityName-1]."</span></mark>", $text);
-                        $arrayText[$place+$numberEntityName-1]=$text;
-                        //Add all range to arrayHighlighted
-                        foreach(range($place,$place+$numberEntityName-1) as $i){
-                            array_push($arrayHighlighted, $i);
+                        if($place+$numberEntityName<=count($arrayText)){//Only in this case is possible to find the entityName inside the text, otherwise it will fall outside the array with undefined offset error_get_last()
+                            $arrayEntityName=str_word_count($entityName, 1, '0..9()=-');
+                            //We mark the first
+                            $text=$arrayText[$place];
+                            if($entityType=="CompoundDict"){
+                                $text = str_ireplace($arrayEntityName[0], '<mark class="termSearched">'.$arrayEntityName[0], $text);
+                                $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($entity2DocumentId,"CompoundDict");
+                            }elseif($entityType=="Marker"){
+                                $text = str_ireplace($arrayEntityName[0], '<mark class="termSearched">'.$arrayEntityName[0], $text);
+                                $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($entity2DocumentId,"Marker");
+                            }elseif($entityType=="Specie"){
+                                $text = str_ireplace($arrayEntityName[0], '<mark class="termSearched">'.$arrayEntityName[0], $text);
+                                $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($entity2DocumentId,"Specie");
+                            }
+                            $url = $this->generator->generate(
+                                'search_interface_search_field_whatToSearch_entityType_source_entity',
+                                array(
+                                    'field' => $field,
+                                    'whatToSearch' => $whatToSearch,
+                                    'entityType' => "compoundDict",
+                                    'source' => $source,
+                                    'entityName' => $entityBackup,
+                                )
+                            );
+                            $text = str_ireplace($arrayEntityName[0], "<span data-tooltip=\"sticky$tooltipCounter\"><a href=\"$url\">".$arrayEntityName[0], $text);
+                            $arrayText[$place]=$text;
+                            $mouseoverDivs=$mouseoverDivs."<div id=\"sticky$tooltipCounter\" class=\"atip\">$mouseoverSummary</div>";
+                            $tooltipCounter=$tooltipCounter+1;
+                            //Mark the last
+                            $text=$arrayText[$place+$numberEntityName-1];
+                            $text = str_ireplace($arrayEntityName[$numberEntityName-1], $arrayEntityName[$numberEntityName-1]."</a></span></mark>", $text);
+                            $arrayText[$place+$numberEntityName-1]=$text;
+                            //Add all range to arrayHighlighted
+                            foreach(range($place,$place+$numberEntityName-1) as $i){
+                                array_push($arrayHighlighted, $i);
+                            }
                         }
                     }
                 }
@@ -667,12 +783,18 @@ class UtilityExtension extends \Twig_Extension
         }
         //ld($entityBackup);
         $text=implode(" ", $arrayText);
-        return ($text);
+
+        $arrayReturn=array();
+        $arrayReturn[0]=$text;
+        $arrayReturn[1]=$mouseoverDivs;
+        $arrayReturn[2]=$tooltipCounter;
+        return ($arrayReturn);
     }
 
-    public function highlightEntitiesAbstracts($text,$abstract,$entityBackup,$field, $whatToSearch, $source, $entityType)
+    public function highlightEntitiesAbstracts($text,$abstract,$entityBackup,$field, $whatToSearch, $source, $entityType, $tooltipCounter)
     {
         $message="highlightEntitiesAbstracts!!!";
+        $mouseoverDivs="";
         //ld($text);
         //ld($entityBackup);
         $em=$this->doctrine->getManager();
@@ -737,7 +859,9 @@ class UtilityExtension extends \Twig_Extension
                                     )
                                 );
                                 $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2AbstractBundle:Entity2Abstract')->getEntitySummary($entity2AbstractId, "Marker");
-                                $text = str_ireplace($entityName, "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'><a href='$url'>".$entityName."</a></span>", $text);
+                                $text = str_ireplace($entityName, "<span data-tooltip=\"sticky$tooltipCounter\"><a href=\"$url\">".$entityName."</a></span>", $text);
+                                $mouseoverDivs=$mouseoverDivs."<div id=\"sticky$tooltipCounter\" class=\"atip\">$mouseoverSummary</div>";
+                                $tooltipCounter=$tooltipCounter+1;
                                 $arrayText[$place]=$text;
                             }
 
@@ -748,20 +872,24 @@ class UtilityExtension extends \Twig_Extension
                             if($place!=-1){
                                 //There is a place to make the highlight, starting at $place and finishing at $numberEntityName=str_word_count($entityName, 0);
                                 $numberEntityName=str_word_count($entityName, 0, '0..9()=-');
-                                $arrayEntityName=str_word_count($entityName, 1, '0..9()=-');
-                                //We mark the first
-                                $text=$arrayText[$place];
-                                $text = str_ireplace($arrayEntityName[0], '<mark class="marker">'.$arrayEntityName[0], $text);
-                                $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2AbstractBundle:Entity2Abstract')->getEntitySummary($entity2AbstractId,"Marker");
-                                $text = str_ireplace($arrayEntityName[0], "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'>".$arrayEntityName[0], $text);
-                                $arrayText[$place]=$text;
-                                //Mark the last
-                                $text=$arrayText[$place+$numberEntityName-1];
-                                $text = str_ireplace($arrayEntityName[$numberEntityName-1], $arrayEntityName[$numberEntityName-1]."</span></mark>", $text);
-                                $arrayText[$place+$numberEntityName-1]=$text;
-                                //Add all range to arrayHighlighted
-                                foreach(range($place,$place+$numberEntityName-1) as $i){
-                                    array_push($arrayHighlighted, $i);
+                                if($place+$numberEntityName<=count($arrayText)){//Only in this case is possible to find the entityName inside the text, otherwise it will fall outside the array with undefined offset error_get_last()
+                                    $arrayEntityName=str_word_count($entityName, 1, '0..9()=-');
+                                    //We mark the first
+                                    $text=$arrayText[$place];
+                                    $text = str_ireplace($arrayEntityName[0], '<mark class="marker">'.$arrayEntityName[0], $text);
+                                    $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2AbstractBundle:Entity2Abstract')->getEntitySummary($entity2AbstractId,"Marker");
+                                    $text = str_ireplace($arrayEntityName[0], "<span data-tooltip=\"sticky$tooltipCounter\">".$arrayEntityName[0], $text);
+                                    $mouseoverDivs=$mouseoverDivs."<div id=\"sticky$tooltipCounter\" class=\"atip\">$mouseoverSummary</div>";
+                                    $tooltipCounter=$tooltipCounter+1;
+                                    $arrayText[$place]=$text;
+                                    //Mark the last
+                                    $text=$arrayText[$place+$numberEntityName-1];
+                                    $text = str_ireplace($arrayEntityName[$numberEntityName-1], $arrayEntityName[$numberEntityName-1]."</span></mark>", $text);
+                                    $arrayText[$place+$numberEntityName-1]=$text;
+                                    //Add all range to arrayHighlighted
+                                    foreach(range($place,$place+$numberEntityName-1) as $i){
+                                        array_push($arrayHighlighted, $i);
+                                    }
                                 }
                             }
 
@@ -781,7 +909,9 @@ class UtilityExtension extends \Twig_Extension
                                 $text=$arrayText[$place];
                                 $text = str_ireplace($entityName, '<mark class="specie">'.$entityName.'</mark>', $text);
                                 $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2AbstractBundle:Entity2Abstract')->getEntitySummary($entity2AbstractId, "Specie");
-                                $text = str_ireplace($entityName, "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'>".$entityName."</span>", $text);
+                                $text = str_ireplace($entityName, "<span data-tooltip=\"sticky$tooltipCounter\">".$entityName."</span>", $text);
+                                $mouseoverDivs=$mouseoverDivs."<div id=\"sticky$tooltipCounter\" class=\"atip\">$mouseoverSummary</div>";
+                                $tooltipCounter=$tooltipCounter+1;
                                 $arrayText[$place]=$text;
                             }
 
@@ -792,20 +922,24 @@ class UtilityExtension extends \Twig_Extension
                             if($place!=-1){
                                 //There is a place to make the highlight, starting at $place and finishing at $numberEntityName=str_word_count($entityName, 0);
                                 $numberEntityName=str_word_count($entityName, 0, '0..9()=-');
-                                $arrayEntityName=str_word_count($entityName, 1, '0..9()=-');
-                                //We mark the first
-                                $text=$arrayText[$place];
-                                $text = str_ireplace($arrayEntityName[0], '<mark class="specie">'.$arrayEntityName[0], $text);
-                                $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2AbstractBundle:Entity2Abstract')->getEntitySummary($entity2AbstractId,"Specie");
-                                $text = str_ireplace($arrayEntityName[0], "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'>".$arrayEntityName[0], $text);
-                                $arrayText[$place]=$text;
-                                //Mark the last
-                                $text=$arrayText[$place+$numberEntityName-1];
-                                $text = str_ireplace($arrayEntityName[$numberEntityName-1], $arrayEntityName[$numberEntityName-1]."</span></mark>", $text);
-                                $arrayText[$place+$numberEntityName-1]=$text;
-                                //Add all range to arrayHighlighted
-                                foreach(range($place,$place+$numberEntityName-1) as $i){
-                                    array_push($arrayHighlighted, $i);
+                                if($place+$numberEntityName<=count($arrayText)){//Only in this case is possible to find the entityName inside the text, otherwise it will fall outside the array with undefined offset error_get_last()
+                                    $arrayEntityName=str_word_count($entityName, 1, '0..9()=-');
+                                    //We mark the first
+                                    $text=$arrayText[$place];
+                                    $text = str_ireplace($arrayEntityName[0], '<mark class="specie">'.$arrayEntityName[0], $text);
+                                    $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2AbstractBundle:Entity2Abstract')->getEntitySummary($entity2AbstractId,"Specie");
+                                    $text = str_ireplace($arrayEntityName[0], "<span data-tooltip=\"sticky$tooltipCounter\">".$arrayEntityName[0], $text);
+                                    $arrayText[$place]=$text;
+                                    $mouseoverDivs=$mouseoverDivs."<div id=\"sticky$tooltipCounter\" class=\"atip\">$mouseoverSummary</div>";
+                                    $tooltipCounter=$tooltipCounter+1;
+                                    //Mark the last
+                                    $text=$arrayText[$place+$numberEntityName-1];
+                                    $text = str_ireplace($arrayEntityName[$numberEntityName-1], $arrayEntityName[$numberEntityName-1]."</span></mark>", $text);
+                                    $arrayText[$place+$numberEntityName-1]=$text;
+                                    //Add all range to arrayHighlighted
+                                    foreach(range($place,$place+$numberEntityName-1) as $i){
+                                        array_push($arrayHighlighted, $i);
+                                    }
                                 }
                             }
                         }
@@ -837,7 +971,9 @@ class UtilityExtension extends \Twig_Extension
                                     )
                                 );
                                 $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2AbstractBundle:Entity2Abstract')->getEntitySummary($entity2AbstractId, "CompoundDict");
-                                $text = str_ireplace($entityName, "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'><a href='$url'>".$entityName."</a></span>", $text);
+                                $text = str_ireplace($entityName, "<span data-tooltip=\"sticky$tooltipCounter\"><a href=\"$url\">".$entityName."</a></span>", $text);
+                                $mouseoverDivs=$mouseoverDivs."<div id=\"sticky$tooltipCounter\" class=\"atip\">$mouseoverSummary</div>";
+                                $tooltipCounter=$tooltipCounter+1;
                                 $arrayText[$place]=$text;
 
                             }
@@ -859,23 +995,26 @@ class UtilityExtension extends \Twig_Extension
                                     )
                                 );
                                 $numberEntityName=str_word_count($entityName, 0, '0..9()=-');
-                                $arrayEntityName=str_word_count($entityName, 1, '0..9()=-');
-                                //We mark the first
-                                $text=$arrayText[$place];
-                                $text = str_ireplace($arrayEntityName[0], '<mark class="compound">'.$arrayEntityName[0], $text);
-                                $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2AbstractBundle:Entity2Abstract')->getEntitySummary($entity2AbstractId,"CompoundDict");
-                                $text = str_ireplace($arrayEntityName[0], "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'><a href='$url'>".$arrayEntityName[0], $text);
-                                $arrayText[$place]=$text;
-                                //Mark the last
-                                $text=$arrayText[$place+$numberEntityName-1];
-                                $text = str_ireplace($arrayEntityName[$numberEntityName-1], $arrayEntityName[$numberEntityName-1]."</a></span></mark>", $text);
-                                $arrayText[$place+$numberEntityName-1]=$text;
-                                //Add all range to arrayHighlighted
-                                foreach(range($place,$place+$numberEntityName-1) as $i){
-                                    array_push($arrayHighlighted, $i);
+                                if($place+$numberEntityName<=count($arrayText)){//Only in this case is possible to find the entityName inside the text, otherwise it will fall outside the array with undefined offset error_get_last()
+                                    $arrayEntityName=str_word_count($entityName, 1, '0..9()=-');
+                                    //We mark the first
+                                    $text=$arrayText[$place];
+                                    $text = str_ireplace($arrayEntityName[0], '<mark class="compound">'.$arrayEntityName[0], $text);
+                                    $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2AbstractBundle:Entity2Abstract')->getEntitySummary($entity2AbstractId,"CompoundDict");
+                                    $text = str_ireplace($arrayEntityName[0], "<span data-tooltip=\"sticky$tooltipCounter\">".$mouseoverSummary."'><a href='$url'>".$arrayEntityName[0], $text);
+                                    $arrayText[$place]=$text;
+                                    $mouseoverDivs=$mouseoverDivs."<div id=\"sticky$tooltipCounter\" class=\"atip\">$mouseoverSummary</div>";
+                                    $tooltipCounter=$tooltipCounter+1;
+                                    //Mark the last
+                                    $text=$arrayText[$place+$numberEntityName-1];
+                                    $text = str_ireplace($arrayEntityName[$numberEntityName-1], $arrayEntityName[$numberEntityName-1]."</a></span></mark>", $text);
+                                    $arrayText[$place+$numberEntityName-1]=$text;
+                                    //Add all range to arrayHighlighted
+                                    foreach(range($place,$place+$numberEntityName-1) as $i){
+                                        array_push($arrayHighlighted, $i);
+                                    }
                                 }
                             }
-
                         }
                         //ld($text);
                         break;
@@ -898,44 +1037,55 @@ class UtilityExtension extends \Twig_Extension
                         }elseif($entityType=="Specie"){
                             $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2AbstractBundle:Entity2Abstract')->getEntitySummary($entity2AbstractId,"Specie");
                         }
-                        $text = str_ireplace($entityBackup, "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'>".$entityBackup."</span>", $text);
+                        $text = str_ireplace($entityBackup, "<span data-tooltip=\"sticky$tooltipCounter\">".$entityBackup."</span>", $text);
                         $arrayText[$place]=$text;
+                        $mouseoverDivs=$mouseoverDivs."<div id=\"sticky$tooltipCounter\" class=\"atip\">$mouseoverSummary</div>";
+                        $tooltipCounter=$tooltipCounter+1;
                     }
                 }else{
                     $place=$this->findPlaceSeveralWords($entityName,$arrayText,$arrayHighlighted);
                     if($place!=-1){
                         //There is a place to make the highlight, starting at $place and finishing at $numberEntityName=str_word_count($entityName, 0);
                         $numberEntityName=str_word_count($entityName, 0, '0..9()=-');
-                        $arrayEntityName=str_word_count($entityName, 1, '0..9()=-');
-                        //We mark the first
-                        $text=$arrayText[$place];
-                        if($entityType=="CompoundDict"){
-                            $text = str_ireplace($arrayEntityName[0], '<mark class="termSearched">'.$arrayEntityName[0], $text);
-                            $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2AbstractBundle:Entity2Abstract')->getEntitySummary($entity2AbstractId,"CompoundDict");
-                        }elseif($entityType=="Marker"){
-                            $text = str_ireplace($arrayEntityName[0], '<mark class="termSearched">'.$arrayEntityName[0], $text);
-                            $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2AbstractBundle:Entity2Abstract')->getEntitySummary($entity2AbstractId,"Marker");
-                        }elseif($entityType=="Specie"){
-                            $text = str_ireplace($arrayEntityName[0], '<mark class="termSearched">'.$arrayEntityName[0], $text);
-                            $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2AbstractBundle:Entity2Abstract')->getEntitySummary($entity2AbstractId,"Specie");
-                        }
+                        if($place+$numberEntityName<=count($arrayText)){//Only in this case is possible to find the entityName inside the text, otherwise it will fall outside the array with undefined offset error_get_last()
+                            $arrayEntityName=str_word_count($entityName, 1, '0..9()=-');
+                            //We mark the first
+                            $text=$arrayText[$place];
+                            if($entityType=="CompoundDict"){
+                                $text = str_ireplace($arrayEntityName[0], '<mark class="termSearched">'.$arrayEntityName[0], $text);
+                                $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2AbstractBundle:Entity2Abstract')->getEntitySummary($entity2AbstractId,"CompoundDict");
+                            }elseif($entityType=="Marker"){
+                                $text = str_ireplace($arrayEntityName[0], '<mark class="termSearched">'.$arrayEntityName[0], $text);
+                                $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2AbstractBundle:Entity2Abstract')->getEntitySummary($entity2AbstractId,"Marker");
+                            }elseif($entityType=="Specie"){
+                                $text = str_ireplace($arrayEntityName[0], '<mark class="termSearched">'.$arrayEntityName[0], $text);
+                                $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2AbstractBundle:Entity2Abstract')->getEntitySummary($entity2AbstractId,"Specie");
+                            }
 
-                        $text = str_ireplace($arrayEntityName[0], "<span data-tooltip class='has-tip' data-options='touch_close_text:tap to close' title='".$mouseoverSummary."'>".$arrayEntityName[0], $text);
-                        $arrayText[$place]=$text;
-                        //Mark the last
-                        $text=$arrayText[$place+$numberEntityName-1];
-                        $text = str_ireplace($arrayEntityName[$numberEntityName-1], $arrayEntityName[$numberEntityName-1]."</span></mark>", $text);
-                        $arrayText[$place+$numberEntityName-1]=$text;
-                        //Add all range to arrayHighlighted
-                        foreach(range($place,$place+$numberEntityName-1) as $i){
-                            array_push($arrayHighlighted, $i);
+                            $text = str_ireplace($arrayEntityName[0], "<span data-tooltip=\"sticky$tooltipCounter\">".$arrayEntityName[0], $text);
+                            $arrayText[$place]=$text;
+                            $mouseoverDivs=$mouseoverDivs."<div id=\"sticky$tooltipCounter\" class=\"atip\">$mouseoverSummary</div>";
+                            $tooltipCounter=$tooltipCounter+1;
+
+                            //Mark the last
+                            $text=$arrayText[$place+$numberEntityName-1];
+                            $text = str_ireplace($arrayEntityName[$numberEntityName-1], $arrayEntityName[$numberEntityName-1]."</span></mark>", $text);
+                            $arrayText[$place+$numberEntityName-1]=$text;
+                            //Add all range to arrayHighlighted
+                            foreach(range($place,$place+$numberEntityName-1) as $i){
+                                array_push($arrayHighlighted, $i);
+                            }
                         }
                     }
                 }
             }
         }
         $text=implode(" ", $arrayText);
-        return ($text);
+        $arrayReturn=array();
+        $arrayReturn[0]=$text;
+        $arrayReturn[1]=$mouseoverDivs;
+        $arrayReturn[2]=$tooltipCounter;
+        return ($arrayReturn);
     }
 
     public function highlightKeywordText($text,$keyword)
@@ -991,44 +1141,53 @@ class UtilityExtension extends \Twig_Extension
     public function colorCodingScore($score)
     {
         $message="colorCodingScore!!!";
+        if ($score==null){
+            $score="-";
+            return $score;
+        }
         $score=(float)$score;
         switch ($score) {
+            case (int)$score === 0:
+                    $score ="<mark class=''>$score</mark>";
+                    break;
             case $score>5:
-                $score ="<mark class='score-green-5'>$score</mark>";
-                break;
-        case $score>4:
-                $score ="<mark class='score-green-4'>$score</mark>";
-                break;
-        case $score>3:
-                $score ="<mark class='score-green-3'>$score</mark>";
-                break;
-        case $score>2:
-                $score ="<mark class='score-green-2'>$score</mark>";
-                break;
-        case $score>1:
-                $score ="<mark class='score-green-1'>$score</mark>";
-                break;
-        case $score>0:
-                $score ="<mark class='score-green-0'>$score</mark>";
-                break;
-        case $score < -5:
-                $score ="<mark class='score-red-5'>$score</mark>";
-                break;
-        case $score < -4:
-                $score ="<mark class='score-red-4'>$score</mark>";
-                break;
-        case $score < -3:
-                $score ="<mark class='score-red-3'>$score</mark>";
-                break;
-        case $score < -2:
-                $score ="<mark class='score-red-2'>$score</mark>";
-                break;
-        case $score < -1:
-                $score ="<mark class='score-red-1'>$score</mark>";
-                break;
-        case $score < 0:
-                $score ="<mark class='score-red-0'>$score</mark>";
-                break;
+                    $score ="<mark class='score-green-5'>$score</mark>";
+                    break;
+            case $score>4:
+                    $score ="<mark class='score-green-4'>$score</mark>";
+                    break;
+            case $score>3:
+                    $score ="<mark class='score-green-3'>$score</mark>";
+                    break;
+            case $score>2:
+                    $score ="<mark class='score-green-2'>$score</mark>";
+                    break;
+            case $score>1:
+                    $score ="<mark class='score-green-1'>$score</mark>";
+                    break;
+            case $score>0:
+                    $score ="<mark class='score-green-0'>$score</mark>";
+                    break;
+            case $score < -5:
+                    $score ="<mark class='score-red-5'>$score</mark>";
+                    break;
+            case $score < -4:
+                    $score ="<mark class='score-red-4'>$score</mark>";
+                    break;
+            case $score < -3:
+                    $score ="<mark class='score-red-3'>$score</mark>";
+                    break;
+            case $score < -2:
+                    $score ="<mark class='score-red-2'>$score</mark>";
+                    break;
+            case $score < -1:
+                    $score ="<mark class='score-red-1'>$score</mark>";
+                    break;
+            case $score < 0:
+                    $score ="<mark class='score-red-0'>$score</mark>";
+                    break;
+
+
         }
         return ($score);
     }

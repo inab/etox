@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * AdverseEffect
  *
- * @ORM\Table(indexes={@ORM\Index(name="entity_index", columns={"entityId"}),@ORM\Index(name="name_index", columns={"name"}) })
+ * @ORM\Table(indexes={@ORM\Index(name="adeverseEffect_entity_index", columns={"""entityId"""}),@ORM\Index(name="adeverseEffect_name_index", columns={"name"}) } )
  * @ORM\Entity(repositoryClass="EtoxMicrome\EntityBundle\Entity\AdverseEffectRepository")
  */
 class AdverseEffect
@@ -24,7 +24,7 @@ class AdverseEffect
     /**
      * @var string
      *
-     * @ORM\Column(name="entityId", type="string", length=255)
+     * @ORM\Column(name="""entityId""", type="string", length=255)
      */
     private $entityId;
 
@@ -45,14 +45,14 @@ class AdverseEffect
     /**
      * @var string
      *
-     * @ORM\Column(name="extId1", type="string", length=255)
+     * @ORM\Column(name="""extId1""", type="string", length=255)
      */
     private $extId1;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="extId2", type="string", length=255)
+     * @ORM\Column(name="""extId2""", type="string", length=255)
      */
     private $extId2;
 

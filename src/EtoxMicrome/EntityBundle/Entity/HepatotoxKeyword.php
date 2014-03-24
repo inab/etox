@@ -5,9 +5,9 @@ namespace EtoxMicrome\EntityBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Term
+ * HepatotoxKeyword
  *
- * @ORM\Table(indexes={@ORM\Index(name="term_index", columns={"term"}),@ORM\Index(name="norm_index", columns={"norm"}),@ORM\Index(name="pos_index", columns={"pos"}),@ORM\Index(name="EFPIA_index", columns={"EFPIA"}),@ORM\Index(name="COSTART_index", columns={"COSTART"}),@ORM\Index(name="MedDRA_index", columns={"MedDRA"}),@ORM\Index(name="MPheno_index", columns={"MPheno"}),@ORM\Index(name="adverse_events_index", columns={"adverse_events"}),@ORM\Index(name="do_index", columns={"do"}),@ORM\Index(name="gemina_symptom_index", columns={"gemina_symptom"}),@ORM\Index(name="human_phenotype_index", columns={"human_phenotype"}),@ORM\Index(name="mpath_index", columns={"mpath"}),@ORM\Index(name="MESH_OMIM_index", columns={"MESH_OMIM"}),@ORM\Index(name="polysearch_index", columns={"polysearch"}),@ORM\Index(name="etox_index", columns={"etox"}) })
+ * @ORM\Table(indexes={@ORM\Index(name="hepatotoxKeyword_term_index", columns={"term"}),@ORM\Index(name="hepatotoxKeyword_norm_index", columns={"norm"}),@ORM\Index(name="hepatotoxKeyword_pos_index", columns={"pos"}),@ORM\Index(name="hepatotoxKeyword_EFPIA_index", columns={"""EFPIA"""}),@ORM\Index(name="hepatotoxKeyword_COSTART_index", columns={"""COSTART"""}),@ORM\Index(name="hepatotoxKeyword_MedDRA_index", columns={"""MedDRA"""}),@ORM\Index(name="hepatotoxKeyword_MPheno_index", columns={"""MPheno"""}),@ORM\Index(name="hepatotoxKeyword_adverse_events_index", columns={"""adverseEvents"""}),@ORM\Index(name="hepatotoxKeyword_do_index", columns={"do"}),@ORM\Index(name="hepatotoxKeyword_gemina_symptom_index", columns={"""geminaSymptom"""}),@ORM\Index(name="hepatotoxKeyword_human_phenotype_index", columns={"""humanPhenotype"""}),@ORM\Index(name="hepatotoxKeyword_mpath_index", columns={"mpath"}),@ORM\Index(name="hepatotoxKeyword_MESH_OMIM_index", columns={"""MESH_OMIM"""}),@ORM\Index(name="hepatotoxKeyword_polysearch_index", columns={"polysearch"}),@ORM\Index(name="hepatotoxKeyword_etox_index", columns={"etox"}) } )
  * @ORM\Entity(repositoryClass="EtoxMicrome\EntityBundle\Entity\HepatotoxKeywordRepository")
  */
 class HepatotoxKeyword
@@ -22,9 +22,9 @@ class HepatotoxKeyword
     private $id;
 
     /**
-     * @var boolean
+     * @var integer
      *
-     * @ORM\Column(name="validated", type="boolean")
+     * @ORM\Column(name="validated", type="integer")
      */
     private $validated;
 
@@ -52,37 +52,37 @@ class HepatotoxKeyword
     /**
      * @var string
      *
-     * @ORM\Column(name="EFPIA", type="string", length=30, nullable=true)
+     * @ORM\Column(name="""EFPIA""", type="string", length=30, nullable=true)
      */
     private $EFPIA;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="COSTART", type="string", length=30, nullable=true)
+     * @ORM\Column(name="""COSTART""", type="string", length=30, nullable=true)
      */
     private $COSTART;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="MedDRA", type="string", length=30, nullable=true)
+     * @ORM\Column(name="""MedDRA""", type="string", length=30, nullable=true)
      */
     private $MedDRA;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="MPheno", type="string", length=30, nullable=true)
+     * @ORM\Column(name="""MPheno""", type="string", length=30, nullable=true)
      */
     private $MPheno;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="adverse_events", type="string", length=30, nullable=true)
+     * @ORM\Column(name="""adverseEvents""", type="string", length=30, nullable=true)
      */
-    private $adverse_events;
+    private $adverseEvents;
 
     /**
      * @var string
@@ -94,16 +94,16 @@ class HepatotoxKeyword
     /**
      * @var string
      *
-     * @ORM\Column(name="gemina_symptom", type="string", length=30, nullable=true)
+     * @ORM\Column(name="""geminaSymptom""", type="string", length=30, nullable=true)
      */
-    private $gemina_symptom;
+    private $geminaSymptom;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="human_phenotype", type="string", length=30, nullable=true)
+     * @ORM\Column(name="""humanPhenotype""", type="string", length=30, nullable=true)
      */
-    private $human_phenotype;
+    private $humanPhenotype;
 
     /**
      * @var string
@@ -115,7 +115,7 @@ class HepatotoxKeyword
     /**
      * @var string
      *
-     * @ORM\Column(name="MESH_OMIM", type="string", length=30, nullable=true)
+     * @ORM\Column(name="""MESH_OMIM""", type="string", length=30, nullable=true)
      */
     private $MESH_OMIM;
 
@@ -161,7 +161,7 @@ class HepatotoxKeyword
     /**
      * Set validated
      *
-     * @param boolean $validated
+     * @param integer $validated
      * @return HepatotoxKeyword
      */
     public function setValidated($validated)
@@ -173,7 +173,7 @@ class HepatotoxKeyword
     /**
      * Get validated
      *
-     * @return boolean
+     * @return integer
      */
     public function getValidated()
     {
@@ -342,26 +342,26 @@ class HepatotoxKeyword
     }
 
     /**
-     * Set adverse_events
+     * Set adverseEvents
      *
-     * @param string $adverse_events
+     * @param string $adverseEvents
      * @return HepatotoxKeyword
      */
-    public function setAdverse_events($adverse_events)
+    public function setAdverseEvents($adverseEvents)
     {
-        $this->adverse_events = $adverse_events;
+        $this->adverseEvents = $adverseEvents;
 
         return $this;
     }
 
     /**
-     * Get adverse_events
+     * Get adverseEvents
      *
      * @return string
      */
-    public function getAdverse_events()
+    public function getAdverseEvents()
     {
-        return $this->adverse_events;
+        return $this->adverseEvents;
     }
 
     /**
@@ -388,49 +388,49 @@ class HepatotoxKeyword
     }
 
     /**
-     * Set gemina_symptom
+     * Set geminaSymptom
      *
-     * @param string $gemina_symptom
+     * @param string $geminaSymptom
      * @return HepatotoxKeyword
      */
-    public function setGemina_symptom($gemina_symptom)
+    public function setGeminaSymptom($geminaSymptom)
     {
-        $this->gemina_symptom = $gemina_symptom;
+        $this->geminaSymptom = $geminaSymptom;
 
         return $this;
     }
 
     /**
-     * Get gemina_symptom
+     * Get geminaSymptom
      *
      * @return string
      */
-    public function getGemina_symptom()
+    public function getGeminaSymptom()
     {
-        return $this->gemina_symptom;
+        return $this->geminaSymptom;
     }
 
     /**
-     * Set human_phenotype
+     * Set humanPhenotype
      *
-     * @param string $human_phenotype
+     * @param string $humanPhenotype
      * @return HepatotoxKeyword
      */
-    public function setHuman_phenotype($human_phenotype)
+    public function setHumanPhenotype($humanPhenotype)
     {
-        $this->human_phenotype = $human_phenotype;
+        $this->humanPhenotype = $humanPhenotype;
 
         return $this;
     }
 
     /**
-     * Get human_phenotype
+     * Get humanPhenotype
      *
      * @return string
      */
-    public function getHuman_phenotype()
+    public function getHumanPhenotype()
     {
-        return $this->human_phenotype;
+        return $this->humanPhenotype;
     }
 
     /**

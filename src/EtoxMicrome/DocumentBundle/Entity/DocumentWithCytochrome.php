@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * DocumentWithCytochrome
  *
- * @ORM\Table(indexes={ @ORM\Index(name="uid_index", columns={"uid"}), @ORM\Index(name="kind_index", columns={"kind"}), @ORM\Index(name="sentenceId_index", columns={"sentenceId"}), @ORM\Index(name="hepval_index", columns={"hepval"}), @ORM\Index(name="cardval_index", columns={"cardval"}), @ORM\Index(name="nephval_index", columns={"nephval"}), @ORM\Index(name="phosval_index", columns={"phosval"}) })
+ * @ORM\Table(indexes={ @ORM\Index(name="documentWithCytochrome_uid_index", columns={"uid"}), @ORM\Index(name="documentWithCytochrome_kind_index", columns={"kind"}), @ORM\Index(name="documentWithCytochrome_sentenceId_index", columns={"""sentenceId"""}), @ORM\Index(name="documentWithCytochrome_hepval_index", columns={"hepval"}), @ORM\Index(name="documentWithCytochrome_cardval_index", columns={"cardval"}), @ORM\Index(name="documentWithCytochrome_nephval_index", columns={"nephval"}), @ORM\Index(name="documentWithCytochrome_phosval_index", columns={"phosval"}), @ORM\Index(name="documentWithCytochrome_patterncount", columns={"""patternCount"""}), @ORM\Index(name="documentWithCytochrome_rulescore", columns={"""ruleScore"""}), @ORM\Index(name="documentWithCytochrome_heptermnormscore", columns={"""hepTermNormScore"""}), @ORM\Index(name="documentWithCytochrome_heptermvarscore", columns={"""hepTermVarScore"""}), @ORM\Index(name="documentWithCytochrome_svmconfidence", columns={"""svmConfidence"""}) } )
  * @ORM\Entity(repositoryClass="EtoxMicrome\DocumentBundle\Entity\DocumentWithCytochromeRepository")
  */
 class DocumentWithCytochrome
@@ -37,7 +37,7 @@ class DocumentWithCytochrome
     /**
      * @var integer
      *
-     * @ORM\Column(name="sentenceId", type="string", length=255)
+     * @ORM\Column(name="""sentenceId""", type="string", length=255)
      */
     private $sentenceId;
 
@@ -75,6 +75,41 @@ class DocumentWithCytochrome
      * @ORM\Column(name="phosval", type="float", nullable=true)
      */
     private $phosval;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="""patternCount""", type="float", nullable=true)
+     */
+    private $patternCount;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="""ruleScore""", type="float", nullable=true)
+     */
+    private $ruleScore;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="""hepTermNormScore""", type="float", nullable=true)
+     */
+    private $hepTermNormScore;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="""hepTermVarScore""", type="float", nullable=true)
+     */
+    private $hepTermVarScore;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="""svmConfidence""", type="float", nullable=true)
+     */
+    private $svmConfidence;
 
     /**
      * @var \DateTime
@@ -284,6 +319,108 @@ class DocumentWithCytochrome
     public function getPhosval()
     {
         return $this->phosval;
+    }
+
+    /**
+     * Get patternCount
+     *
+     * @return float
+     */
+    public function getPatternCount()
+    {
+        return $this->patternCount;
+    }
+
+    /**
+     * Set ruleScore
+     *
+     * @param float $ruleScore
+     * @return DocumentWithCytochrome
+     */
+    public function setRuleScore($ruleScore)
+    {
+        $this->ruleScore = $ruleScore;
+
+        return $this;
+    }
+
+    /**
+     * Get ruleScore
+     *
+     * @return float
+     */
+    public function getRuleScore()
+    {
+        return $this->ruleScore;
+    }
+
+    /**
+     * Set hepTermNormScore
+     *
+     * @param float $hepTermNormScore
+     * @return DocumentWithCytochrome
+     */
+    public function setHepTermNormScore($hepTermNormScore)
+    {
+        $this->hepTermNormScore = $hepTermNormScore;
+
+        return $this;
+    }
+
+    /**
+     * Get hepTermNormScore
+     *
+     * @return float
+     */
+    public function getHepTermNormScore()
+    {
+        return $this->hepTermNormScore;
+    }
+
+    /**
+     * Set hepTermVarScore
+     *
+     * @param float $hepTermVarScore
+     * @return DocumentWithCytochrome
+     */
+    public function setHepTermVarScore($hepTermVarScore)
+    {
+        $this->hepTermVarScore = $hepTermVarScore;
+
+        return $this;
+    }
+
+    /**
+     * Get hepTermVarScore
+     *
+     * @return float
+     */
+    public function getHepTermVarScore()
+    {
+        return $this->hepTermVarScore;
+    }
+
+    /**
+     * Set svmConfidence
+     *
+     * @param float $svmConfidence
+     * @return DocumentWithCytochrome
+     */
+    public function setSvmConfidence($svmConfidence)
+    {
+        $this->svmConfidence = $svmConfidence;
+
+        return $this;
+    }
+
+    /**
+     * Get svmConfidence
+     *
+     * @return float
+     */
+    public function getSvmConfidence()
+    {
+        return $this->svmConfidence;
     }
 
     /**

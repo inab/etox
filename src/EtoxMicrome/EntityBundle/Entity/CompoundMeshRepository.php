@@ -54,4 +54,27 @@ class CompoundMeshRepository extends EntityRepository
         $entity=$compound[0];
         return $entity;
     }
+    public function getNameFromGenericField($key, $value, $arrayEntityId)
+    {
+        $message="Inside getEntityIdFromName at CompoundMeshRepository";
+        $query = $this->_em->createQuery("
+            SELECT c
+            FROM EtoxMicromeEntityBundle:CompoundMesh c
+            WHERE c.$key= :value
+        ");
+        $query->setParameter('value', $value);
+        $compounds=$query->getResult();
+        if(count($compounds)==0){
+            return $arrayEntityId;
+        }
+        else{
+            $errorMessage="There are at least one CompoundMesh for $key = $value";
+            //ld($errorMessage);
+            foreach($compounds as $compound){
+                $arrayEntityId[]=$compound->getName();
+            }
+        }
+        //We return all the Compounds with the entityName given. By now we supose its only one entity!!!
+        return $arrayEntityId;
+    }
 }

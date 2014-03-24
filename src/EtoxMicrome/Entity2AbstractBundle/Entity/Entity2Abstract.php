@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Entity2Abstract
  *
- * @ORM\Table (indexes={@ORM\Index(name="name_index", columns={"name"}), @ORM\Index(name="qualifier_index", columns={"qualifier"}) })
+ * @ORM\Table (indexes={@ORM\Index(name="entity2Abstract_name", columns={"name"}), @ORM\Index(name="entity2Abstract_qualifier", columns={"qualifier"}), @ORM\Index(name="entity2Abstract_hepval", columns={"hepval"}), @ORM\Index(name="entity2Abstract_svmconfidence", columns={"""svmConfidence"""}), @ORM\Index(name="entity2Abstract_rulescore", columns={"""ruleScore"""}), @ORM\Index(name="entity2Abstract_patterncount", columns={"""patternCount"""}), @ORM\Index(name="entity2Abstract_heptermnormscore", columns={"""hepTermNormScore"""}), @ORM\Index(name="entity2Abstract_heptermvarscore", columns={"""hepTermVarScore"""}), @ORM\Index(name="entity2Abstract_qualifier_name", columns={"qualifier", "name"}), @ORM\Index(name="entity2Abstract_qualifier_name_hepval", columns={"qualifier", "name", "hepval"}) } )
  * @ORM\Entity(repositoryClass="EtoxMicrome\Entity2AbstractBundle\Entity\Entity2AbstractRepository")
  */
 class Entity2Abstract
@@ -44,7 +44,7 @@ class Entity2Abstract
     /**
      * @var \String
      *
-     * @ORM\Column(name="tagMethod", type="string", nullable=true)
+     * @ORM\Column(name="""tagMethod""", type="string", nullable=true)
      */
     private $tagMethod;
 
@@ -54,6 +54,49 @@ class Entity2Abstract
      * @ORM\Column(name="curation", type="integer", nullable=true)
      */
     private $curation;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="hepval", type="float", nullable=true)
+     */
+    private $hepval;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="""patternCount""", type="float", nullable=true)
+     */
+    private $patternCount;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="""ruleScore""", type="float", nullable=true)
+     */
+    private $ruleScore;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="""hepTermNormScore""", type="float", nullable=true)
+     */
+    private $hepTermNormScore;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="""hepTermVarScore""", type="float", nullable=true)
+     */
+    private $hepTermVarScore;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="""svmConfidence""", type="float", nullable=true)
+     */
+    private $svmConfidence;
+
 
     /**
      * @var \DateTime
@@ -187,6 +230,144 @@ class Entity2Abstract
     public function getCuration()
     {
         return $this->curation;
+    }
+
+    /**
+     * Set hepval
+     *
+     * @param float $hepval
+     * @return Entity2Abstract
+     */
+    public function setHepval($hepval)
+    {
+        $this->hepval = $hepval;
+
+        return $this;
+    }
+
+    /**
+     * Get hepval
+     *
+     * @return float
+     */
+    public function getHepval()
+    {
+        return $this->hepval;
+    }
+
+    /**
+     * Set patternCount
+     *
+     * @param float $patternCount
+     * @return Entity2Abstract
+     */
+    public function setPatternCount($patternCount)
+    {
+        $this->patternCount = $patternCount;
+
+        return $this;
+    }
+
+    /**
+     * Get patternCount
+     *
+     * @return float
+     */
+    public function getPatternCount()
+    {
+        return $this->patternCount;
+    }
+
+    /**
+     * Set ruleScore
+     *
+     * @param float $ruleScore
+     * @return Entity2Abstract
+     */
+    public function setRuleScore($ruleScore)
+    {
+        $this->ruleScore = $ruleScore;
+
+        return $this;
+    }
+
+    /**
+     * Get ruleScore
+     *
+     * @return float
+     */
+    public function getRuleScore()
+    {
+        return $this->ruleScore;
+    }
+
+    /**
+     * Set hepTermNormScore
+     *
+     * @param float $hepTermNormScore
+     * @return Entity2Abstract
+     */
+    public function setHepTermNormScore($hepTermNormScore)
+    {
+        $this->hepTermNormScore = $hepTermNormScore;
+
+        return $this;
+    }
+
+    /**
+     * Get hepTermNormScore
+     *
+     * @return float
+     */
+    public function getHepTermNormScore()
+    {
+        return $this->hepTermNormScore;
+    }
+
+    /**
+     * Set hepTermVarScore
+     *
+     * @param float $hepTermVarScore
+     * @return Entity2Abstract
+     */
+    public function setHepTermVarScore($hepTermVarScore)
+    {
+        $this->hepTermVarScore = $hepTermVarScore;
+
+        return $this;
+    }
+
+    /**
+     * Get hepTermVarScore
+     *
+     * @return float
+     */
+    public function getHepTermVarScore()
+    {
+        return $this->hepTermVarScore;
+    }
+
+    /**
+     * Set svmConfidence
+     *
+     * @param float $svmConfidence
+     * @return Entity2Abstract
+     */
+    public function setSvmConfidence($svmConfidence)
+    {
+        $this->svmConfidence = $svmConfidence;
+
+        return $this;
+    }
+
+    /**
+     * Get svmConfidence
+     *
+     * @return float
+     */
+    public function getSvmConfidence()
+    {
+        return $this->svmConfidence;
     }
 
     /**

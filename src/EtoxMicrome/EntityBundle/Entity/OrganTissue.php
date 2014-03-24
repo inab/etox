@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * OrganTissue
  *
- * @ORM\Table(indexes={@ORM\Index(name="entity_index", columns={"entityId"}),@ORM\Index(name="name_index", columns={"name"}) })
+ * @ORM\Table(indexes={@ORM\Index(name="organTissue_entity_index", columns={"entityId"}),@ORM\Index(name="organTissue_name_index", columns={"name"}) } )
  * @ORM\Entity(repositoryClass="EtoxMicrome\EntityBundle\Entity\OrganTissueRepository")
  */
 class OrganTissue

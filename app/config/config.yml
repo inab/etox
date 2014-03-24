@@ -32,6 +32,7 @@ twig:
         default_kind:  "pubmed"
         default_entityType: "CompoundDict"
         default_entityName:  "Troglitazone"
+        default_orderby:  "hepval"
         default_compound:  "Troglitazone"
         default_entityId: "CHEBI:9753"
         default_keywordSearch:  "Lymphocite"
@@ -39,7 +40,8 @@ twig:
         default_cytochromeId: "A1A5B1"
         default_markerName:  "hepatic lymphoma"
         default_markerId:   "CID 5280352"
-        default_source:   "pubmed"
+        default_source:   "all"
+
 
 
 
@@ -149,6 +151,38 @@ fos_elastica:
                             delete: true
                         elastica_to_model_transformer:
                             ignore_missing: true
+                entity2document:
+                    mappings:
+                        id: { type: integer }
+                        document: { type: integer }
+                        name: { boost: 3, type: string, analyzer: my_analyzer }
+                        qualifier: { type: string, analyzer: my_analyzer }
+                        tagMethod: { type: string, analyzer: my_analyzer }
+                        created: { type: date, analyzer: my_analyzer }
+                        updated: { type: date, analyzer: my_analyzer }
+                        curation: { type: integer }
+                        hepval: { boost: 3, type: float }
+                        cardval: { boost: 3, type: float }
+                        nephval: { boost: 3, type: float }
+                        phosval: { boost: 3, type: float }
+                        patternCount: { boost: 3, type: float }
+                        ruleScore: { boost: 3, type: float }
+                        hepTermNormScore: { boost: 3, type: float }
+                        hepTermVarScore: { boost: 3, type: float }
+                        hepval: { boost: 3, type: float }
+
+                    persistence:
+                        driver: orm
+                        model: EtoxMicrome\Entity2DocumentBundle\Entity\Entity2Document
+                        provider: ~
+                        finder: ~
+                        listener:
+                            insert: true
+                            update: true
+                            delete: true
+                        elastica_to_model_transformer:
+                            ignore_missing: true
+
                 abstractsWithCompounds:
                     mappings:
                         id: { boost: 1, type: integer }
@@ -247,8 +281,9 @@ parameters:
     etoxMicrome.default_keywordSearch:  "Lymphocite"
     etoxMicrome.default_cytochromeName: "CYPs21-a2"
     etoxMicrome.default_markerName:  "hepatic lymphoma"
-    etoxMicrome.default_source:  "pubmed"
+    etoxMicrome.default_source:  "all"
     etoxMicrome.default_compound:  "Troglitazone"
+    etoxMicrome.default_orderby:  "hepval"
 
     etoxMicrome.total_documents_elasticsearch_retrieval: 150
 

@@ -11,8 +11,7 @@ use Doctrine\ORM\EntityRepository;
  */
 class Entity2DocumentRepository extends EntityRepository
 {
-
-    public function getValToSearch($field)
+   public function getValToSearch($field)
     {
         switch ($field) {
             case "hepatotoxicity":
@@ -31,30 +30,83 @@ class Entity2DocumentRepository extends EntityRepository
         return $valToSearch;
     }
 
-    public function getEntity2DocumentFromField($field, $typeOfEntity, $arrayEntityName)
+    public function getOrderBy($orderBy, $valToSearch)
     {
-        return $this->getEntity2DocumentFromFieldDQL($field, $typeOfEntity, $arrayEntityName)->getResult();
+        switch ($orderBy) {
+            case "score":
+                $orderBy=$valToSearch;
+                break;
+            case "pattern":
+                $orderBy="patternCount";
+                break;
+            case "rule":
+                $orderBy="ruleScore";
+                break;
+            case "term":
+                $orderBy="hepTermVarScore";
+                break;
+        }
+        return $orderBy;
     }
 
-    public function getEntity2DocumentFromFieldDQL($field, $entityType, $arrayEntityName)
+    public function getEntity2DocumentFromField($field, $typeOfEntity, $arrayEntityName, $source, $orderBy)
+    {
+        return $this->getEntity2DocumentFromFieldDQL($field, $typeOfEntity, $arrayEntityName, $source, $orderBy)->getResult();
+    }
+
+    public function getEntity2DocumentFromFieldDQL($field, $entityType, $arrayEntityName, $source, $orderBy)
     {//("hepatotoxicity","pubmed","CompoundDict",arrayEntityId)
         $valToSearch=$this->getValToSearch($field);//"i.e hepval, embval... etc"
         //We have to create a query that searchs all over the entityIds inside the $arrayEntityId
-        $sql="SELECT e2d,d
-            FROM EtoxMicromeEntity2DocumentBundle:Entity2Document e2d
-            JOIN e2d.document d
-            WHERE e2d.name IN (:arrayEntityName)
-            AND e2d.qualifier = :entityType
-            AND d.$valToSearch is not NULL
-            ORDER BY d.$valToSearch desc
-            ";
+        $orderBy=$this->getOrderBy($orderBy, $valToSearch);
+        if ($source=="all"){//Depending on the source we add or not the d.kind=source parameter to the query
 
-        //ld($sql);
-        $query = $this->_em->createQuery($sql);
-        $query->setParameter("arrayEntityName", $arrayEntityName);
-        $query->setParameter('entityType', $entityType);
+            //$sql="SELECT e2d,d
+            //    FROM EtoxMicromeEntity2DocumentBundle:Entity2Document e2d
+            //    JOIN e2d.document d
+            //    WHERE e2d.name IN (:arrayEntityName)
+            //    AND e2d.qualifier = :entityType
+            //    AND d.$orderBy is not null
+            //    ORDER BY d.$orderBy DESC
+            //    ";
+            $sql="SELECT e2d
+                    FROM EtoxMicromeEntity2DocumentBundle:Entity2Document e2d
+                    WHERE e2d.name IN (:arrayEntityName)
+                    AND e2d.qualifier = :entityType
+                    AND e2d.$orderBy is not null
+                    ORDER BY e2d.$orderBy DESC
+                ";
+
+            $query = $this->_em->createQuery($sql);
+            $query->setParameter("arrayEntityName", $arrayEntityName);
+            $query->setParameter('entityType', $entityType);
+            $query->setMaxResults(10);
+        }else{
+            $sql="SELECT e2d,d
+                FROM EtoxMicromeEntity2DocumentBundle:Entity2Document e2d
+                JOIN e2d.document d
+                WHERE e2d.name IN (:arrayEntityName)
+                AND e2d.qualifier = :entityType
+                AND d.$orderBy is not null
+                AND d.kind = :source
+                ORDER BY d.$orderBy DESC
+                ";
+
+
+            $query = $this->_em->createQuery($sql);
+            $query->setParameter("arrayEntityName", $arrayEntityName);
+            $query->setParameter('entityType', $entityType);
+            $query->setParameter('source', $source);
+            $query->setMaxResults(10);
+        }
+        /*
+        $rawSql = $query->getSql();
+        print_r(array(
+            'parameters' => $query->getParameters(),
+        ));
+        ldd($rawSql);
+        */
         return $query;
-
     }
 
 
@@ -120,6 +172,14 @@ class Entity2DocumentRepository extends EntityRepository
         $query = $this->_em->createQuery($sql);
         $query->setParameter("arrayEntityName", $arrayEntityName);
         return $query;
+
+    }
+
+    public function getEntity2DocumentElastica($field, $entityType, $arrayEntityName, $orderBy)
+    {//("hepatotoxicity","pubmed","CompoundDict",arrayEntityId)
+        $valToSearch=$this->getValToSearch($field);//"i.e hepval, embval... etc"
+        //We have to create a query that searchs all over the entityIds inside the $arrayEntityId
+        $orderBy=$this->getOrderBy($orderBy, $valToSearch);
 
     }
 
@@ -196,52 +256,53 @@ class Entity2DocumentRepository extends EntityRepository
             $entity2Document=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->findOneById($entity2DocumentId);
             $nameEntity=$entity2Document->getName();
             $entity=$em->getRepository("EtoxMicromeEntityBundle:CompoundDict")->findOneByName($nameEntity);
-            //Once we have the entity itself we have to create a dictionary to save with key=field, value=field_value which can be processed to create the string to the mouseover
-            $name=$entity->getName();
-            if($name!=""){
-                $dictionary["name"]=$name;
+            if ($entity!=null){
+                //Once we have the entity itself we have to create a dictionary to save with key=field, value=field_value which can be processed to create the string to the mouseover
+                $name=$entity->getName();
+                if($name!=""){
+                    $dictionary["name"]=$name;
+                }
+                $chemIdPlus=$entity->getChemIdPlus();
+                if($chemIdPlus!=""){
+                    $dictionary["chemIdPlus"]=$chemIdPlus;
+                }
+                $chebi=$entity->getChebi();
+                if($chebi!=""){
+                    $dictionary["chebi"]=$chebi;
+                }
+                $inChi=$entity->getInChi();
+                if($inChi!=""){
+                    $dictionary["inChi"]=$inChi;
+                }
+                $drugBank=$entity->getDrugBank();
+                if($drugBank!=""){
+                    $dictionary["drugBank"]=$drugBank;
+                }
+                $humanMetabolome=$entity->getHumanMetabolome();
+                if($humanMetabolome!=""){
+                    $dictionary["humanMetabolome"]=$humanMetabolome;
+                }
+                $keggCompound=$entity->getKeggCompound();
+                if($keggCompound!=""){
+                    $dictionary["keggCompound"]=$keggCompound;
+                }
+                $keggDrug=$entity->getKeggDrug();
+                if($keggDrug!=""){
+                    $dictionary["keggDrug"]=$keggDrug;
+                }
+                $mesh=$entity->getMesh();
+                if($mesh!=""){
+                    $dictionary["mesh"]=$mesh;
+                }
+                $nrDbIds=$entity->getNrDbIds();
+                if($nrDbIds!=""){
+                    $dictionary["nrDbIds"]=$nrDbIds;
+                }
+                $smile=$entity->getSmile();
+                if($smile!=""){
+                    $dictionary["smile"]=$smile;
+                }
             }
-            $chemIdPlus=$entity->getChemIdPlus();
-            if($chemIdPlus!=""){
-                $dictionary["chemIdPlus"]=$chemIdPlus;
-            }
-            $chebi=$entity->getChebi();
-            if($chebi!=""){
-                $dictionary["chebi"]=$chebi;
-            }
-            $inChi=$entity->getInChi();
-            if($inChi!=""){
-                $dictionary["inChi"]=$inChi;
-            }
-            $drugBank=$entity->getDrugBank();
-            if($drugBank!=""){
-                $dictionary["drugBank"]=$drugBank;
-            }
-            $humanMetabolome=$entity->getHumanMetabolome();
-            if($humanMetabolome!=""){
-                $dictionary["humanMetabolome"]=$humanMetabolome;
-            }
-            $keggCompound=$entity->getKeggCompound();
-            if($keggCompound!=""){
-                $dictionary["keggCompound"]=$keggCompound;
-            }
-            $keggDrug=$entity->getKeggDrug();
-            if($keggDrug!=""){
-                $dictionary["keggDrug"]=$keggDrug;
-            }
-            $mesh=$entity->getMesh();
-            if($mesh!=""){
-                $dictionary["mesh"]=$mesh;
-            }
-            $nrDbIds=$entity->getNrDbIds();
-            if($nrDbIds!=""){
-                $dictionary["nrDbIds"]=$nrDbIds;
-            }
-            $smile=$entity->getSmile();
-            if($smile!=""){
-                $dictionary["smile"]=$smile;
-            }
-
         }
 
         if($qualifier=="Marker"){
@@ -249,17 +310,19 @@ class Entity2DocumentRepository extends EntityRepository
             $nameEntity=$entity2Document->getName();
             $entity=$em->getRepository("EtoxMicromeEntityBundle:Marker")->findOneByName($nameEntity);
             //Once we have the entity itself we have to create a dictionary to save with key=field, value=field_value which can be processed to create the string to the mouseover
-            $name=$entity->getName();
-            if($name!=""){
-                $dictionary["name"]=$name;
-            }
-            $tax=$entity->getTax();
-            if($tax!=""){
-                $dictionary["tax"]=$tax;
-            }
-            $markerType=$entity->getMarkerType();
-            if($markerType!=""){
-                $dictionary["markerType"]=$markerType;
+            if($entity!=null){
+                $name=$entity->getName();
+                if($name!=""){
+                    $dictionary["name"]=$name;
+                }
+                $tax=$entity->getTax();
+                if($tax!=""){
+                    $dictionary["tax"]=$tax;
+                }
+                $markerType=$entity->getMarkerType();
+                if($markerType!=""){
+                    $dictionary["markerType"]=$markerType;
+                }
             }
         }
 
@@ -268,97 +331,180 @@ class Entity2DocumentRepository extends EntityRepository
             $nameEntity=$entity2Document->getName();
             $entity=$em->getRepository("EtoxMicromeEntityBundle:Specie")->findOneByName($nameEntity);
             //Once we have the entity itself we have to create a dictionary to save with key=field, value=field_value which can be processed to create the string to the mouseover
-            $name=$entity->getName();
-            if($name!=""){
-                $dictionary["name"]=$name;
+            if ($entity!=null){
+                $name=$entity->getName();
+                if($name!=""){
+                    $dictionary["name"]=$name;
+                }
+                $nameClass=$entity->getNameClass();
+                if($nameClass!=""){
+                    $dictionary["nameClass"]=$nameClass;
+                }
+                $ncbiTaxId=$entity->getNcbiTaxId();
+                if($ncbiTaxId!=""){
+                    $dictionary["NCBItaxId"]=$ncbiTaxId;
+                }
+                $specieCategory=$entity->getSpecieCategory();
+                if($specieCategory!=""){
+                    $dictionary["specieCategory"]=$specieCategory;
+                }
+                $specieTox=$entity->getSpecieTox();
+                if($specieTox!=""){
+                    $dictionary["specieTox"]=$specieTox;
+                }
             }
-            $nameClass=$entity->getNameClass();
-            if($nameClass!=""){
-                $dictionary["nameClass"]=$nameClass;
-            }
-            $ncbiTaxId=$entity->getNcbiTaxId();
-            if($ncbiTaxId!=""){
-                $dictionary["NCBItaxId"]=$ncbiTaxId;
-            }
-            $specieCategory=$entity->getSpecieCategory();
-            if($specieCategory!=""){
-                $dictionary["specieCategory"]=$specieCategory;
-            }
-            $specieTox=$entity->getSpecieTox();
-            if($specieTox!=""){
-                $dictionary["specieTox"]=$specieTox;
-            }
+
         }
 
         if($qualifier=="HepKeywordTermNorm"){
             $term2Document=$em->getRepository('EtoxMicromeEntity2DocumentBundle:HepKeywordTermNorm2Document')->findOneById($entity2DocumentId);
-
             //Once we have the entity itself we have to create a dictionary to save with key=field, value=field_value which can be processed to create the string to the mouseover
-            $normalizedTerm=$term2Document->getHepKeywordNorm();
-            if($normalizedTerm!=""){
-                $dictionary["Normalized Term"]=$normalizedTerm;
-            }
-            $kind=$term2Document->getKind();
-            if($kind!=""){
-                $dictionary["kind"]=$kind;
+            if($term2Document!=null){
+                $normalizedTerm=$term2Document->getHepKeywordNorm();
+                if($normalizedTerm!=""){
+                    $dictionary["Normalized Term"]=$normalizedTerm;
+                }
+                $kind=$term2Document->getKind();
+                if($kind!=""){
+                    $dictionary["kind"]=$kind;
+                }
             }
         }
 
         if($qualifier=="HepKeywordTermVariant"){
+            //ld($entity2DocumentId);
             $term2Document=$em->getRepository('EtoxMicromeEntity2DocumentBundle:HepKeywordTermVariant2Document')->findOneById($entity2DocumentId);
             //Once we have the entity itself we have to create a dictionary to save with key=field, value=field_value which can be processed to create the string to the mouseover
-            $term=$term2Document->getHepKeywordTerm();
-            if($term!=""){
-                $dictionary["term"]=$term;
-            }
-            $termVariant=$term2Document->getTermVariant();
-            if($termVariant!=""){
-                $dictionary["term variant"]=$termVariant;
-            }
-            $normalizedTerm=$term2Document->getHepKeywordNorm();
-            if($normalizedTerm!=""){
-                $dictionary["Normalized Term"]=$normalizedTerm;
-            }
-            $kind=$term2Document->getKind();
-            if($kind!=""){
-                $dictionary["kind"]=$kind;
+            //ld($term2Document);
+            if($term2Document!=null){
+                $term=$term2Document->getTermVariant();
+                //ld($term);
+                //Now we search the term in the hepatotoxkeyword table getEntityFromName
+                $term = $em->getRepository('EtoxMicromeEntityBundle:HepatotoxKeyword')->getEntityFromName($term);
+                if (count($term)!=0){
+                    if($term!=""){
+                        $dictionary["term"]=$term->getTerm();
+                    }
+                    $normalizedTerm=$term->getNorm();
+                    if($normalizedTerm!=""){
+                        $dictionary["Normalized Term"]=$normalizedTerm;
+                    }
+                    $pos=$term->getPos();
+                    if($pos!=""){
+                        $dictionary["Pos"]=$pos;
+                    }
+                    $efpia=$term->getEFPIA();
+                    if($efpia!=""){
+                        $dictionary["EFPIA"]=$efpia;
+                    }
+                    $costart=$term->getCOSTART();
+                    if($costart!=""){
+                        $dictionary["COSTART"]=$costart;
+                    }
+                    $meddra=$term->getMedDRA();
+                    if($meddra!=""){
+                        $dictionary["MedDRA"]=$meddra;
+                    }
+                    $mpheno=$term->getMPheno();
+                    if($mpheno!=""){
+                        $dictionary["MPheno"]=$mpheno;
+                    }
+                    $adverseEvents=$term->getAdverseEvents();
+                    if($adverseEvents!=""){
+                        $dictionary["Adverse Events"]=$adverseEvents;
+                    }
+                    $do=$term->getDo();
+                    if($do!=""){
+                        $dictionary["Do"]=$do;
+                    }
+
+                    $gemina_symptom=$term->getGeminaSymptom();
+                    if($gemina_symptom!=""){
+                        $dictionary["Gemina Symptom"]=$gemina_symptom;
+                    }
+                    $human_phenotype=$term->getHumanPhenotype();
+                    if($human_phenotype!=""){
+                        $dictionary["Human Phenotype"]=$human_phenotype;
+                    }
+                    $mpath=$term->getMpath();
+                    if($mpath!=""){
+                        $dictionary["Mpath"]=$mpath;
+                    }
+                    $etox=$term->getEtox();
+                    if($etox!=""){
+                        $dictionary["Etox"]=$etox;
+                    }
+
+                    $mesh_omim=$term->getMESH_OMIM();
+                    if($mesh_omim!=""){
+                        $dictionary["MESH_OMIM"]=$mesh_omim;
+                    }
+
+                    $polysearch=$term->getPolysearch();
+                    if($polysearch!=""){
+                        $dictionary["Polysearch"]=$polysearch;
+                    }
+                }
             }
         }
 
         if($qualifier=="Cytochrome"){
             $cytochrome2Document=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Cytochrome2Document')->findOneById($entity2DocumentId);
-            $cytochromeName=$cytochrome2Document->getCypsMention();
-            $cytochrome=$em->getRepository('EtoxMicromeEntityBundle:Cytochrome')->findOneByName($cytochromeName);
+            //ld($cytochrome2Document);
+            if ($cytochrome2Document!=null){
+                $cytochromeName=$cytochrome2Document->getCypsMention();
+                $cytochrome=$em->getRepository('EtoxMicromeEntityBundle:Cytochrome')->findOneByName($cytochromeName);
 
-            $entityId=$cytochrome->getEntityId();
-            if($entityId!=""){
-                $dictionary["Entity Id"]=$entityId;
-            }
-            $name=$cytochrome->getName();
-            if($name!=""){
-                $dictionary["Name"]=$name;
-            }
-            $type=$cytochrome->getType();
-            if($type!=""){
-                $dictionary["Type"]=$type;
-            }
-            $tax=$cytochrome->getTax();
-            if($tax!=""){
-                $dictionary["Tax"]=$tax;
-            }
-            $score=$cytochrome->getScore();
-            if($score!=""){
-                $dictionary["Score"]=round($score,3);
-            }
-            $canonical=$cytochrome->getCanonical();
-            if($canonical!=""){
-                $dictionary["Canonical"]=$canonical;
+                if ($cytochrome==null){
+                    //If we haven't found a cytochrome, we need to look with the canonical vs. canonical field of the cytochromes. But we need to see first if there is a specie commentioned in the document, if it is, we use it in the search, if don't we use the default specie, Homo sapiens. If there are more than one we choose rat
+                    //Firs we look if there's a specie commentioned in this document:
+                    $documentId=$cytochrome2Document->getDocument()->getId();
+                    $specie2documentArray=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Specie2Document')->findByDocument($documentId);
+                    if(count($specie2documentArray)==0){
+                        $ncbiTaxId=9606;//Homo sapiens
+                    }elseif(count($specie2documentArray)==1){
+                        $specie2document=$specie2documentArray[0];
+                        $ncbiTaxId=$specie2document->getSpecie()->getNcbiTaxId();
+                    }else{//If there are more than one specie co-mentioned in the document we choose rat
+                        $ncbiTaxId=10116;//rat
+                    }
+                    //Now we have the specie and we can search for the canonical
+                    //Firs we get the canonical to search with
+                    $canonical=$cytochrome2Document->getCypsCanonical();
+                    $cytochrome=$em->getRepository('EtoxMicromeEntityBundle:Cytochrome')->findOneByCanonicalTax($canonical,$ncbiTaxId);
+                }
+                if ($cytochrome!=null){
+                    $entityId=$cytochrome->getEntityId();
+                    if($entityId!=""){
+                        $dictionary["Entity Id"]=$entityId;
+                    }
+                    $name=$cytochrome->getName();
+                    if($name!=""){
+                        $dictionary["Name"]=$name;
+                    }
+                    $type=$cytochrome->getType();
+                    if($type!=""){
+                        $dictionary["Type"]=$type;
+                    }
+                    $tax=$cytochrome->getTax();
+                    if($tax!=""){
+                        $dictionary["Tax"]=$tax;
+                    }
+                    $score=$cytochrome->getScore();
+                    if($score!=""){
+                        $dictionary["Score"]=round($score,3);
+                    }
+                    $canonical=$cytochrome->getCanonical();
+                    if($canonical!=""){
+                        $dictionary["Canonical"]=$canonical;
+                    }
+                }
             }
         }
 
         foreach($dictionary as $key => $value){
             if ($value!=""){
-                $stringOutput=$stringOutput."$key: $value<br/>";
+                $stringOutput=$stringOutput."<strong>$key:</strong> $value<br/>";
             }
         }
         return ($stringOutput);

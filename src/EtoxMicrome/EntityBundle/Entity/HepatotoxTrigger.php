@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * HepatotoxTrigger
  *
- * @ORM\Table(indexes={@ORM\Index(name="entity_index", columns={"entityId"}),@ORM\Index(name="name_index", columns={"name"}) })
+ * @ORM\Table(indexes={@ORM\Index(name="hepatotoxTrigger_entity_index", columns={"""entityId"""}),@ORM\Index(name="hepatotoxTrigger_name_index", columns={"name"}) } )
  * @ORM\Entity(repositoryClass="EtoxMicrome\EntityBundle\Entity\HepatotoxTriggerRepository")
  */
 class HepatotoxTrigger
@@ -24,7 +24,7 @@ class HepatotoxTrigger
     /**
      * @var string
      *
-     * @ORM\Column(name="entityId", type="string", length=255)
+     * @ORM\Column(name="""entityId""", type="string", length=255)
      */
     private $entityId;
 

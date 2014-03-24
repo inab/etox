@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Cytochrome
  *
- * @ORM\Table(indexes={@ORM\Index(name="entity_index", columns={"entityId"}),@ORM\Index(name="name_index", columns={"name"}) })
+ * @ORM\Table(indexes={@ORM\Index(name="cytochrome_entity_index", columns={"""entityId"""}),@ORM\Index(name="cytochrome_name_index", columns={"name"}) } )
  * @ORM\Entity(repositoryClass="EtoxMicrome\EntityBundle\Entity\CytochromeRepository")
  */
 class Cytochrome
@@ -24,7 +24,7 @@ class Cytochrome
     /**
      * @var string
      *
-     * @ORM\Column(name="entityId", type="string", length=255)
+     * @ORM\Column(name="""entityId""", type="string", length=255)
      */
     private $entityId;
 
@@ -62,6 +62,13 @@ class Cytochrome
      * @ORM\Column(name="canonical", type="string", length=255)
      */
     private $canonical;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="""cypUniprotRanking""", type="float", nullable=true)
+     */
+    private $cypUniprotRanking;
 
     /**
      * @var \DateTime
@@ -224,6 +231,29 @@ class Cytochrome
     public function getCanonical()
     {
         return $this->canonical;
+    }
+
+    /**
+     * Set cypUniprotRanking
+     *
+     * @param float $cypUniprotRanking
+     * @return Cytochrome
+     */
+    public function setCypUniprotRanking($cypUniprotRanking)
+    {
+        $this->cypUniprotRanking = $cypUniprotRanking;
+
+        return $this;
+    }
+
+    /**
+     * Get cypUniprotRanking
+     *
+     * @return float
+     */
+    public function getCypUniprotRanking()
+    {
+        return $this->cypUniprotRanking;
     }
 
     /**

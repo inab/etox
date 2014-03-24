@@ -7,7 +7,23 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Entity2Document
  *
- * @ORM\Table(indexes={@ORM\Index(name="name_index", columns={"name"}), @ORM\Index(name="qualifier_index", columns={"qualifier"}) })
+ * @ORM\Table(indexes={
+        @ORM\Index(name="entity2Document_document_id", columns={"document_id"}),
+        @ORM\Index(name="entity2Document_name_index", columns={"name"}),
+        @ORM\Index(name="entity2document_hepval", columns={"hepval"}),
+        @ORM\Index(name="entity2document_cardval", columns={"cardval"}),
+        @ORM\Index(name="entity2document_nephval", columns={"nephval"}),
+        @ORM\Index(name="entity2document_phosval", columns={"phosval"}),
+        @ORM\Index(name="entity2document_patterncount", columns={"""patternCount"""}),
+        @ORM\Index(name="entity2document_rulescore", columns={"""ruleScore"""}),
+        @ORM\Index(name="entity2document_qualifier_name", columns={"qualifier", "name"}),
+        @ORM\Index(name="entity2document_qualifier_kind_name", columns={"qualifier", "kind", "name"}),
+        @ORM\Index(name="entity2document_qualifier", columns={"qualifier"}),
+        @ORM\Index(name="entity2document_svm_confidence_index", columns={"""svmConfidence"""}),
+        @ORM\Index(name="entity2document_heptermnormscore", columns={"""hepTermNormScore"""}),
+        @ORM\Index(name="entity2document_heptermvarscore", columns={"""hepTermVarScore"""}),
+        @ORM\Index(name="entity2document_kind", columns={"kind"})
+    }, name="entity2document")
  * @ORM\Entity(repositoryClass="EtoxMicrome\Entity2DocumentBundle\Entity\Entity2DocumentRepository")
  */
 class Entity2Document
@@ -44,7 +60,7 @@ class Entity2Document
     /**
      * @var \String
      *
-     * @ORM\Column(name="tagMethod", type="string", nullable=true)
+     * @ORM\Column(name="""tagMethod""", type="string", nullable=true)
      */
     private $tagMethod;
 
@@ -54,6 +70,76 @@ class Entity2Document
      * @ORM\Column(name="curation", type="integer", nullable=true)
      */
     private $curation;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="hepval", type="float", nullable=true)
+     */
+    private $hepval;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="cardval", type="float", nullable=true)
+     */
+    private $cardval;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="nephval", type="float", nullable=true)
+     */
+    private $nephval;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="phosval", type="float", nullable=true)
+     */
+    private $phosval;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="""patternCount""", type="float", nullable=true)
+     */
+    private $patternCount;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="""ruleScore""", type="float", nullable=true)
+     */
+    private $ruleScore;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="""hepTermNormScore""", type="float", nullable=true)
+     */
+    private $hepTermNormScore;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="""hepTermVarScore""", type="float", nullable=true)
+     */
+    private $hepTermVarScore;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="""svmConfidence""", type="float", nullable=true)
+     */
+    private $svmConfidence;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="kind", type="string", length=255)
+     */
+    private $kind;
 
     /**
      * @var \DateTime
@@ -187,6 +273,236 @@ class Entity2Document
     public function getCuration()
     {
         return $this->curation;
+    }
+
+    /**
+     * Set hepval
+     *
+     * @param float $hepval
+     * @return Entity2Document
+     */
+    public function setHepval($hepval)
+    {
+        $this->hepval = $hepval;
+
+        return $this;
+    }
+
+    /**
+     * Get hepval
+     *
+     * @return float
+     */
+    public function getHepval()
+    {
+        return $this->hepval;
+    }
+
+    /**
+     * Set cardval
+     *
+     * @param float $cardval
+     * @return Entity2Document
+     */
+    public function setCardval($cardval)
+    {
+        $this->cardval = $cardval;
+
+        return $this;
+    }
+
+    /**
+     * Get cardval
+     *
+     * @return float
+     */
+    public function getCardval()
+    {
+        return $this->cardval;
+    }
+
+    /**
+     * Set nephval
+     *
+     * @param float $nephval
+     * @return Entity2Document
+     */
+    public function setNephval($nephval)
+    {
+        $this->nephval = $nephval;
+
+        return $this;
+    }
+
+    /**
+     * Get nephval
+     *
+     * @return float
+     */
+    public function getNephval()
+    {
+        return $this->nephval;
+    }
+
+    /**
+     * Set phosval
+     *
+     * @param float $phosval
+     * @return Entity2Document
+     */
+    public function setPhosval($phosval)
+    {
+        $this->phosval = $phosval;
+
+        return $this;
+    }
+
+    /**
+     * Get phosval
+     *
+     * @return float
+     */
+    public function getPhosval()
+    {
+        return $this->phosval;
+    }
+
+    /**
+     * Set patternCount
+     *
+     * @param float $patternCount
+     * @return Entity2Document
+     */
+    public function setPatternCount($patternCount)
+    {
+        $this->patternCount = $patternCount;
+
+        return $this;
+    }
+
+    /**
+     * Get patternCount
+     *
+     * @return float
+     */
+    public function getPatternCount()
+    {
+        return $this->patternCount;
+    }
+
+    /**
+     * Set ruleScore
+     *
+     * @param float $ruleScore
+     * @return Entity2Document
+     */
+    public function setRuleScore($ruleScore)
+    {
+        $this->ruleScore = $ruleScore;
+
+        return $this;
+    }
+
+    /**
+     * Get ruleScore
+     *
+     * @return float
+     */
+    public function getRuleScore()
+    {
+        return $this->ruleScore;
+    }
+
+    /**
+     * Set hepTermNormScore
+     *
+     * @param float $hepTermNormScore
+     * @return Entity2Document
+     */
+    public function setHepTermNormScore($hepTermNormScore)
+    {
+        $this->hepTermNormScore = $hepTermNormScore;
+
+        return $this;
+    }
+
+    /**
+     * Get hepTermNormScore
+     *
+     * @return float
+     */
+    public function getHepTermNormScore()
+    {
+        return $this->hepTermNormScore;
+    }
+
+    /**
+     * Set hepTermVarScore
+     *
+     * @param float $hepTermVarScore
+     * @return Entity2Document
+     */
+    public function setHepTermVarScore($hepTermVarScore)
+    {
+        $this->hepTermVarScore = $hepTermVarScore;
+
+        return $this;
+    }
+
+    /**
+     * Get hepTermVarScore
+     *
+     * @return float
+     */
+    public function getHepTermVarScore()
+    {
+        return $this->hepTermVarScore;
+    }
+
+    /**
+     * Set svmConfidence
+     *
+     * @param float $svmConfidence
+     * @return Entity2Document
+     */
+    public function setSvmConfidence($svmConfidence)
+    {
+        $this->svmConfidence = $svmConfidence;
+
+        return $this;
+    }
+
+    /**
+     * Get svmConfidence
+     *
+     * @return float
+     */
+    public function getSvmConfidence()
+    {
+        return $this->svmConfidence;
+    }
+
+    /**
+     * Set kind
+     *
+     * @param string $kind
+     * @return Entity2Document
+     */
+    public function setKind($kind)
+    {
+        $this->kind = $kind;
+
+        return $this;
+    }
+
+    /**
+     * Get kind
+     *
+     * @return string
+     */
+    public function getKind()
+    {
+        return $this->kind;
     }
 
     /**

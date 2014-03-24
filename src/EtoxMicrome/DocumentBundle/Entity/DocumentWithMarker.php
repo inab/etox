@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * DocumentWithMarker
  *
- * @ORM\Table(indexes={ @ORM\Index(name="uid_index", columns={"uid"}), @ORM\Index(name="kind_index", columns={"kind"}), @ORM\Index(name="sentenceId_index", columns={"sentenceId"}), @ORM\Index(name="hepval_index", columns={"hepval"}), @ORM\Index(name="cardval_index", columns={"cardval"}), @ORM\Index(name="nephval_index", columns={"nephval"}), @ORM\Index(name="phosval_index", columns={"phosval"}) })
+ * @ORM\Table(indexes={ @ORM\Index(name="documentWithMarker_uid_index", columns={"uid"}), @ORM\Index(name="documentWithMarker_kind_index", columns={"kind"}), @ORM\Index(name="documentWithMarker_sentenceId_index", columns={"""sentenceId"""}), @ORM\Index(name="documentWithMarker_hepval_index", columns={"hepval"}), @ORM\Index(name="documentWithMarker_cardval_index", columns={"cardval"}), @ORM\Index(name="documentWithMarker_nephval_index", columns={"nephval"}), @ORM\Index(name="documentWithMarker_phosval_index", columns={"phosval"}), @ORM\Index(name="documentWithMarker_patterncount", columns={"""patternCount"""}), @ORM\Index(name="documentWithMarker_rulescore", columns={"""ruleScore"""}), @ORM\Index(name="documentWithMarker_heptermnormscore", columns={"""hepTermNormScore"""}), @ORM\Index(name="documentWithMarker_heptermvarscore", columns={"""hepTermVarScore"""}), @ORM\Index(name="documentWithMarker_svmconfidence", columns={"""svmConfidence"""}) } )
  * @ORM\Entity(repositoryClass="EtoxMicrome\DocumentBundle\Entity\DocumentWithMarkerRepository")
  */
 class DocumentWithMarker
@@ -37,7 +37,7 @@ class DocumentWithMarker
     /**
      * @var integer
      *
-     * @ORM\Column(name="sentenceId", type="string", length=255)
+     * @ORM\Column(name="""sentenceId""", type="string", length=255)
      */
     private $sentenceId;
 
@@ -75,6 +75,43 @@ class DocumentWithMarker
      * @ORM\Column(name="phosval", type="float", nullable=true)
      */
     private $phosval;
+
+     /**
+     * @var float
+     *
+     * @ORM\Column(name="""patternCount""", type="float", nullable=true)
+     */
+    private $patternCount;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="""ruleScore""", type="float", nullable=true)
+     */
+    private $ruleScore;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="""hepTermNormScore""", type="float", nullable=true)
+     */
+    private $hepTermNormScore;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="""hepTermVarScore""", type="float", nullable=true)
+     */
+    private $hepTermVarScore;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="""svmConfidence""", type="float", nullable=true)
+     */
+    private $svmConfidence;
+
+
 
     /**
      * @var \DateTime
@@ -285,6 +322,108 @@ class DocumentWithMarker
     public function getPhosval()
     {
         return $this->phosval;
+    }
+
+    /**
+     * Get patternCount
+     *
+     * @return float
+     */
+    public function getPatternCount()
+    {
+        return $this->patternCount;
+    }
+
+    /**
+     * Set ruleScore
+     *
+     * @param float $ruleScore
+     * @return DocumentWithMarker
+     */
+    public function setRuleScore($ruleScore)
+    {
+        $this->ruleScore = $ruleScore;
+
+        return $this;
+    }
+
+    /**
+     * Get ruleScore
+     *
+     * @return float
+     */
+    public function getRuleScore()
+    {
+        return $this->ruleScore;
+    }
+
+    /**
+     * Set hepTermNormScore
+     *
+     * @param float $hepTermNormScore
+     * @return DocumentWithMarker
+     */
+    public function setHepTermNormScore($hepTermNormScore)
+    {
+        $this->hepTermNormScore = $hepTermNormScore;
+
+        return $this;
+    }
+
+    /**
+     * Get hepTermNormScore
+     *
+     * @return float
+     */
+    public function getHepTermNormScore()
+    {
+        return $this->hepTermNormScore;
+    }
+
+    /**
+     * Set hepTermVarScore
+     *
+     * @param float $hepTermVarScore
+     * @return DocumentWithMarker
+     */
+    public function setHepTermVarScore($hepTermVarScore)
+    {
+        $this->hepTermVarScore = $hepTermVarScore;
+
+        return $this;
+    }
+
+    /**
+     * Get hepTermVarScore
+     *
+     * @return float
+     */
+    public function getHepTermVarScore()
+    {
+        return $this->hepTermVarScore;
+    }
+
+    /**
+     * Set svmConfidence
+     *
+     * @param float $svmConfidence
+     * @return DocumentWithMarker
+     */
+    public function setSvmConfidence($svmConfidence)
+    {
+        $this->svmConfidence = $svmConfidence;
+
+        return $this;
+    }
+
+    /**
+     * Get svmConfidence
+     *
+     * @return float
+     */
+    public function getSvmConfidence()
+    {
+        return $this->svmConfidence;
     }
 
     /**

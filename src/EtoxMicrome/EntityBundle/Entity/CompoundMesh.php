@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * CompoundMesh
  *
- * @ORM\Table(indexes={@ORM\Index(name="name_index", columns={"name"}), @ORM\Index(name="meshUi_index", columns={"meshUi"})  })
+ * @ORM\Table(indexes={@ORM\Index(name="compoundMesh_name_index", columns={"name"}), @ORM\Index(name="compoundMesh_meshUi_index", columns={"""meshUi"""})  })
  * @ORM\Entity(repositoryClass="EtoxMicrome\EntityBundle\Entity\CompoundMeshRepository")
  */
 class CompoundMesh
@@ -38,7 +38,7 @@ class CompoundMesh
     /**
      * @var string
      *
-     * @ORM\Column(name="meshUi", type="string", length=255)
+     * @ORM\Column(name="""meshUi""", type="string", length=255)
      */
     private $meshUi;
 

@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * GoTerm
  *
- * @ORM\Table(indexes={@ORM\Index(name="entity_index", columns={"entityId"}),@ORM\Index(name="name_index", columns={"name"}) })
+ * @ORM\Table(indexes={@ORM\Index(name="goTerm_entity_index", columns={"""entityId"""}),@ORM\Index(name="goTerm_name_index", columns={"name"}) } )
  * @ORM\Entity(repositoryClass="EtoxMicrome\EntityBundle\Entity\GoTermRepository")
  */
 class GoTerm
@@ -24,7 +24,7 @@ class GoTerm
     /**
      * @var string
      *
-     * @ORM\Column(name="entityId", type="string", length=255)
+     * @ORM\Column(name="""entityId""", type="string", length=255)
      */
     private $entityId;
 
@@ -38,21 +38,21 @@ class GoTerm
     /**
      * @var string
      *
-     * @ORM\Column(name="go_class", type="string", length=255)
+     * @ORM\Column(name="""goClass""", type="string", length=255)
      */
     private $goClass;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="nametype", type="string", length=255)
+     * @ORM\Column(name="""nameType""", type="string", length=255)
      */
-    private $nametype;
+    private $nameType;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="manual_validation", type="string", length=255)
+     * @ORM\Column(name="""manualValidation""", type="string", length=255)
      */
     private $manualValidation;
 
@@ -66,28 +66,28 @@ class GoTerm
     /**
      * @var float
      *
-     * @ORM\Column(name="score_sum", type="float")
+     * @ORM\Column(name="""scoreSum""", type="float")
      */
     private $scoreSum;
 
     /**
      * @var float
      *
-     * @ORM\Column(name="score_mean", type="float")
+     * @ORM\Column(name="""scoreMean""", type="float")
      */
     private $scoreMean;
 
     /**
      * @var float
      *
-     * @ORM\Column(name="score_fract", type="float")
+     * @ORM\Column(name="""scoreFract""", type="float")
      */
     private $scoreFract;
 
     /**
      * @var float
      *
-     * @ORM\Column(name="score_annot", type="float")
+     * @ORM\Column(name="""scoreAnnot""", type="float")
      */
     private $scoreAnnot;
 

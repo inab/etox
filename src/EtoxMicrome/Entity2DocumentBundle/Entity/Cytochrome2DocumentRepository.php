@@ -33,27 +33,71 @@ class Cytochrome2DocumentRepository extends EntityRepository
         return $valToSearch;
     }
 
-    public function getCytochrome2DocumentFromField($field, $typeOfEntity, $arrayNames, $arrayCanonicals)
+    public function getOrderBy($orderBy, $valToSearch)
     {
-        return $this->getCytochrome2DocumentFromFieldDQL($field, $typeOfEntity, $arrayNames, $arrayCanonicals)->getResult();
+        switch ($orderBy) {
+            case "score":
+                $orderBy=$valToSearch;
+                break;
+            case "pattern":
+                $orderBy="patternCount";
+                break;
+            case "rule":
+                $orderBy="ruleScore";
+                break;
+            case "term":
+                $orderBy="hepTermVarScore";
+                break;
+        }
+        return $orderBy;
     }
 
-    public function getCytochrome2DocumentFromFieldDQL($field, $entityType, $arrayNames, $arrayCanonicals)
+    public function getCytochrome2DocumentFromField($field, $typeOfEntity, $arrayNames, $arrayCanonicals, $source, $orderBy)
+    {
+        return $this->getCytochrome2DocumentFromFieldDQL($field, $typeOfEntity, $arrayNames, $arrayCanonicals, $source, $orderBy)->getResult();
+    }
+
+    public function getCytochrome2DocumentFromFieldDQL($field, $entityType, $arrayNames, $arrayCanonicals, $source, $orderBy)
     {
         $valToSearch=$this->getValToSearch($field);//"i.e hepval, embval... etc"
         //We have to create a query that searchs all over the entityIds inside the $arrayEntityId
-        $sql="SELECT e2d,d
-            FROM EtoxMicromeEntity2DocumentBundle:Cytochrome2Document e2d
-            JOIN e2d.document d
-            WHERE e2d.cypsMention IN (:arrayNames)
-            OR e2d.cypsCanonical IN (:arrayCanonicals)
-            AND d.$valToSearch is not NULL
-            ORDER BY d.$valToSearch desc
-            ";
-        //ld($sql);
-        $query = $this->_em->createQuery($sql);
-        $query->setParameter("arrayNames", $arrayNames);
-        $query->setParameter("arrayCanonicals", $arrayCanonicals);
+        $orderBy=$this->getOrderBy($orderBy, $valToSearch);
+        //ld($source);
+        //ld($valToSearch);
+        //ld($arrayNames);
+        //ld($arrayCanonicals);
+        //$sql="SELECT e2d,d
+        //    FROM EtoxMicromeEntity2DocumentBundle:Cytochrome2Document e2d
+        //    JOIN e2d.document d
+        //    WHERE (e2d.cypsMention IN (:arrayNames) AND d.$valToSearch is not NULL AND d.kind = :source) or ( e2d.cypsCanonical IN (:arrayCanonicals) AND d.$valToSearch is not NULL AND d.kind = :source )
+        //    ORDER BY d.$orderBy desc
+        //    ";
+        if ($source=="all"){ //if source of data is all we dont filter for kind=source
+            $sql="SELECT e2d,d
+                FROM EtoxMicromeEntity2DocumentBundle:Cytochrome2Document e2d
+                JOIN e2d.document d
+                WHERE e2d.cypsMention IN (:arrayNames) AND d.$orderBy is not NULL
+                ORDER BY d.$orderBy desc
+                ";
+            //ld($sql);
+            $query = $this->_em->createQuery($sql);
+            $query->setParameter("arrayNames", $arrayNames);
+            //$query->setParameter("arrayCanonicals", $arrayCanonicals);
+        }
+        else{ //we filter to documents of certain kind = source(pubmed, fulltext,...etc)
+            $sql="SELECT e2d,d
+                FROM EtoxMicromeEntity2DocumentBundle:Cytochrome2Document e2d
+                JOIN e2d.document d
+                WHERE e2d.cypsMention IN (:arrayNames) AND d.$orderBy is not NULL AND d.kind = :source
+                ORDER BY d.$orderBy desc
+                ";
+            //ld($sql);
+            $query = $this->_em->createQuery($sql);
+            $query->setParameter("arrayNames", $arrayNames);
+            //$query->setParameter("arrayCanonicals", $arrayCanonicals);
+            $query->setParameter("source", $source);
+        }
+
         return $query;
 
     }

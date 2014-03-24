@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * EntityRanking
  *
- * @ORM\Table(indexes={ @ORM\Index(name="entity_index", columns={"entityId"}) })
+ * @ORM\Table(indexes={ @ORM\Index(name="entityRanking_entity_index", columns={"entityId"}) })
  * @ORM\Entity(repositoryClass="EtoxMicrome\EntityBundle\Entity\EntityRankingRepository")
  */
 class EntityRanking

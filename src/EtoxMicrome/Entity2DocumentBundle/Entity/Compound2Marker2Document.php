@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Compound2Marker2Document
  *
- * @ORM\Table(indexes={ @ORM\Index(name="sentenceId_index", columns={"sentenceId"}), @ORM\Index(name="compound_index", columns={"compound"}), @ORM\Index(name="liverMarkerName_index", columns={"liverMarkerName"}), @ORM\Index(name="idMarker_index", columns={"idMarker"}) })
+ * @ORM\Table(indexes={ @ORM\Index(name="compound2Marker2Document_sentenceId_index", columns={"""sentenceId"""}), @ORM\Index(name="compound2Marker2Document_compound_index", columns={"""compoundName"""}), @ORM\Index(name="compound2Marker2Document_liverMarkerName_index", columns={"""liverMarkerName"""}) } )
  * @ORM\Entity(repositoryClass="EtoxMicrome\Entity2DocumentBundle\Entity\Compound2Marker2DocumentRepository")
  */
 class Compound2Marker2Document
@@ -24,7 +24,7 @@ class Compound2Marker2Document
     /**
      * @var string
      *
-     * @ORM\Column(name="sentenceId", type="string", length=200)
+     * @ORM\Column(name="""sentenceId""", type="string", length=200)
      */
 
     private $sentenceId;
@@ -32,51 +32,45 @@ class Compound2Marker2Document
     /**
      * @var string
      *
-     * @ORM\Column(name="compound", type="string", length=800)
+     * @ORM\Column(name="""compoundName""", type="string", length=800)
      */
     private $compound;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="liverMarkerName", type="string", length=500)
+     * @ORM\Column(name="""liverMarkerName""", type="string", length=500)
      */
     private $liverMarkerName;
 
     /**
      * @var float
      *
-     * @ORM\Column(name="relationScore", type="float")
+     * @ORM\Column(name="""relationScore""", type="float")
      */
     private $relationScore;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="relationQualifier", type="string", length=2)
+     * @ORM\Column(name="""relationQualifier""", type="string", length=2)
      */
     private $relationQualifier;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="relationType", type="string", length=500)
+     * @ORM\Column(name="""relationType""", type="string", length=500)
      */
     private $relationType;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="relationEvidence", type="text")
+     * @ORM\Column(name="""relationEvidence""", type="text")
      */
     private $relationEvidence;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="idMarker", type="string", length=200)
-     */
-    private $idMarker;
 
     /**
      * @var string
@@ -84,6 +78,27 @@ class Compound2Marker2Document
      * @ORM\Column(name="sentence", type="text")
      */
     private $sentence;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="""compoundQualifier""", type="integer")
+     */
+    private $compoundQualifier;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="created", type="datetime")
+     */
+     private $created;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="updated", type="datetime", nullable=true)
+     */
+    private $updated;
 
     /**
      * Get id
@@ -279,29 +294,73 @@ class Compound2Marker2Document
         return $this->sentence;
     }
 
-
     /**
-     * Get idMarker
+     * Set compoundQualifier
      *
-     * @return string
-     */
-    public function getIdMarker()
-    {
-        return $this->idMarker;
-    }
-
-    /**
-     * Set idMarker
-     *
-     * @param string $idMarker
+     * @param integer $compoundQualifier
      * @return Compound2Marker2Document
      */
-    public function setIdMarker($idMarker)
+    public function setCompoundQualifier($compoundQualifier)
     {
-        $this->idMarker = $idMarker;
+        $this->compoundQualifier = $compoundQualifier;
 
         return $this;
     }
 
+    /**
+     * Get compoundQualifier
+     *
+     * @return integer
+     */
+    public function getCompoundQualifier()
+    {
+        return $this->compoundQualifier;
+    }
+
+    /**
+     * Set created
+     *
+     * @param \DateTime $created
+     * @return Compound2Marker2Document
+     */
+    public function setCreated($created)
+    {
+        $this->created = $created;
+
+        return $this;
+    }
+
+    /**
+     * Get created
+     *
+     * @return \DateTime
+     */
+    public function getCreated()
+    {
+        return $this->created;
+    }
+
+    /**
+     * Set updated
+     *
+     * @param \DateTime $updated
+     * @return Compound2Marker2Document
+     */
+    public function setUpdated($updated)
+    {
+        $this->updated = $updated;
+
+        return $this;
+    }
+
+    /**
+     * Get updated
+     *
+     * @return \DateTime
+     */
+    public function getUpdated()
+    {
+        return $this->updated;
+    }
 
 }

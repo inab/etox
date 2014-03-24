@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Specie
  *
- * @ORM\Table(indexes={@ORM\Index(name="entity_index", columns={"entityId"}),@ORM\Index(name="name_index", columns={"name"}) })
+ * @ORM\Table(indexes={@ORM\Index(name="specie_entity_index", columns={"""entityId"""}),@ORM\Index(name="specie_name_index", columns={"name"}) } )
  * @ORM\Entity(repositoryClass="EtoxMicrome\EntityBundle\Entity\SpecieRepository")
  */
 class Specie
@@ -24,21 +24,21 @@ class Specie
     /**
      * @var string
      *
-     * @ORM\Column(name="ncbiTaxId", type="string", length=255)
+     * @ORM\Column(name="""ncbiTaxId""", type="string", length=255)
      */
     private $ncbiTaxId;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="entityId", type="string", length=255)
+     * @ORM\Column(name="""entityId""", type="string", length=255)
      */
     private $entityId;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="specieCategory", type="string", length=255)
+     * @ORM\Column(name="""specieCategory""", type="string", length=255)
      */
     private $specieCategory;
 
@@ -52,14 +52,14 @@ class Specie
     /**
      * @var string
      *
-     * @ORM\Column(name="nameClass", type="string", length=255)
+     * @ORM\Column(name="""nameClass""", type="string", length=255)
      */
     private $nameClass;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="specieTox", type="string", length=255)
+     * @ORM\Column(name="""specieTox""", type="string", length=255)
      */
     private $specieTox;
 
@@ -77,6 +77,18 @@ class Specie
      */
     private $updated;
 
+    /**
+     * @ORM\OneToMany(targetEntity="EtoxMicrome\Entity2DocumentBundle\Entity\Specie2Document", mappedBy="specie")
+     **/
+    private $specie2document;
+
+    /**
+    * Constructor de la clase
+    **/
+    public function __construct()
+    {
+        $this->specie2document = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
      * Get id
@@ -270,5 +282,26 @@ class Specie
     public function getUpdated()
     {
         return $this->updated;
+    }
+
+    /**
+     * Set specie2document
+     *
+     * @return integer
+     */
+    public function setSpecie2Document($specie2document)
+    {
+        $this->specie2document =$specie2document;
+        return $this;
+    }
+
+    /**
+     * Get specie2Document
+     *
+     * @return integer
+     */
+    public function getSpecie2Document()
+    {
+        return $this->specie2document;
     }
 }

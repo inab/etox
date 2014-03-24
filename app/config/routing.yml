@@ -75,6 +75,11 @@ elasticSearch_keyword:
     pattern: /search/keyword/{whatToSearch}/{source}/{keyword}/
     defaults: { _controller: FrontendBundle:Search:searchKeyword}
 
+elasticSearch_keyword_orderby:
+    pattern: /search/keyword/{whatToSearch}/{source}/{keyword}/orderBy/{orderBy}/
+    defaults: { _controller: FrontendBundle:Search:searchKeywordOrderBy}
+
+
 search_interface_search_field:
     pattern: /search/{field}/
     defaults: { _controller: FrontendBundle:Search:searchField}
@@ -93,7 +98,12 @@ search_interface_search_field_whatToSearch_entityType_source:
 
 search_interface_search_field_whatToSearch_entityType_source_entity:
     pattern: /search/{field}/{whatToSearch}/{entityType}/{source}/{entityName}/
-    defaults: { _controller: FrontendBundle:Search:searchFieldWhatToSearchEntityTypeSourceEntity}
+    defaults: { _controller: FrontendBundle:Search:searchFieldWhatToSearchEntityTypeSourceEntity, orderBy: "hepval"}
+
+search_interface_search_field_whatToSearch_entityType_source_entity_orderby:
+    pattern: /search/{field}/{whatToSearch}/{entityType}/{source}/{entityName}/orderBy/{orderBy}/
+    defaults: { _controller: FrontendBundle:Search:searchFieldWhatToSearchEntityTypeSourceEntity, orderBy: "hepval"}
+
 
 autocomplete:
     pattern:    /scripts/autocomplete/

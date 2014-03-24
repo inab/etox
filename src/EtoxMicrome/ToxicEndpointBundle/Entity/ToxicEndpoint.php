@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ToxicEndpoint
  *
- * @ORM\Table(indexes={@ORM\Index(name="uid_index", columns={"uid"}),@ORM\Index(name="entityId1_index", columns={"entityId1"}),@ORM\Index(name="entityId2_index", columns={"entityId2"}) })
+ * @ORM\Table(indexes={@ORM\Index(name="toxicEndpoint_uid_index", columns={"uid"}),@ORM\Index(name="toxicEndpoint_entityId1_index", columns={"entityId1"}),@ORM\Index(name="toxicEndpoint_entityId2_index", columns={"entityId2"}) } ,name="""ToxicEndpoint""")
  * @ORM\Entity(repositoryClass="EtoxMicrome\ToxicEndpointBundle\Entity\ToxicEndpointRepository")
  */
 class ToxicEndpoint

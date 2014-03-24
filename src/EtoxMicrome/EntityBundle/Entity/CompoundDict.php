@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * CompoundDict
  *
- * @ORM\Table(indexes={@ORM\Index(name="name_index", columns={"name"}), @ORM\Index(name="chemIdPlus_index", columns={"chemIdPlus"}), @ORM\Index(name="chebi_index", columns={"chebi"}), @ORM\Index(name="casRegistryNumber_index", columns={"casRegistryNumber"}), @ORM\Index(name="pubChemCompound_index", columns={"pubChemCompound"}), @ORM\Index(name="pubChemSubstance_index", columns={"pubChemSubstance"}), @ORM\Index(name="drugBank_index", columns={"drugBank"}), @ORM\Index(name="humanMetabolome_index", columns={"humanMetabolome"}), @ORM\Index(name="keggCompound_index", columns={"keggCompound"}), @ORM\Index(name="keggDrug_index", columns={"keggDrug"}), @ORM\Index(name="mesh_index", columns={"mesh"}) })
+ * @ORM\Table(indexes={@ORM\Index(name="compoundDict_name_index", columns={"name"}), @ORM\Index(name="compoundDict_chemIdPlus_index", columns={"""chemIdPlus"""}), @ORM\Index(name="compoundDict_chebi_index", columns={"chebi"}), @ORM\Index(name="compoundDict_casRegistryNumber_index", columns={"""casRegistryNumber"""}), @ORM\Index(name="compoundDict_pubChemCompound_index", columns={"""pubChemCompound"""}), @ORM\Index(name="compoundDict_pubChemSubstance_index", columns={"""pubChemSubstance"""}), @ORM\Index(name="compoundDict_drugBank_index", columns={"""drugBank"""}), @ORM\Index(name="compoundDict_humanMetabolome_index", columns={"""humanMetabolome"""}), @ORM\Index(name="compoundDict_keggCompound_index", columns={"""keggCompound"""}), @ORM\Index(name="compoundDict_keggDrug_index", columns={"""keggDrug"""}), @ORM\Index(name="compoundDict_mesh_index", columns={"mesh"}) } )
  * @ORM\Entity(repositoryClass="EtoxMicrome\EntityBundle\Entity\CompoundDictRepository")
  */
 class CompoundDict
@@ -31,7 +31,7 @@ class CompoundDict
     /**
      * @var string
      *
-     * @ORM\Column(name="chemIdPlus", type="string", length=500)
+     * @ORM\Column(name="""chemIdPlus""", type="string", length=500)
      */
     private $chemIdPlus;
 
@@ -45,56 +45,56 @@ class CompoundDict
     /**
      * @var string
      *
-     * @ORM\Column(name="casRegistryNumber", type="string", length=500)
+     * @ORM\Column(name="""casRegistryNumber""", type="string", length=500)
      */
     private $casRegistryNumber;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="pubChemCompound", type="string", length=500)
+     * @ORM\Column(name="""pubChemCompound""", type="string", length=500)
      */
     private $pubChemCompound;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="pubChemSubstance", type="string", length=500)
+     * @ORM\Column(name="""pubChemSubstance""", type="string", length=500)
      */
     private $pubChemSubstance;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="inChi", type="text", nullable=true)
+     * @ORM\Column(name="""inChi""", type="text", nullable=true)
      */
     private $inChi;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="drugBank", type="string", length=500)
+     * @ORM\Column(name="""drugBank""", type="string", length=500)
      */
     private $drugBank;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="humanMetabolome", type="string", length=500)
+     * @ORM\Column(name="""humanMetabolome""", type="string", length=500)
      */
     private $humanMetabolome;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="keggCompound", type="string", length=500)
+     * @ORM\Column(name="""keggCompound""", type="string", length=500)
      */
     private $keggCompound;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="keggDrug", type="string", length=500)
+     * @ORM\Column(name="""keggDrug""", type="string", length=500)
      */
     private $keggDrug;
 
@@ -108,7 +108,7 @@ class CompoundDict
     /**
      * @var integer
      *
-     * @ORM\Column(name="nrDbIds", type="integer")
+     * @ORM\Column(name="""nrDbIds""", type="integer")
      */
     private $nrDbIds;
 
@@ -159,6 +159,8 @@ class CompoundDict
     {
         return $this->id;
     }
+
+
 
     /**
      * Set name

@@ -8,7 +8,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Marker
  *
- * @ORM\Table(indexes={@ORM\Index(name="entity_index", columns={"entityId"}), @ORM\Index(name="name_index", columns={"name"}), @ORM\Index(name="markerType_index", columns={"markerType"}) })
+ * @ORM\Table(indexes={@ORM\Index(name="marker_entity_index", columns={"""entityId"""}), @ORM\Index(name="marker_name_index", columns={"name"}), @ORM\Index(name="marker_markerType_index", columns={"""markerType"""}) } )
  * @ORM\Entity(repositoryClass="EtoxMicrome\EntityBundle\Entity\MarkerRepository")
  */
 class Marker
@@ -25,7 +25,7 @@ class Marker
     /**
      * @var string
      *
-     * @ORM\Column(name="entityId", type="string", length=255)
+     * @ORM\Column(name="""entityId""", type="string", length=255)
      */
     private $entityId;
 
@@ -39,7 +39,7 @@ class Marker
     /**
      * @var string
      *
-     * @ORM\Column(name="markerType", type="string", length=255)
+     * @ORM\Column(name="""markerType""", type="string", length=255)
      */
     private $markerType;
 

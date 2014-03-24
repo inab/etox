@@ -22,15 +22,16 @@
         <link rel="stylesheet" href="{{ asset('stylesheets/datepicker.css') }}">
         <link rel="stylesheet" href="{{ asset('stylesheets/pagerfantaDefault.css') }}" type="text/css" media="all" />
         <link rel="stylesheet" href="{{ asset('javascripts/tablesorter/themes/blue/style.css') }}" type="text/css" id="" media="print, projection, screen" />
+        <link rel="stylesheet" href="{{ asset('stylesheets/stickytooltip.css') }}">
+
         <script src="{{ asset('javascripts/foundation/modernizr.foundation.js') }}"></script>
         <script src="{{ asset('javascripts/foundation/foundation.min.js') }}"></script>
-        <script src="{{ asset('javascripts/foundation/jquery.foundation.tooltips.js') }}"></script>
         <script src="{{ asset('javascripts/jquery-ui-1.9.js') }}"></script>
         <script src="{{ asset('javascripts/foundation/app.js') }}"></script>
         <script src="{{ asset('javascripts/foundation/foundation-datepicker.js') }}"></script>
-
         <script src="{{ asset('javascripts/tablesorter/jquery-latest.js') }}"></script>
         <script src="{{ asset('javascripts/tablesorter/jquery.tablesorter.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('javascripts/stickytooltip.js') }}"></script>
         {% block stylesheets %}
         {% endblock %}
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
@@ -50,18 +51,8 @@
 
         $(document).ready(function()
         {
-            $("#tableResults").tablesorter(
-                {
-                    headers: {0: { sorter:false}, 4: { sorter:false}, 5: { sorter:false}}
 
-                }
-             );
-             $("#tableResultsElastic").tablesorter(
-                {
-                    headers: {0: { sorter:false}, 2: { sorter:false}}
 
-                }
-             );
         }
     );
     </script>

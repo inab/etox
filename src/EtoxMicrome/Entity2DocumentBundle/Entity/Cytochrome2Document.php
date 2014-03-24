@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Cytochrome2Document
  *
- * @ORM\Table(indexes={@ORM\Index(name="tagMethod_index", columns={"tagMethod"}), @ORM\Index(name="cypsMention_index", columns={"cypsMention"}) })
+ * @ORM\Table(indexes={@ORM\Index(name="cytochrome2Document_tagMethod_index", columns={"""tagMethod"""}), @ORM\Index(name="cytochrome2Document_cypsMention_index", columns={"""cypsMention"""}), @ORM\Index(name="cytochrome2Document_hepval", columns={"hepval"}), @ORM\Index(name="cytochrome2Document_patterncount", columns={"""patternCount"""}), @ORM\Index(name="cytochrome2Document_rulescore", columns={"""ruleScore"""}), @ORM\Index(name="cytochrome2Document_heptermnormscore", columns={"""hepTermNormScore"""}), @ORM\Index(name="cytochrome2Document_heptermvarscore", columns={"""hepTermVarScore"""}), @ORM\Index(name="cytochrome2Document_svmconfidence", columns={"""svmConfidence"""}) } )
  * @ORM\Entity(repositoryClass="EtoxMicrome\Entity2DocumentBundle\Entity\Cytochrome2DocumentRepository")
  */
 class Cytochrome2Document
@@ -31,28 +31,28 @@ class Cytochrome2Document
     /**
      * @var string
      *
-     * @ORM\Column(name="tagMethod", type="string", length=255)
+     * @ORM\Column(name="""tagMethod""", type="string", length=255)
      */
     private $tagMethod;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="baseName", type="string", length=255)
+     * @ORM\Column(name="""baseName""", type="string", length=255)
      */
     private $baseName;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="rootName", type="string", length=255)
+     * @ORM\Column(name="""rootName""", type="string", length=255)
      */
     private $rootName;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="cypsMention", type="string", length=255)
+     * @ORM\Column(name="""cypsMention""", type="string", length=255)
      */
     private $cypsMention;
 
@@ -66,7 +66,7 @@ class Cytochrome2Document
     /**
      * @var string
      *
-     * @ORM\Column(name="cypsCanonical", type="string", length=255)
+     * @ORM\Column(name="""cypsCanonical""", type="string", length=255)
      */
     private $cypsCanonical;
 
@@ -76,6 +76,48 @@ class Cytochrome2Document
      * @ORM\Column(name="curation", type="integer", nullable=true)
      */
     private $curation;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="hepval", type="float", nullable=true)
+     */
+    private $hepval;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="""patternCount""", type="float", nullable=true)
+     */
+    private $patternCount;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="""ruleScore""", type="float", nullable=true)
+     */
+    private $ruleScore;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="""hepTermNormScore""", type="float", nullable=true)
+     */
+    private $hepTermNormScore;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="""hepTermVarScore""", type="float", nullable=true)
+     */
+    private $hepTermVarScore;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="""svmConfidence""", type="float", nullable=true)
+     */
+    private $svmConfidence;
 
     /**
      * @var \DateTime
@@ -277,6 +319,144 @@ class Cytochrome2Document
     public function getCuration()
     {
         return $this->curation;
+    }
+
+    /**
+     * Set hepval
+     *
+     * @param float $hepval
+     * @return Cytochrome2Document
+     */
+    public function setHepval($hepval)
+    {
+        $this->hepval = $hepval;
+
+        return $this;
+    }
+
+    /**
+     * Get hepval
+     *
+     * @return float
+     */
+    public function getHepval()
+    {
+        return $this->hepval;
+    }
+
+    /**
+     * Set patternCount
+     *
+     * @param float $patternCount
+     * @return Cytochrome2Document
+     */
+    public function setPatternCount($patternCount)
+    {
+        $this->patternCount = $patternCount;
+
+        return $this;
+    }
+
+    /**
+     * Get patternCount
+     *
+     * @return float
+     */
+    public function getPatternCount()
+    {
+        return $this->patternCount;
+    }
+
+    /**
+     * Set ruleScore
+     *
+     * @param float $ruleScore
+     * @return Cytochrome2Document
+     */
+    public function setRuleScore($ruleScore)
+    {
+        $this->ruleScore = $ruleScore;
+
+        return $this;
+    }
+
+    /**
+     * Get ruleScore
+     *
+     * @return float
+     */
+    public function getRuleScore()
+    {
+        return $this->ruleScore;
+    }
+
+    /**
+     * Set hepTermNormScore
+     *
+     * @param float $hepTermNormScore
+     * @return Cytochrome2Document
+     */
+    public function setHepTermNormScore($hepTermNormScore)
+    {
+        $this->hepTermNormScore = $hepTermNormScore;
+
+        return $this;
+    }
+
+    /**
+     * Get hepTermNormScore
+     *
+     * @return float
+     */
+    public function getHepTermNormScore()
+    {
+        return $this->hepTermNormScore;
+    }
+
+    /**
+     * Set hepTermVarScore
+     *
+     * @param float $hepTermVarScore
+     * @return Cytochrome2Document
+     */
+    public function setHepTermVarScore($hepTermVarScore)
+    {
+        $this->hepTermVarScore = $hepTermVarScore;
+
+        return $this;
+    }
+
+    /**
+     * Get hepTermVarScore
+     *
+     * @return float
+     */
+    public function getHepTermVarScore()
+    {
+        return $this->hepTermVarScore;
+    }
+
+    /**
+     * Set svmConfidence
+     *
+     * @param float $svmConfidence
+     * @return Cytochrome2Document
+     */
+    public function setSvmConfidence($svmConfidence)
+    {
+        $this->svmConfidence = $svmConfidence;
+
+        return $this;
+    }
+
+    /**
+     * Get svmConfidence
+     *
+     * @return float
+     */
+    public function getSvmConfidence()
+    {
+        return $this->svmConfidence;
     }
 
     /**

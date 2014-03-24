@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Document
  *
- * @ORM\Table(indexes={ @ORM\Index(name="uid_index", columns={"uid"}), @ORM\Index(name="kind_index", columns={"kind"}), @ORM\Index(name="sentenceId_index", columns={"sentenceId"}), @ORM\Index(name="hepval_index", columns={"hepval"}), @ORM\Index(name="cardval_index", columns={"cardval"}), @ORM\Index(name="nephval_index", columns={"nephval"}), @ORM\Index(name="phosval_index", columns={"phosval"}) } , name="DocumentOLD")
+ * @ORM\Table(indexes={ @ORM\Index(name="documentnew_uid_index", columns={"uid"}), @ORM\Index(name="documentnew_kind_index", columns={"kind"}), @ORM\Index(name="documentnew_sentenceId_index", columns={"""sentenceId"""}), @ORM\Index(name="documentnew_hepval_index", columns={"hepval"}), @ORM\Index(name="documentnew_cardval_index", columns={"cardval"}), @ORM\Index(name="documentnew_nephval_index", columns={"nephval"}), @ORM\Index(name="documentnew_phosval_index", columns={"phosval"}), @ORM\Index(name="documentnew_patterncount_index", columns={"""patternCount"""}), @ORM\Index(name="documentnew_rulescore_index", columns={"""ruleScore"""}), @ORM\Index(name="documentnew_heptermvar_index", columns={"""hepTermVarScore"""}), @ORM\Index(name="documentnew_heptermnorm_index", columns={"""hepTermNormScore"""}), @ORM\Index(name="documentnew_svm_confidence_index", columns={"""svmConfidence"""}) } , name="documentold")
  * @ORM\Entity(repositoryClass="EtoxMicrome\DocumentBundle\Entity\DocumentRepository")
  */
 class Document
@@ -23,7 +23,7 @@ class Document
 
     /**
      *
-     * @ORM\Column(name="kind", type="string",columnDefinition="ENUM('pubmed', 'epar', 'nda', 'fulltext')")
+     * @ORM\Column(name="kind", type="string", columnDefinition="ENUM('pubmed', 'epar', 'nda', 'fulltext')" )
      */
     private $kind;
 
@@ -37,7 +37,7 @@ class Document
     /**
      * @var integer
      *
-     * @ORM\Column(name="sentenceId", type="string", length=255)
+     * @ORM\Column(name="""sentenceId""", type="string", length=255)
      */
     private $sentenceId;
 
@@ -79,30 +79,37 @@ class Document
     /**
      * @var float
      *
-     * @ORM\Column(name="patternCount", type="float", nullable=true)
+     * @ORM\Column(name="""patternCount""", type="float", nullable=true)
      */
     private $patternCount;
 
     /**
      * @var float
      *
-     * @ORM\Column(name="ruleScore", type="float", nullable=true)
+     * @ORM\Column(name="""ruleScore""", type="float", nullable=true)
      */
-    //private $ruleScore;
+    private $ruleScore;
 
     /**
      * @var float
      *
-     * @ORM\Column(name="termNormScore", type="float", nullable=true)
+     * @ORM\Column(name="""hepTermNormScore""", type="float", nullable=true)
      */
-    //private $termNormScore;
+    private $hepTermNormScore;
 
     /**
      * @var float
      *
-     * @ORM\Column(name="termVarScore", type="float", nullable=true)
+     * @ORM\Column(name="""hepTermVarScore""", type="float", nullable=true)
      */
-    //private $termVarScore;
+    private $hepTermVarScore;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="""svmConfidence""", type="float", nullable=true)
+     */
+    private $svmConfidence;
 
     /**
      * @var \DateTime
@@ -129,6 +136,11 @@ class Document
     private $cytochrome2document;
 
     /**
+     * @ORM\OneToMany(targetEntity="EtoxMicrome\Entity2DocumentBundle\Entity\Specie2Document", mappedBy="document")
+     **/
+    private $specie2document;
+
+    /**
      * @ORM\OneToMany(targetEntity="EtoxMicrome\Entity2DocumentBundle\Entity\HepKeywordTermNorm2Document", mappedBy="document")
      **/
     private $hepKeywordTermNorm2document;
@@ -146,6 +158,7 @@ class Document
     public function __construct() {
         $this->entity2document = new \Doctrine\Common\Collections\ArrayCollection();
         $this->cytochrome2document = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->specie2document = new \Doctrine\Common\Collections\ArrayCollection();
         $this->hepKeywordTermNorm2document = new \Doctrine\Common\Collections\ArrayCollection();
         $this->hepKeywordTermVariant2document = new \Doctrine\Common\Collections\ArrayCollection();
     }
@@ -391,49 +404,72 @@ class Document
     }
 
     /**
-     * Set termNormScore
+     * Set hepTermNormScore
      *
-     * @param float $termNormScore
+     * @param float $hepTermNormScore
      * @return Document
      */
-    public function setTermNormScore($termNormScore)
+    public function setHepTermNormScore($hepTermNormScore)
     {
-        $this->termNormScore = $termNormScore;
+        $this->hepTermNormScore = $hepTermNormScore;
 
         return $this;
     }
 
     /**
-     * Get termNormScore
+     * Get hepTermNormScore
      *
      * @return float
      */
-    public function getTermNormScore()
+    public function getHepTermNormScore()
     {
-        return $this->termNormScore;
+        return $this->hepTermNormScore;
     }
 
     /**
-     * Set termVarScore
+     * Set hepTermVarScore
      *
-     * @param float $termVarScore
+     * @param float $hepTermVarScore
      * @return Document
      */
-    public function setTermVarScore($termVarScore)
+    public function setHepTermVarScore($hepTermVarScore)
     {
-        $this->termVarScore = $termVarScore;
+        $this->hepTermVarScore = $hepTermVarScore;
 
         return $this;
     }
 
     /**
-     * Get termVarScore
+     * Get hepTermVarScore
      *
      * @return float
      */
-    public function getTermVarScore()
+    public function getHepTermVarScore()
     {
-        return $this->termVarScore;
+        return $this->hepTermVarScore;
+    }
+
+    /**
+     * Set svmConfidence
+     *
+     * @param float $svmConfidence
+     * @return Document
+     */
+    public function setSvmConfidence($svmConfidence)
+    {
+        $this->svmConfidence = $svmConfidence;
+
+        return $this;
+    }
+
+    /**
+     * Get svmConfidence
+     *
+     * @return float
+     */
+    public function getSvmConfidence()
+    {
+        return $this->svmConfidence;
     }
 
     /**
@@ -522,6 +558,27 @@ class Document
     public function getCytochrome2Document()
     {
         return $this->cytochrome2document;
+    }
+
+    /**
+     * Set specie2document
+     *
+     * @return integer
+     */
+    public function setSpecie2Document($specie2document)
+    {
+        $this->specie2document =$specie2document;
+        return $this;
+    }
+
+    /**
+     * Get specie2Document
+     *
+     * @return integer
+     */
+    public function getSpecie2Document()
+    {
+        return $this->specie2document;
     }
 
     /**

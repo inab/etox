@@ -32,7 +32,7 @@ body {
     width: 970px
 }
 #wrapper a {
-    text-decoration: none !important;
+    text-decoration: none;
 }
 section.content {
     margin: 25px auto;
@@ -109,6 +109,14 @@ a.cross-yes:before {
 ul{
     list-style-type: none;
 }
+#mystickytooltip a{
+    color: #FF6600;
+}
+.atip{
+    max-width: 500px;
+    overflow: auto;
+
+}
 /* -----------------------------------------
    Header
 ----------------------------------------- */
@@ -176,7 +184,9 @@ ul.methods li {
     width: 618px;
     margin: 0 auto;
 }
-
+.advanceSearch hr{
+    margin: 8px;
+}
 #searchby {
     width: auto;
 }
@@ -236,6 +246,9 @@ section.content {
     padding: 0 10px 180px;
     text-align: left;
     width: 940px;
+}
+section.content a {
+    color: #000 !important;
 }
 .right-column ul {
     margin: 0;
@@ -446,7 +459,7 @@ li.marker{
 
 
 #abstractsResults{
-    display: none;
+
 }
 
 
@@ -475,11 +488,15 @@ td.horizontal-header{
     min-width: 70px;
     padding: 6px 0px 6px 6px;
 }
+#tableResults .active{
+    text-decoration: underline;
+}
 #tableResults td{
-    vertical-align: middle;
+    vertical-align: top;
 }
 #tableResults td.center{
     text-align: center;
+    vertical-align: top;
 }
 .abstract {
     border-bottom: 1px dotted #E0DFDF;

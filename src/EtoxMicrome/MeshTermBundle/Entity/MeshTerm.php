@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * MeshTerm
  *
- * @ORM\Table(indexes={@ORM\Index(name="meshId_index", columns={"meshId"}),@ORM\Index(name="term_index", columns={"term"}) })
+ * @ORM\Table(indexes={@ORM\Index(name="meshTerm_meshId_index", columns={"""meshId"""}),@ORM\Index(name="meshTerm_term_index", columns={"term"}) } )
  * @ORM\Entity(repositoryClass="EtoxMicrome\MeshTermBundle\Entity\MeshTermRepository")
  */
 class MeshTerm
@@ -24,7 +24,7 @@ class MeshTerm
     /**
      * @var string
      *
-     * @ORM\Column(name="meshId", type="string", length=255)
+     * @ORM\Column(name="""meshId""", type="string", length=255)
      */
     private $meshId;
 
@@ -49,17 +49,6 @@ class MeshTerm
      */
     private $updated;
 
-    /**
-     * @ORM\OneToMany(targetEntity="EtoxMicrome\MeshTermBundle\Entity\MeshTerm2Abstract", mappedBy="meshTerm")
-     **/
-    private $meshTerm2abstract;
-
-    /**
-    * Constructor de la clase
-    **/
-    public function __construct() {
-        $this->meshTerm2abstract = new \Doctrine\Common\Collections\ArrayCollection();
-    }
 
     /**
      * Get id
@@ -161,27 +150,6 @@ class MeshTerm
     public function getUpdated()
     {
         return $this->updated;
-    }
-
-
-    /**
-     * Set meshTerm2abstract
-     *
-     */
-    public function setMeshTerm2Abstract($meshTerm2abstract)
-    {
-        $this->meshTerm2abstract =$meshTerm2abstract;
-        return $this;
-    }
-
-    /**
-     * Get meshTerm2abstract
-     *
-     * @return integer
-     */
-    public function getMeshTerm2Abstract()
-    {
-        return $this->meshTerm2abstract;
     }
 
 }

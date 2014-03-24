@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * HepKeywordTermVariant2Document
  *
- * @ORM\Table(indexes={@ORM\Index(name="termVariant_index", columns={"termVariant"}), @ORM\Index(name="hepKeywordTerm_index", columns={"hepKeywordTerm"}), @ORM\Index(name="hepKeywordNorm_index", columns={"hepKeywordNorm"}), @ORM\Index(name="kind_index", columns={"kind"}) })
+ * @ORM\Table(indexes={@ORM\Index(name="hepKeywordTermVariant_termVariant_index", columns={"""termVariant"""}), @ORM\Index(name="hepKeywordTermVariant_hepKeywordTerm_index", columns={"""hepKeywordTerm"""}), @ORM\Index(name="hepKeywordTermVariant_hepKeywordNorm_index", columns={"""hepKeywordNorm"""}), @ORM\Index(name="hepKeywordTermVariant_kind_index", columns={"kind"}) } )
  * @ORM\Entity(repositoryClass="EtoxMicrome\Entity2DocumentBundle\Entity\HepKeywordTermVariant2DocumentRepository")
  */
 class HepKeywordTermVariant2Document
@@ -24,21 +24,21 @@ class HepKeywordTermVariant2Document
     /**
      * @var string
      *
-     * @ORM\Column(name="termVariant", type="string", length=800)
+     * @ORM\Column(name="""termVariant""", type="string", length=800)
      */
     private $termVariant;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="hepKeywordTerm", type="string", length=500)
+     * @ORM\Column(name="""hepKeywordTerm""", type="string", length=500)
      */
     private $hepKeywordTerm;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="hepKeywordNorm", type="string", length=500)
+     * @ORM\Column(name="""hepKeywordNorm""", type="string", length=500)
      */
     private $hepKeywordNorm;
 
@@ -49,6 +49,7 @@ class HepKeywordTermVariant2Document
     private $document;
 
     /**
+     * @var string
      *
      * @ORM\Column(name="kind", type="string",columnDefinition="ENUM('pubmed', 'epar', 'nda', 'fulltext')")
      */

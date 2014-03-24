@@ -131,4 +131,32 @@ class CytochromeRepository extends EntityRepository
         $entity=$compound[0];
         return $entity;
     }
+
+    public function findOneByCanonicalTax($canonical,$ncbiTaxId)
+    {
+        $query = $this->_em->createQuery("
+            SELECT c
+            FROM EtoxMicromeEntityBundle:Cytochrome c
+            where c.canonical= :canonical
+            and c.tax= :ncbiTaxId
+        ");
+        $query->setParameter('canonical', $canonical);
+        $query->setParameter('ncbiTaxId', $ncbiTaxId);
+        $cytochrome=$query->getResult();
+        if(count($cytochrome)==0){
+            $errorMessage="There is no entity with that canonical ($canonical) and ncbiTaxId ($ncbiTaxId)";
+            ldd($errorMessage);
+            $entity=array();
+            return $entity;
+        }
+        if(count($cytochrome)!=1){
+            $errorMessage="There are more than one entity for that canonical ($canonical) and ncbiTaxId ($ncbiTaxId)";
+            //We return the first one until change of strategy
+            return $cytochrome[0];
+
+        }
+        //We return only one entity. Later on we will make the query expansion so we will collect all of them
+        $entity=$cytochrome[0];
+        return $entity;
+    }
 }

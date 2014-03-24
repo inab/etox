@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Abstracts
  *
- * @ORM\Table(indexes={@ORM\Index(name="pmid_index", columns={"pmid"})})
+ * @ORM\Table(indexes={@ORM\Index(name="abstracts_pmid_index", columns={"pmid"}), @ORM\Index(name="abstracts_hepval_index", columns={"hepval"}), @ORM\Index(name="abstracts_patterncount_index", columns={"""patternCount"""}), @ORM\Index(name="abstracts_rulescore_index", columns={"""ruleScore"""}), @ORM\Index(name="abstracts_heptermvar_index", columns={"""hepTermVarScore"""}), @ORM\Index(name="abstracts_heptermnorm_index", columns={"""hepTermNormScore"""}), @ORM\Index(name="abstracts_svm_confidence_index", columns={"""svmConfidence"""})} )
  * @ORM\Entity(repositoryClass="EtoxMicrome\DocumentBundle\Entity\AbstractsRepository")
  */
 class Abstracts
@@ -50,6 +50,41 @@ class Abstracts
     private $hepval;
 
     /**
+     * @var float
+     *
+     * @ORM\Column(name="""patternCount""", type="float", nullable=true)
+     */
+    private $patternCount;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="""ruleScore""", type="float", nullable=true)
+     */
+    private $ruleScore;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="""hepTermNormScore""", type="float", nullable=true)
+     */
+    private $hepTermNormScore;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="""hepTermVarScore""", type="float", nullable=true)
+     */
+    private $hepTermVarScore;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="""svmConfidence""", type="float", nullable=true)
+     */
+    private $svmConfidence;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="created", type="datetime")
@@ -68,17 +103,11 @@ class Abstracts
      **/
     private $entity2abstract;
 
-    /**
-     * @ORM\OneToMany(targetEntity="EtoxMicrome\MeshTermBundle\Entity\MeshTerm2Abstract", mappedBy="abstract")
-     **/
-    private $meshTerm2abstract;
-
 
     /**
     * Constructor de la clase
     **/
     public function __construct() {
-        $this->meshTerm2abstract = new \Doctrine\Common\Collections\ArrayCollection();
         $this->entity2abstract = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
@@ -185,6 +214,144 @@ class Abstracts
     }
 
     /**
+     * Set patternCount
+     *
+     * @param float $patternCount
+     * @return Abstracts
+     */
+    public function setPatternCount($patternCount)
+    {
+        $this->patternCount = $patternCount;
+
+        return $this;
+    }
+
+    /**
+     * Get patternCount
+     *
+     * @return float
+     */
+    public function getPatternCount()
+    {
+        return $this->patternCount;
+    }
+
+    /**
+     * Set ruleScore
+     *
+     * @param float $ruleScore
+     * @return Abstracts
+     */
+    public function setRuleScore($ruleScore)
+    {
+        $this->ruleScore = $ruleScore;
+
+        return $this;
+    }
+
+    /**
+     * Get ruleScore
+     *
+     * @return float
+     */
+    public function getRuleScore()
+    {
+        return $this->ruleScore;
+    }
+
+    /**
+     * Set hepTermNormScore
+     *
+     * @param float $hepTermNormScore
+     * @return Abstracts
+     */
+    public function setHepTermNormScore($hepTermNormScore)
+    {
+        $this->hepTermNormScore = $hepTermNormScore;
+
+        return $this;
+    }
+
+    /**
+     * Get hepTermNormScore
+     *
+     * @return float
+     */
+    public function getHepTermNormScore()
+    {
+        return $this->hepTermNormScore;
+    }
+
+    /**
+     * Set hepTermVarScore
+     *
+     * @param float $hepTermVarScore
+     * @return Abstracts
+     */
+    public function setHepTermVarScore($hepTermVarScore)
+    {
+        $this->hepTermVarScore = $hepTermVarScore;
+
+        return $this;
+    }
+
+    /**
+     * Get hepTermVarScore
+     *
+     * @return float
+     */
+    public function getHepTermVarScore()
+    {
+        return $this->hepTermVarScore;
+    }
+
+    /**
+     * Set svm
+     *
+     * @param float $svm
+     * @return Abstracts
+     */
+    public function setSvm($svm)
+    {
+        $this->svm = $svm;
+
+        return $this;
+    }
+
+    /**
+     * Get svm
+     *
+     * @return float
+     */
+    public function getSvm()
+    {
+        return $this->svm;
+    }
+
+    /**
+     * Set svmConfidence
+     *
+     * @param float $svmConfidence
+     * @return Abstracts
+     */
+    public function setSvmConfidence($svmConfidence)
+    {
+        $this->svmConfidence = $svmConfidence;
+
+        return $this;
+    }
+
+    /**
+     * Get svmConfidence
+     *
+     * @return float
+     */
+    public function getSvmConfidence()
+    {
+        return $this->svmConfidence;
+    }
+
+    /**
      * Set created
      *
      * @param \DateTime $created
@@ -251,25 +418,7 @@ class Abstracts
         return $this->entity2abstract;
     }
 
-    /**
-     * Set meshTerm2abstract
-     *
-     */
-    public function setMeshTerm2Abstract($meshTerm2abstract)
-    {
-        $this->meshTerm2abstract =$meshTerm2abstract;
-        return $this;
-    }
 
-    /**
-     * Get meshTerm2abstract
-     *
-     * @return integer
-     */
-    public function getMeshTerm2Abstract()
-    {
-        return $this->meshTerm2abstract;
-    }
 
     public function getClassName()
     {

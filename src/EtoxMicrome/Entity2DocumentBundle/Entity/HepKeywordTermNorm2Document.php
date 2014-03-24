@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * HepKeywordTermNorm2Document
  *
- * @ORM\Table(indexes={ @ORM\Index(name="kind_index", columns={"kind"}) })
+ * @ORM\Table(indexes={ @ORM\Index(name="hepKeywordTermNorm_kind_index", columns={"kind"}) } )
  * @ORM\Entity(repositoryClass="EtoxMicrome\Entity2DocumentBundle\Entity\HepKeywordTermNorm2DocumentRepository")
  */
 class HepKeywordTermNorm2Document
@@ -24,7 +24,7 @@ class HepKeywordTermNorm2Document
     /**
      * @var string
      *
-     * @ORM\Column(name="hepKeywordNorm", type="string", length=500)
+     * @ORM\Column(name="""hepKeywordNorm""", type="string", length=500)
      */
     private $hepKeywordNorm;
 

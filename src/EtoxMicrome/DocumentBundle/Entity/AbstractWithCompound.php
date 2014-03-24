@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * AbstractWithCompound
  *
- * @ORM\Table(indexes={@ORM\Index(name="pmid_index", columns={"pmid"})})
+ * @ORM\Table(indexes={@ORM\Index(name="abstractWithCompound_pmid_index", columns={"pmid"}), @ORM\Index(name="abstractWithCompound_hepval_index", columns={"hepval"}), @ORM\Index(name="abstractWithCompound_patterncount", columns={"""patternCount"""}), @ORM\Index(name="abstractWithCompound_rulescore", columns={"""ruleScore"""}), @ORM\Index(name="abstractWithCompound_heptermnormscore", columns={"""hepTermNormScore"""}), @ORM\Index(name="abstractWithCompound_heptermvarscore", columns={"""hepTermVarScore"""}), @ORM\Index(name="abstractWithCompound_svmconfidence", columns={"""svmConfidence"""})  })
  * @ORM\Entity(repositoryClass="EtoxMicrome\DocumentBundle\Entity\AbstractWithCompoundRepository")
  */
 class AbstractWithCompound
@@ -48,6 +48,41 @@ class AbstractWithCompound
      * @ORM\Column(name="hepval", type="float", nullable=true)
      */
     private $hepval;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="""patternCount""", type="float", nullable=true)
+     */
+    private $patternCount;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="""ruleScore""", type="float", nullable=true)
+     */
+    private $ruleScore;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="""hepTermNormScore""", type="float", nullable=true)
+     */
+    private $hepTermNormScore;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="""hepTermVarScore""", type="float", nullable=true)
+     */
+    private $hepTermVarScore;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="""svmConfidence""", type="float", nullable=true)
+     */
+    private $svmConfidence;
 
     /**
      * @var \DateTime
@@ -168,6 +203,121 @@ class AbstractWithCompound
     public function getHepval()
     {
         return $this->hepval;
+    }
+
+    /**
+     * Set patternCount
+     *
+     * @param float $patternCount
+     * @return AbstractWithCompound
+     */
+    public function setPatternCount($patternCount)
+    {
+        $this->patternCount = $patternCount;
+
+        return $this;
+    }
+
+    /**
+     * Get patternCount
+     *
+     * @return float
+     */
+    public function getPatternCount()
+    {
+        return $this->patternCount;
+    }
+
+    /**
+     * Set ruleScore
+     *
+     * @param float $ruleScore
+     * @return AbstractWithCompound
+     */
+    public function setRuleScore($ruleScore)
+    {
+        $this->ruleScore = $ruleScore;
+
+        return $this;
+    }
+
+    /**
+     * Get ruleScore
+     *
+     * @return float
+     */
+    public function getRuleScore()
+    {
+        return $this->ruleScore;
+    }
+
+    /**
+     * Set hepTermNormScore
+     *
+     * @param float $hepTermNormScore
+     * @return AbstractWithCompound
+     */
+    public function setHepTermNormScore($hepTermNormScore)
+    {
+        $this->hepTermNormScore = $hepTermNormScore;
+
+        return $this;
+    }
+
+    /**
+     * Get hepTermNormScore
+     *
+     * @return float
+     */
+    public function getHepTermNormScore()
+    {
+        return $this->hepTermNormScore;
+    }
+
+    /**
+     * Set hepTermVarScore
+     *
+     * @param float $hepTermVarScore
+     * @return AbstractWithCompound
+     */
+    public function setHepTermVarScore($hepTermVarScore)
+    {
+        $this->hepTermVarScore = $hepTermVarScore;
+
+        return $this;
+    }
+
+    /**
+     * Get hepTermVarScore
+     *
+     * @return float
+     */
+    public function getHepTermVarScore()
+    {
+        return $this->hepTermVarScore;
+    }
+
+    /**
+     * Set svmConfidence
+     *
+     * @param float $svmConfidence
+     * @return AbstractWithCompound
+     */
+    public function setSvmConfidence($svmConfidence)
+    {
+        $this->svmConfidence = $svmConfidence;
+
+        return $this;
+    }
+
+    /**
+     * Get svmConfidence
+     *
+     * @return float
+     */
+    public function getSvmConfidence()
+    {
+        return $this->svmConfidence;
     }
 
     /**

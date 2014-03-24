@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Compound2Term2Document
  *
- * @ORM\Table(indexes={ @ORM\Index(name="sentenceId_index", columns={"sentenceId"}), @ORM\Index(name="compound_index", columns={"compound"}), @ORM\Index(name="term_index", columns={"term"}) })
+ * @ORM\Table(indexes={ @ORM\Index(name="compound2Term2Document_sentenceId_index", columns={"""sentenceId"""}), @ORM\Index(name="compound2Term2Document_compound_index", columns={"""compoundName"""}), @ORM\Index(name="compound2Term2Document_term_index", columns={"term"}) } )
  * @ORM\Entity(repositoryClass="EtoxMicrome\Entity2DocumentBundle\Entity\Compound2Term2DocumentRepository")
  */
 class Compound2Term2Document
@@ -24,7 +24,7 @@ class Compound2Term2Document
     /**
      * @var string
      *
-     * @ORM\Column(name="sentenceId", type="string", length=200)
+     * @ORM\Column(name="""sentenceId""", type="string", length=200)
      */
 
     private $sentenceId;
@@ -32,9 +32,9 @@ class Compound2Term2Document
     /**
      * @var string
      *
-     * @ORM\Column(name="compound", type="string", length=800)
+     * @ORM\Column(name="""compoundName""", type="string", length=800)
      */
-    private $compound;
+    private $compoundName;
 
     /**
      * @var string
@@ -46,28 +46,28 @@ class Compound2Term2Document
     /**
      * @var float
      *
-     * @ORM\Column(name="relationScore", type="float")
+     * @ORM\Column(name="""relationScore""", type="float")
      */
     private $relationScore;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="relationQualifier", type="string", length=2)
+     * @ORM\Column(name="""relationQualifier""", type="string", length=2)
      */
     private $relationQualifier;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="relationType", type="string", length=500)
+     * @ORM\Column(name="""relationType""", type="string", length=500)
      */
     private $relationType;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="relationEvidence", type="text")
+     * @ORM\Column(name="""relationEvidence""", type="text")
      */
     private $relationEvidence;
 
@@ -78,6 +78,26 @@ class Compound2Term2Document
      */
     private $sentence;
 
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="compoundQualifier", type="integer")
+     */
+    private $compoundQualifier;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="created", type="datetime")
+     */
+     private $created;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="updated", type="datetime", nullable=true)
+     */
+    private $updated;
 
     /**
      * Get id
@@ -113,26 +133,26 @@ class Compound2Term2Document
     }
 
     /**
-     * Set compound
+     * Set compoundName
      *
-     * @param string $compound
+     * @param string $compoundName
      * @return Compound2Term2Document
      */
-    public function setCompound($compound)
+    public function setCompoundName($compoundName)
     {
-        $this->compound = $compound;
+        $this->compoundName = $compoundName;
 
         return $this;
     }
 
     /**
-     * Get compound
+     * Get compoundName
      *
      * @return string
      */
-    public function getCompound()
+    public function getCompoundName()
     {
-        return $this->compound;
+        return $this->compoundName;
     }
 
     /**
@@ -271,5 +291,74 @@ class Compound2Term2Document
     public function getSentence()
     {
         return $this->sentence;
+    }
+
+    /**
+     * Set compoundQualifier
+     *
+     * @param integer $compoundQualifier
+     * @return Compound2Term2Document
+     */
+    public function setCompoundQualifier($compoundQualifier)
+    {
+        $this->compoundQualifier = $compoundQualifier;
+
+        return $this;
+    }
+
+    /**
+     * Get compoundQualifier
+     *
+     * @return integer
+     */
+    public function getCompoundQualifier()
+    {
+        return $this->compoundQualifier;
+    }
+
+    /**
+     * Set created
+     *
+     * @param \DateTime $created
+     * @return Compound2Term2Document
+     */
+    public function setCreated($created)
+    {
+        $this->created = $created;
+
+        return $this;
+    }
+
+    /**
+     * Get created
+     *
+     * @return \DateTime
+     */
+    public function getCreated()
+    {
+        return $this->created;
+    }
+
+    /**
+     * Set updated
+     *
+     * @param \DateTime $updated
+     * @return Compound2Term2Document
+     */
+    public function setUpdated($updated)
+    {
+        $this->updated = $updated;
+
+        return $this;
+    }
+
+    /**
+     * Get updated
+     *
+     * @return \DateTime
+     */
+    public function getUpdated()
+    {
+        return $this->updated;
     }
 }

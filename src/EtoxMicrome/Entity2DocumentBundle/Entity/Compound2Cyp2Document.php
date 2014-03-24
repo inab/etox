@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Compound2Cyp2Document
  *
- * @ORM\Table(indexes={ @ORM\Index(name="sentenceId_index", columns={"sentenceId"}), @ORM\Index(name="compound_index", columns={"compound"}), @ORM\Index(name="cyp_index", columns={"cyp"}) })
+ * @ORM\Table(indexes={ @ORM\Index(name="compound2cyp2document_sentenceId_index", columns={"""sentenceId"""}), @ORM\Index(name="compound2Cyp2Document_compound_name_index", columns={"""compoundName"""}), @ORM\Index(name="compound2Cyp2Document_cyp_index", columns={"""cypsMention"""}) } )
  * @ORM\Entity(repositoryClass="EtoxMicrome\Entity2DocumentBundle\Entity\Compound2Cyp2DocumentRepository")
  */
 class Compound2Cyp2Document
@@ -24,7 +24,7 @@ class Compound2Cyp2Document
     /**
      * @var string
      *
-     * @ORM\Column(name="sentenceId", type="string", length=200)
+     * @ORM\Column(name="""sentenceId""", type="string", length=200)
      */
 
     private $sentenceId;
@@ -32,49 +32,35 @@ class Compound2Cyp2Document
     /**
      * @var string
      *
-     * @ORM\Column(name="compound", type="string", length=800)
+     * @ORM\Column(name="""compoundName""", type="string", length=800)
      */
-    private $compound;
+    private $compoundName;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="cyp", type="string", length=800)
+     * @ORM\Column(name="""cypsMention""", type="string", length=200)
      */
-    private $cyp;
-
-    /**
-     * @var float
-     *
-     * @ORM\Column(name="relationScore", type="float")
-     */
-    private $relationScore;
+    private $cypsMention;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="relationQualifier", type="string", length=2)
+     * @ORM\Column(name="""patternRelation""", type="string", length=15)
      */
-    private $relationQualifier;
+    private $patternRelation;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="relationType", type="string", length=500)
+     * @ORM\Column(name="""patternEvidence""", type="text")
      */
-    private $relationType;
+    private $patternEvidence;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="relationEvidence", type="text")
-     */
-    private $relationEvidence;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="cypsCanonical", type="string", length=500)
+     * @ORM\Column(name="""cypsCanonical""", type="string", length=50)
      */
     private $cypsCanonical;
 
@@ -85,6 +71,82 @@ class Compound2Cyp2Document
      */
     private $sentence;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="""svmInduction""", type="string", length=15)
+     */
+    private $svmInduction;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="""svmInhibition""", type="string", length=15)
+     */
+    private $svmInhibition;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="""svmMetabolism""", type="string", length=15)
+     */
+    private $svmMetabolism;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="""inductionScore""", type="integer")
+     */
+    private $inductionScore;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="""inhibitionScore""", type="integer")
+     */
+    private $inhibitionScore;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="""metabolismScore""", type="integer")
+     */
+    private $metabolismScore;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="""sumScore""", type="integer")
+     */
+    private $sumScore;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="""relationQualifier""", type="string", length=2)
+     */
+    private $relationQualifier;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="""compoundQualifier""", type="integer")
+     */
+    private $compoundQualifier;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="created", type="datetime")
+     */
+     private $created;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="updated", type="datetime", nullable=true)
+     */
+    private $updated;
 
     /**
      * Get id
@@ -120,141 +182,95 @@ class Compound2Cyp2Document
     }
 
     /**
-     * Set compound
+     * Set compoundName
      *
-     * @param integer $compound
+     * @param string $compoundName
      * @return Compound2Cyp2Document
      */
-    public function setCompound($compound)
+    public function setCompoundName($compoundName)
     {
-        $this->compound = $compound;
+        $this->compoundName = $compoundName;
 
         return $this;
     }
 
     /**
-     * Get compound
-     *
-     * @return integer
-     */
-    public function getCompound()
-    {
-        return $this->compound;
-    }
-
-    /**
-     * Set cyp
-     *
-     * @param string $cyp
-     * @return Compound2Cyp2Document
-     */
-    public function setCyp($cyp)
-    {
-        $this->cyp = $cyp;
-
-        return $this;
-    }
-
-    /**
-     * Get cyp
+     * Get compoundName
      *
      * @return string
      */
-    public function getCyp()
+    public function getCompoundName()
     {
-        return $this->cyp;
+        return $this->compoundName;
     }
 
     /**
-     * Set relationScore
+     * Set cyps_mention
      *
-     * @param float $relationScore
+     * @param string $cypsMention
      * @return Compound2Cyp2Document
      */
-    public function setRelationScore($relationScore)
+    public function setCypsMention($cypsMention)
     {
-        $this->relationScore = $relationScore;
+        $this->cypsMention = $cypsMention;
 
         return $this;
     }
 
     /**
-     * Get relationScore
-     *
-     * @return float
-     */
-    public function getRelationScore()
-    {
-        return $this->relationScore;
-    }
-
-    /**
-     * Set relationQualifier
-     *
-     * @param string $relationQualifier
-     * @return Compound2Cyp2Document
-     */
-    public function setRelationQualifier($relationQualifier)
-    {
-        $this->relationQualifier = $relationQualifier;
-
-        return $this;
-    }
-
-    /**
-     * Get relationQualifier
+     * Get cypsMention
      *
      * @return string
      */
-    public function getRelationQualifier()
+    public function getCypsMention()
     {
-        return $this->relationQualifier;
+        return $this->cypsMention;
     }
 
     /**
-     * Set relationType
+     * Set patternRelation
      *
-     * @param string $relationType
+     * @param string $patternRelation
      * @return Compound2Cyp2Document
      */
-    public function setRelationType($relationType)
+    public function setPatternRelation($patternRelation)
     {
-        $this->relationType = $relationType;
+        $this->patternRelation = $patternRelation;
 
         return $this;
     }
 
     /**
-     * Get relationType
+     * Get patternRelation
      *
      * @return string
      */
-    public function getRelationType()
+    public function getPatternRelation()
     {
-        return $this->relationType;
+        return $this->patternRelation;
     }
 
     /**
-     * Set relationEvidence
+     * Set patternEvidence
      *
-     * @param string $relationEvidence
+     * @param string $patternEvidence
      * @return Compound2Cyp2Document
      */
-    public function setRelationEvidence($relationEvidence)
+    public function setPatternEvidence($patternEvidence)
     {
-        $this->relationEvidence = $relationEvidence;
+        $this->patternEvidence = $patternEvidence;
 
         return $this;
     }
 
     /**
-     * Get relationEvidence
+     * Get patternEvidence
      *
      * @return string
      */
-    public function getRelationEvidence()
+    public function getPatternEvidence()
     {
-        return $this->relationEvidence;
+        return $this->patternEvidence;
     }
 
     /**
@@ -263,7 +279,7 @@ class Compound2Cyp2Document
      * @param string $cypsCanonical
      * @return Compound2Cyp2Document
      */
-    public function setCypsCanonical($cypsCanonical)
+    public function setCypsCanonical()
     {
         $this->cypsCanonical = $cypsCanonical;
 
@@ -302,4 +318,258 @@ class Compound2Cyp2Document
     {
         return $this->sentence;
     }
+
+    /**
+     * Get svmInduction
+     *
+     * @return string
+     */
+    public function getSvmInduction()
+    {
+        return $this->svmInduction;
+    }
+
+    /**
+     * Set svmInduction
+     *
+     * @param string $svmInduction
+     * @return Compound2Cyp2Document
+     */
+    public function setSvmInduction($svmInduction)
+    {
+        $this->svmInduction = $svmInduction;
+
+        return $this;
+    }
+
+    /**
+     * Get svmInhibition
+     *
+     * @return string
+     */
+    public function getSvmInhibition()
+    {
+        return $this->svmInhibition;
+    }
+
+    /**
+     * Set svmInhibition
+     *
+     * @param string $svmInhibition
+     * @return Compound2Cyp2Document
+     */
+    public function setSvmInhibition($svmInhibition)
+    {
+        $this->svmInhibition = $svmInhibition;
+
+        return $this;
+    }
+
+    /**
+     * Get svmMetabolism
+     *
+     * @return string
+     */
+    public function getSvmMetabolism()
+    {
+        return $this->svmMetabolism;
+    }
+
+    /**
+     * Set svmMetabolism
+     *
+     * @param string $svmMetabolism
+     * @return Compound2Cyp2Document
+     */
+    public function setSvmMetabolism($svmMetabolism)
+    {
+        $this->svmMetabolism = $svmMetabolism;
+
+        return $this;
+    }
+
+    /**
+     * Get inductionScore
+     *
+     * @return integer
+     */
+    public function getInductionScore()
+    {
+        return $this->inductionScore;
+    }
+
+    /**
+     * Set inductionScore
+     *
+     * @param integer $inductionScore
+     * @return Compound2Cyp2Document
+     */
+    public function setInductionScore($inductionScore)
+    {
+        $this->inductionScore = $inductionScore;
+
+        return $this;
+    }
+
+    /**
+     * Get inhibitionScore
+     *
+     * @return integer
+     */
+    public function getInhibitionScore()
+    {
+        return $this->inhibitionScore;
+    }
+
+    /**
+     * Set inhibitionScore
+     *
+     * @param integer $inhibitionScore
+     * @return Compound2Cyp2Document
+     */
+    public function setInhibitionScore($inhibitionScore)
+    {
+        $this->inhibitionScore = $inhibitionScore;
+
+        return $this;
+    }
+
+    /**
+     * Get metabolismScore
+     *
+     * @return integer
+     */
+    public function getMetabolismScore()
+    {
+        return $this->metabolismScore;
+    }
+
+    /**
+     * Set metabolismScore
+     *
+     * @param integer $metabolismScore
+     * @return Compound2Cyp2Document
+     */
+    public function setMetabolismScore($metabolismScore)
+    {
+        $this->metabolismScore = $metabolismScore;
+
+        return $this;
+    }
+
+    /**
+     * Get sumScore
+     *
+     * @return integer
+     */
+    public function getSumScore()
+    {
+        return $this->sumScore;
+    }
+
+    /**
+     * Set sumScore
+     *
+     * @param integer $sumScore
+     * @return Compound2Cyp2Document
+     */
+    public function setSumScore($sumScore)
+    {
+        $this->sumScore = $sumScore;
+
+        return $this;
+    }
+
+    /**
+     * Set relationQualifier
+     *
+     * @param string $relationQualifier
+     * @return Compound2Cyp2Document
+     */
+    public function setRelationQualifier($relationQualifier)
+    {
+        $this->relationQualifier = $relationQualifier;
+
+        return $this;
+    }
+
+    /**
+     * Get relationQualifier
+     *
+     * @return string
+     */
+    public function getRelationQualifier()
+    {
+        return $this->relationQualifier;
+    }
+
+    /**
+     * Get compoundQualifier
+     *
+     * @return integer
+     */
+    public function getCompoundQualifier()
+    {
+        return $this->compoundQualifier;
+    }
+
+    /**
+     * Set compoundQualifier
+     *
+     * @param integer $compoundQualifier
+     * @return Compound2Cyp2Document
+     */
+    public function setCompoundQualifier($compoundQualifier)
+    {
+        $this->compoundQualifier = $compoundQualifier;
+
+        return $this;
+    }
+
+    /**
+     * Set created
+     *
+     * @param \DateTime $created
+     * @return Compound2Cyp2Document
+     */
+    public function setCreated($created)
+    {
+        $this->created = $created;
+
+        return $this;
+    }
+
+    /**
+     * Get created
+     *
+     * @return \DateTime
+     */
+    public function getCreated()
+    {
+        return $this->created;
+    }
+
+    /**
+     * Set updated
+     *
+     * @param \DateTime $updated
+     * @return Compound2Cyp2Document
+     */
+    public function setUpdated($updated)
+    {
+        $this->updated = $updated;
+
+        return $this;
+    }
+
+    /**
+     * Get updated
+     *
+     * @return \DateTime
+     */
+    public function getUpdated()
+    {
+        return $this->updated;
+    }
+
 }
