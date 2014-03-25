@@ -80,7 +80,7 @@
                                 {% set patternCount = entity2Document.document.getPatternCount %}
                                 {% set patternCount = patternCount|colorCodingScore %}
                                 {% set ruleScore = entity2Document.document.getRuleScore %}
-                                {# set ruleScore = ruleScore|number_format(2) #}
+                                {% set ruleScore = ruleScore|number_format(2) %}
                                 {% set ruleScore = ruleScore|colorCodingScore %}
                                 {% set termScore = entity2Document.document.getHepTermVarScore %}
                                 {% set termScore = termScore|colorCodingScore %}

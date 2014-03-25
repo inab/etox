@@ -73,11 +73,10 @@ class Cytochrome2DocumentRepository extends EntityRepository
         //    ORDER BY d.$orderBy desc
         //    ";
         if ($source=="all"){ //if source of data is all we dont filter for kind=source
-            $sql="SELECT e2d,d
-                FROM EtoxMicromeEntity2DocumentBundle:Cytochrome2Document e2d
-                JOIN e2d.document d
-                WHERE e2d.cypsMention IN (:arrayNames) AND d.$orderBy is not NULL
-                ORDER BY d.$orderBy desc
+            $sql="SELECT c2d
+                FROM EtoxMicromeEntity2DocumentBundle:Cytochrome2Document c2d
+                WHERE c2d.cypsMention IN (:arrayNames) AND c2d.$orderBy is not NULL
+                ORDER BY c2d.$orderBy desc
                 ";
             //ld($sql);
             $query = $this->_em->createQuery($sql);
