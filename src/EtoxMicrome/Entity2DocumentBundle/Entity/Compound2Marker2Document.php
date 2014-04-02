@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Compound2Marker2Document
  *
- * @ORM\Table(indexes={ @ORM\Index(name="compound2Marker2Document_sentenceId_index", columns={"""sentenceId"""}), @ORM\Index(name="compound2Marker2Document_compound_index", columns={"""compoundName"""}), @ORM\Index(name="compound2Marker2Document_liverMarkerName_index", columns={"""liverMarkerName"""}) } )
+ * @ORM\Table(indexes={ @ORM\Index(name="compound2Marker2Document_sentenceId_index", columns={"""sentenceId"""}), @ORM\Index(name="compound2Marker2Document_compound_index", columns={"""compoundName"""}), @ORM\Index(name="compound2Marker2Document_liverMarkerName_index", columns={"""liverMarkerName"""}), @ORM\Index(name="compound2marker2document_document_id", columns={"document_id"}), @ORM\Index(name="compound2marker2document_relation_score", columns={"""relationScore"""}), @ORM\Index(name="compound2marker2document_relation_type", columns={"""relationType"""}) } )
  * @ORM\Entity(repositoryClass="EtoxMicrome\Entity2DocumentBundle\Entity\Compound2Marker2DocumentRepository")
  */
 class Compound2Marker2Document
@@ -28,6 +28,13 @@ class Compound2Marker2Document
      */
 
     private $sentenceId;
+
+     /**
+     * @ORM\ManyToOne(targetEntity="EtoxMicrome\DocumentBundle\Entity\Document", inversedBy="compound2marker2document")
+     * @ORM\JoinColumn(name="document_id", referencedColumnName="id")
+     */
+
+    private $document;
 
     /**
      * @var string
@@ -131,6 +138,23 @@ class Compound2Marker2Document
     public function getSentenceId()
     {
         return $this->sentenceId;
+    }
+
+    /**
+     * Set document
+     */
+    public function setDocument(\EtoxMicrome\DocumentBundle\Entity\Document $document)
+    {
+        $this->document = $document;
+        return $this;
+    }
+
+    /**
+     * Get document
+     */
+    public function getDocument()
+    {
+        return $this->document;
     }
 
     /**

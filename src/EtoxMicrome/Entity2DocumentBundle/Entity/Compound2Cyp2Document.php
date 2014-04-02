@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Compound2Cyp2Document
  *
- * @ORM\Table(indexes={ @ORM\Index(name="compound2cyp2document_sentenceId_index", columns={"""sentenceId"""}), @ORM\Index(name="compound2Cyp2Document_compound_name_index", columns={"""compoundName"""}), @ORM\Index(name="compound2Cyp2Document_cyp_index", columns={"""cypsMention"""}) } )
+ * @ORM\Table(indexes={ @ORM\Index(name="compound2cyp2document_sentenceId_index", columns={"""sentenceId"""}), @ORM\Index(name="compound2Cyp2Document_compound_name_index", columns={"""compoundName"""}), @ORM\Index(name="compound2Cyp2Document_cyp_index", columns={"""cypsMention"""}), @ORM\Index(name="compound2cyp2document_document_id", columns={"document_id"}), @ORM\Index(name="compound2cyp2document_inhibition", columns={"""inhibitionScore"""}), @ORM\Index(name="compound2cyp2document_induction", columns={"""inductionScore"""}), @ORM\Index(name="compound2cyp2document_metabolism", columns={"""metabolismScore"""}), @ORM\Index(name="compound2cyp2document_svm_inhibition", columns={"""svmInhibition"""}), @ORM\Index(name="compound2cyp2document_svm_induction", columns={"""svmInduction"""}), @ORM\Index(name="compound2cyp2document_svm_metabolism", columns={"""svmMetabolism"""}) } )
  * @ORM\Entity(repositoryClass="EtoxMicrome\Entity2DocumentBundle\Entity\Compound2Cyp2DocumentRepository")
  */
 class Compound2Cyp2Document
@@ -28,6 +28,13 @@ class Compound2Cyp2Document
      */
 
     private $sentenceId;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="EtoxMicrome\DocumentBundle\Entity\Document", inversedBy="compound2cyp2document")
+     * @ORM\JoinColumn(name="document_id", referencedColumnName="id")
+     */
+
+    private $document;
 
     /**
      * @var string
@@ -179,6 +186,23 @@ class Compound2Cyp2Document
     public function getSentenceId()
     {
         return $this->sentenceId;
+    }
+
+    /**
+     * Set document
+     */
+    public function setDocument(\EtoxMicrome\DocumentBundle\Entity\Document $document)
+    {
+        $this->document = $document;
+        return $this;
+    }
+
+    /**
+     * Get document
+     */
+    public function getDocument()
+    {
+        return $this->document;
     }
 
     /**

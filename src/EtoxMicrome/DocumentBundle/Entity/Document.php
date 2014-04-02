@@ -150,7 +150,20 @@ class Document
      **/
     private $hepKeywordTermVariant2document;
 
+    /**
+     * @ORM\OneToMany(targetEntity="EtoxMicrome\Entity2DocumentBundle\Entity\Compound2Term2Document", mappedBy="document")
+     **/
+    private $compound2term2document;
 
+    /**
+     * @ORM\OneToMany(targetEntity="EtoxMicrome\Entity2DocumentBundle\Entity\Compound2Cyp2Document", mappedBy="document")
+     **/
+    private $compound2cyp2document;
+
+    /**
+     * @ORM\OneToMany(targetEntity="EtoxMicrome\Entity2DocumentBundle\Entity\Compound2Marker2Document", mappedBy="document")
+     **/
+    private $compound2marker2document;
 
     /**
     * Constructor de la clase
@@ -161,6 +174,9 @@ class Document
         $this->specie2document = new \Doctrine\Common\Collections\ArrayCollection();
         $this->hepKeywordTermNorm2document = new \Doctrine\Common\Collections\ArrayCollection();
         $this->hepKeywordTermVariant2document = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->compound2term2document = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->compound2cyp2document = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->compound2marker2document = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -624,6 +640,69 @@ class Document
     public function getHepKeywordTermVariant2document()
     {
         return $this->hepKeywordTermVariant2document;
+    }
+
+    /**
+     * Set Compound2Term2Document
+     *
+     * @return integer
+     */
+    public function setCompound2Term2Document($compound2term2document)
+    {
+        $this->compound2term2document =$compound2term2document;
+        return $this;
+    }
+
+    /**
+     * Get compound2Term2Document
+     *
+     * @return integer
+     */
+    public function getCompound2Term2Document()
+    {
+        return $this->compound2term2document;
+    }
+
+    /**
+     * Set Compound2Cyp2Document
+     *
+     * @return integer
+     */
+    public function setCompound2Cyp2Document($compound2cyp2document)
+    {
+        $this->compound2cyp2document =$compound2cyp2document;
+        return $this;
+    }
+
+    /**
+     * Get compound2Cyp2Document
+     *
+     * @return integer
+     */
+    public function getCompound2Cyp2Document()
+    {
+        return $this->compound2cyp2document;
+    }
+
+    /**
+     * Set Compound2Marker2Document
+     *
+     * @return integer
+     */
+    public function setCompound2Marker2Document($compound2marker2document)
+    {
+        $this->compound2marker2document =$compound2marker2document;
+        return $this;
+    }
+
+    /**
+     * Get compound2Marker2Document
+     *
+     * @return integer
+     */
+    public function getCompound2Marker2Document()
+    {
+        return $this->compound2marker2document;
     }
 
     /**

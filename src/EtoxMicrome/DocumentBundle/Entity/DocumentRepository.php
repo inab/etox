@@ -68,4 +68,19 @@ class DocumentRepository extends EntityRepository
         $consulta->setMaxResults(1);
         return $consulta->execute();
     }
+
+    public function getDocumentFromSentenceId($sentenceId)
+    {
+        //Function to search a document given the unique sentenceId parameter
+        $em = $this->getEntityManager();
+        $consulta = $em->createQuery('
+            SELECT d
+            FROM EtoxMicromeDocumentBundle:Document d
+            WHERE d.sentenceId = :sentenceId
+        ');
+        $consulta->setParameter('sentenceId', $sentenceId);
+        $consulta->setMaxResults(1);
+        $arrayDocument=$consulta->execute();
+        return $arrayDocument[0];
+    }
 }

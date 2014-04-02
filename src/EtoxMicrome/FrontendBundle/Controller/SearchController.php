@@ -10,6 +10,25 @@ use Symfony\Component\HttpFoundation\Response;
 
 class SearchController extends Controller
 {
+    public function getOrderBy($orderBy, $valToSearch)
+    {
+        switch ($orderBy) {
+            case "score":
+                $orderBy=$valToSearch;
+                break;
+            case "pattern":
+                $orderBy="patternCount";
+                break;
+            case "rule":
+                $orderBy="ruleScore";
+                break;
+            case "term":
+                $orderBy="hepTermVarScore";
+                break;
+        }
+        return $orderBy;
+    }
+
     public function getValToSearch($field)
     {
         switch ($field) {
@@ -67,7 +86,7 @@ class SearchController extends Controller
 
     public function performIntersectionArrayDocuments($arrayDocuments_1, $arrayDocuments_2)
     {
-        //This function receives two arrays of objects with different types, documentsWithCompounds and documentsWithCytochromes
+        //This function receives two arrays of objects with different types, documentsWithCompounds and documentswithcytochromes
         //Returns an array with the intersection based in the id of each document
         $message="inside performIntersectionArrayDocuments";
 
@@ -83,12 +102,17 @@ class SearchController extends Controller
         //We create an array with the ids of the second array: $arrayIds
         $arrayIds=array();
         foreach($arrayDocuments_2 as $document){
-            array_push($arrayIds, $document->getSentenceId());
+            $arraySource=$document->getSource();
+            $sentenceId=$arraySource['sentenceId'];
+            array_push($arrayIds, $sentenceId);
         }
         //Now we iterate over the first array and if an id exists inside $arrayIds it will take part of the intersection array
         foreach($arrayDocuments_1 as $document){
-            $documentId=$document->getSentenceId();
-            if(in_array($documentId, $arrayIds)){
+            $arraySource=$document->getSource();
+            $sentenceId=$arraySource['sentenceId'];
+            if(in_array($sentenceId, $arrayIds)){
+                //$em = $this->getDoctrine()->getManager();
+                //$document=$em->getRepository('EtoxMicromeDocumentBundle:Document')->getDocumentFromSentenceId($sentenceId);
                 array_push($intersectionArray, $document);
             }
         }
@@ -668,7 +692,6 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
             ///  We prepare a elasticsearch and use the search/keyword interface////////////////////
             ////////////////////////////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////////////////////////////
-
             $elasticaQueryString  = new \Elastica\Query\QueryString();
             //'And' or 'Or' default : 'Or'
             $elasticaQueryString->setDefaultOperator('AND');
@@ -681,38 +704,43 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
             $elasticaQuery->setSize($this->container->getParameter('etoxMicrome.total_documents_elasticsearch_retrieval'));
             if($whatToSearch=="any"){
                 if($entityType=="CompoundDict"){
-                    //We have to make a free search against elastica documentsWithCompounds and abstractsWithCompounds index
-                    $finder = $this->container->get('fos_elastica.finder.etoxindex.abstractsWithCompounds');
-                    $finderDoc = $this->container->get('fos_elastica.finder.etoxindex.documentsWithCompounds');
-                    /** We get resultSet to get values for summary**/
-                    $abstractsInfo = $this->container->get('fos_elastica.index.etoxindex.abstractsWithCompounds');
-                    $resultSetAbstracts = $abstractsInfo->search($elasticaQuery);
-                    $arrayAbstracts=$finder->find($elasticaQuery);
-                    $arrayResultsAbs = $paginator
-                        ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), 'abstracts')
-                        ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), 'abstracts')
-                        ->paginate($arrayAbstracts,'abstracts')
-                        ->getResult()
-                    ;
-                    $documentsInfo = $this->container->get('fos_elastica.index.etoxindex.documentsWithCompounds');
-                    $resultSetDocuments = $documentsInfo->search($elasticaQuery);
-                    $arrayDocuments=$finderDoc->find($elasticaQuery);
-                    $arrayResultsDoc = $paginator
-                        ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), 'documents')
-                        ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), 'documents')
-                        ->paginate($arrayDocuments,'documents')
-                        ->getResult()
-                    ;
+                     if ($source=="abstract"){
+                        $abstractsInfo = $this->container->get('fos_elastica.index.etoxindex2.abstractswithcompounds');/** To get resultSet to get values for summary**/
+                        $resultSetAbstracts = $abstractsInfo->search($elasticaQuery);
+                        $arrayAbstracts=$resultSetAbstracts->getResults();
+                        $finderDoc=false;
+                        $resultSetDocuments = array();
+                        $arrayResultsAbs = $paginator
+                            ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), 'abstracts')
+                            ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), 'abstracts')
+                            ->paginate($arrayAbstracts,'abstracts')
+                            ->getResult()
+                        ;
+                        $arrayResultsDoc= array();
+                     }else{
+                        $documentsInfo = $this->container->get('fos_elastica.index.etoxindex2.documentswithcompounds');/** To get resultSet to get values for summary**/
+                        $resultSetDocuments = $documentsInfo->search($elasticaQuery);
+                        $arrayDocuments=$resultSetDocuments->getResults();//$results has an array of results objects, data can be obtained by the getSource metho
+                        //$finderDoc = $this->container->get('fos_elastica.finder.etoxindex2.documentswithmarkers');
+                        //$arrayDocuments=$finderDoc->find($elasticaQuery);
+                        $arrayResultsDoc = $paginator
+                            ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), 'documents')
+                            ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), 'documents')
+                            ->paginate($arrayDocuments,'documents')
+                            ->getResult()
+                        ;
+                        $finder = false;
+                        $resultSetAbstracts = array();//There is no abstractsWithCytochromes nor abstractsWithMarkers information in the database
+                        $arrayResultsAbs=array();
+                     }
                 }
                 if($entityType=="Cytochrome"){
-                    //We have to make a free search against elastica documentsWithCytochromes indexes
                     $finder = false;
-                    $finderDoc = $this->container->get('fos_elastica.finder.etoxindex.documentsWithCytochromes');
-                    $resultSetAbstracts = false;
-                    $arrayResultsAbs =array();
-                    $documentsInfo = $this->container->get('fos_elastica.index.etoxindex.documentsWithCytochromes');
+                    $resultSetAbstracts = array();//There is no abstractsWithCytochromes nor abstractsWithMarkers information in the database
+                    $arrayResultsAbs=array();
+                    $documentsInfo = $this->container->get('fos_elastica.index.etoxindex2.documentswithcytochromes');/** To get resultSet to get values for summary**/
                     $resultSetDocuments = $documentsInfo->search($elasticaQuery);
-                    $arrayDocuments=$finderDoc->find($elasticaQuery);
+                    $arrayDocuments=$resultSetDocuments->getResults();//$results has an array of results objects, data can be obtained by the getSource method
                     $arrayResultsDoc = $paginator
                         ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), 'documents')
                         ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), 'documents')
@@ -721,14 +749,13 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                     ;
                 }
                 if($entityType=="Marker"){
-                    //We have to make a free search against elastica documentsWithMarkers indexes
+                    //We have to make a free search against elastica documentswithmarkers indexes
                     $finder = false;
-                    $finderDoc = $this->container->get('fos_elastica.finder.etoxindex.documentsWithMarkers');
-                    $resultSetAbstracts = false;
-                    $arrayResultsAbs =array();
-                    $documentsInfo = $this->container->get('fos_elastica.index.etoxindex.documentsWithMarkers');
+                    $resultSetAbstracts = array();//There is no abstractsWithCytochromes nor abstractsWithMarkers information in the database
+                    $arrayResultsAbs=array();
+                    $documentsInfo = $this->container->get('fos_elastica.index.etoxindex2.documentswithmarkers');/** To get resultSet to get values for summary**/
                     $resultSetDocuments = $documentsInfo->search($elasticaQuery);
-                    $arrayDocuments=$finderDoc->find($elasticaQuery);
+                    $arrayDocuments=$resultSetDocuments->getResults();//$results has an array of results objects, data can be obtained by the getSource method
                     $arrayResultsDoc = $paginator
                         ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), 'documents')
                         ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), 'documents')
@@ -738,18 +765,22 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                 }
             }elseif($whatToSearch=="withCompounds"){
                 if($entityType=="Cytochrome"){
-                    //We have to make a free search against the intersection of documentsWithCompounds with documentsWithCytochromes
+                    //We have to make a free search against the intersection of documentswithcompounds with documentswithcytochromes
                     //In order to perform the intersection we change the size of the results
                     $elasticaQuery->setSize(1500);
                     $finder = false;
-                    $finderDocWithCompounds = $this->container->get('fos_elastica.finder.etoxindex.documentsWithCompounds');
-                    $finderDocWithCytochromes = $this->container->get('fos_elastica.finder.etoxindex.documentsWithCytochromes');
+
+                    $documentsInfo = $this->container->get('fos_elastica.index.etoxindex2.documentswithcompounds');/** To get resultSet to get values for summary**/
+                    $resultSetDocuments = $documentsInfo->search($elasticaQuery);
+                    $arrayDocumentsWithCompounds=$resultSetDocuments->getResults();//$results has an array of results objects, data can be obtained by the getSource metho
+
+                    $finderDocWithCytochromes = $this->container->get('fos_elastica.index.etoxindex2.documentswithcytochromes');
+                    $resultSetDocWithCytochromes = $finderDocWithCytochromes->search($elasticaQuery);
+                    $arrayDocumentsWithCytochromes=$resultSetDocWithCytochromes->getResults();//$results has an array of results objects, data can be obtained by the getSource method
+
                     $resultSetAbstracts = false;
                     $arrayResultsAbs =array();
-                    $documentsInfo = $this->container->get('fos_elastica.index.etoxindex.documentsWithCompounds');
-                    $resultSetDocuments = $documentsInfo->search($elasticaQuery);
-                    $arrayDocumentsWithCompounds=$finderDocWithCompounds->find($elasticaQuery);
-                    $arrayDocumentsWithCytochromes=$finderDocWithCytochromes->find($elasticaQuery);
+
                     $arrayDocumentsIntersection=$this->performIntersectionArrayDocuments($arrayDocumentsWithCompounds, $arrayDocumentsWithCytochromes);
                     $arrayResultsDoc = $paginator
                         ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), 'documents')
@@ -761,18 +792,17 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                     $elasticaQuery->setSize($this->container->getParameter('etoxMicrome.total_documents_elasticsearch_retrieval'));
                 }
                 if($entityType=="Marker"){
-                    //We have to make a free search against the intersection of documentsWithCompounds with documentsWithMarkers
+                    //We have to make a free search against the intersection of documentswithcompounds with documentswithmarkers
                     //In order to perform the intersection we change the size of the results
                     $elasticaQuery->setSize(1500);
                     $finder = false;
-                    $finderDocWithCompounds = $this->container->get('fos_elastica.finder.etoxindex.documentsWithCompounds');
-                    $finderDocWithMarkers = $this->container->get('fos_elastica.finder.etoxindex.documentsWithMarkers');
+                    $finderDocWithCompounds = $this->container->get('fos_elastica.index.etoxindex2.documentswithcompounds');
+                    $finderDocWithMarkers = $this->container->get('fos_elastica.index.etoxindex2.documentswithmarkers');
                     $resultSetAbstracts = false;
                     $arrayResultsAbs =array();
-                    $documentsInfo = $this->container->get('fos_elastica.index.etoxindex.documentsWithMarkers');
-                    $resultSetDocuments = $documentsInfo->search($elasticaQuery);
-                    $arrayDocumentsWithCompounds=$finderDocWithCompounds->find($elasticaQuery);
-                    $arrayDocumentsWithMarkers=$finderDocWithMarkers->find($elasticaQuery);
+                    $arrayDocumentsWithCompounds = $finderDocWithCompounds->search($elasticaQuery);
+                    $resultSetDocuments=$arrayDocumentsWithCompounds;////// WARNING!! DELETE THIS LINE
+                    $arrayDocumentsWithMarkers=$finderDocWithMarkers->search($elasticaQuery);
                     $arrayDocumentsIntersection=$this->performIntersectionArrayDocuments($arrayDocumentsWithCompounds, $arrayDocumentsWithMarkers);
                     $arrayResultsDoc = $paginator
                         ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), 'documents')
@@ -785,18 +815,21 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                 }
             }elseif($whatToSearch=="withCytochromes"){
                 if($entityType=="CompoundDict"){
-                    //We have to make a free search against the intersection of documentsWithCompounds with documentsWithCytochromes
+                    //We have to make a free search against the intersection of documentswithcompounds with documentswithcytochromes
                     //In order to perform the intersection we change the size of the results
                     $elasticaQuery->setSize(1500);
                     $finder = false;
-                    $finderDocWithCompounds = $this->container->get('fos_elastica.finder.etoxindex.documentsWithCompounds');
-                    $finderDocWithCytochromes = $this->container->get('fos_elastica.finder.etoxindex.documentsWithCytochromes');
                     $resultSetAbstracts = false;
                     $arrayResultsAbs =array();
-                    $documentsInfo = $this->container->get('fos_elastica.index.etoxindex.documentsWithCompounds');
+
+                    $documentsInfo = $this->container->get('fos_elastica.index.etoxindex2.documentswithcompounds');
                     $resultSetDocuments = $documentsInfo->search($elasticaQuery);
-                    $arrayDocumentsWithCompounds=$finderDocWithCompounds->find($elasticaQuery);
-                    $arrayDocumentsWithCytochromes=$finderDocWithCytochromes->find($elasticaQuery);
+                    $arrayDocumentsWithCompounds=$resultSetDocuments->getResults();//$results has an array of results objects, data can be obtained by the getSource method
+
+                    $finderDocWithCytochromes = $this->container->get('fos_elastica.index.etoxindex2.documentswithcytochromes');
+                    $resultSetCytochromes = $finderDocWithCytochromes->search($elasticaQuery);
+                    $arrayDocumentsWithCytochromes=$resultSetCytochromes->getResults();//$results has an array of results objects, data can be obtained by the getSource method
+
                     $arrayDocumentsIntersection=$this->performIntersectionArrayDocuments($arrayDocumentsWithCompounds, $arrayDocumentsWithCytochromes);
                     $arrayResultsDoc = $paginator
                         ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), 'documents')
@@ -809,19 +842,21 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                 }
             }elseif($whatToSearch=="withMarkers"){
                 if($entityType=="CompoundDict"){
-                    //We have to make a free search against the intersection of documentsWithCompounds with documentsWithCytochromes
+                    //We have to make a free search against the intersection of documentswithcompounds with documentswithcytochromes
                     //In order to perform the intersection we change the size of the results
                     $elasticaQuery->setSize(1500);
                     $finder = false;
-                    $finderDocWithCompounds = $this->container->get('fos_elastica.finder.etoxindex.documentsWithCompounds');
-                    $finderDocWithMarkers = $this->container->get('fos_elastica.finder.etoxindex.documentsWithMarkers');
                     $resultSetAbstracts = false;
                     $arrayResultsAbs =array();
-                    $documentsInfo = $this->container->get('fos_elastica.index.etoxindex.documentsWithCompounds');
+                    $documentsInfo = $this->container->get('fos_elastica.index.etoxindex2.documentswithcompounds');
                     $resultSetDocuments = $documentsInfo->search($elasticaQuery);
-                    $arrayDocumentsWithCompounds=$finderDocWithCompounds->find($elasticaQuery);
-                    $arrayDocumentsWithMarkers=$finderDocWithMarkers->find($elasticaQuery);
-                    $arrayDocumentsIntersection=$this->performIntersectionArrayDocuments($arrayDocumentsWithCompounds, $arrayDocumentsWithMarkers);
+                    $arrayDocumentsWithCompounds=$resultSetDocuments->getResults();//$results has an array of results objects, data can be obtained by the getSource method
+
+                    $finderDocWithCytochromes = $this->container->get('fos_elastica.index.etoxindex2.documentswithmarkers');
+                    $resultSetCytochromes = $finderDocWithCytochromes->search($elasticaQuery);
+                    $arrayDocumentsWithCytochromes=$resultSetCytochromes->getResults();//$results has an array of results objects, data can be obtained by the getSource method
+
+                    $arrayDocumentsIntersection=$this->performIntersectionArrayDocuments($arrayDocumentsWithCompounds, $arrayDocumentsWithCytochromes);
                     $arrayResultsDoc = $paginator
                         ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), 'documents')
                         ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), 'documents')
@@ -859,19 +894,33 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                 }
                 $arrayEntityName=array();
                 array_push($arrayEntityName, $entityName);
-                $arrayEntity2Document = $paginator
-                    ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "documents")
-                    ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "documents")
-                    ->paginate($em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getCompound2Term2DocumentFromFieldDQL($field, $entityType, $arrayEntityName), 'documents')
-                    ->getResult()
-                ;
-                $arrayEntity2Abstract = $paginator
-                    ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "abstracts")
-                    ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "abstracts")
-                    ->paginate($em->getRepository('EtoxMicromeEntity2AbstractBundle:Entity2Abstract')->getCompound2Term2DocumentFromFieldDQL($field, "CompoundMesh", $arrayEntityName), 'abstracts')
-                    ->getResult()
-                ;
-                return $this->render('FrontendBundle:Search_document:indexRelations.html.twig', array(
+                if($source=="abstract"){
+                    $arrayEntity2Abstract = $paginator
+                        ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "abstracts")
+                        ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "abstracts")
+                        ->paginate($em->getRepository('EtoxMicromeEntity2AbstractBundle:Entity2Abstract')->getCompound2Term2DocumentFromFieldDQL($field, "CompoundMesh", $arrayEntityName), 'abstracts')
+                        ->getResult()
+                    ;
+                    return $this->render('FrontendBundle:Search_document:indexRelations.html.twig', array(
+                    'field' => $field,
+                    'whatToSearch' => $whatToSearch,
+                    'entityType' => $entityType,
+                    'source' => $source,
+                    'entity' => $entity,
+                    'entityBackup' => $entityBackup,
+                    'arrayEntity2Abstract' => $arrayEntity2Abstract,
+                    'entityName' => $entityName,
+                    'orderBy' => $orderBy,
+                ));
+                }
+                else{
+                    $arrayEntity2Document = $paginator
+                        ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "documents")
+                        ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "documents")
+                        ->paginate($em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getCompound2TermRelationsDQL($field, $entityType, $arrayEntityName, $orderBy), 'documents')
+                        ->getResult()
+                    ;
+                    return $this->render('FrontendBundle:Search_document:indexRelations.html.twig', array(
                     'field' => $field,
                     'whatToSearch' => $whatToSearch,
                     'entityType' => $entityType,
@@ -879,9 +928,10 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                     'entity' => $entity,
                     'entityBackup' => $entityBackup,
                     'arrayEntity2Document' => $arrayEntity2Document,
-                    'arrayEntity2Abstract' => $arrayEntity2Abstract,
                     'entityName' => $entityName,
+                    'orderBy' => $orderBy,
                 ));
+                }
             }
         }elseif($whatToSearch=="compoundsCytochromesRelations"){
             if($entityType=="Cytochrome"){
@@ -894,6 +944,7 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                         'entityType' => $entityType,
                         'entity' => $entityBackup,
                         'entityName' => $entityName,
+                        'orderBy' => $orderBy,
                     ));
                 }
                 $arrayEntityName=array();
@@ -901,13 +952,7 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                 $arrayEntity2Document = $paginator
                     ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "documents")
                     ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "documents")
-                    ->paginate($em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getCompound2Cytochrome2DocumentFromFieldDQL($field, $entityType, $arrayEntityName), 'documents')
-                    ->getResult()
-                ;
-                $arrayEntity2Abstract = $paginator
-                    ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "abstracts")
-                    ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "abstracts")
-                    ->paginate($em->getRepository('EtoxMicromeEntity2AbstractBundle:Entity2Abstract')->getCompound2Cytochrome2DocumentFromFieldDQL($field, "CompoundMesh", $arrayEntityName), 'abstracts')
+                    ->paginate($em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getCompound2Cytochrome2RelationsDQL($field, $entityType, $arrayEntityName, $orderBy), 'documents')
                     ->getResult()
                 ;
                 return $this->render('FrontendBundle:Search_document:indexRelations.html.twig', array(
@@ -918,8 +963,8 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                     'entity' => $entity,
                     'entityBackup' => $entityBackup,
                     'arrayEntity2Document' => $arrayEntity2Document,
-                    'arrayEntity2Abstract' => $arrayEntity2Abstract,
                     'entityName' => $entityName,
+                    'orderBy' => $orderBy,
                 ));
             }
         }elseif($whatToSearch=="compoundsMarkersRelations"){
@@ -941,13 +986,7 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                 $arrayEntity2Document = $paginator
                     ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "documents")
                     ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "documents")
-                    ->paginate($em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getCompound2Marker2DocumentFromFieldDQL($field, $entityType, $arrayEntityName), 'documents')
-                    ->getResult()
-                ;
-                $arrayEntity2Abstract = $paginator
-                    ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "abstracts")
-                    ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "abstracts")
-                    ->paginate($em->getRepository('EtoxMicromeEntity2AbstractBundle:Entity2Abstract')->getCompound2Marker2DocumentFromFieldDQL($field, "CompoundMesh", $arrayEntityName), 'abstracts')
+                    ->paginate($em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getCompound2MarkerRelationsDQL($field, $entityType, $arrayEntityName, $orderBy), 'documents')
                     ->getResult()
                 ;
                 return $this->render('FrontendBundle:Search_document:indexRelations.html.twig', array(
@@ -958,8 +997,8 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                     'entity' => $entity,
                     'entityBackup' => $entityBackup,
                     'arrayEntity2Document' => $arrayEntity2Document,
-                    'arrayEntity2Abstract' => $arrayEntity2Abstract,
                     'entityName' => $entityName,
+                    'orderBy' => $orderBy,
                 ));
             }
         }
@@ -1008,7 +1047,12 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
             $arrayNames=array_unique($arrayNames);//We get rid of the duplicates
             $arrayCanonicals=array_unique($arrayCanonicals);//We get rid of the duplicates
 
-            $arrayEntity2Document = $paginator->paginate($em->getRepository('EtoxMicromeEntity2DocumentBundle:Cytochrome2Document')->getCytochrome2DocumentFromFieldDQL($field, $entityType, $arrayNames, $arrayCanonicals, $source, $orderBy))->getResult();
+            $arrayEntity2Document = $paginator
+                ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "documents")
+                ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "documents")
+                ->paginate($em->getRepository('EtoxMicromeEntity2DocumentBundle:Cytochrome2Document')->getCytochrome2DocumentFromFieldDQL($field, $entityType, $arrayNames, $arrayCanonicals, $source, $orderBy), 'documents')
+                ->getResult()
+            ;
 
         }else
         { //For Compounds and Markers
@@ -1044,7 +1088,7 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                 //Search on the index.
                 $elasticaQuery->setSize($this->container->getParameter('etoxMicrome.total_documents_elasticsearch_retrieval'));
                 ld($elasticaQuery);
-                $finder = $this->container->get('fos_elastica.finder.etoxindex.entity2document');
+                $finder = $this->container->get('fos_elastica.finder.etoxindex2.entity2document');
                 $arrayResult = $finder->find($elasticaQuery);
                 ldd(count($arrayResult));
 
@@ -1147,35 +1191,12 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
         }else {
             $page=null;
         }
-
+        $paginator = $this->get('ideup.simple_paginator');
         $field = $this->container->getParameter('etoxMicrome.default_field');//{"hepatotoxicity","embryotoxicity", etc...}
-        $searchInto=$this->container->getParameter('etoxMicrome.default_searchInto');//{"abstract","document"}
+        $valToSearch=$this->getValToSearch($field);//"i.e hepval, embval... etc"
+        $orderBy=$this->getOrderBy($orderBy, $valToSearch);
         $entityType= "keyword";//{"specie","compound","enzyme","protein","cyp","mutation","goterm","keyword","marker"}
         //$whatToSearch can be "any", "withCompounds", "withCytochromes" or "withMarkers". We'll search inside differente Type depending on this parameter
-        if($whatToSearch=="any"){
-            $finder = $this->container->get('fos_elastica.finder.etoxindex.abstracts');
-            $finderDoc = $this->container->get('fos_elastica.finder.etoxindex.documents');
-            $abstractsInfo = $this->container->get('fos_elastica.index.etoxindex.abstracts');/** To get resultSet to get values for summary**/
-            $documentsInfo = $this->container->get('fos_elastica.index.etoxindex.documents');/** To get resultSet to get values for summary**/
-        }elseif($whatToSearch=="withCompounds"){
-            $finder = $this->container->get('fos_elastica.finder.etoxindex.abstractsWithCompounds');
-            $finderDoc = $this->container->get('fos_elastica.finder.etoxindex.documentsWithCompounds');
-            $abstractsInfo = $this->container->get('fos_elastica.index.etoxindex.abstractsWithCompounds');/** To get resultSet to get values for summary**/
-            $documentsInfo = $this->container->get('fos_elastica.index.etoxindex.documentsWithCompounds');/** To get resultSet to get values for summary**/
-        }elseif($whatToSearch=="withCytochromes"){
-            $finder = false;
-            $finderDoc = $this->container->get('fos_elastica.finder.etoxindex.documentsWithCytochromes');
-            $documentsInfo = $this->container->get('fos_elastica.index.etoxindex.documentsWithCytochromes');/** To get resultSet to get values for summary**/
-        }elseif($whatToSearch=="withMarkers"){
-            $finder = false;
-            $finderDoc = $this->container->get('fos_elastica.finder.etoxindex.documentsWithMarkers');
-            $documentsInfo = $this->container->get('fos_elastica.index.etoxindex.documentsWithMarkers');/** To get resultSet to get values for summary**/
-        }
-
-        $paginator = $this->get('ideup.simple_paginator');
-        //$paginator->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'));
-        //$paginator->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'));
-
         $elasticaQueryString  = new \Elastica\Query\QueryString();
         //'And' or 'Or' default : 'Or'
         $elasticaQueryString->setDefaultOperator('AND');
@@ -1183,39 +1204,133 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
 
         // Create the actual search object with some data.
         $elasticaQuery  = new \Elastica\Query();
-        $elasticaQuery->setSort(array('hepval' => array('order' => 'desc')));
+
+
+        if($orderBy=="hepval"){
+            $elasticaQuery->setSort(array('hepval' => array('order' => 'desc')));
+        }elseif($orderBy=="patternScore"){
+            $elasticaQuery->setSort(array('patternScore' => array('order' => 'desc')));
+        }elseif($orderBy=="ruleScore"){
+            $elasticaQuery->setSort(array('ruleScore' => array('order' => 'desc')));
+        }elseif($orderBy=="hepTermNormScore"){
+            $elasticaQuery->setSort(array('hepTermNormScore' => array('order' => 'desc')));
+        }elseif($orderBy=="hepTermVarScore"){
+            $elasticaQuery->setSort(array('hepTermVarScore' => array('order' => 'desc')));
+        }elseif($orderBy=="svmConfidence"){
+            $elasticaQuery->setSort(array('svmConfidence' => array('order' => 'desc')));
+        }
+
+
         $elasticaQuery->setQuery($elasticaQueryString);
         //Search on the index.
         $elasticaQuery->setSize($this->container->getParameter('etoxMicrome.total_documents_elasticsearch_retrieval'));
 
-        /** var Elastica\ResultSet */
-        if($whatToSearch=="withCytochromes" or $whatToSearch=="withMarkers"){
-            $resultSetAbstracts = array();//There is no abstractsWithCytochromes nor abstractsWithMarkers information in the database
-        }else{
-            $resultSetAbstracts = $abstractsInfo->search($elasticaQuery);
-        }
+        if($whatToSearch=="any"){
+            //Depending on the source, we will search into documents or abstracts...
+            if ($source=="abstract"){
+                $abstractsInfo = $this->container->get('fos_elastica.index.etoxindex2.abstracts');/** To get resultSet to get values for summary**/
+                $resultSetAbstracts = $abstractsInfo->search($elasticaQuery);
+                $arrayAbstracts=$resultSetAbstracts->getResults();
+                $arrayResultsAbs = $paginator
+                    ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), 'abstracts')
+                    ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), 'abstracts')
+                    ->paginate($arrayAbstracts,'abstracts')
+                    ->getResult()
+                ;
+                $finderDoc=false;
+                $resultSetDocuments = array();
+                $arrayResultsDoc = array();
 
-        $resultSetDocuments = $documentsInfo->search($elasticaQuery);
-        if($whatToSearch=="withCytochromes" or $whatToSearch=="withMarkers"){
-            $arrayResultsAbs=array();//There is no abstractsWithCytochromes nor abstractsWithMarkers information in the database
-        }else{
-            $arrayAbstracts=$finder->find($elasticaQuery);
-            $arrayResultsAbs = $paginator
-                ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), 'abstracts')
-                ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), 'abstracts')
-                ->paginate($arrayAbstracts,'abstracts')
+            }else{ //For "pubmed", "fulltext", "nda", "epar" and "all"
+                $documentsInfo = $this->container->get('fos_elastica.index.etoxindex2.documents');/** To get resultSet to get values for summary**/
+                $resultSetDocuments = $documentsInfo->search($elasticaQuery);
+                $arrayDocuments=$resultSetDocuments->getResults();//$results has an array of results objects, data can be obtained by the getSource method
+                $arrayResultsDoc = $paginator
+                    ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), 'documents')
+                    ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), 'documents')
+                    ->paginate($arrayDocuments,'documents')
+                    ->getResult()
+                ;
+                $finder=false;
+                $resultSetAbstracts = array();
+                $arrayResultsAbs = array();
+            }
+
+
+        }elseif($whatToSearch=="withCompounds"){
+            //Depending on the source, we will search into documents or abstracts...
+            if ($source=="abstract"){
+                $abstractsInfo = $this->container->get('fos_elastica.index.etoxindex2.abstractswithcompounds');/** To get resultSet to get values for summary**/
+                $resultSetAbstracts = $abstractsInfo->search($elasticaQuery);
+                $arrayAbstracts=$resultSetAbstracts->getResults();
+                $arrayResultsAbs = $paginator
+                    ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), 'abstracts')
+                    ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), 'abstracts')
+                    ->paginate($arrayAbstracts,'abstracts')
+                    ->getResult()
+                ;
+                $finderDoc=false;
+                $resultSetDocuments = array();
+                $arrayResultsDoc = array();
+            }else{ //For "pubmed", "fulltext", "nda", "epar" and "all"
+                $documentsInfo = $this->container->get('fos_elastica.index.etoxindex2.documentswithcompounds');/** To get resultSet to get values for summary**/
+                $resultSetDocuments = $documentsInfo->search($elasticaQuery);
+                $arrayDocuments=$resultSetDocuments->getResults();//$results has an array of results objects, data can be obtained by the getSource method
+                $arrayResultsDoc = $paginator
+                    ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), 'documents')
+                    ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), 'documents')
+                    ->paginate($arrayDocuments,'documents')
+                    ->getResult()
+                ;
+                /*$finderDoc = $this->container->get('fos_elastica.finder.etoxindex2.documentswithcompounds');
+                $arrayDocuments=$finderDoc->find($elasticaQuery);
+                ldd($arrayDocuments);
+                $arrayResultsDoc = $paginator
+                    ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), 'documents')
+                    ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), 'documents')
+                    ->paginate($arrayDocuments,'documents')
+                    ->getResult()
+                ;
+                $documentsInfo = $this->container->get('fos_elastica.index.etoxindex2.documentswithcompounds');/** To get resultSet to get values for summary**/
+                //$resultSetDocuments = $documentsInfo->search($elasticaQuery);
+                $finder=false;
+                $resultSetAbstracts = array();
+                $arrayResultsAbs = array();
+            }
+        }elseif($whatToSearch=="withCytochromes"){
+            //We only search inside documents
+            $finder = false;
+            $resultSetAbstracts = array();//There is no abstractsWithCytochromes nor abstractsWithMarkers information in the database
+            $arrayResultsAbs=array();
+            $documentsInfo = $this->container->get('fos_elastica.index.etoxindex2.documentswithcytochromes');/** To get resultSet to get values for summary**/
+            $resultSetDocuments = $documentsInfo->search($elasticaQuery);
+            $arrayDocuments=$resultSetDocuments->getResults();//$results has an array of results objects, data can be obtained by the getSource method
+            $arrayResultsDoc = $paginator
+                ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), 'documents')
+                ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), 'documents')
+                ->paginate($arrayDocuments,'documents')
+                ->getResult()
+            ;
+
+        }elseif($whatToSearch=="withMarkers"){
+            //We only search inside documents
+            $finder = false;
+            $resultSetAbstracts = array();//There is no abstractsWithCytochromes nor abstractsWithMarkers information in the database
+            $arrayResultsAbs=array();
+            $documentsInfo = $this->container->get('fos_elastica.index.etoxindex2.documentswithmarkers');/** To get resultSet to get values for summary**/
+            $resultSetDocuments = $documentsInfo->search($elasticaQuery);
+            $arrayDocuments=$resultSetDocuments->getResults();//$results has an array of results objects, data can be obtained by the getSource method
+            $arrayResultsDoc = $paginator
+                ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), 'documents')
+                ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), 'documents')
+                ->paginate($arrayDocuments,'documents')
                 ->getResult()
             ;
 
         }
 
-        $arrayDocuments=$finderDoc->find($elasticaQuery);
-        $arrayResultsDoc = $paginator
-            ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), 'documents')
-            ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), 'documents')
-            ->paginate($arrayDocuments,'documents')
-            ->getResult()
-        ;
+        //$paginator->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'));
+        //$paginator->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'));
         $entityName=$keyword;
         return $this->render('FrontendBundle:Search_keyword:index.html.twig', array(
             'field' => $field,

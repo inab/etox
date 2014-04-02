@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Compound2Term2Document
  *
- * @ORM\Table(indexes={ @ORM\Index(name="compound2Term2Document_sentenceId_index", columns={"""sentenceId"""}), @ORM\Index(name="compound2Term2Document_compound_index", columns={"""compoundName"""}), @ORM\Index(name="compound2Term2Document_term_index", columns={"term"}) } )
+ * @ORM\Table(indexes={ @ORM\Index(name="compound2term2document_sentenceId_index", columns={"""sentenceId"""}), @ORM\Index(name="compound2term2document_compound_index", columns={"""compoundName"""}), @ORM\Index(name="compound2term2document_term_index", columns={"term"}), @ORM\Index(name="compound2term2document_document_id", columns={"document_id"}), @ORM\Index(name="compound2term2document_relation_score", columns={"""relationScore"""}) } )
  * @ORM\Entity(repositoryClass="EtoxMicrome\Entity2DocumentBundle\Entity\Compound2Term2DocumentRepository")
  */
 class Compound2Term2Document
@@ -28,6 +28,13 @@ class Compound2Term2Document
      */
 
     private $sentenceId;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="EtoxMicrome\DocumentBundle\Entity\Document", inversedBy="compound2term2document")
+     * @ORM\JoinColumn(name="document_id", referencedColumnName="id")
+     */
+
+    private $document;
 
     /**
      * @var string
@@ -81,9 +88,79 @@ class Compound2Term2Document
     /**
      * @var integer
      *
-     * @ORM\Column(name="compoundQualifier", type="integer")
+     * @ORM\Column(name="""compoundQualifier""", type="integer")
      */
     private $compoundQualifier;
+
+     /**
+     * @var float
+     *
+     * @ORM\Column(name="hepval", type="float", nullable=true)
+     */
+    private $hepval;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="cardval", type="float", nullable=true)
+     */
+    private $cardval;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="nephval", type="float", nullable=true)
+     */
+    private $nephval;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="phosval", type="float", nullable=true)
+     */
+    private $phosval;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="""patternCount""", type="float", nullable=true)
+     */
+    private $patternCount;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="""ruleScore""", type="float", nullable=true)
+     */
+    private $ruleScore;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="""hepTermNormScore""", type="float", nullable=true)
+     */
+    private $hepTermNormScore;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="""hepTermVarScore""", type="float", nullable=true)
+     */
+    private $hepTermVarScore;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="""svmConfidence""", type="float", nullable=true)
+     */
+    private $svmConfidence;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="""compound2TermConfidence""", type="float", nullable=true)
+     */
+    private $compound2TermConfidence;
 
     /**
      * @var \DateTime
@@ -130,6 +207,23 @@ class Compound2Term2Document
     public function getSentenceId()
     {
         return $this->sentenceId;
+    }
+
+    /**
+     * Set document
+     */
+    public function setDocument(\EtoxMicrome\DocumentBundle\Entity\Document $document)
+    {
+        $this->document = $document;
+        return $this;
+    }
+
+    /**
+     * Get document
+     */
+    public function getDocument()
+    {
+        return $this->document;
     }
 
     /**
@@ -315,6 +409,237 @@ class Compound2Term2Document
     {
         return $this->compoundQualifier;
     }
+
+    /**
+     * Set hepval
+     *
+     * @param float $hepval
+     * @return Compound2Term2Document
+     */
+    public function setHepval($hepval)
+    {
+        $this->hepval = $hepval;
+
+        return $this;
+    }
+
+    /**
+     * Get hepval
+     *
+     * @return float
+     */
+    public function getHepval()
+    {
+        return $this->hepval;
+    }
+
+    /**
+     * Set cardval
+     *
+     * @param float $cardval
+     * @return Compound2Term2Document
+     */
+    public function setCardval($cardval)
+    {
+        $this->cardval = $cardval;
+
+        return $this;
+    }
+
+    /**
+     * Get cardval
+     *
+     * @return float
+     */
+    public function getCardval()
+    {
+        return $this->cardval;
+    }
+
+    /**
+     * Set nephval
+     *
+     * @param float $nephval
+     * @return Compound2Term2Document
+     */
+    public function setNephval($nephval)
+    {
+        $this->nephval = $nephval;
+
+        return $this;
+    }
+
+    /**
+     * Get nephval
+     *
+     * @return float
+     */
+    public function getNephval()
+    {
+        return $this->nephval;
+    }
+
+    /**
+     * Set phosval
+     *
+     * @param float $phosval
+     * @return Compound2Term2Document
+     */
+    public function setPhosval($phosval)
+    {
+        $this->phosval = $phosval;
+
+        return $this;
+    }
+
+    /**
+     * Get phosval
+     *
+     * @return float
+     */
+    public function getPhosval()
+    {
+        return $this->phosval;
+    }
+
+    /**
+     * Set patternCount
+     *
+     * @param float $patternCount
+     * @return Compound2Term2Document
+     */
+    public function setPatternCount($patternCount)
+    {
+        $this->patternCount = $patternCount;
+
+        return $this;
+    }
+
+    /**
+     * Get patternCount
+     *
+     * @return float
+     */
+    public function getPatternCount()
+    {
+        return $this->patternCount;
+    }
+
+    /**
+     * Set ruleScore
+     *
+     * @param float $ruleScore
+     * @return Compound2Term2Document
+     */
+    public function setRuleScore($ruleScore)
+    {
+        $this->ruleScore = $ruleScore;
+
+        return $this;
+    }
+
+    /**
+     * Get ruleScore
+     *
+     * @return float
+     */
+    public function getRuleScore()
+    {
+        return $this->ruleScore;
+    }
+
+    /**
+     * Set hepTermNormScore
+     *
+     * @param float $hepTermNormScore
+     * @return Compound2Term2Document
+     */
+    public function setHepTermNormScore($hepTermNormScore)
+    {
+        $this->hepTermNormScore = $hepTermNormScore;
+
+        return $this;
+    }
+
+    /**
+     * Get hepTermNormScore
+     *
+     * @return float
+     */
+    public function getHepTermNormScore()
+    {
+        return $this->hepTermNormScore;
+    }
+
+    /**
+     * Set hepTermVarScore
+     *
+     * @param float $hepTermVarScore
+     * @return Compound2Term2Document
+     */
+    public function setHepTermVarScore($hepTermVarScore)
+    {
+        $this->hepTermVarScore = $hepTermVarScore;
+
+        return $this;
+    }
+
+    /**
+     * Get hepTermVarScore
+     *
+     * @return float
+     */
+    public function getHepTermVarScore()
+    {
+        return $this->hepTermVarScore;
+    }
+
+    /**
+     * Set svmConfidence
+     *
+     * @param float $svmConfidence
+     * @return Compound2Term2Document
+     */
+    public function setSvmConfidence($svmConfidence)
+    {
+        $this->svmConfidence = $svmConfidence;
+
+        return $this;
+    }
+
+    /**
+     * Get svmConfidence
+     *
+     * @return float
+     */
+    public function getSvmConfidence()
+    {
+        return $this->svmConfidence;
+    }
+
+    /**
+     * Set compound2TermConfidence
+     *
+     * @param float $compound2TermConfidence
+     * @return Compound2Term2Document
+     */
+    public function setCompound2TermConfidence($compound2TermConfidence)
+    {
+        $this->compound2TermConfidence = $compound2TermConfidence;
+
+        return $this;
+    }
+
+    /**
+     * Get compound2TermConfidence
+     *
+     * @return float
+     */
+    public function getCompound2TermConfidence()
+    {
+        return $this->compound2TermConfidence;
+    }
+
 
     /**
      * Set created

@@ -24,6 +24,7 @@ class UtilityExtension extends \Twig_Extension
     {
         return array(
         'highlightEntitiesDocuments' => new \Twig_Filter_Method($this, 'highlightEntitiesDocuments'),
+        'highlightEntitiesDocumentsKeywords' => new \Twig_Filter_Method($this, 'highlightEntitiesDocumentsKeywords'),
         'highlightEntitiesAbstracts' => new \Twig_Filter_Method($this, 'highlightEntitiesAbstracts'),
         'highlightKeywordText' => new \Twig_Filter_Method($this, 'highlightKeywordText'),
         'colorCodingScore' => new \Twig_Filter_Method($this, 'colorCodingScore'),
@@ -86,6 +87,14 @@ class UtilityExtension extends \Twig_Extension
 
     }
 
+    public function highlightEntitiesDocumentsKeywords($text,$sentenceId,$entityBackup, $field, $whatToSearch, $source, $entityType, $tooltipCounter)
+    {
+        $em=$this->doctrine->getManager();
+        $document=$em->getRepository('EtoxMicromeDocumentBundle:Document')->getDocumentFromSentenceId($sentenceId);
+        $arrayReturn=$this->highlightEntitiesDocuments($text,$document,$entityBackup, $field, $whatToSearch, $source, $entityType, $tooltipCounter);
+        return $arrayReturn;
+    }
+
     public function highlightEntitiesDocuments($text,$document,$entityBackup, $field, $whatToSearch, $source, $entityType, $tooltipCounter)
     {
         //This function should return an array with both, $array[0] = the text highlighted, $array[1] = the html for the divs containing the sticky tooltips and $array[2] = the tooltipCounter number
@@ -110,7 +119,6 @@ class UtilityExtension extends \Twig_Extension
             $document = $document[0];
         }
 
-
         /*
         Here starts the algorithm.
             What we do is create an array from the text and keep track of the positions of this array that have been already hihglighted (using arrayHightlighted) because
@@ -127,7 +135,6 @@ class UtilityExtension extends \Twig_Extension
 
         //With arrayHepKeywordTermVariant2Document we can highlight Hepatotoxicity Terms
         $arrayHepKeywordTermVariant2Document = $em->getRepository('EtoxMicromeEntity2DocumentBundle:HepKeywordTermVariant2Document')->findHepKeywordTermVariant2Document($document);
-
         foreach ($arrayHepKeywordTermVariant2Document as $term2Document){
             $entityName=$term2Document->getTermVariant();
             //ld($entityName);
@@ -253,7 +260,6 @@ class UtilityExtension extends \Twig_Extension
 
         //With arrayCytochrome2Document we can highlight Cytochromes
         $arrayCytochrome2Document = $em->getRepository('EtoxMicromeEntity2DocumentBundle:Cytochrome2Document')->findCytochrome2DocumentFromDocument($document);
-        //ld($arrayCytochrome2Document);
 
         foreach ($arrayCytochrome2Document as $cytochrome2Document){
             $entityName=$cytochrome2Document->getCypsMention();
@@ -272,7 +278,8 @@ class UtilityExtension extends \Twig_Extension
                         $text=$arrayText[$place];
                         $text = str_ireplace($entityName, '<mark class="cytochrome">'.$entityName.'</mark>', $text);
                         $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($cytochrome2DocumentId,"Cytochrome");
-                        $link=$this->generator->generate('search_interface_search_field_whatToSearch_entityType_source_entity', array('field' => $field, 'whatToSearch' => $whatToSearch, 'entityType' => 'Cytochrome', 'source' => $source, 'entityName' => $entityName,));
+                        $entityNameUrlEncoded=urlencode($entityName);
+                        $link=$this->generator->generate('search_interface_search_field_whatToSearch_entityType_source_entity', array('field' => $field, 'whatToSearch' => $whatToSearch, 'entityType' => 'Cytochrome', 'source' => $source, 'entityName' => $entityNameUrlEncoded,));
                         $text = str_ireplace($entityName, "<span data-tooltip=\"sticky$tooltipCounter\"><a href=\"$link\">".$entityName."</a></span>", $text);
                         $mouseoverDivs=$mouseoverDivs."<div id=\"sticky$tooltipCounter\" class=\"atip\">$mouseoverSummary</div>";
 
@@ -292,7 +299,8 @@ class UtilityExtension extends \Twig_Extension
                             $text=$arrayText[$place];
                             $text = str_ireplace($arrayEntityName[0], '<mark class="cytochrome">'.$arrayEntityName[0], $text);
                             $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($cytochrome2DocumentId,"Cytochrome");
-                            $link=$this->generator->generate('search_interface_search_field_whatToSearch_entityType_source_entity', array('field' => $field, 'whatToSearch' => $whatToSearch, 'entityType' => 'Cytochrome', 'source' => $source, 'entityName' => $entityName, ));
+                            $entityNameUrlEncoded=urlencode($entityName);
+                            $link=$this->generator->generate('search_interface_search_field_whatToSearch_entityType_source_entity', array('field' => $field, 'whatToSearch' => $whatToSearch, 'entityType' => 'Cytochrome', 'source' => $source, 'entityName' => $entityNameUrlEncoded, ));
                             $text = str_ireplace($arrayEntityName[0], "<span data-tooltip=\"sticky$tooltipCounter\"><a href=\"$link\">".$arrayEntityName[0], $text);
                             $mouseoverDivs=$mouseoverDivs."<div id=\"sticky$tooltipCounter\" class=\"atip\">$mouseoverSummary</div>";
 
@@ -321,7 +329,8 @@ class UtilityExtension extends \Twig_Extension
                         $text=$arrayText[$place];
                         $text = str_ireplace($entityBackup, '<mark class="termSearched">'.$entityBackup.'</mark>', $text);
                         $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($cytochrome2DocumentId,"Cytochrome");
-                        $link=$this->generator->generate('search_interface_search_field_whatToSearch_entityType_source_entity', array('field' => $field, 'whatToSearch' => $whatToSearch, 'entityType' => 'Cytochrome', 'source' => $source, 'entityName' => $entityName, ));
+                        $entityNameUrlEncoded=urlencode($entityName);
+                        $link=$this->generator->generate('search_interface_search_field_whatToSearch_entityType_source_entity', array('field' => $field, 'whatToSearch' => $whatToSearch, 'entityType' => 'Cytochrome', 'source' => $source, 'entityName' => $entityNameUrlEncoded, ));
                         $text = str_ireplace($entityBackup, "<span data-tooltip=\"sticky$tooltipCounter\"><a href=\"$link\">".$entityBackup."</a></span>", $text);
                         $mouseoverDivs=$mouseoverDivs."<div id=\"sticky$tooltipCounter\" class=\"atip\">$mouseoverSummary</div>";
 
@@ -339,7 +348,8 @@ class UtilityExtension extends \Twig_Extension
                             $text=$arrayText[$place];
                             $text = str_ireplace($arrayEntityName[0], '<mark class="termSearched">'.$arrayEntityName[0], $text);
                             $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($cytochrome2DocumentId,"Cytochrome");
-                            $link=$this->generator->generate('search_interface_search_field_whatToSearch_entityType_source_entity', array('field' => $field, 'whatToSearch' => $whatToSearch, 'entityType' => 'Cytochrome', 'source' => $source, 'entityName' => $entityName, ));
+                            $entityNameUrlEncoded=urlencode($entityName);
+                            $link=$this->generator->generate('search_interface_search_field_whatToSearch_entityType_source_entity', array('field' => $field, 'whatToSearch' => $whatToSearch, 'entityType' => 'Cytochrome', 'source' => $source, 'entityName' => $entityNameUrlEncoded, ));
                             $text = str_ireplace($arrayEntityName[0], "<span data-tooltip=\"sticky$tooltipCounter\"><a href=\"$link\">".$arrayEntityName[0], $text);
                             $mouseoverDivs=$mouseoverDivs."<div id=\"sticky$tooltipCounter\" class=\"atip\">$mouseoverSummary</div>";
 
@@ -490,17 +500,15 @@ class UtilityExtension extends \Twig_Extension
 
         //With arrayEntity2Document we can highlight CompoundDict, Marker and Specie
         $arrayEntity2Document = $em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->findEntity2DocumentFromDocument($document);
-        //ld($arrayEntity2Document);
         foreach ($arrayEntity2Document as $entity2Document){
             $entityName=$entity2Document->getName();
-            //ld($entityName);
+            $entityNameUrlEncoded=urlencode($entityName);
             $qualifier=$entity2Document->getQualifier();
             $entity2DocumentId=$entity2Document->getId();
             //If the name==entityBackup, we don't do anything, we'll change it at the end
             if (strcasecmp($entityName, $entityBackup) != 0) {
                 //sustituimos en el text
                 //ld($entityName);
-                //ld($qualifier);
                 switch ($qualifier) {
                     case 'Marker':
                         $numberWords=str_word_count($entityName, 0, '0..9()=-');
@@ -513,6 +521,7 @@ class UtilityExtension extends \Twig_Extension
                                 array_push($arrayHighlighted, $place);
                                 $text=$arrayText[$place];
                                 $text = str_ireplace($entityName, '<mark class="marker">'.$entityName.'</mark>', $text);
+                                $entityNameUrlEncoded=urlencode($entityName);
                                 $url = $this->generator->generate(
                                     'search_interface_search_field_whatToSearch_entityType_source_entity',
                                     array(
@@ -520,7 +529,7 @@ class UtilityExtension extends \Twig_Extension
                                         'whatToSearch' => $whatToSearch,
                                         'entityType' => "marker",
                                         'source' => $source,
-                                        'entityName' => $entityName,
+                                        'entityName' => $entityNameUrlEncoded,
                                     )
                                 );
                                 $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($entity2DocumentId, "Marker");
@@ -542,6 +551,7 @@ class UtilityExtension extends \Twig_Extension
                                     $arrayEntityName=str_word_count($entityName, 1, '0..9()=-');
                                     //We mark the first
                                     $text=$arrayText[$place];
+                                    $entityNameUrlEncoded=urlencode($entityName);
                                     $url = $this->generator->generate(
                                         'search_interface_search_field_whatToSearch_entityType_source_entity',
                                         array(
@@ -549,7 +559,7 @@ class UtilityExtension extends \Twig_Extension
                                             'whatToSearch' => $whatToSearch,
                                             'entityType' => "marker",
                                             'source' => $source,
-                                            'entityName' => $entityName,
+                                            'entityName' => $entityNameUrlEncoded,
                                         )
                                     );
                                     $text = str_ireplace($arrayEntityName[0], '<mark class="marker">'.$arrayEntityName[0], $text);
@@ -626,7 +636,6 @@ class UtilityExtension extends \Twig_Extension
                         break;
                     case 'CompoundDict':
                         $alert="entra en CompoundDict";
-                        //ld($alert);
 
                         $numberWords=str_word_count($entityName, 0, '0..9()=-');
                         //ld($numberWords);
@@ -638,6 +647,7 @@ class UtilityExtension extends \Twig_Extension
                                 array_push($arrayHighlighted, $place);
                                 $text=$arrayText[$place];
                                 $text = str_ireplace($entityName, '<mark class="compound">'.$entityName.'</mark>', $text);
+                                $entityNameUrlEncoded=urlencode($entityName);
                                 $url = $this->generator->generate(
                                     'search_interface_search_field_whatToSearch_entityType_source_entity',
                                     array(
@@ -645,7 +655,7 @@ class UtilityExtension extends \Twig_Extension
                                         'whatToSearch' => $whatToSearch,
                                         'entityType' => "compoundDict",
                                         'source' => $source,
-                                        'entityName' => $entityName,
+                                        'entityName' => $entityNameUrlEncoded,
                                     )
                                 );
                                 $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($entity2DocumentId, "CompoundDict");
@@ -662,6 +672,7 @@ class UtilityExtension extends \Twig_Extension
                             $place=$this->findPlaceSeveralWords($entityName,$arrayText,$arrayHighlighted);
                             if($place!=-1){
                                 //There is a place to make the highlight, starting at $place and finishing at $numberEntityName=str_word_count($entityName, 0);
+                                $entityNameUrlEncoded=urlencode($entityName);
                                 $url = $this->generator->generate(
                                     'search_interface_search_field_whatToSearch_entityType_source_entity',
                                     array(
@@ -669,7 +680,7 @@ class UtilityExtension extends \Twig_Extension
                                         'whatToSearch' => $whatToSearch,
                                         'entityType' => "compoundDict",
                                         'source' => $source,
-                                        'entityName' => $entityName,
+                                        'entityName' => $entityNameUrlEncoded,
                                     )
                                 );
                                 $numberEntityName=str_word_count($entityName, 0, '0..9()=-');
@@ -718,6 +729,7 @@ class UtilityExtension extends \Twig_Extension
                         }elseif($entityType=="Specie"){
                             $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($entity2DocumentId,"Specie");
                         }
+                        $entityNameUrlEncoded=urlencode($entityBackup);
                         $url = $this->generator->generate(
                             'search_interface_search_field_whatToSearch_entityType_source_entity',
                             array(
@@ -725,7 +737,7 @@ class UtilityExtension extends \Twig_Extension
                                 'whatToSearch' => $whatToSearch,
                                 'entityType' => "compoundDict",
                                 'source' => $source,
-                                'entityName' => $entityBackup,
+                                'entityName' => $entityNameUrlEncoded,
                             )
                         );
                         $text = str_ireplace($entityBackup, "<span data-tooltip=\"sticky$tooltipCounter\"><a href=\"$url\">".$entityBackup."</a></span>", $text);
@@ -754,6 +766,7 @@ class UtilityExtension extends \Twig_Extension
                                 $text = str_ireplace($arrayEntityName[0], '<mark class="termSearched">'.$arrayEntityName[0], $text);
                                 $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($entity2DocumentId,"Specie");
                             }
+                            $entityNameUrlEncoded=urlencode($entityBackup);
                             $url = $this->generator->generate(
                                 'search_interface_search_field_whatToSearch_entityType_source_entity',
                                 array(
@@ -761,7 +774,7 @@ class UtilityExtension extends \Twig_Extension
                                     'whatToSearch' => $whatToSearch,
                                     'entityType' => "compoundDict",
                                     'source' => $source,
-                                    'entityName' => $entityBackup,
+                                    'entityName' => $entityNameUrlEncoded,
                                 )
                             );
                             $text = str_ireplace($arrayEntityName[0], "<span data-tooltip=\"sticky$tooltipCounter\"><a href=\"$url\">".$arrayEntityName[0], $text);
@@ -799,15 +812,16 @@ class UtilityExtension extends \Twig_Extension
         //ld($entityBackup);
         $em=$this->doctrine->getManager();
         //We need all the entities involved in the same document
-        $className=$abstract->getClassName();
-        //ld($className);
-        if($className=="Abstracts"){
+        $className=$abstract->getType();
+        //ldd($className);
+        if($className=="abstracts"){
             //We do nothing, in this case $abstract is already a Abstracts
-        }elseif($className=="AbstractWithCompound"){
-            $abstract = $em->getRepository('EtoxMicromeDocumentBundle:Abstracts')->getAbstractFromAbstractWith($abstract);
+        }elseif($className=="abstractswithcompounds"){
+            $arrayAbstract=$abstract->getSource();
+            $pmid=$arrayAbstract['pmid'];
+            $abstract = $em->getRepository('EtoxMicromeDocumentBundle:Abstracts')->getAbstractFromPmid($pmid);
             $abstract = $abstract[0];
         }
-
 
         /*
         Here starts the algorithm.
@@ -822,11 +836,8 @@ class UtilityExtension extends \Twig_Extension
 
         $arrayText=str_word_count($text, 1, '0..9()=-');
         $arrayHighlighted=array();
-
-
         $arrayEntity2Abstract = $em->getRepository('EtoxMicromeEntity2AbstractBundle:Entity2Abstract')->findEntity2AbstractFromAbstract($abstract);
         foreach ($arrayEntity2Abstract as $entity2Abstract){
-
             $entityName=$entity2Abstract->getName();//We get the name
             $qualifier=$entity2Abstract->getQualifier();
             $entity2AbstractId=$entity2Abstract->getId();
@@ -836,8 +847,7 @@ class UtilityExtension extends \Twig_Extension
                 //sustituimos en el text
                 switch ($qualifier) {
                     case 'Marker':
-                        $alert="entra en Marker";
-                        //ld($alert);
+                        $alert="inside Marker";
                         $numberWords=str_word_count($entityName, 0, '0..9()=-');
                         //ld($numberWords);
                         if($numberWords==1){
@@ -848,6 +858,7 @@ class UtilityExtension extends \Twig_Extension
                                 array_push($arrayHighlighted, $place);
                                 $text=$arrayText[$place];
                                 $text = str_ireplace($entityName, '<mark class="marker">'.$entityName.'</mark>', $text);
+                                $entityNameUrlEncoded=urlencode($entityName);
                                 $url = $this->generator->generate(
                                     'search_interface_search_field_whatToSearch_entityType_source_entity',
                                     array(
@@ -855,7 +866,7 @@ class UtilityExtension extends \Twig_Extension
                                         'whatToSearch' => $whatToSearch,
                                         'entityType' => "marker",
                                         'source' => $source,
-                                        'entityName' => $entityName,
+                                        'entityName' => $entityNameUrlEncoded,
                                     )
                                 );
                                 $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2AbstractBundle:Entity2Abstract')->getEntitySummary($entity2AbstractId, "Marker");
@@ -897,9 +908,8 @@ class UtilityExtension extends \Twig_Extension
                         //ld($text);
                         break;
                     case 'Specie':
-                        $alert="entra en Specie";
+                        $alert="inside Specie";
                         $numberWords=str_word_count($entityName, 0, '0..9()=-');
-                        //ld($alert);
                         if($numberWords==1){
                             //We search a possible place/s for the highlight iterating over the arrayText taking into account the arrayHighlighted positions already highlighted
                             $arrayPlaces=$this->findPlaceSingleWord($entityName,$arrayText,$arrayHighlighted);
@@ -946,7 +956,7 @@ class UtilityExtension extends \Twig_Extension
                         //ld($text);
                         break;
                     case 'CompoundDict' or 'CompoundMesh':
-                        $alert="entra en CompoundDict";
+                        $alert="inside CompoundDict";
                         $numberWords=str_word_count($entityName, 0, '0..9()=-');
                         //ld($numberWords);
                         if($numberWords==1){
@@ -960,6 +970,7 @@ class UtilityExtension extends \Twig_Extension
                                 //ld($text);
                                 $text = str_ireplace($entityName, '<mark class="compound">'.$entityName.'</mark>', $text);
                                 //ld($text);
+                                $entityNameUrlEncoded=urlencode($entityName);
                                 $url = $this->generator->generate(
                                     'search_interface_search_field_whatToSearch_entityType_source_entity',
                                     array(
@@ -967,7 +978,7 @@ class UtilityExtension extends \Twig_Extension
                                         'whatToSearch' => $whatToSearch,
                                         'entityType' => "compoundDict",
                                         'source' => $source,
-                                        'entityName' => $entityName,
+                                        'entityName' => $entityNameUrlEncoded,
                                     )
                                 );
                                 $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2AbstractBundle:Entity2Abstract')->getEntitySummary($entity2AbstractId, "CompoundDict");
@@ -984,6 +995,7 @@ class UtilityExtension extends \Twig_Extension
                             $place=$this->findPlaceSeveralWords($entityName,$arrayText,$arrayHighlighted);
                             if($place!=-1){
                                 //There is a place to make the highlight, starting at $place and finishing at $numberEntityName=str_word_count($entityName, 0);
+                                $entityNameUrlEncoded=urlencode($entityName);
                                 $url = $this->generator->generate(
                                     'search_interface_search_field_whatToSearch_entityType_source_entity',
                                     array(
@@ -991,7 +1003,7 @@ class UtilityExtension extends \Twig_Extension
                                         'whatToSearch' => $whatToSearch,
                                         'entityType' => "compoundDict",
                                         'source' => $source,
-                                        'entityName' => $entityName,
+                                        'entityName' => $entityNameUrlEncoded,
                                     )
                                 );
                                 $numberEntityName=str_word_count($entityName, 0, '0..9()=-');
@@ -1001,7 +1013,7 @@ class UtilityExtension extends \Twig_Extension
                                     $text=$arrayText[$place];
                                     $text = str_ireplace($arrayEntityName[0], '<mark class="compound">'.$arrayEntityName[0], $text);
                                     $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2AbstractBundle:Entity2Abstract')->getEntitySummary($entity2AbstractId,"CompoundDict");
-                                    $text = str_ireplace($arrayEntityName[0], "<span data-tooltip=\"sticky$tooltipCounter\">".$mouseoverSummary."'><a href='$url'>".$arrayEntityName[0], $text);
+                                    $text = str_ireplace($arrayEntityName[0], "<span data-tooltip=\"sticky$tooltipCounter\"><a href='$url'>".$arrayEntityName[0], $text);
                                     $arrayText[$place]=$text;
                                     $mouseoverDivs=$mouseoverDivs."<div id=\"sticky$tooltipCounter\" class=\"atip\">$mouseoverSummary</div>";
                                     $tooltipCounter=$tooltipCounter+1;
@@ -1022,7 +1034,7 @@ class UtilityExtension extends \Twig_Extension
             }else{
                 //We haven't changed color for entityBackup case insensitive search of entities. We change it now.
                 //$text = str_ireplace($entityBackup, '<mark class="termSearched">'.$entityBackup.'</mark>', $text);
-                $message="entra aqui";
+                $message="inside entityBackup highlight";
                 $numberWords=str_word_count($entityName, 0, '0..9()=-');
                 if($numberWords==1){
                     $arrayPlaces=$this->findPlaceSingleWord($entityName,$arrayText,$arrayHighlighted);

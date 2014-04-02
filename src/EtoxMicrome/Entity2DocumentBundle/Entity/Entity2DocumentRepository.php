@@ -80,7 +80,6 @@ class Entity2DocumentRepository extends EntityRepository
             $query = $this->_em->createQuery($sql);
             $query->setParameter("arrayEntityName", $arrayEntityName);
             $query->setParameter('entityType', $entityType);
-            $query->setMaxResults(10);
         }else{
             $sql="SELECT e2d,d
                 FROM EtoxMicromeEntity2DocumentBundle:Entity2Document e2d
@@ -97,7 +96,6 @@ class Entity2DocumentRepository extends EntityRepository
             $query->setParameter("arrayEntityName", $arrayEntityName);
             $query->setParameter('entityType', $entityType);
             $query->setParameter('source', $source);
-            $query->setMaxResults(10);
         }
         /*
         $rawSql = $query->getSql();
@@ -110,19 +108,20 @@ class Entity2DocumentRepository extends EntityRepository
     }
 
 
-    public function getCompound2Term2DocumentFromField($field, $typeOfEntity, $arrayEntityName)
+    public function getCompound2Term2DocumentFromField($field, $typeOfEntity, $arrayEntityName, $orderBy)
     {
-        return $this->getCompound2Term2DocumentFromFieldDQL($field, $typeOfEntity, $arrayEntityName)->getResult();
+        return $this->getCompound2Term2DocumentFromFieldDQL($field, $typeOfEntity, $arrayEntityName, $orderBy)->getResult();
     }
 
-    public function getCompound2Term2DocumentFromFieldDQL($field, $entityType, $arrayEntityName)
+    public function getCompound2Term2DocumentFromFieldDQL($field, $entityType, $arrayEntityName, $orderBy)
     {//("hepatotoxicity","pubmed","CompoundDict",arrayEntityId)
         $valToSearch=$this->getValToSearch($field);//"i.e hepval, embval... etc"
         //We have to create a query that searchs all over the entityIds inside the $arrayEntityId
+        $orderBy=$this->getOrderBy($orderBy, $valToSearch);
         $sql="SELECT c2t2d
             FROM EtoxMicromeEntity2DocumentBundle:Compound2Term2Document c2t2d
-            WHERE c2t2d.compound IN (:arrayEntityName)
-            ORDER BY c2t2d.relationScore desc, c2t2d.relationType
+            WHERE c2t2d.compoundName IN (:arrayEntityName)
+            ORDER BY c2t2d.$orderBy desc
             ";
 
         $query = $this->_em->createQuery($sql);
@@ -131,20 +130,79 @@ class Entity2DocumentRepository extends EntityRepository
 
     }
 
-    public function getCompound2Cytochrome2DocumentFromField($field, $typeOfEntity, $arrayEntityName)
+    public function getCompound2TermRelations($field, $typeOfEntity, $arrayEntityName, $orderBy)
     {
-        return $this->getCompound2Cytochrome2DocumentFromFieldDQL($field, $typeOfEntity, $arrayEntityName)->getResult();
+        return $this->getCompound2TermRelationsDQL($field, $typeOfEntity, $arrayEntityName, $orderBy)->getResult();
     }
 
-    public function getCompound2Cytochrome2DocumentFromFieldDQL($field, $entityType, $arrayEntityName)
+    public function getCompound2TermRelationsDQL($field, $entityType, $arrayEntityName, $orderBy)
     {//("hepatotoxicity","pubmed","CompoundDict",arrayEntityId)
         $valToSearch=$this->getValToSearch($field);//"i.e hepval, embval... etc"
         //We have to create a query that searchs all over the entityIds inside the $arrayEntityId
+        $orderBy=$this->getOrderBy($orderBy, $valToSearch);
+        if ($orderBy=="hepval"){
+            $orderBy="relationScore";
+        }
         $sql="SELECT c2t2d
-            FROM EtoxMicromeEntity2DocumentBundle:Compound2Cyp2Document c2t2d
-            WHERE c2t2d.cyp IN (:arrayEntityName)
-            ORDER BY c2t2d.relationScore desc, c2t2d.relationType
+            FROM EtoxMicromeEntity2DocumentBundle:Compound2Term2Document c2t2d
+            WHERE c2t2d.compoundName IN (:arrayEntityName)
+            ORDER BY c2t2d.$orderBy desc, c2t2d.hepval
+            ";
 
+        $query = $this->_em->createQuery($sql);
+        $query->setParameter("arrayEntityName", $arrayEntityName);
+        return $query;
+
+    }
+
+    public function getCompound2Cytochrome2DocumentFromField($field, $typeOfEntity, $arrayEntityName, $orderBy)
+    {
+        return $this->getCompound2Cytochrome2DocumentFromFieldDQL($field, $typeOfEntity, $arrayEntityName, $orderBy)->getResult();
+    }
+
+    public function getCompound2Cytochrome2DocumentFromFieldDQL($field, $entityType, $arrayEntityName, $orderBy)
+    {//("hepatotoxicity","pubmed","CompoundDict",arrayEntityId)
+        $valToSearch=$this->getValToSearch($field);//"i.e hepval, embval... etc"
+        //We have to create a query that searchs all over the entityIds inside the $arrayEntityId
+        $orderBy=$this->getOrderBy($orderBy, $valToSearch);
+        $sql="SELECT c2c2d
+            FROM EtoxMicromeEntity2DocumentBundle:Compound2Cyp2Document c2c2d
+            WHERE c2c2d.cypsMention IN (:arrayEntityName)
+            ORDER BY c2c2d.relationQualifier desc
+
+            ";
+
+        $query = $this->_em->createQuery($sql);
+        $query->setParameter("arrayEntityName", $arrayEntityName);
+        return $query;
+
+    }
+
+    public function getCompound2Cytochrome2Relations($field, $typeOfEntity, $arrayEntityName)
+    {
+        return $this->getCompound2Cytochrome2RelationsDQL($field, $typeOfEntity, $arrayEntityName)->getResult();
+    }
+
+    public function getCompound2Cytochrome2RelationsDQL($field, $entityType, $arrayEntityName, $orderBy)
+    {//("hepatotoxicity","pubmed","CompoundDict",arrayEntityId)
+        $valToSearch=$this->getValToSearch($field);//"i.e hepval, embval... etc"
+        //We have to create a query that searchs all over the entityIds inside the $arrayEntityId
+        $orderBy=$this->getOrderBy($orderBy, $valToSearch);
+        if ($orderBy=="hepval" or $orderBy=="inductionScore"){
+            $orderBy="inductionScore";
+            $secondOrderBy="svmInduction";
+        }elseif($orderBy=="inhibitionScore"){
+            $secondOrderBy="svmInhibition";
+        }elseif($orderBy=="metabolismScore"){
+            $secondOrderBy="svmMetabolism";
+        }elseif($orderBy=="cypsMention"){
+            $secondOrderBy="svmInduction";
+        }
+        //We have to create a query that searchs all over the entityIds inside the $arrayEntityId
+        $sql="SELECT c2c2d
+            FROM EtoxMicromeEntity2DocumentBundle:Compound2Cyp2Document c2c2d
+            WHERE c2c2d.cypsMention IN (:arrayEntityName)
+            ORDER BY c2c2d.$orderBy desc, c2c2d.$secondOrderBy desc
             ";
 
         $query = $this->_em->createQuery($sql);
@@ -165,7 +223,34 @@ class Entity2DocumentRepository extends EntityRepository
         $sql="SELECT c2m2d
             FROM EtoxMicromeEntity2DocumentBundle:Compound2Marker2Document c2m2d
             WHERE c2m2d.liverMarkerName IN (:arrayEntityName)
-            ORDER BY c2m2d.relationScore desc, c2m2d.relationType
+            ORDER BY c2m2d.relationScore desc, c2m2d.relationType desc
+
+            ";
+
+        $query = $this->_em->createQuery($sql);
+        $query->setParameter("arrayEntityName", $arrayEntityName);
+        return $query;
+
+    }
+
+    public function getCompound2MarkerRelations($field, $typeOfEntity, $arrayEntityName, $orderBy)
+    {
+        return $this->getCompound2MarkerRelationsDQL($field, $typeOfEntity, $arrayEntityName, $orderBy)->getResult();
+    }
+
+
+    public function getCompound2MarkerRelationsDQL($field, $entityType, $arrayEntityName, $orderBy)
+    {//("hepatotoxicity","pubmed","CompoundDict",arrayEntityId)
+        $valToSearch=$this->getValToSearch($field);//"i.e hepval, embval... etc"
+        //We have to create a query that searchs all over the entityIds inside the $arrayEntityId
+        $orderBy=$this->getOrderBy($orderBy, $valToSearch);
+        if ($orderBy=="hepval"){
+            $orderBy="relationScore";
+        }
+        $sql="SELECT c2m2d
+            FROM EtoxMicromeEntity2DocumentBundle:Compound2Marker2Document c2m2d
+            WHERE c2m2d.liverMarkerName IN (:arrayEntityName)
+            ORDER BY c2m2d.$orderBy DESC
 
             ";
 

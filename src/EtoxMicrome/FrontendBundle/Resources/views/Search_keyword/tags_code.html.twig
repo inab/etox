@@ -26,6 +26,7 @@
 
 
 </dl>
+
 <ul class="tabs-content">
     {% if entityType=="keyword" %}
         <li class="active" id="keywordsTab">
@@ -87,7 +88,6 @@
                     {% else %}
                         {% set keywordSource = default_source %}
                     {% endif %}
-
                     {% if keywordSource=="pubmed" %}
                         <label for="radioSource"><input name="keywordSource" type="radio" id="radioKeywordSource" style="display:none;" CHECKED value="pubmed"><span class="custom radio"></span> Pubmed</label>
                     {% else %}
@@ -208,15 +208,12 @@
                 <fieldset>
                     <legend>Source:</legend>
                     {% if source is defined %}
-                        {% if source not in ["pubmed","fulltext","nda","epar"] %}
+                        {% if source not in ["all","abstract","pubmed","fulltext","nda","epar"] %}
                             {% set compoundSource = default_source %}
                         {% else %}
                             {% set compoundSource = source %}
                         {% endif %}
-                    {% else %}
-                        {% set compoundSource = default_source %}
                     {% endif %}
-
                     {% if compoundSource=="pubmed" %}
                         <label for="radioSource"><input name="compoundSource" type="radio" id="radioCompoundSource" style="display:none;" CHECKED value="pubmed"><span class="custom radio"></span> Pubmed</label>
                     {% else %}

@@ -12,10 +12,9 @@ use Doctrine\ORM\EntityRepository;
  */
 class AbstractsRepository extends EntityRepository
 {
-    public function getAbstractFromAbstractWith($abstract)
+    public function getAbstractFromPmid($pmid)
     {
         //Function to search all the entities involved in a particular sentence in order to highlight them
-        $pmid=$abstract->getPmid();
         $em = $this->getEntityManager();
         $consulta = $em->createQuery('
             SELECT a

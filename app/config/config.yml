@@ -112,17 +112,21 @@ fos_elastica:
     clients:
         default: { host: andes.cnio.es, port: 9200 }
     indexes:
-        etoxindex:
+        etoxindex2:
             client: default
             finder: ~
             types:
                 abstracts:
                     mappings:
-                        id: { boost: 1, type: integer }
                         pmid: { boost: 2, type: string }
-                        title: { boost: 3, type: string, analyzer: my_analyzer }
-                        text: { boost: 5, type: string, analyzer: my_analyzer }
-                        hepval: { boost: 3, type: float }
+                        title: { boost: 3, type: string }
+                        text: { boost: 5, type: string }
+                        hepval: { type: float }
+                        patternCount: { type: float }
+                        ruleScore: { type: float }
+                        hepTermNormScore: { type: float }
+                        hepTermVarScore: { type: float }
+                        svmConfidence: { type: float }
                     persistence:
                         driver: orm
                         model: EtoxMicrome\DocumentBundle\Entity\Abstracts
@@ -134,12 +138,19 @@ fos_elastica:
                             delete: true
                 documents:
                     mappings:
-                        id: { type: integer }
                         kind: { type: string }
-                        uid: { type: string, analyzer: my_analyzer }
-                        sentenceId: { type: string, analyzer: my_analyzer }
-                        text: { boost: 5, type: string, analyzer: my_analyzer }
+                        uid: { type: string }
+                        sentenceId: { type: string }
+                        text: { boost: 5, type: string }
                         hepval: { type: float }
+                        cardval: { type: float }
+                        nephval: { type: float }
+                        phosval: { type: float }
+                        patternCount: { type: float }
+                        ruleScore: { type: float }
+                        hepTermNormScore: { type: float }
+                        hepTermVarScore: { type: float }
+                        svmConfidence: { type: float }
                     persistence:
                         driver: orm
                         model: EtoxMicrome\DocumentBundle\Entity\Document
@@ -153,24 +164,21 @@ fos_elastica:
                             ignore_missing: true
                 entity2document:
                     mappings:
-                        id: { type: integer }
-                        document: { type: integer }
-                        name: { boost: 3, type: string, analyzer: my_analyzer }
-                        qualifier: { type: string, analyzer: my_analyzer }
-                        tagMethod: { type: string, analyzer: my_analyzer }
-                        created: { type: date, analyzer: my_analyzer }
-                        updated: { type: date, analyzer: my_analyzer }
+                        document_id: { type: integer }
+                        kind: { type: string }
+                        name: { boost: 3, type: string }
+                        qualifier: { boost: 3, type: string }
+                        tagMethod: { type: string }
                         curation: { type: integer }
-                        hepval: { boost: 3, type: float }
-                        cardval: { boost: 3, type: float }
-                        nephval: { boost: 3, type: float }
-                        phosval: { boost: 3, type: float }
-                        patternCount: { boost: 3, type: float }
-                        ruleScore: { boost: 3, type: float }
-                        hepTermNormScore: { boost: 3, type: float }
-                        hepTermVarScore: { boost: 3, type: float }
-                        hepval: { boost: 3, type: float }
-
+                        hepval: { type: float }
+                        cardval: { type: float }
+                        nephval: { type: float }
+                        phosval: { type: float }
+                        patternCount: { type: float }
+                        ruleScore: { type: float }
+                        hepTermNormScore: { type: float }
+                        hepTermVarScore: { type: float }
+                        svmConfidence: { type: float }
                     persistence:
                         driver: orm
                         model: EtoxMicrome\Entity2DocumentBundle\Entity\Entity2Document
@@ -182,14 +190,17 @@ fos_elastica:
                             delete: true
                         elastica_to_model_transformer:
                             ignore_missing: true
-
-                abstractsWithCompounds:
+                abstractswithcompounds:
                     mappings:
-                        id: { boost: 1, type: integer }
                         pmid: { boost: 2, type: string }
-                        title: { boost: 3, type: string, analyzer: my_analyzer }
-                        text: { boost: 5, type: string, analyzer: my_analyzer }
+                        title: { boost: 3, type: string }
+                        text: { boost: 5, type: string }
                         hepval: { boost: 3, type: float }
+                        patternCount: { type: float }
+                        ruleScore: { type: float }
+                        hepTermNormScore: { type: float }
+                        hepTermVarScore: { type: float }
+                        svmConfidence: { type: float }
                     persistence:
                         driver: orm
                         model: EtoxMicrome\DocumentBundle\Entity\AbstractWithCompound
@@ -201,14 +212,21 @@ fos_elastica:
                             delete: true
                         elastica_to_model_transformer:
                             ignore_missing: true
-                documentsWithCompounds:
+                documentswithcompounds:
                     mappings:
-                        id: { type: integer }
                         kind: { type: string }
-                        uid: { type: string, analyzer: my_analyzer }
-                        sentenceId: { type: string, analyzer: my_analyzer }
-                        text: { boost: 5, type: string, analyzer: my_analyzer }
+                        uid: { type: string }
+                        sentenceId: { type: string }
+                        text: { boost: 5, type: string }
                         hepval: { type: float }
+                        cardval: { type: float }
+                        nephval: { type: float }
+                        phosval: { type: float }
+                        patternCount: { type: float }
+                        ruleScore: { type: float }
+                        hepTermNormScore: { type: float }
+                        hepTermVarScore: { type: float }
+                        svmConfidence: { type: float }
                     persistence:
                         driver: orm
                         model: EtoxMicrome\DocumentBundle\Entity\DocumentWithCompound
@@ -220,14 +238,21 @@ fos_elastica:
                             delete: true
                         elastica_to_model_transformer:
                             ignore_missing: true
-                documentsWithCytochromes:
+                documentswithcytochromes:
                     mappings:
-                        id: { type: integer }
                         kind: { type: string }
-                        uid: { type: string, analyzer: my_analyzer }
-                        sentenceId: { type: string, analyzer: my_analyzer }
-                        text: { boost: 5, type: string, analyzer: my_analyzer }
+                        uid: { type: string }
+                        sentenceId: { type: string }
+                        text: { boost: 5, type: string }
                         hepval: { type: float }
+                        cardval: { type: float }
+                        nephval: { type: float }
+                        phosval: { type: float }
+                        patternCount: { type: float }
+                        ruleScore: { type: float }
+                        hepTermNormScore: { type: float }
+                        hepTermVarScore: { type: float }
+                        svmConfidence: { type: float }
                     persistence:
                         driver: orm
                         model: EtoxMicrome\DocumentBundle\Entity\DocumentWithCytochrome
@@ -239,14 +264,21 @@ fos_elastica:
                             delete: true
                         elastica_to_model_transformer:
                             ignore_missing: true
-                documentsWithMarkers:
+                documentswithmarkers:
                     mappings:
-                        id: { type: integer }
                         kind: { type: string }
-                        uid: { type: string, analyzer: my_analyzer }
-                        sentenceId: { type: string, analyzer: my_analyzer }
-                        text: { boost: 5, type: string, analyzer: my_analyzer }
+                        uid: { type: string }
+                        sentenceId: { type: string }
+                        text: { boost: 5, type: string }
                         hepval: { type: float }
+                        cardval: { type: float }
+                        nephval: { type: float }
+                        phosval: { type: float }
+                        patternCount: { type: float }
+                        ruleScore: { type: float }
+                        hepTermNormScore: { type: float }
+                        hepTermVarScore: { type: float }
+                        svmConfidence: { type: float }
                     persistence:
                         driver: orm
                         model: EtoxMicrome\DocumentBundle\Entity\DocumentWithMarker
