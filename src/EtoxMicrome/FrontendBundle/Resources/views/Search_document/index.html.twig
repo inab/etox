@@ -16,7 +16,6 @@
         {% endif %}
         {% set entityId = entity.getId %}
         {% if arrayEntity2Document is defined %}
-            {{orderBy}}
             <div id="documentsResults">
                 <a name="documents"></a>
                 {% if entityType in ["Cytochrome", "Marker"] %}
@@ -27,7 +26,7 @@
                         </div>
                     {% endif %}
                 {% endif %}
-                <h3>Ranked sentences in Documents for {{foundFor}}: {{ entityBackup }}</h3>
+                <h3>Ranked sentences in Documents for {{foundFor}}: <span class="underline">{{ entityBackup }}</span></h3>
                 <div class="btmspc-dbl">
                     <small>
                         <em>
@@ -46,24 +45,22 @@
                             >SVM
                             </a>
                         </th>
-
+                        <th>
+                            <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'svmConfidence'}) }}"  {% if orderBy == "svmConfidence"%} class="active"{% endif %}
+                            >Conf.</a>
+                        </th>
                         <th>
                             <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'pattern'}) }}" {% if orderBy == "pattern"%} class="active"{% endif %}
                             >Pattern
                             </a>
-                        </th>
-
-                        <th>
-                            <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'rule'}) }}"  {% if orderBy == "rule"%} class="active"{% endif %}
-                            >Rule</a>
                         </th>
                         <th>
                             <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'term'}) }}"  {% if orderBy == "term"%} class="active"{% endif %}
                             >Term</a>
                         </th>
                         <th>
-                            <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'svmConfidence'}) }}"  {% if orderBy == "svmConfidence"%} class="active"{% endif %}
-                            >Conf.</a>
+                            <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'rule'}) }}"  {% if orderBy == "rule"%} class="active"{% endif %}
+                            >Rule</a>
                         </th>
                         <th>Sentence</th>
                         <th>Curation</th>
@@ -122,16 +119,16 @@
                                     {{ score |raw }}
                                 </td>
                                 <td class="center">
-                                    {{ patternCount | raw }}
+                                    {{ svmConfidence |raw }}
                                 </td>
                                 <td class="center">
-                                    {{ ruleScore |raw }}
+                                    {{ patternCount | raw }}
                                 </td>
                                 <td class="center">
                                     {{ termScore |raw }}
                                 </td>
                                 <td class="center">
-                                    {{ svmConfidence |raw }}
+                                    {{ ruleScore |raw }}
                                 </td>
                                 {% set text=entity2Document.document.getText %}
                                 {% set arrayText= text | highlightEntitiesDocuments (entity2Document.document,entityBackup,field,whatToSearch, source, entityType, tooltipCounter) %}
@@ -179,7 +176,6 @@
             </div>
         {% endif %}
         {% if arrayEntity2Abstract is defined %}
-            Entra!!!!
             <div id="abstractsResults">
                 <a name="abstracts"></a>
                 {% if arrayEntity2Document is defined %}
@@ -187,7 +183,7 @@
                         <a href="#documents" id="jumpToDocuments">(View sentences)</a>
                     </div>
                 {% endif %}
-                <h3>Ranked Abstracts for {{foundFor}}: {{ entityBackup }}</h3>
+                <h3>Ranked Abstracts for {{foundFor}}: <span class="underline">{{ entityBackup }}</span></h3>
                 <div class="btmspc-dbl">
                     <small>
                         <em>
@@ -207,24 +203,22 @@
                             >SVM
                             </a>
                         </th>
-
+                        <th>
+                            <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'svmConfidence'}) }}"  {% if orderBy == "svmConfidence"%} class="active"{% endif %}
+                            >Conf.</a>
+                        </th>
                         <th>
                             <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'pattern'}) }}" {% if orderBy == "pattern"%} class="active"{% endif %}
                             >Pattern
                             </a>
-                        </th>
-
-                        <th>
-                            <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'rule'}) }}"  {% if orderBy == "rule"%} class="active"{% endif %}
-                            >Rule</a>
                         </th>
                         <th>
                             <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'term'}) }}"  {% if orderBy == "term"%} class="active"{% endif %}
                             >Term</a>
                         </th>
                         <th>
-                            <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'svmConfidence'}) }}"  {% if orderBy == "svmConfidence"%} class="active"{% endif %}
-                            >Conf.</a>
+                            <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'rule'}) }}"  {% if orderBy == "rule"%} class="active"{% endif %}
+                            >Rule</a>
                         </th>
                         <th>Sentence</th>
                         <th>Curation</th>
@@ -263,16 +257,16 @@
                                     {{ score |raw }}
                                 </td>
                                 <td class="center">
-                                    {{ patternCount | raw }}
+                                    {{ svmConfidence |raw }}
                                 </td>
                                 <td class="center">
-                                    {{ ruleScore |raw }}
+                                    {{ patternCount | raw }}
                                 </td>
                                 <td class="center">
                                     {{ termScore |raw }}
                                 </td>
                                 <td class="center">
-                                    {{ svmConfidence |raw }}
+                                    {{ ruleScore |raw }}
                                 </td>
                                  {% set text = entity2Abstract.abstracts.getText %}
                                  {% set arrayText= text | highlightEntitiesAbstracts (entity2Abstract.abstracts,entityBackup,field,whatToSearch, source, entityType, tooltipCounter) %}

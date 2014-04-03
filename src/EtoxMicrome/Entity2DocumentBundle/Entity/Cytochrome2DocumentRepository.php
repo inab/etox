@@ -64,8 +64,8 @@ class Cytochrome2DocumentRepository extends EntityRepository
         $orderBy=$this->getOrderBy($orderBy, $valToSearch);
         //ld($source);
         //ld($valToSearch);
-        ld($arrayNames);
-        ld($arrayCanonicals);
+        //ld($arrayNames);
+        //ld($arrayCanonicals);
         //$sql="SELECT e2d,d
         //    FROM EtoxMicromeEntity2DocumentBundle:Cytochrome2Document e2d
         //    JOIN e2d.document d

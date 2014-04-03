@@ -84,6 +84,12 @@ class SearchController extends Controller
         return $score;
     }
 
+    public function filter_by_source($arrayResults, $source){
+        $message="filter_by_source $source";
+        ldd($message);
+        ldd($result);
+    }
+
     public function performIntersectionArrayDocuments($arrayDocuments_1, $arrayDocuments_2)
     {
         //This function receives two arrays of objects with different types, documentsWithCompounds and documentswithcytochromes
@@ -281,7 +287,11 @@ class SearchController extends Controller
         }elseif($whatToSearch=="id"){
             //we have to search for names with this same entityId
             $dictionaryIds['name']=$entity->getName();
+        }elseif($whatToSearch=="compoundsMarkersRelations"){
+            //we have to search for names with this same entityId
+            $dictionaryIds['entityId']=$entity->getEntityId();
         }
+
 
         $arrayTmp=array();
         foreach ($dictionaryIds as $key => $value) {
@@ -294,6 +304,15 @@ class SearchController extends Controller
         }
         $arrayEntityId[]=$entity->getId();//We add the first entityId which we already know that fits.
         $arrayEntityId=array_unique($arrayEntityId);//We get rid of the duplicates
+        return $arrayEntityId;
+    }
+
+    public function queryExpansionHepatotoxKeyword($entity, $entityType, $whatToSearch){
+        //We get a HepatotoxKeyword entityType, we recover its normalyzed term and create an array with all the id with that norm term in order to search with all of them
+        $em = $this->getDoctrine()->getManager();
+        $norm=$entity->getNorm();
+        $arrayEntityId = array();
+        $arrayEntityId=$em->getRepository('EtoxMicromeEntityBundle:HepatotoxKeyword')->getIdFromGenericField("norm", $norm, $arrayEntityId);
         return $arrayEntityId;
     }
 
@@ -320,6 +339,10 @@ class SearchController extends Controller
             case "Marker":
                 //Marker query expansion
                 $arrayEntityId=$this->queryExpansionMarker($entity, $entityType, $whatToSearch);
+                break;
+            case "HepatotoxKeyword":
+                //HepatotoxKeyword query expansion
+                $arrayEntityId=$this->queryExpansionHepatotoxKeyword($entity, $entityType, $whatToSearch);
                 break;
 
 
@@ -700,6 +723,14 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
             $elasticaQuery  = new \Elastica\Query();
             $elasticaQuery->setSort(array('hepval' => array('order' => 'desc')));
             $elasticaQuery->setQuery($elasticaQueryString);
+            if ($source!="all" and $source!="abstract"){
+                $elasticaFilterBool = new \Elastica\Filter\Bool();
+                $filter1 = new \Elastica\Filter\Term();
+                $filter1->setTerm('kind', $source);
+                $elasticaFilterBool->addMust($filter1);
+                $elasticaQuery->setFilter($elasticaFilterBool);
+            }
+
             //Search on the index.
             $elasticaQuery->setSize($this->container->getParameter('etoxMicrome.total_documents_elasticsearch_retrieval'));
             if($whatToSearch=="any"){
@@ -882,6 +913,54 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
         }elseif($whatToSearch=="compoundsTermsRelations"){
             if($entityType=="CompoundDict"){
                 $entity=$em->getRepository('EtoxMicromeEntityBundle:'.$entityType)->getEntityFromName($entityName);
+                if(count($entity)==0){//If there's no results searching with the name, we search with the term....
+                    $entity=$em->getRepository('EtoxMicromeEntityBundle:HepatotoxKeyword')->getEntityFromName($entityName);
+                    if(count($entity)!=0){
+                        //We do query expansion with the term!!!
+                        $arrayEntityId=$this->queryExpansion($entity, "HepatotoxKeyword", $whatToSearch);
+                        foreach($arrayEntityId as $entityId){
+                            $entidad=$em->getRepository('EtoxMicromeEntityBundle:HepatotoxKeyword')->getEntityFromId($entityId);
+                            if($entityType=="CompoundDict"){
+                                $arrayEntityName[]=($entidad->getName());
+                            }elseif($entityType=="Marker"){
+                                $arrayEntityName[]=($entidad->getName());
+                            }
+                        }
+                        $arrayEntityName=array_unique($arrayEntityName);
+                        $arrayEntity2Document = $paginator
+                                ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "documents")
+                                ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "documents")
+                                ->paginate($em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getTerm2CompoundRelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy), 'documents')
+                                ->getResult()
+                        ;
+                        return $this->render('FrontendBundle:Search_document:indexRelations.html.twig', array(
+                            'field' => $field,
+                            'whatToSearch' => $whatToSearch,
+                            'entityType' => $entityType,
+                            'source' => $source,
+                            'entity' => $entity,
+                            'entityBackup' => $entityBackup,
+                            'arrayEntity2Document' => $arrayEntity2Document,
+                            'entityName' => $entityName,
+                            'orderBy' => $orderBy,
+                            'firstRelation' => 'HepatotoxKeyword',
+                        ));
+                    }
+                }
+                else{//normal search with compound
+                    $arrayEntityId=$this->queryExpansion($entity, $entityType, $whatToSearch);
+                    foreach($arrayEntityId as $entityId){
+                        $entidad=$em->getRepository('EtoxMicromeEntityBundle:'.$entityType)->getEntityFromId($entityId);
+                        if($entityType=="CompoundDict"){
+                            $arrayEntityName[]=($entidad->getName());
+                        }elseif($entityType=="Marker"){
+                            $arrayEntityName[]=($entidad->getName());
+                        }
+
+                    }
+                    $arrayEntityName=array_unique($arrayEntityName);//We get rid of the duplicates
+                }
+                //At this point if count(entity)==0 then there is no results:
                 if(count($entity)==0){
                     //We don't have entities. We render the template with No results
                     return $this->render('FrontendBundle:Default:no_results.html.twig', array(
@@ -892,32 +971,32 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                         'entityName' => $entityName,
                     ));
                 }
-                $arrayEntityName=array();
-                array_push($arrayEntityName, $entityName);
+                //$arrayEntityName=array();
+                //array_push($arrayEntityName, $entityName);
                 if($source=="abstract"){
                     $arrayEntity2Abstract = $paginator
                         ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "abstracts")
                         ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "abstracts")
-                        ->paginate($em->getRepository('EtoxMicromeEntity2AbstractBundle:Entity2Abstract')->getCompound2Term2DocumentFromFieldDQL($field, "CompoundMesh", $arrayEntityName), 'abstracts')
+                        ->paginate($em->getRepository('EtoxMicromeEntity2AbstractBundle:Entity2Abstract')->getCompound2Term2DocumentRelationsDQL($field, $entityType, $arrayEntityName), 'abstracts')
                         ->getResult()
                     ;
                     return $this->render('FrontendBundle:Search_document:indexRelations.html.twig', array(
-                    'field' => $field,
-                    'whatToSearch' => $whatToSearch,
-                    'entityType' => $entityType,
-                    'source' => $source,
-                    'entity' => $entity,
-                    'entityBackup' => $entityBackup,
-                    'arrayEntity2Abstract' => $arrayEntity2Abstract,
-                    'entityName' => $entityName,
-                    'orderBy' => $orderBy,
-                ));
+                        'field' => $field,
+                        'whatToSearch' => $whatToSearch,
+                        'entityType' => $entityType,
+                        'source' => $source,
+                        'entity' => $entity,
+                        'entityBackup' => $entityBackup,
+                        'arrayEntity2Document' => $arrayEntity2Abstract,
+                        'entityName' => $entityName,
+                        'orderBy' => $orderBy,
+                    ));
                 }
                 else{
                     $arrayEntity2Document = $paginator
                         ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "documents")
                         ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "documents")
-                        ->paginate($em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getCompound2TermRelationsDQL($field, $entityType, $arrayEntityName, $orderBy), 'documents')
+                        ->paginate($em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getCompound2TermRelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy), 'documents')
                         ->getResult()
                     ;
                     return $this->render('FrontendBundle:Search_document:indexRelations.html.twig', array(
@@ -936,6 +1015,45 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
         }elseif($whatToSearch=="compoundsCytochromesRelations"){
             if($entityType=="Cytochrome"){
                 $entity=$em->getRepository('EtoxMicromeEntityBundle:'.$entityType)->getEntityFromName($entityName);
+                if(count($entity)==0){//If there's no results searching with the cytochrome, we search with the compoundName!!....
+                    $entity=$em->getRepository('EtoxMicromeEntityBundle:CompoundDict')->getEntityFromName($entityName);
+                    if(count($entity)!=0){
+                        //We do query expansion with the term!!!
+                        $arrayEntityId=$this->queryExpansion($entity, "CompoundDict", $whatToSearch);
+                        foreach($arrayEntityId as $entityId){
+                            $entidad=$em->getRepository('EtoxMicromeEntityBundle:CompoundDict')->getEntityFromId($entityId);
+                            $arrayEntityName[]=($entidad->getName());
+                        }
+                        $arrayEntityName=array_unique($arrayEntityName);
+                        $arrayEntity2Document = $paginator
+                                ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "documents")
+                                ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "documents")
+                                ->paginate($em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getCytochrome2CompoundRelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy), 'documents')
+                                ->getResult()
+                        ;
+                        return $this->render('FrontendBundle:Search_document:indexRelations.html.twig', array(
+                            'field' => $field,
+                            'whatToSearch' => $whatToSearch,
+                            'entityType' => $entityType,
+                            'source' => $source,
+                            'entity' => $entity,
+                            'entityBackup' => $entityBackup,
+                            'arrayEntity2Document' => $arrayEntity2Document,
+                            'entityName' => $entityName,
+                            'orderBy' => $orderBy,
+                            'firstRelation' => 'CompoundDict',
+                        ));
+                    }
+                }
+                else{//normal search with cytochrome
+                    $arrayEntityId=$this->queryExpansion($entity, $entityType, $whatToSearch);
+                    foreach($arrayEntityId as $entityId){
+                        $entidad=$em->getRepository('EtoxMicromeEntityBundle:'.$entityType)->getEntityFromId($entityId);
+                        $arrayEntityName[]=($entidad->getName());
+                    }
+                    $arrayEntityName=array_unique($arrayEntityName);//We get rid of the duplicates
+                }
+                //At this point if count(entity)==0 then there is no results:
                 if(count($entity)==0){
                     //We don't have entities. We render the template with No results
                     return $this->render('FrontendBundle:Default:no_results.html.twig', array(
@@ -944,15 +1062,12 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                         'entityType' => $entityType,
                         'entity' => $entityBackup,
                         'entityName' => $entityName,
-                        'orderBy' => $orderBy,
                     ));
                 }
-                $arrayEntityName=array();
-                array_push($arrayEntityName, $entityName);
                 $arrayEntity2Document = $paginator
                     ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "documents")
                     ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "documents")
-                    ->paginate($em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getCompound2Cytochrome2RelationsDQL($field, $entityType, $arrayEntityName, $orderBy), 'documents')
+                    ->paginate($em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getCompound2Cytochrome2RelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy), 'documents')
                     ->getResult()
                 ;
                 return $this->render('FrontendBundle:Search_document:indexRelations.html.twig', array(
@@ -969,8 +1084,46 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
             }
         }elseif($whatToSearch=="compoundsMarkersRelations"){
             if($entityType=="Marker"){
-
                 $entity=$em->getRepository('EtoxMicromeEntityBundle:'.$entityType)->getEntityFromName($entityName);
+                if(count($entity)==0){//If there's no results searching with the cytochrome, we search with the compoundName!!....
+                    $entity=$em->getRepository('EtoxMicromeEntityBundle:CompoundDict')->getEntityFromName($entityName);
+                    if(count($entity)!=0){
+                        //We do query expansion with the term!!!
+                        $arrayEntityId=$this->queryExpansion($entity, "CompoundDict", $whatToSearch);
+                        foreach($arrayEntityId as $entityId){
+                            $entidad=$em->getRepository('EtoxMicromeEntityBundle:CompoundDict')->getEntityFromId($entityId);
+                            $arrayEntityName[]=($entidad->getName());
+                        }
+                        $arrayEntityName=array_unique($arrayEntityName);
+                        $arrayEntity2Document = $paginator
+                                ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "documents")
+                                ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "documents")
+                                ->paginate($em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getMarker2CompoundRelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy), 'documents')
+                                ->getResult()
+                        ;
+                        return $this->render('FrontendBundle:Search_document:indexRelations.html.twig', array(
+                            'field' => $field,
+                            'whatToSearch' => $whatToSearch,
+                            'entityType' => $entityType,
+                            'source' => $source,
+                            'entity' => $entity,
+                            'entityBackup' => $entityBackup,
+                            'arrayEntity2Document' => $arrayEntity2Document,
+                            'entityName' => $entityName,
+                            'orderBy' => $orderBy,
+                            'firstRelation' => 'CompoundDict',
+                        ));
+                    }
+                }
+                else{//normal search with cytochrome
+                    $arrayEntityId=$this->queryExpansion($entity, $entityType, $whatToSearch);
+                    foreach($arrayEntityId as $entityId){
+                        $entidad=$em->getRepository('EtoxMicromeEntityBundle:'.$entityType)->getEntityFromId($entityId);
+                        $arrayEntityName[]=($entidad->getName());
+                    }
+                    $arrayEntityName=array_unique($arrayEntityName);//We get rid of the duplicates
+                }
+                //At this point if count(entity)==0 then there is no results:
                 if(count($entity)==0){
                     //We don't have entities. We render the template with No results
                     return $this->render('FrontendBundle:Default:no_results.html.twig', array(
@@ -981,12 +1134,10 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                         'entityName' => $entityName,
                     ));
                 }
-                $arrayEntityName=array();
-                array_push($arrayEntityName, $entityName);
                 $arrayEntity2Document = $paginator
                     ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "documents")
                     ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "documents")
-                    ->paginate($em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getCompound2MarkerRelationsDQL($field, $entityType, $arrayEntityName, $orderBy), 'documents')
+                    ->paginate($em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getCompound2MarkerRelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy), 'documents')
                     ->getResult()
                 ;
                 return $this->render('FrontendBundle:Search_document:indexRelations.html.twig', array(
@@ -1204,8 +1355,13 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
 
         // Create the actual search object with some data.
         $elasticaQuery  = new \Elastica\Query();
-
-
+        if($source!="all" and $source!="abstract"){
+            $elasticaFilterBool = new \Elastica\Filter\Bool();
+            $filter1 = new \Elastica\Filter\Term();
+            $filter1->setTerm('kind', $source);
+            $elasticaFilterBool->addMust($filter1);
+            $elasticaQuery->setFilter($elasticaFilterBool);
+        }
         if($orderBy=="hepval"){
             $elasticaQuery->setSort(array('hepval' => array('order' => 'desc')));
         }elseif($orderBy=="patternScore"){
@@ -1251,7 +1407,7 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                     ->paginate($arrayDocuments,'documents')
                     ->getResult()
                 ;
-                $finder=false;
+                //ld($arrayResultsDoc);
                 $resultSetAbstracts = array();
                 $arrayResultsAbs = array();
             }

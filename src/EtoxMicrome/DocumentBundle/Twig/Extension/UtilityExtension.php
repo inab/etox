@@ -100,11 +100,6 @@ class UtilityExtension extends \Twig_Extension
         //This function should return an array with both, $array[0] = the text highlighted, $array[1] = the html for the divs containing the sticky tooltips and $array[2] = the tooltipCounter number
         //the parameters $field, $whatToSearch, $entityType are used to create the url to link the entities to a search of theirshelves
         $message="highlightEntitiesDocuments!!!";
-        //ld($text);
-        //ld($entityType);
-        //ld($entityBackup);
-        //ld($whatToSearch);
-        //ld($document);
         $em=$this->doctrine->getManager();
         //We need all the entities involved in the same document
         $mouseoverDivs="";
@@ -118,7 +113,6 @@ class UtilityExtension extends \Twig_Extension
             $document = $em->getRepository('EtoxMicromeDocumentBundle:Document')->getDocumentFromDocumentWith($document);
             $document = $document[0];
         }
-
         /*
         Here starts the algorithm.
             What we do is create an array from the text and keep track of the positions of this array that have been already hihglighted (using arrayHightlighted) because
@@ -135,15 +129,13 @@ class UtilityExtension extends \Twig_Extension
 
         //With arrayHepKeywordTermVariant2Document we can highlight Hepatotoxicity Terms
         $arrayHepKeywordTermVariant2Document = $em->getRepository('EtoxMicromeEntity2DocumentBundle:HepKeywordTermVariant2Document')->findHepKeywordTermVariant2Document($document);
+
         foreach ($arrayHepKeywordTermVariant2Document as $term2Document){
             $entityName=$term2Document->getTermVariant();
-            //ld($entityName);
-            //ld($entityBackup);
             //If the name==entityBackup, we don't do anything, we'll change it at the end
             $term2DocumentId=$term2Document->getId();
             if (strcasecmp($entityName, $entityBackup) != 0) {
                 $numberWords=str_word_count($entityName, 0, '0..9()=-');
-
                 if($numberWords==1){
                     //We search a possible place/s for the highlight iterating over the arrayText taking into account the arrayHighlighted positions already highlighted
                     $arrayPlaces=$this->findPlaceSingleWord($entityName,$arrayText,$arrayHighlighted);
@@ -257,7 +249,6 @@ class UtilityExtension extends \Twig_Extension
                 }
             }
         }
-
         //With arrayCytochrome2Document we can highlight Cytochromes
         $arrayCytochrome2Document = $em->getRepository('EtoxMicromeEntity2DocumentBundle:Cytochrome2Document')->findCytochrome2DocumentFromDocument($document);
 
@@ -796,7 +787,6 @@ class UtilityExtension extends \Twig_Extension
         }
         //ld($entityBackup);
         $text=implode(" ", $arrayText);
-
         $arrayReturn=array();
         $arrayReturn[0]=$text;
         $arrayReturn[1]=$mouseoverDivs;

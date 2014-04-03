@@ -17,7 +17,18 @@
                 case "keyword":
                     whatToSearch = $('input[name=keywordWhatToSearch]:checked').val();
                     entityName = $('#tags-keywords').val();
+                    entityName = entityName.trim();
                     source=$('input[name=keywordSource]:checked').val();
+                    if (whatToSearch=="withCytochromes" && source=="abstract"){
+                        alert("You cannot look for Keywords inside Abstracts containing CYPs. Use All, Pubmed, Fulltext, NDA or EPAR instead");
+                        return false;
+                    }
+
+                    if (whatToSearch=="withMarkers" && source=="abstract"){
+                        alert("You cannot look for Keywords inside Abstracts containing Markers. Use All, Pubmed, Fulltext, NDA or EPAR instead");
+                        return false;
+                    }
+
                     if(source==""){
                         alert("You have to check a source to continue");
                         return false;
@@ -35,6 +46,7 @@
                 case "compoundDict":
                     whatToSearch=$('input[name=compoundWhatToSearch]:checked').val();
                     entityName = $('#tags-compounds').val();
+                    entityName = entityName.trim();
                     source=$('input[name=compoundSource]:checked').val();
                     if(entityName==""){
                         alert("You have to type a Compound name, id or structure to continue");
@@ -44,12 +56,28 @@
                         alert("You have to check a source to continue");
                         return false;
                     }
+                    if (whatToSearch=="withCytochromes" && source=="abstract"){
+                        alert("You cannot look for compounds inside Abstracts containing CYPs. Use All, Pubmed, Fulltext, NDA or EPAR instead");
+                        return false;
+                    }
+
+                    if (whatToSearch=="withMarkers" && source=="abstract"){
+                        alert("You cannot look for compounds inside Abstracts containing Markers. Use All, Pubmed, Fulltext, NDA or EPAR instead");
+                        return false;
+                    }
+
+                    if (whatToSearch=="compoundsTermsRelations" && source=="abstract"){
+                        alert("You cannot look for compounds inside Abstracts containing terms relations. Use All, Pubmed, Fulltext, NDA or EPAR instead");
+                        return false;
+                    }
+
                     link='{{ path('search_interface_search') }}'+field+'/'+whatToSearch+'/'+entityType+'/'+source+'/'+entityName+'/';
                     $('.bigSearch').attr('href',link);
                     break;
                 case "cytochrome":
                     whatToSearch=$('input[name=cytochromeWhatToSearch]:checked').val();
                     entityName = $('#tags-cytochromes').val();
+                    entityName = entityName.trim();
                     source=$('input[name=cytochromeSource]:checked').val();
                     if(entityName==""){
                         alert("You have to type a Cytochrome name, id or canonical to continue");
@@ -64,6 +92,7 @@
                 case "marker":
                     whatToSearch=$('input[name=markerWhatToSearch]:checked').val();
                     entityName = $('#tags-markers').val();
+                    entityName = entityName.trim();
                     source=$('input[name=markerSource]:checked').val();
                     if(entityName==""){
                         alert("You have to type a Marker name, id or structure to continue");

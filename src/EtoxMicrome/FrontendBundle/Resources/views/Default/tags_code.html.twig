@@ -26,7 +26,6 @@
 
 
 </dl>
-{{ entityType }}
 <ul class="tabs-content">
     {% if entityType=="keyword" %}
         <li class="active" id="keywordsTab">
@@ -89,7 +88,11 @@
                     {% else %}
                         {% set keywordSource = default_source %}
                     {% endif %}
-
+                    {% if keywordSource=="all" %}
+                        <label for="radioSource"><input name="keywordSource" type="radio" id="radioKeywordSource" style="display:none;" CHECKED value="all"><span class="custom radio"></span> All</label>
+                    {% else %}
+                        <label for="radioSource"><input name="keywordSource" type="radio" id="radioKeywordSource" style="display:none;" value="all"><span class="custom radio"></span> All</label>
+                    {% endif %}
                     {% if keywordSource=="pubmed" %}
                         <label for="radioSource"><input name="keywordSource" type="radio" id="radioKeywordSource" style="display:none;" CHECKED value="pubmed"><span class="custom radio"></span> Pubmed</label>
                     {% else %}
@@ -109,11 +112,6 @@
                         <label for="radioSource"><input name="keywordSource" type="radio" id="radioKeywordSource" style="display:none;" CHECKED value="epar"><span class="custom radio"></span> EPAR</label>
                     {% else %}
                         <label for="radioSource"><input name="keywordSource" type="radio" id="radioKeywordSource" style="display:none;" value="epar"><span class="custom radio"></span> EPAR</label>
-                    {% endif %}
-                    {% if keywordSource=="all" %}
-                        <label for="radioSource"><input name="keywordSource" type="radio" id="radioKeywordSource" style="display:none;" CHECKED value="all"><span class="custom radio"></span> All</label>
-                    {% else %}
-                        <label for="radioSource"><input name="keywordSource" type="radio" id="radioKeywordSource" style="display:none;" value="all"><span class="custom radio"></span> All</label>
                     {% endif %}
                     <hr/>
                     {% if keywordSource=="abstract" %}
@@ -217,6 +215,11 @@
                         {% set compoundSource = default_source %}
                     {% endif %}
 
+                    {% if compoundSource=="all" %}
+                        <label for="radioSource"><input name="compoundSource" type="radio" id="radioCompoundSource" style="display:none;" CHECKED value="all"><span class="custom radio"></span> All</label>
+                    {% else %}
+                        <label for="radioSource"><input name="compoundSource" type="radio" id="radioCompoundSource" style="display:none;" value="all"><span class="custom radio"></span> All</label>
+                    {% endif %}
                     {% if compoundSource=="pubmed" %}
                         <label for="radioSource"><input name="compoundSource" type="radio" id="radioCompoundSource" style="display:none;" CHECKED value="pubmed"><span class="custom radio"></span> Pubmed</label>
                     {% else %}
@@ -236,11 +239,6 @@
                         <label for="radioSource"><input name="compoundSource" type="radio" id="radioCompoundSource" style="display:none;" CHECKED value="epar"><span class="custom radio"></span> EPAR</label>
                     {% else %}
                         <label for="radioSource"><input name="compoundSource" type="radio" id="radioCompoundSource" style="display:none;" value="epar"><span class="custom radio"></span> EPAR</label>
-                    {% endif %}
-                    {% if compoundSource=="all" %}
-                        <label for="radioSource"><input name="compoundSource" type="radio" id="radioCompoundSource" style="display:none;" CHECKED value="all"><span class="custom radio"></span> All</label>
-                    {% else %}
-                        <label for="radioSource"><input name="compoundSource" type="radio" id="radioCompoundSource" style="display:none;" value="all"><span class="custom radio"></span> All</label>
                     {% endif %}
                     <hr/>
                     {% if compoundSource=="abstract" %}
@@ -331,6 +329,11 @@
                         {% set cytochromeSource = default_source %}
                     {% endif %}
 
+                    {% if cytochromeSource=="all" %}
+                        <label for="radioSource"><input name="cytochromeSource" type="radio" id="radioCytochromeSource" style="display:none;" CHECKED value="all"><span class="custom radio"></span> All</label>
+                    {% else %}
+                        <label for="radioSource"><input name="cytochromeSource" type="radio" id="radioCytochromeSource" style="display:none;" value="all"><span class="custom radio"></span> All</label>
+                    {% endif %}
                     {% if cytochromeSource=="pubmed" %}
                         <label for="radioSource"><input name="cytochromeSource" type="radio" id="radioCytochromeSource" style="display:none;" CHECKED value="pubmed"><span class="custom radio"></span> Pubmed</label>
                     {% else %}
@@ -351,11 +354,7 @@
                     {% else %}
                         <label for="radioSource"><input name="cytochromeSource" type="radio" id="radioCytochromeSource" style="display:none;" value="epar"><span class="custom radio"></span> EPAR</label>
                     {% endif %}
-                    {% if cytochromeSource=="all" %}
-                        <label for="radioSource"><input name="cytochromeSource" type="radio" id="radioCytochromeSource" style="display:none;" CHECKED value="all"><span class="custom radio"></span> All</label>
-                    {% else %}
-                        <label for="radioSource"><input name="cytochromeSource" type="radio" id="radioCytochromeSource" style="display:none;" value="all"><span class="custom radio"></span> All</label>
-                    {% endif %}
+
                 </fieldset>
             </form>
         </div>
@@ -431,6 +430,11 @@
                         {% set markerSource = default_source %}
                     {% endif %}
 
+                    {% if markerSource=="all" %}
+                        <label for="radioSource"><input name="markerSource" type="radio" id="radioMarkerSource" style="display:none;" CHECKED value="all"><span class="custom radio"></span> All</label>
+                    {% else %}
+                        <label for="radioSource"><input name="markerSource" type="radio" id="radioMarkerSource" style="display:none;" value="all"><span class="custom radio"></span> All</label>
+                    {% endif %}
                     {% if markerSource=="pubmed" %}
                         <label for="radioSource"><input name="markerSource" type="radio" id="radioMarkerSource" style="display:none;" CHECKED value="pubmed"><span class="custom radio"></span> Pubmed</label>
                     {% else %}
@@ -450,11 +454,6 @@
                         <label for="radioSource"><input name="markerSource" type="radio" id="radioMarkerSource" style="display:none;" CHECKED value="epar"><span class="custom radio"></span> EPAR</label>
                     {% else %}
                         <label for="radioSource"><input name="markerSource" type="radio" id="radioMarkerSource" style="display:none;" value="epar"><span class="custom radio"></span> EPAR</label>
-                    {% endif %}
-                    {% if markerSource=="all" %}
-                        <label for="radioSource"><input name="markerSource" type="radio" id="radioMarkerSource" style="display:none;" CHECKED value="all"><span class="custom radio"></span> All</label>
-                    {% else %}
-                        <label for="radioSource"><input name="markerSource" type="radio" id="radioMarkerSource" style="display:none;" value="all"><span class="custom radio"></span> All</label>
                     {% endif %}
                 </fieldset>
             </form>

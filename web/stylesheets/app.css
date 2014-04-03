@@ -106,6 +106,9 @@ a.cross-yes:before {
 .clear-both{
     clear: both;
 }
+.underline{
+    text-decoration: underline;
+}
 ul{
     list-style-type: none;
 }

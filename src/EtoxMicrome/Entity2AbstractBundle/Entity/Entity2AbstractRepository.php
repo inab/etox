@@ -91,19 +91,19 @@ class Entity2AbstractRepository extends EntityRepository
 
     }
 
-    public function getCompound2Term2DocumentFromField($field, $typeOfEntity, $arrayEntityName)
+    public function getCompound2Term2DocumentRelations($field, $typeOfEntity, $arrayEntityName)
     {
-        return $this->getCompound2Term2DocumentFromFieldDQL($field, $typeOfEntity, $arrayEntityName)->getResult();
+        return $this->getCompound2Term2DocumentRelationsDQL($field, $typeOfEntity, $arrayEntityName)->getResult();
     }
 
-    public function getCompound2Term2DocumentFromFieldDQL($field, $entityType, $arrayEntityName)
+    public function getCompound2Term2DocumentRelationsDQL($field, $entityType, $arrayEntityName)
     {//("hepatotoxicity","pubmed","CompoundDict",arrayEntityId)
         $valToSearch=$this->getValToSearch($field);//"i.e hepval, embval... etc"
         //We have to create a query that searchs all over the entityIds inside the $arrayEntityId
         $sql="SELECT c2t2d
             FROM EtoxMicromeEntity2DocumentBundle:Compound2Term2Document c2t2d
-            WHERE c2t2d.compound IN (:arrayEntityName)
-            ORDER BY c2t2d.relationScore desc
+            WHERE c2t2d.compoundName IN (:arrayEntityName)
+            ORDER BY c2t2d.relationScore desc, c2t2d.hepval desc
             ";
 
         //ld($sql);

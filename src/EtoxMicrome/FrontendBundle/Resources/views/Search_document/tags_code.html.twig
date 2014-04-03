@@ -127,6 +127,11 @@
                     {% else %}
                         {% set keywordSource = default_source %}
                     {% endif %}
+                    {% if keywordSource=="all" %}
+                        <label for="radioSource"><input name="keywordSource" type="radio" id="radioKeywordSource" style="display:none;" CHECKED value="all"><span class="custom radio"></span> All</label>
+                    {% else %}
+                        <label for="radioSource"><input name="keywordSource" type="radio" id="radioKeywordSource" style="display:none;" value="all"><span class="custom radio"></span> All</label>
+                    {% endif %}
                     {% if keywordSource=="pubmed" %}
                         <label for="radioSource"><input name="keywordSource" type="radio" id="radioKeywordSource" style="display:none;" CHECKED value="pubmed"><span class="custom radio"></span> Pubmed</label>
                     {% else %}
@@ -146,11 +151,6 @@
                         <label for="radioSource"><input name="keywordSource" type="radio" id="radioKeywordSource" style="display:none;" CHECKED value="epar"><span class="custom radio"></span> EPAR</label>
                     {% else %}
                         <label for="radioSource"><input name="keywordSource" type="radio" id="radioKeywordSource" style="display:none;" value="epar"><span class="custom radio"></span> EPAR</label>
-                    {% endif %}
-                    {% if keywordSource=="all" %}
-                        <label for="radioSource"><input name="keywordSource" type="radio" id="radioKeywordSource" style="display:none;" CHECKED value="all"><span class="custom radio"></span> All</label>
-                    {% else %}
-                        <label for="radioSource"><input name="keywordSource" type="radio" id="radioKeywordSource" style="display:none;" value="all"><span class="custom radio"></span> All</label>
                     {% endif %}
                     <hr/>
                     {% if keywordSource=="abstract" %}
@@ -202,51 +202,53 @@
                 <fieldset>
                     <legend>What are you searching?</legend>
                     {% if whatToSearch not in ["name","id","smile","inChi","any","withCytochromes","withMarkers","compoundsTermsRelations"] %}
-                        {% set whatToSearch="name" %}
+                        {% set whatToSearchCompound="name" %}
+                    {% else %}
+                        {% set whatToSearchCompound=whatToSearch %}
                     {% endif %}
-                    {% if whatToSearch=="name" %}
+                    {% if whatToSearchCompound=="name" %}
                         <label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" CHECKED value="name"><span class="custom radio"></span> Name</label>
                     {% else %}
                         <label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" value="name"><span class="custom radio"></span> Name</label>
                     {% endif %}
 
-                    {% if whatToSearch=="id" %}
+                    {% if whatToSearchCompound=="id" %}
                         <label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" CHECKED value="id"><span class="custom radio checked"></span> Id</label>
                     {% else %}
                         <label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" value="id"><span class="custom radio"></span> Id</label>
                     {% endif %}
 
-                    {% if whatToSearch=="smile" %}
+                    {% if whatToSearchCompound=="smile" %}
                         <label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" CHECKED value="smile"><span class="custom radio"></span> Smile</label>
                     {% else %}
                         <label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" value="smile"><span class="custom radio"></span> Smile</label>
                     {% endif %}
 
-                    {% if whatToSearch=="inChi" %}
+                    {% if whatToSearchCompound=="inChi" %}
                         <label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" CHECKED value="inChi"><span class="custom radio"></span> inChi</label>
                     {% else %}
                         <label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" value="smile"><span class="custom radio"></span> inChi</label>
                     {% endif %}
 
-                    {% if whatToSearch=="any" %}
+                    {% if whatToSearchCompound=="any" %}
                         <label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" CHECKED value="any"><span class="custom radio"></span> Any (Free search)</label>
                     {% else %}
                         <label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" value="any"><span class="custom radio"></span> Any (Free search)</label>
                     {% endif %}
 
-                    {% if whatToSearch=="withCytochromes" %}
+                    {% if whatToSearchCompound=="withCytochromes" %}
                         <label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" CHECKED value="withCytochromes"><span class="custom radio"></span> With CYPs</label>
                     {% else %}
                         <label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" value="withCytochromes"><span class="custom radio"></span> With CYPs</label>
                     {% endif %}
 
-                    {% if whatToSearch=="withMarkers" %}
+                    {% if whatToSearchCompound=="withMarkers" %}
                         <label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" CHECKED value="withMarkers"><span class="custom radio"></span> With Markers</label>
                     {% else %}
                         <label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" value="withMarkers"><span class="custom radio"></span> With Markers</label>
                     {% endif %}
 
-                    {% if whatToSearch=="compoundsTermsRelations" %}
+                    {% if whatToSearchCompound=="compoundsTermsRelations" %}
                         <label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" CHECKED value="compoundsTermsRelations"><span class="custom radio"></span> Relations</label>
                     {% else %}
                         <label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" value="compoundsTermsRelations"><span class="custom radio"></span> Relations</label>
@@ -267,6 +269,11 @@
                     {% else %}
                         {% set compoundSource = default_source %}
                     {% endif %}
+                    {% if compoundSource=="all" %}
+                        <label for="radioSource"><input name="compoundSource" type="radio" id="radioCompoundSource" style="display:none;" CHECKED value="all"><span class="custom radio"></span> All</label>
+                    {% else %}
+                        <label for="radioSource"><input name="compoundSource" type="radio" id="radioCompoundSource" style="display:none;" value="all"><span class="custom radio"></span> All</label>
+                    {% endif %}
                     {% if compoundSource=="pubmed" %}
                         <label for="radioSource"><input name="compoundSource" type="radio" id="radioCompoundSource" style="display:none;" CHECKED value="pubmed"><span class="custom radio"></span> Pubmed</label>
                     {% else %}
@@ -286,11 +293,6 @@
                         <label for="radioSource"><input name="compoundSource" type="radio" id="radioCompoundSource" style="display:none;" CHECKED value="epar"><span class="custom radio"></span> EPAR</label>
                     {% else %}
                         <label for="radioSource"><input name="compoundSource" type="radio" id="radioCompoundSource" style="display:none;" value="epar"><span class="custom radio"></span> EPAR</label>
-                    {% endif %}
-                    {% if compoundSource=="all" %}
-                        <label for="radioSource"><input name="compoundSource" type="radio" id="radioCompoundSource" style="display:none;" CHECKED value="all"><span class="custom radio"></span> All</label>
-                    {% else %}
-                        <label for="radioSource"><input name="compoundSource" type="radio" id="radioCompoundSource" style="display:none;" value="all"><span class="custom radio"></span> All</label>
                     {% endif %}
                     <hr/>
                     {% if compoundSource=="abstract" %}
@@ -376,7 +378,11 @@
                     {% else %}
                         {% set cytochromeSource = default_source %}
                     {% endif %}
-
+                    {% if cytochromeSource=="all" %}
+                        <label for="radioSource"><input name="cytochromeSource" type="radio" id="radioCytochromeSource" style="display:none;" CHECKED value="all"><span class="custom radio"></span> All</label>
+                    {% else %}
+                        <label for="radioSource"><input name="cytochromeSource" type="radio" id="radioCytochromeSource" style="display:none;" value="all"><span class="custom radio"></span> All</label>
+                    {% endif %}
                     {% if cytochromeSource=="pubmed" %}
                         <label for="radioSource"><input name="cytochromeSource" type="radio" id="radioCytochromeSource" style="display:none;" CHECKED value="pubmed"><span class="custom radio"></span> Pubmed</label>
                     {% else %}
@@ -396,11 +402,6 @@
                         <label for="radioSource"><input name="cytochromeSource" type="radio" id="radioCytochromeSource" style="display:none;" CHECKED value="epar"><span class="custom radio"></span> EPAR</label>
                     {% else %}
                         <label for="radioSource"><input name="cytochromeSource" type="radio" id="radioCytochromeSource" style="display:none;" value="epar"><span class="custom radio"></span> EPAR</label>
-                    {% endif %}
-                    {% if cytochromeSource=="all" %}
-                        <label for="radioSource"><input name="cytochromeSource" type="radio" id="radioCytochromeSource" style="display:none;" CHECKED value="all"><span class="custom radio"></span> All</label>
-                    {% else %}
-                        <label for="radioSource"><input name="cytochromeSource" type="radio" id="radioCytochromeSource" style="display:none;" value="all"><span class="custom radio"></span> All</label>
                     {% endif %}
                 </fieldset>
             </form>
@@ -476,7 +477,11 @@
                     {% else %}
                         {% set markerSource = default_source %}
                     {% endif %}
-
+                    {% if markerSource=="all" %}
+                        <label for="radioSource"><input name="markerSource" type="radio" id="radioMarkerSource" style="display:none;" CHECKED value="all"><span class="custom radio"></span> All</label>
+                    {% else %}
+                        <label for="radioSource"><input name="markerSource" type="radio" id="radioMarkerSource" style="display:none;" value="all"><span class="custom radio"></span> All</label>
+                    {% endif %}
                     {% if markerSource=="pubmed" %}
                         <label for="radioSource"><input name="markerSource" type="radio" id="radioMarkerSource" style="display:none;" CHECKED value="pubmed"><span class="custom radio"></span> Pubmed</label>
                     {% else %}
@@ -497,11 +502,7 @@
                     {% else %}
                         <label for="radioSource"><input name="markerSource" type="radio" id="radioMarkerSource" style="display:none;" value="epar"><span class="custom radio"></span> EPAR</label>
                     {% endif %}
-                    {% if markerSource=="all" %}
-                        <label for="radioSource"><input name="markerSource" type="radio" id="radioMarkerSource" style="display:none;" CHECKED value="all"><span class="custom radio"></span> All</label>
-                    {% else %}
-                        <label for="radioSource"><input name="markerSource" type="radio" id="radioMarkerSource" style="display:none;" value="all"><span class="custom radio"></span> All</label>
-                    {% endif %}
+
                 </fieldset>
             </form>
         </div>

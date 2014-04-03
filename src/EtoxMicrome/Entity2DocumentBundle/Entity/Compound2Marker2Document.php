@@ -41,7 +41,7 @@ class Compound2Marker2Document
      *
      * @ORM\Column(name="""compoundName""", type="string", length=800)
      */
-    private $compound;
+    private $compoundName;
 
     /**
      * @var string
