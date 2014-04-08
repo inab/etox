@@ -12,4 +12,18 @@ use Doctrine\ORM\EntityRepository;
  */
 class Specie2DocumentRepository extends EntityRepository
 {
+    public function getBetterRanked($arraycytochromes){
+        $message="Inside getBetterRanked";
+        usort($arraycytochromes, function($cyt1,$cyt2){
+            $message="Inside usort cmp";
+            $ranking1=$cyt1->getCypUniprotRanking();
+            $ranking2=$cyt2->getCypUniprotRanking();
+            if ($ranking1 == $ranking2) {
+                return 0;
+            }
+            return ($ranking1 > $ranking2) ? -1 : 1;
+        });
+        return $arraycytochromes;
+    }
+
 }

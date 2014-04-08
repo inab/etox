@@ -30,6 +30,8 @@ class UtilityExtension extends \Twig_Extension
         'colorCodingScore' => new \Twig_Filter_Method($this, 'colorCodingScore'),
         'setCurationHtml' => new \Twig_Filter_Method($this, 'setCurationHtml'),
         'highlightRelations' => new \Twig_Filter_Method($this, 'highlightRelations'),
+        'getScoreToShow' => new \Twig_Filter_Method($this, 'getScoreToShow'),
+        'getOrderToSource' => new \Twig_Filter_Method($this, 'getOrderToSource'),
 
         );
     }
@@ -254,7 +256,6 @@ class UtilityExtension extends \Twig_Extension
 
         foreach ($arrayCytochrome2Document as $cytochrome2Document){
             $entityName=$cytochrome2Document->getCypsMention();
-            //ld($entityName);
             $cytochrome2DocumentId=$cytochrome2Document->getId();
             //ld($entityBackup);
             //If the name==entityBackup, we don't do anything, we'll change it at the end
@@ -802,7 +803,12 @@ class UtilityExtension extends \Twig_Extension
         //ld($entityBackup);
         $em=$this->doctrine->getManager();
         //We need all the entities involved in the same document
-        $className=$abstract->getType();
+        //Tweak to use this method with both abstracts and result objects from elasticsearch results
+        if($abstract instanceof \EtoxMicrome\DocumentBundle\Entity\Abstracts){
+            $className=$abstract->getClassName();
+        }else{
+            $className=$abstract->getType();
+        }
         //ldd($className);
         if($className=="abstracts"){
             //We do nothing, in this case $abstract is already a Abstracts
@@ -1244,6 +1250,30 @@ class UtilityExtension extends \Twig_Extension
                 }elseif($curation>0){
                     $htmlCuration="<a class='check-yes check' id=\"check-$entity2Document\" onclick=\"curateEntity2Abstract('$url_check',$entity2Document,'check')\"> </a> <a class='cross-no cross' id=\"cross-$entity2Document\" onclick=\"curateEntity2Abstract('$url_cross',$entity2Document,'cross')\"> </a>";
                 }
+            }elseif($source=="Compound2Term2Document"){
+                $url_check = $this->generator->generate(
+                    'ajax_compound2term2document_curation',
+                    array(
+                        'compound2Term2Document' => $entity2Document,
+                        'action' => "check",
+                    )
+                );
+                $url_cross = $this->generator->generate(
+                    'ajax_compound2term2document_curation',
+                    array(
+                        'compound2Term2Document' => $entity2Document,
+                        'action' => "cross",
+                    )
+                );
+
+                if($curation<0){
+                    $htmlCuration="<a class='check-no check' id=\"check-$entity2Document\" onclick=\"curateCompound2Term2Document('$url_check',$entity2Document,'check')\"> </a> <a class='cross-yes cross' id=\"cross-$entity2Document\" onclick=\"curateCompound2Term2Document('$url_cross',$entity2Document,'cross')\"> </a>";
+                }elseif($curation==0){
+                    $htmlCuration="<a class='check-no check' id=\"check-$entity2Document\" onclick=\"curateCompound2Term2Document('$url_check',$entity2Document,'check')\"> </a> <a class='cross-no cross' id=\"cross-$entity2Document\" onclick=\"curateCompound2Term2Document('$url_cross',$entity2Document,'cross')\"> </a>";
+                }elseif($curation>0){
+                    $htmlCuration="<a class='check-yes check' id=\"check-$entity2Document\" onclick=\"curateCompound2Term2Document('$url_check',$entity2Document,'check')\"> </a> <a class='cross-no cross' id=\"cross-$entity2Document\" onclick=\"curateCompound2Term2Document('$url_cross',$entity2Document,'cross')\"> </a>";
+                }
+
             }
         }elseif($entityType=="Cytochrome"){
             if($source=="document")
@@ -1270,6 +1300,31 @@ class UtilityExtension extends \Twig_Extension
                     $htmlCuration="<a class='check-no check' id=\"check-$cytochrome2Document\" onclick=\"curateEntity2Document('$url_check',$cytochrome2Document,'check')\"> </a> <a class='cross-no cross' id=\"cross-$cytochrome2Document\" onclick=\"curateEntity2Document('$url_cross',$cytochrome2Document,'cross')\"> </a>";
                 }elseif($curation>0){
                     $htmlCuration="<a class='check-yes check' id=\"check-$cytochrome2Document\" onclick=\"curateEntity2Document('$url_check',$cytochrome2Document,'check')\"> </a> <a class='cross-no cross' id=\"cross-$cytochrome2Document\" onclick=\"curateEntity2Document('$url_cross',$cytochrome2Document,'cross')\"> </a>";
+                }
+
+            }
+            elseif($source=="Compound2Cyp2Document"){
+                $url_check = $this->generator->generate(
+                    'ajax_compound2cyp2document_curation',
+                    array(
+                        'compound2Cyp2Document' => $entity2Document,
+                        'action' => "check",
+                    )
+                );
+                $url_cross = $this->generator->generate(
+                    'ajax_compound2cyp2document_curation',
+                    array(
+                        'compound2Cyp2Document' => $entity2Document,
+                        'action' => "cross",
+                    )
+                );
+
+                if($curation<0){
+                    $htmlCuration="<a class='check-no check' id=\"check-$entity2Document\" onclick=\"curateCompound2Cyp2Document('$url_check',$entity2Document,'check')\"> </a> <a class='cross-yes cross' id=\"cross-$entity2Document\" onclick=\"curateCompound2Cyp2Document('$url_cross',$entity2Document,'cross')\"> </a>";
+                }elseif($curation==0){
+                    $htmlCuration="<a class='check-no check' id=\"check-$entity2Document\" onclick=\"curateCompound2Cyp2Document('$url_check',$entity2Document,'check')\"> </a> <a class='cross-no cross' id=\"cross-$entity2Document\" onclick=\"curateCompound2Cyp2Document('$url_cross',$entity2Document,'cross')\"> </a>";
+                }elseif($curation>0){
+                    $htmlCuration="<a class='check-yes check' id=\"check-$entity2Document\" onclick=\"curateCompound2Cyp2Document('$url_check',$entity2Document,'check')\"> </a> <a class='cross-no cross' id=\"cross-$entity2Document\" onclick=\"curateCompound2Cyp2Document('$url_cross',$entity2Document,'cross')\"> </a>";
                 }
 
             }
@@ -1301,11 +1356,77 @@ class UtilityExtension extends \Twig_Extension
                 }
 
             }
+             elseif($source=="Compound2Marker2Document"){
+                $url_check = $this->generator->generate(
+                    'ajax_compound2marker2document_curation',
+                    array(
+                        'compound2Marker2Document' => $entity2Document,
+                        'action' => "check",
+                    )
+                );
+                $url_cross = $this->generator->generate(
+                    'ajax_compound2marker2document_curation',
+                    array(
+                        'compound2Marker2Document' => $entity2Document,
+                        'action' => "cross",
+                    )
+                );
+
+                if($curation<0){
+                    $htmlCuration="<a class='check-no check' id=\"check-$entity2Document\" onclick=\"curateCompound2Marker2Document('$url_check',$entity2Document,'check')\"> </a> <a class='cross-yes cross' id=\"cross-$entity2Document\" onclick=\"curateCompound2Marker2Document('$url_cross',$entity2Document,'cross')\"> </a>";
+                }elseif($curation==0){
+                    $htmlCuration="<a class='check-no check' id=\"check-$entity2Document\" onclick=\"curateCompound2Marker2Document('$url_check',$entity2Document,'check')\"> </a> <a class='cross-no cross' id=\"cross-$entity2Document\" onclick=\"curateCompound2Marker2Document('$url_cross',$entity2Document,'cross')\"> </a>";
+                }elseif($curation>0){
+                    $htmlCuration="<a class='check-yes check' id=\"check-$entity2Document\" onclick=\"curateCompound2Marker2Document('$url_check',$entity2Document,'check')\"> </a> <a class='cross-no cross' id=\"cross-$entity2Document\" onclick=\"curateCompound2Marker2Document('$url_cross',$entity2Document,'cross')\"> </a>";
+                }
+
+            }
         }
 
 
 
         return($htmlCuration);
+    }
+    public function getScoreToShow($orderBy){
+        switch ($orderBy) {
+            case $orderBy == "hepval":
+                $orderBy ="SVM";
+                break;
+            case $orderBy == "svmConfidence":
+                $orderBy ="Conf.";
+                break;
+            case $orderBy == "patternCount":
+                $orderBy ="Pattern";
+                break;
+            case $orderBy == "hepTermVarScore":
+                $orderBy ="Term";
+                break;
+            case $orderBy == "ruleScore":
+                $orderBy ="Rule";
+                break;
+        }
+        return $orderBy;
+    }
+
+    public function getOrderToSource($orderBy){
+        switch ($orderBy) {
+            case $orderBy == "score":
+                $orderBy ="hepval";
+                break;
+            case $orderBy == "svmConfidence":
+                $orderBy ="svmConfidence";
+                break;
+            case $orderBy == "pattern":
+                $orderBy ="patternCount";
+                break;
+            case $orderBy == "term":
+                $orderBy ="hepTermVarScore";
+                break;
+            case $orderBy == "rule":
+                $orderBy ="ruleScore";
+                break;
+        }
+        return $orderBy;
     }
     public function getName()
     {

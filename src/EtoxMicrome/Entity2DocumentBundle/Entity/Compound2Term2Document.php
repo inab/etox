@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Compound2Term2Document
  *
- * @ORM\Table(indexes={ @ORM\Index(name="compound2term2document_sentenceId_index", columns={"""sentenceId"""}), @ORM\Index(name="compound2term2document_compound_index", columns={"""compoundName"""}), @ORM\Index(name="compound2term2document_term_index", columns={"term"}), @ORM\Index(name="compound2term2document_document_id", columns={"document_id"}), @ORM\Index(name="compound2term2document_relation_score", columns={"""relationScore"""}) } )
+ * @ORM\Table(indexes={ @ORM\Index(name="compound2term2document_sentenceId_index", columns={"""sentenceId"""}), @ORM\Index(name="compound2term2document_compound_index", columns={"""compoundName"""}), @ORM\Index(name="compound2term2document_term_index", columns={"term"}), @ORM\Index(name="compound2term2document_document_id", columns={"document_id"}), @ORM\Index(name="compound2term2document_relation_score", columns={"""relationScore"""}), @ORM\Index(name="compound2term2document_curation", columns={"curation"}) } )
  * @ORM\Entity(repositoryClass="EtoxMicrome\Entity2DocumentBundle\Entity\Compound2Term2DocumentRepository")
  */
 class Compound2Term2Document
@@ -91,6 +91,13 @@ class Compound2Term2Document
      * @ORM\Column(name="""compoundQualifier""", type="integer")
      */
     private $compoundQualifier;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="curation", type="integer", nullable=true)
+     */
+    private $curation;
 
      /**
      * @var float
@@ -411,6 +418,29 @@ class Compound2Term2Document
     }
 
     /**
+     * Set curation
+     *
+     * @param integer $curation
+     * @return Compound2Term2Document
+     */
+    public function setCuration($curation)
+    {
+        $this->curation = $curation;
+
+        return $this;
+    }
+
+    /**
+     * Get curation
+     *
+     * @return integer
+     */
+    public function getCuration()
+    {
+        return $this->curation;
+    }
+
+    /**
      * Set hepval
      *
      * @param float $hepval
@@ -685,5 +715,16 @@ class Compound2Term2Document
     public function getUpdated()
     {
         return $this->updated;
+    }
+
+    /**
+     * Get className
+     *
+     * @return string
+     */
+    public function getClassName()
+    {
+        $className="Compound2Term2Document";
+        return $className;
     }
 }

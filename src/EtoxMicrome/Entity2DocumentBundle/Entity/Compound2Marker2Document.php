@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Compound2Marker2Document
  *
- * @ORM\Table(indexes={ @ORM\Index(name="compound2Marker2Document_sentenceId_index", columns={"""sentenceId"""}), @ORM\Index(name="compound2Marker2Document_compound_index", columns={"""compoundName"""}), @ORM\Index(name="compound2Marker2Document_liverMarkerName_index", columns={"""liverMarkerName"""}), @ORM\Index(name="compound2marker2document_document_id", columns={"document_id"}), @ORM\Index(name="compound2marker2document_relation_score", columns={"""relationScore"""}), @ORM\Index(name="compound2marker2document_relation_type", columns={"""relationType"""}) } )
+ * @ORM\Table(indexes={ @ORM\Index(name="compound2Marker2Document_sentenceId_index", columns={"""sentenceId"""}), @ORM\Index(name="compound2Marker2Document_compound_index", columns={"""compoundName"""}), @ORM\Index(name="compound2Marker2Document_liverMarkerName_index", columns={"""liverMarkerName"""}), @ORM\Index(name="compound2marker2document_document_id", columns={"document_id"}), @ORM\Index(name="compound2marker2document_relation_score", columns={"""relationScore"""}), @ORM\Index(name="compound2marker2document_relation_type", columns={"""relationType"""}), @ORM\Index(name="compound2marker2document_curation", columns={"curation"}) } )
  * @ORM\Entity(repositoryClass="EtoxMicrome\Entity2DocumentBundle\Entity\Compound2Marker2DocumentRepository")
  */
 class Compound2Marker2Document
@@ -94,6 +94,13 @@ class Compound2Marker2Document
     private $compoundQualifier;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="curation", type="integer", nullable=true)
+     */
+    private $curation;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="created", type="datetime")
@@ -158,26 +165,26 @@ class Compound2Marker2Document
     }
 
     /**
-     * Set compound
+     * Set compoundName
      *
-     * @param integer $compound
+     * @param integer $compoundName
      * @return Compound2Marker2Document
      */
-    public function setCompound($compound)
+    public function setCompoundName($compoundName)
     {
-        $this->compound = $compound;
+        $this->compound = $compoundName;
 
         return $this;
     }
 
     /**
-     * Get compound
+     * Get compoundName
      *
      * @return integer
      */
-    public function getCompound()
+    public function getCompoundName()
     {
-        return $this->compound;
+        return $this->compoundName;
     }
 
     /**
@@ -342,6 +349,29 @@ class Compound2Marker2Document
     }
 
     /**
+     * Set curation
+     *
+     * @param integer $curation
+     * @return Compound2Marker2Document
+     */
+    public function setCuration($curation)
+    {
+        $this->curation = $curation;
+
+        return $this;
+    }
+
+    /**
+     * Get curation
+     *
+     * @return integer
+     */
+    public function getCuration()
+    {
+        return $this->curation;
+    }
+
+    /**
      * Set created
      *
      * @param \DateTime $created
@@ -385,6 +415,17 @@ class Compound2Marker2Document
     public function getUpdated()
     {
         return $this->updated;
+    }
+
+    /**
+     * Get className
+     *
+     * @return string
+     */
+    public function getClassName()
+    {
+        $className="Compound2Marker2Document";
+        return $className;
     }
 
 }

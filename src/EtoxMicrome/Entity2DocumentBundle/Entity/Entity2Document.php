@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(indexes={
         @ORM\Index(name="entity2Document_document_id", columns={"document_id"}),
         @ORM\Index(name="entity2Document_name_index", columns={"name"}),
+        @ORM\Index(name="entity2Document_curation", columns={"curation"}),
         @ORM\Index(name="entity2document_hepval", columns={"hepval"}),
         @ORM\Index(name="entity2document_cardval", columns={"cardval"}),
         @ORM\Index(name="entity2document_nephval", columns={"nephval"}),

@@ -658,6 +658,82 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
 
 
     }
+    public function mmmr($array, $output = 'mean'){
+        //Function to get mean(default), median, mode and range of $array input
+        if(!is_array($array)){
+            return FALSE;
+        }else{
+            switch($output){
+                case 'mean':
+                    $count = count($array);
+                    $sum = array_sum($array);
+                    $total = $sum / $count;
+                break;
+                case 'median':
+                    rsort($array);
+                    $middle = round(count($array) / 2);
+                    $total = $array[$middle-1];
+                break;
+                case 'range':
+                    sort($array);
+                    $sml = $array[0];
+                    rsort($array);
+                    $lrg = $array[0];
+                    $total = $lrg - $sml;
+                break;
+            }
+            return $total;
+        }
+    }
+    public function getMmmrScore($resultSetDocuments, $orderBy, $operation = 'mean'){
+        //Function that receives a resultSetDocuments and extracts the mean value of the score
+
+        $arrayResults=$resultSetDocuments->getResults();
+        $arrayInput=array();
+        foreach($arrayResults as $result){
+            if($orderBy=="score"){
+                $orderBy="hepval";
+            }elseif($orderBy=="pattern"){
+                $orderBy="patternCount";
+            }elseif($orderBy=="rule"){
+                $orderBy="ruleScore";
+            }elseif($orderBy=="term"){
+                $orderBy="hepTermVarScore";
+            }
+            $arrayData=$result->getSource();
+            $data=$arrayData[$orderBy];
+            if($data==null){
+                $data=0;
+            }
+            $arrayInput[]=$data;
+        }
+        $output=$this->mmmr($arrayInput, $operation);
+        return $output;
+    }
+
+    public function getMmmrScoreFromIntersection($resultSetDocuments, $orderBy, $operation = 'mean'){
+        //Function that receives a resultSetDocuments and extracts the mean value of the score
+        $arrayInput=array();
+        if($orderBy=="score"){
+                $orderBy="hepval";
+            }elseif($orderBy=="pattern"){
+                $orderBy="patternCount";
+            }elseif($orderBy=="rule"){
+                $orderBy="ruleScore";
+            }elseif($orderBy=="term"){
+                $orderBy="hepTermVarScore";
+            }
+        foreach($resultSetDocuments as $result){
+            $arrayData=$result->getSource();
+            $data=$arrayData[$orderBy];
+            if($data==null){
+                $data=0;
+            }
+            $arrayInput[]=$data;
+        }
+        $output=$this->mmmr($arrayInput, $operation);
+        return $output;
+    }
 
     public function searchFieldWhatToSearchEntityTypeSourceEntityAction($field, $whatToSearch, $entityType, $source, $entityName, $orderBy)
     {
@@ -723,11 +799,50 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
             $elasticaQuery  = new \Elastica\Query();
             $elasticaQuery->setSort(array('hepval' => array('order' => 'desc')));
             $elasticaQuery->setQuery($elasticaQueryString);
-            if ($source!="all" and $source!="abstract"){
+            if($source!="all" and $source!="abstract"){
                 $elasticaFilterBool = new \Elastica\Filter\Bool();
                 $filter1 = new \Elastica\Filter\Term();
                 $filter1->setTerm('kind', $source);
                 $elasticaFilterBool->addMust($filter1);
+                $elasticaQuery->setFilter($elasticaFilterBool);
+            }
+            if($orderBy=="hepval"){
+                $elasticaQuery->setSort(array('hepval' => array('order' => 'desc')));
+            }elseif($orderBy=="pattern"){
+                $elasticaQuery->setSort(array('patternCount' => array('order' => 'desc')));
+                $elasticaFilterBool = new \Elastica\Filter\Bool();
+                $filter2 = new \Elastica\Filter\Missing();
+                $filter2->setParam('field', "patternCount");
+                $filter2->setParam('existence', true);
+                $filter2->setParam('null_value', true);
+                $elasticaFilterBool->addMustNot($filter2);
+                $elasticaQuery->setFilter($elasticaFilterBool);
+            }elseif($orderBy=="rule"){
+                $elasticaQuery->setSort(array('ruleScore' => array('order' => 'desc')));
+                $elasticaFilterBool = new \Elastica\Filter\Bool();
+                $filter2 = new \Elastica\Filter\Missing();
+                $filter2->setParam('field', "ruleScore");
+                $filter2->setParam('existence', true);
+                $filter2->setParam('null_value', true);
+                $elasticaFilterBool->addMustNot($filter2);
+                $elasticaQuery->setFilter($elasticaFilterBool);
+            }elseif($orderBy=="term"){
+                $elasticaQuery->setSort(array('hepTermVarScore' => array('order' => 'desc')));
+                $elasticaFilterBool = new \Elastica\Filter\Bool();
+                $filter2 = new \Elastica\Filter\Missing();
+                $filter2->setParam('field', "hepTermVarScore");
+                $filter2->setParam('existence', true);
+                $filter2->setParam('null_value', true);
+                $elasticaFilterBool->addMustNot($filter2);
+                $elasticaQuery->setFilter($elasticaFilterBool);
+            }elseif($orderBy=="svmConfidence"){
+                $elasticaQuery->setSort(array('svmConfidence' => array('order' => 'desc')));
+                $elasticaFilterBool = new \Elastica\Filter\Bool();
+                $filter2 = new \Elastica\Filter\Missing();
+                $filter2->setParam('field', "svmConfidence");
+                $filter2->setParam('existence', true);
+                $filter2->setParam('null_value', true);
+                $elasticaFilterBool->addMustNot($filter2);
                 $elasticaQuery->setFilter($elasticaFilterBool);
             }
 
@@ -748,6 +863,10 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                             ->getResult()
                         ;
                         $arrayResultsDoc= array();
+                        $hitsShowed=count($arrayAbstracts);
+                        $meanScore=$this->getMmmrScore($resultSetAbstracts, $orderBy, 'mean');
+                        $medianScore=$this->getMmmrScore($resultSetAbstracts, $orderBy, 'median');
+                        $rangeScore=$this->getMmmrScore($resultSetAbstracts, $orderBy, 'range');
                      }else{
                         $documentsInfo = $this->container->get('fos_elastica.index.etoxindex2.documentswithcompounds');/** To get resultSet to get values for summary**/
                         $resultSetDocuments = $documentsInfo->search($elasticaQuery);
@@ -763,6 +882,10 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                         $finder = false;
                         $resultSetAbstracts = array();//There is no abstractsWithCytochromes nor abstractsWithMarkers information in the database
                         $arrayResultsAbs=array();
+                        $hitsShowed=count($arrayDocuments);
+                        $meanScore=$this->getMmmrScore($resultSetDocuments, $orderBy, 'mean');
+                        $medianScore=$this->getMmmrScore($resultSetDocuments, $orderBy, 'median');
+                        $rangeScore=$this->getMmmrScore($resultSetDocuments, $orderBy, 'range');
                      }
                 }
                 if($entityType=="Cytochrome"){
@@ -778,6 +901,10 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                         ->paginate($arrayDocuments,'documents')
                         ->getResult()
                     ;
+                    $hitsShowed=count($arrayDocuments);
+                    $meanScore=$this->getMmmrScore($resultSetDocuments, $orderBy, 'mean');
+                    $medianScore=$this->getMmmrScore($resultSetDocuments, $orderBy, 'median');
+                    $rangeScore=$this->getMmmrScore($resultSetDocuments, $orderBy, 'range');
                 }
                 if($entityType=="Marker"){
                     //We have to make a free search against elastica documentswithmarkers indexes
@@ -793,6 +920,10 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                         ->paginate($arrayDocuments,'documents')
                         ->getResult()
                     ;
+                    $hitsShowed=count($arrayDocuments);
+                    $meanScore=$this->getMmmrScore($resultSetDocuments, $orderBy, 'mean');
+                    $medianScore=$this->getMmmrScore($resultSetDocuments, $orderBy, 'median');
+                    $rangeScore=$this->getMmmrScore($resultSetDocuments, $orderBy, 'range');
                 }
             }elseif($whatToSearch=="withCompounds"){
                 if($entityType=="Cytochrome"){
@@ -819,6 +950,9 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                         ->paginate($arrayDocumentsIntersection,'documents')
                         ->getResult()
                     ;
+                    $hitsShowed=count($arrayDocumentsIntersection);
+                    $meanScore=$this->getMmmrScoreFromIntersection($arrayDocumentsIntersection, $orderBy, 'mean');
+                    $medianScore=$this->getMmmrScoreFromIntersection($arrayDocumentsIntersection, $orderBy, 'median');
                     //We restore size to its default value
                     $elasticaQuery->setSize($this->container->getParameter('etoxMicrome.total_documents_elasticsearch_retrieval'));
                 }
@@ -841,6 +975,9 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                         ->paginate($arrayDocumentsIntersection,'documents')
                         ->getResult()
                     ;
+                    $hitsShowed=count($arrayDocumentsIntersection);
+                    $meanScore=$this->getMmmrScoreFromIntersection($arrayDocumentsIntersection, $orderBy, 'mean');
+                    $medianScore=$this->getMmmrScoreFromIntersection($arrayDocumentsIntersection, $orderBy, 'median');
                     //We restore size to its default value
                     $elasticaQuery->setSize($this->container->getParameter('etoxMicrome.total_documents_elasticsearch_retrieval'));
                 }
@@ -852,7 +989,6 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                     $finder = false;
                     $resultSetAbstracts = false;
                     $arrayResultsAbs =array();
-
                     $documentsInfo = $this->container->get('fos_elastica.index.etoxindex2.documentswithcompounds');
                     $resultSetDocuments = $documentsInfo->search($elasticaQuery);
                     $arrayDocumentsWithCompounds=$resultSetDocuments->getResults();//$results has an array of results objects, data can be obtained by the getSource method
@@ -868,6 +1004,9 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                         ->paginate($arrayDocumentsIntersection,'documents')
                         ->getResult()
                     ;
+                    $hitsShowed=count($arrayDocumentsIntersection);
+                    $meanScore=$this->getMmmrScoreFromIntersection($arrayDocumentsIntersection, $orderBy, 'mean');
+                    $medianScore=$this->getMmmrScoreFromIntersection($arrayDocumentsIntersection, $orderBy, 'median');
                     //We restore size to its default value
                     $elasticaQuery->setSize($this->container->getParameter('etoxMicrome.total_documents_elasticsearch_retrieval'));
                 }
@@ -894,6 +1033,9 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                         ->paginate($arrayDocumentsIntersection,'documents')
                         ->getResult()
                     ;
+                    $hitsShowed=count($arrayDocumentsIntersection);
+                    $meanScore=$this->getMmmrScoreFromIntersection($arrayDocumentsIntersection, $orderBy, 'mean');
+                    $medianScore=$this->getMmmrScoreFromIntersection($arrayDocumentsIntersection, $orderBy, 'median');
                     //We restore size to its default value
                     $elasticaQuery->setSize($this->container->getParameter('etoxMicrome.total_documents_elasticsearch_retrieval'));
                 }
@@ -909,6 +1051,10 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                 'whatToSearch' => $whatToSearch,
                 'source' => $source,
                 'entityName' => $entityName,
+                'orderBy' => $orderBy,
+                'hitsShowed' => $hitsShowed,
+                'meanScore' => $meanScore,
+                'medianScore' => $medianScore,
                 ));
         }elseif($whatToSearch=="compoundsTermsRelations"){
             if($entityType=="CompoundDict"){
@@ -1064,6 +1210,7 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                         'entityName' => $entityName,
                     ));
                 }
+                ld($orderBy);
                 $arrayEntity2Document = $paginator
                     ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "documents")
                     ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "documents")
@@ -1364,8 +1511,8 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
         }
         if($orderBy=="hepval"){
             $elasticaQuery->setSort(array('hepval' => array('order' => 'desc')));
-        }elseif($orderBy=="patternScore"){
-            $elasticaQuery->setSort(array('patternScore' => array('order' => 'desc')));
+        }elseif($orderBy=="patternCount"){
+            $elasticaQuery->setSort(array('patternCount' => array('order' => 'desc')));
         }elseif($orderBy=="ruleScore"){
             $elasticaQuery->setSort(array('ruleScore' => array('order' => 'desc')));
         }elseif($orderBy=="hepTermNormScore"){
@@ -1393,6 +1540,10 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                     ->paginate($arrayAbstracts,'abstracts')
                     ->getResult()
                 ;
+                $hitsShowed=count($arrayAbstracts);
+                $meanScore=$this->getMmmrScore($resultSetAbstracts, $orderBy, 'mean');
+                $medianScore=$this->getMmmrScore($resultSetAbstracts, $orderBy, 'median');
+                $rangeScore=$this->getMmmrScore($resultSetAbstracts, $orderBy, 'range');
                 $finderDoc=false;
                 $resultSetDocuments = array();
                 $arrayResultsDoc = array();
@@ -1400,7 +1551,11 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
             }else{ //For "pubmed", "fulltext", "nda", "epar" and "all"
                 $documentsInfo = $this->container->get('fos_elastica.index.etoxindex2.documents');/** To get resultSet to get values for summary**/
                 $resultSetDocuments = $documentsInfo->search($elasticaQuery);
+                $meanScore=$this->getMmmrScore($resultSetDocuments, $orderBy, 'mean');
+                $medianScore=$this->getMmmrScore($resultSetDocuments, $orderBy, 'median');
+                $rangeScore=$this->getMmmrScore($resultSetDocuments, $orderBy, 'range');
                 $arrayDocuments=$resultSetDocuments->getResults();//$results has an array of results objects, data can be obtained by the getSource method
+                $hitsShowed=count($arrayDocuments);
                 $arrayResultsDoc = $paginator
                     ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), 'documents')
                     ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), 'documents')
@@ -1428,6 +1583,12 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                 $finderDoc=false;
                 $resultSetDocuments = array();
                 $arrayResultsDoc = array();
+                $hitsShowed=count($arrayAbstracts);
+                $meanScore=$this->getMmmrScore($resultSetAbstracts, $orderBy, 'mean');
+                $medianScore=$this->getMmmrScore($resultSetAbstracts, $orderBy, 'median');
+                $rangeScore=$this->getMmmrScore($resultSetAbstracts, $orderBy, 'range');
+
+
             }else{ //For "pubmed", "fulltext", "nda", "epar" and "all"
                 $documentsInfo = $this->container->get('fos_elastica.index.etoxindex2.documentswithcompounds');/** To get resultSet to get values for summary**/
                 $resultSetDocuments = $documentsInfo->search($elasticaQuery);
@@ -1452,6 +1613,10 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                 $finder=false;
                 $resultSetAbstracts = array();
                 $arrayResultsAbs = array();
+                $hitsShowed=count($arrayDocuments);
+                $meanScore=$this->getMmmrScore($resultSetDocuments, $orderBy, 'mean');
+                $medianScore=$this->getMmmrScore($resultSetDocuments, $orderBy, 'median');
+                $rangeScore=$this->getMmmrScore($resultSetDocuments, $orderBy, 'range');
             }
         }elseif($whatToSearch=="withCytochromes"){
             //We only search inside documents
@@ -1467,6 +1632,10 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                 ->paginate($arrayDocuments,'documents')
                 ->getResult()
             ;
+            $hitsShowed=count($arrayDocuments);
+            $meanScore=$this->getMmmrScore($resultSetDocuments, $orderBy, 'mean');
+            $medianScore=$this->getMmmrScore($resultSetDocuments, $orderBy, 'median');
+            $rangeScore=$this->getMmmrScore($resultSetDocuments, $orderBy, 'range');
 
         }elseif($whatToSearch=="withMarkers"){
             //We only search inside documents
@@ -1482,6 +1651,10 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                 ->paginate($arrayDocuments,'documents')
                 ->getResult()
             ;
+            $hitsShowed=count($arrayDocuments);
+            $meanScore=$this->getMmmrScore($resultSetDocuments, $orderBy, 'mean');
+            $medianScore=$this->getMmmrScore($resultSetDocuments, $orderBy, 'median');
+            $rangeScore=$this->getMmmrScore($resultSetDocuments, $orderBy, 'range');
 
         }
 
@@ -1499,6 +1672,11 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
             'resultSetDocuments' => $resultSetDocuments,
             'whatToSearch' => $whatToSearch,
             'entityName' => $entityName,
+            'orderBy' => $orderBy,
+            'hitsShowed' => $hitsShowed,
+            'meanScore' => $meanScore,
+            'medianScore' => $medianScore,
+            'rangeScore' => $rangeScore,
             ));
     }
     public function embryotoxicityAction()

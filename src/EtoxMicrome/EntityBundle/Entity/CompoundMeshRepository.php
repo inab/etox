@@ -43,7 +43,6 @@ class CompoundMeshRepository extends EntityRepository
         $compound=$query->getResult();
         if(count($compound)==0){
             $errorMessage="There is no entity with that name ($entityName)";
-            ld($errorMessage);
             return "";
         }
         if(count($compound)!=1){

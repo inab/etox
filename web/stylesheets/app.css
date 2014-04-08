@@ -328,8 +328,7 @@ mark.compound a{
 
 .results-summary{
     float: left;
-    margin-top: 10px 0px 30px 0px;
-    padding: 10px;
+    margin-top: 10px;
     width: auto;
 }
 
@@ -488,8 +487,6 @@ td.horizontal-header{
 ----------------------------------------- */
 #tableResults th{
     text-align: center;
-    min-width: 70px;
-    padding: 6px 0px 6px 6px;
 }
 #tableResults .active{
     text-decoration: underline;
@@ -525,6 +522,9 @@ td.horizontal-header{
 }
 img.outlinkLogo{
     vertical-align: bottom;
+}
+.atip{
+    max-width: 400px;
 }
 /* -----------------------------------------
     Content

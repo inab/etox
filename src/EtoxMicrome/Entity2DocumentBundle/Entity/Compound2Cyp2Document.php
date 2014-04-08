@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Compound2Cyp2Document
  *
- * @ORM\Table(indexes={ @ORM\Index(name="compound2cyp2document_sentenceId_index", columns={"""sentenceId"""}), @ORM\Index(name="compound2Cyp2Document_compound_name_index", columns={"""compoundName"""}), @ORM\Index(name="compound2Cyp2Document_cyp_index", columns={"""cypsMention"""}), @ORM\Index(name="compound2cyp2document_document_id", columns={"document_id"}), @ORM\Index(name="compound2cyp2document_inhibition", columns={"""inhibitionScore"""}), @ORM\Index(name="compound2cyp2document_induction", columns={"""inductionScore"""}), @ORM\Index(name="compound2cyp2document_metabolism", columns={"""metabolismScore"""}), @ORM\Index(name="compound2cyp2document_svm_inhibition", columns={"""svmInhibition"""}), @ORM\Index(name="compound2cyp2document_svm_induction", columns={"""svmInduction"""}), @ORM\Index(name="compound2cyp2document_svm_metabolism", columns={"""svmMetabolism"""}) } )
+ * @ORM\Table(indexes={ @ORM\Index(name="compound2cyp2document_sentenceId_index", columns={"""sentenceId"""}), @ORM\Index(name="compound2Cyp2Document_compound_name_index", columns={"""compoundName"""}), @ORM\Index(name="compound2Cyp2Document_cyp_index", columns={"""cypsMention"""}), @ORM\Index(name="compound2cyp2document_document_id", columns={"document_id"}), @ORM\Index(name="compound2cyp2document_inhibition", columns={"""inhibitionScore"""}), @ORM\Index(name="compound2cyp2document_induction", columns={"""inductionScore"""}), @ORM\Index(name="compound2cyp2document_metabolism", columns={"""metabolismScore"""}), @ORM\Index(name="compound2cyp2document_svm_inhibition", columns={"""svmInhibition"""}), @ORM\Index(name="compound2cyp2document_svm_induction", columns={"""svmInduction"""}), @ORM\Index(name="compound2cyp2document_svm_metabolism", columns={"""svmMetabolism"""}), @ORM\Index(name="compound2cyp2document_curation", columns={"curation"}) } )
  * @ORM\Entity(repositoryClass="EtoxMicrome\Entity2DocumentBundle\Entity\Compound2Cyp2DocumentRepository")
  */
 class Compound2Cyp2Document
@@ -140,6 +140,13 @@ class Compound2Cyp2Document
      * @ORM\Column(name="""compoundQualifier""", type="integer")
      */
     private $compoundQualifier;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="curation", type="integer", nullable=true)
+     */
+    private $curation;
 
     /**
      * @var \DateTime
@@ -551,6 +558,29 @@ class Compound2Cyp2Document
     }
 
     /**
+     * Set curation
+     *
+     * @param integer $curation
+     * @return Compound2Cyp2Document
+     */
+    public function setCuration($curation)
+    {
+        $this->curation = $curation;
+
+        return $this;
+    }
+
+    /**
+     * Get curation
+     *
+     * @return integer
+     */
+    public function getCuration()
+    {
+        return $this->curation;
+    }
+
+    /**
      * Set created
      *
      * @param \DateTime $created
@@ -594,6 +624,17 @@ class Compound2Cyp2Document
     public function getUpdated()
     {
         return $this->updated;
+    }
+
+    /**
+     * Get className
+     *
+     * @return string
+     */
+    public function getClassName()
+    {
+        $className="Compound2Cyp2Document";
+        return $className;
     }
 
 }

@@ -8,7 +8,7 @@
         {% if resultSetDocuments | length != 0 %}
             <div id="documentsResults">
                 <a name="documents"></a>
-                <h3>Ranked sentences in Documents for "<span class="underline">{{ keyword }}</span>" keyword</h3>
+                <h3>Ranked sentences in Documents for "<span class="underline">{{ keyword }}</span>" keyword search</h3>
                 <div class="btmspc-dbl">
                     <small>
                         <em>
@@ -20,42 +20,45 @@
                     </small>
                 </div>
                 <div class="results-summary">
-
+                    {% set totalHits = resultSetDocuments.getTotalHits %}
+                    {% set scoreToShow = orderBy | getScoreToShow %}
+                    {% set arrayResultSetDocuments= resultSetDocuments.getResults %}
+                    {% set order =  orderBy | getOrderToSource %}
                     <table>
                         <tr>
-                            <td>Total of mentions:</td>
-                            <td>{{ resultSetDocuments.getTotalHits }} (Displayed first 150. Click here to display the {{ resultSetDocuments.getTotalHits }})</td>
+                            <td><strong>Total of mentions displayed:</strong> {{ hitsShowed }}</td>
+                            <td><strong>Max. {{scoreToShow}} score:</strong> {{ arrayResultSetDocuments[0].getSource[order] |number_format(2) }}</td>
+                            <td><strong>Minim. {{scoreToShow}} score:</strong> {% set last_index = resultSetDocuments | length -1 %}{{ resultSetDocuments[last_index].getSource[order] |number_format(2) }}</td>
+                            <td><strong>{{scoreToShow}} mean:</strong> {{ meanScore | number_format(2) }}</td>
+                            <td><strong>{{scoreToShow}} median:</strong> {{ medianScore | number_format(2) }}</td>
                         </tr>
-                        <tr>
-                            <td>Max. score:</td>
-                            <td>{{ resultSetDocuments[0].getSource["hepval"] |number_format(2) }}</td>
-                        </tr>
-                        <tr>
-                            <td>Min. score:</td>
-                            {% set last_index = resultSetDocuments | length -1 %}
-                            <td>{{ resultSetDocuments[last_index].getSource["hepval"] |number_format(2) }}</td>
-                        </tr>
+                        {% if totalHits > 150  and whatToSearch!="withCytochromes" and whatToSearch!="withMarkers" and whatToSearch!="withCompounds"%}
+                            <tr>
+                                {% set totalHits = resultSetDocuments.getTotalHits %}
+                                <td colspan="5"><strong>Total of mentions:</strong> {{ totalHits }}. (All above scores are for the {{hitsShowed}} displayed hits). <br/>Click here to display all results</td>
+                            </tr>
+                        {% endif %}
                     </table>
                 </div>
                 <div class="clear-both"></div>
                 <table id="tableResults" class="tablesorter">
                 <thead>
-                    <th>Source</th>
+                    <th><span data-tooltip class="has-tip" title="{{ mouseover_source}}">Source</span></th>
                     {% set currentPath = app.request.attributes.get('_route') %}
                     {% if currentPath=="elasticSearch_keyword" or currentPath=="elasticSearch_keyword_orderby" %}
-                        <th><a href="{{ path('elasticSearch_keyword_orderby',{'whatToSearch': whatToSearch, 'source': source, 'keyword': keyword, 'orderBy': 'score'}) }}">SVM</a></th>
-                        <th><a href="{{ path('elasticSearch_keyword_orderby',{'whatToSearch': whatToSearch, 'source': source, 'keyword': keyword, 'orderBy': 'svmConfidence'}) }}">Conf.</a></th>
-                        <th><a href="{{ path('elasticSearch_keyword_orderby',{'whatToSearch': whatToSearch, 'source': source, 'keyword': keyword, 'orderBy': 'pattern'}) }}">Pattern</a></th>
-                        <th><a href="{{ path('elasticSearch_keyword_orderby',{'whatToSearch': whatToSearch, 'source': source, 'keyword': keyword, 'orderBy': 'term'}) }}">Term</a></th>
-                        <th><a href="{{ path('elasticSearch_keyword_orderby',{'whatToSearch': whatToSearch, 'source': source, 'keyword': keyword, 'orderBy': 'rule'}) }}">Rule</a></th>
+                        <th><a href="{{ path('elasticSearch_keyword_orderby',{'whatToSearch': whatToSearch, 'source': source, 'keyword': keyword, 'orderBy': 'score'}) }}" {% if orderBy == "score"%} class="active"{% endif %} ><span data-tooltip class="has-tip" title="{{ mouseover_svm}}">SVM</span></a></th>
+                        <th><a href="{{ path('elasticSearch_keyword_orderby',{'whatToSearch': whatToSearch, 'source': source, 'keyword': keyword, 'orderBy': 'svmConfidence'}) }}" {% if orderBy == "svmConfidence"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_conf}}">Conf.</span></a></th>
+                        <th><a href="{{ path('elasticSearch_keyword_orderby',{'whatToSearch': whatToSearch, 'source': source, 'keyword': keyword, 'orderBy': 'pattern'}) }}" {% if orderBy == "pattern"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_pattern}}">Pattern</span></a></th>
+                        <th><a href="{{ path('elasticSearch_keyword_orderby',{'whatToSearch': whatToSearch, 'source': source, 'keyword': keyword, 'orderBy': 'term'}) }}" {% if orderBy == "term"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_term}}">Term</span></a></th>
+                        <th><a href="{{ path('elasticSearch_keyword_orderby',{'whatToSearch': whatToSearch, 'source': source, 'keyword': keyword, 'orderBy': 'rule'}) }}" {% if orderBy == "rule"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_rule}}">Rule</span></a></th>
 
                     {% elseif currentPath=="search_interface_search_field_whatToSearch_entityType_source_entity" or currentPath=="search_interface_search_field_whatToSearch_entityType_source_entity_orderby"%}
 
-                        <th><a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field': field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'score'}) }}">SVM</a></th>
-                        <th><a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field': field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'svmConfidence'}) }}">Conf.</a></th>
-                        <th><a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field': field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'pattern'}) }}">Pattern</a></th>
-                        <th><a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field': field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'term'}) }}">Term</a></th>
-                        <th><a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field': field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'rule'}) }}">Rule</a></th>
+                        <th><a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field': field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'score'}) }}" {% if orderBy == "score"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_svm}}">SVM</span></a></th>
+                        <th><a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field': field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'svmConfidence'}) }}" {% if orderBy == "svmConfidence"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_conf}}">Conf.</span></a></th>
+                        <th><a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field': field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'pattern'}) }}" {% if orderBy == "pattern"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_pattern}}">Pattern</span></a></th>
+                        <th><a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field': field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'term'}) }}" {% if orderBy == "term"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_term}}">Term</span></a></th>
+                        <th><a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field': field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'rule'}) }}" {% if orderBy == "rule"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_rule}}">Rule</span></a></th>
 
 
                     {% endif %}
@@ -112,21 +115,20 @@
                                             <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/></a>
                                         </span>
                                     </td>
+                                    {% set tooltip =  "<div id='sticky"~tooltipCounter~"' class='atip' >Pubmed link: <a href='"~link ~"'>"~link~"</a><br>Pubmed Id: "~ pmidCut ~"</div>" %}
+                                    {% set tooltipCounter = tooltipCounter + 1 %}
+                                    {% set stringStickyTooltip = stringStickyTooltip ~ tooltip  %}
                                 {% elseif kind == "nda" %}
-                                    {% set link="http://www.fda.gov" %}
+                                    {% set link="http://www.accessdata.fda.gov/scripts/cder/drugsatfda/index.cfm" %}
                                     {% set imageRoute = 'images/nda.png' %}
                                     <td class="center">
-                                        <span data-tooltip='sticky{{ tooltipCounter }}'>
-                                            <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/></a>
-                                        </span>
+                                        <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/ alt="FDA New Drug Approvals (NDAs)" title="FDA New Drug Approvals (NDAs)"></a>
                                     </td>
                                 {% elseif kind == "epar" %}
-                                    {% set link="http://www.fda.gov" %}
+                                    {% set link="www.ema.europa.eu/ema/index.jsp?curl=pages/medicines/landing/epar_search.jsp" %}
                                     {% set imageRoute = 'images/epar.png' %}
                                     <td class="center">
-                                        <span data-tooltip='sticky{{ tooltipCounter }}'>
-                                            <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/></a>
-                                        </span>
+                                            <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/ alt="European Public Assessment Reports (EPARs)" title="European Public Assessment Reports (EPARs)"></a>
                                     </td>
                                 {% endif %}
                                 {% set arrayText= text | highlightEntitiesDocumentsKeywords (result.getSource['sentenceId'],keyword,field,whatToSearch, source, entityType, tooltipCounter) %}
@@ -157,23 +159,38 @@
                 </tbody>
             </table>
             <!-- here pagination block for documents  -->
-                <div class="pagination">
-                    {{ simple_paginator_render(
-                        'elasticSearch_keyword', 'documents',
-                            {
-                                'routeParams' : {'keyword' : keyword, 'whatToSearch' : whatToSearch, 'source' : source},
-                                'container_class' : 'pagination'
-                            }
-                        )
-                    }}
-                </div>
+                {% set currentPath = app.request.attributes.get('_route') %}
+                {{ currentPath }}
+                {% if currentPath == "elasticSearch_keyword" or currentPath=="elasticSearch_keyword_orderby" %}
+                    <div class="pagination">
+                        {{ simple_paginator_render(
+                            'elasticSearch_keyword_orderby', 'documents',
+                                {
+                                    'routeParams' : {'keyword' : keyword, 'whatToSearch' : whatToSearch, 'source' : source, 'orderBy' : orderBy},
+                                    'container_class' : 'pagination'
+                                }
+                            )
+                        }}
+                    </div>
+                {% elseif currentPath=="search_interface_search_field_whatToSearch_entityType_source_entity" or currentPath=="search_interface_search_field_whatToSearch_entityType_source_entity_orderby" %}
+                    <div class="pagination">
+                        {{ simple_paginator_render(
+                            'search_interface_search_field_whatToSearch_entityType_source_entity_orderby', 'documents',
+                                {
+                                    'routeParams' : {'field' : field, 'entityType' : entityType, 'entityName' : keyword, 'whatToSearch' : whatToSearch, 'source' : source, 'orderBy' : orderBy},
+                                    'container_class' : 'pagination'
+                                }
+                            )
+                        }}
+                    </div>
+                {% endif %}
             </div>
         {% endif %}
         {% if resultSetAbstracts | length != 0 %}
             {% if resultSetAbstracts.getTotalHits != 0 %}
                 <div id="abstractsResults">
                     <a name="abstracts"></a>
-                    <h3>Ranked Abstracts for "<span class="underline">{{ keyword }}</span>" keyword</h3>
+                    <h3>Ranked Abstracts for "<span class="underline">{{ keyword }}</span>" keyword search</h3>
                     <div class="btmspc-dbl">
                         <small>
                             <em>
@@ -184,41 +201,43 @@
                             <a class="curated" href="#"> </a>
                         </small>
                     </div>
-                    <div class="results-summary">
-                        <table>
+                     <div class="results-summary">
+                    {% set totalHits = resultSetAbstracts.getTotalHits %}
+                    {% set scoreToShow = orderBy | getScoreToShow %}
+                    <table>
+                        <tr>
+                            <td><strong>Total of mentions displayed:</strong> {{ hitsShowed }}</td>
+                            <td><strong>Max. {{scoreToShow}} score:</strong> {{ resultSetAbstracts[0].getSource[orderBy] |number_format(2) }}</td>
+                            <td><strong>Minim. {{scoreToShow}} score:</strong> {% set last_index = resultSetAbstracts | length -1 %}{{ resultSetAbstracts[last_index].getSource[orderBy] |number_format(2) }}</td>
+                            <td><strong>{{scoreToShow}} mean:</strong> {{ meanScore | number_format(2) }}</td>
+                            <td><strong>{{scoreToShow}} median:</strong> {{ medianScore | number_format(2) }}</td>
+                        </tr>
+                        {% if totalHits > 150 %}
                             <tr>
-                                <td>Total of mentions:</td>
-                                <td>{{ resultSetAbstracts.getTotalHits }} (Displayed first 150. Click here to display the {{ resultSetAbstracts.getTotalHits }})</td>
+                                {% set totalHits = resultSetAbstracts.getTotalHits %}
+                                <td colspan="5"><strong>Total of mentions:</strong> {{ totalHits }}. (All above scores are for the {{hitsShowed}} displayed hits). <br/>Click here to display all results</td>
                             </tr>
-                            <tr>
-                                <td>Max. score:</td>
-                                <td>{{ resultSetAbstracts[0].getSource["hepval"] |number_format(2) }}</td>
-                            </tr>
-                            <tr>
-                                <td>Min. score:</td>
-                                {% set last_index = resultSetAbstracts | length -1 %}
-                                <td>{{ resultSetAbstracts[last_index].getSource["hepval"] |number_format(2) }}</td>
-                            </tr>
-                        </table>
-                    </div>
+                        {% endif %}
+                    </table>
+                </div>
                     <div class="clear-both"></div>
                     <table id="tableResults" class="tablesorter">
                         <thead>
-                            <th>Source</th>
+                            <th><span data-tooltip class="has-tip" title="{{ mouseover_source}}">Source</span></th>
                             {% set currentPath = app.request.attributes.get('_route') %}
                             {% if currentPath=="elasticSearch_keyword" or currentPath=="elasticSearch_keyword_orderby" %}
-                                <th><a href="{{ path('elasticSearch_keyword_orderby',{'whatToSearch': whatToSearch, 'source': source, 'keyword': keyword, 'orderBy': 'score'}) }}">SVM</a></th>
-                                <th><a href="{{ path('elasticSearch_keyword_orderby',{'whatToSearch': whatToSearch, 'source': source, 'keyword': keyword, 'orderBy': 'svmConfidence'}) }}">Conf.</a></th>
-                                <th><a href="{{ path('elasticSearch_keyword_orderby',{'whatToSearch': whatToSearch, 'source': source, 'keyword': keyword, 'orderBy': 'pattern'}) }}">Pattern</a></th>
-                                <th><a href="{{ path('elasticSearch_keyword_orderby',{'whatToSearch': whatToSearch, 'source': source, 'keyword': keyword, 'orderBy': 'term'}) }}">Term</a></th>
-                                <th><a href="{{ path('elasticSearch_keyword_orderby',{'whatToSearch': whatToSearch, 'source': source, 'keyword': keyword, 'orderBy': 'rule'}) }}">Rule</a></th>
+                                <th><a href="{{ path('elasticSearch_keyword_orderby',{'whatToSearch': whatToSearch, 'source': source, 'keyword': keyword, 'orderBy': 'score'}) }}" {% if orderBy == "score"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_svm}}">SVM</span></a></th>
+                                <th><a href="{{ path('elasticSearch_keyword_orderby',{'whatToSearch': whatToSearch, 'source': source, 'keyword': keyword, 'orderBy': 'svmConfidence'}) }}" {% if orderBy == "svmConfidence"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_conf}}">Conf.</span></a></th>
+                                <th><a href="{{ path('elasticSearch_keyword_orderby',{'whatToSearch': whatToSearch, 'source': source, 'keyword': keyword, 'orderBy': 'pattern'}) }}" {% if orderBy == "pattern"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_pattern}}">Pattern</span></a></th>
+                                <th><a href="{{ path('elasticSearch_keyword_orderby',{'whatToSearch': whatToSearch, 'source': source, 'keyword': keyword, 'orderBy': 'term'}) }}" {% if orderBy == "term"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_term}}">Term</span></a></th>
+                                <th><a href="{{ path('elasticSearch_keyword_orderby',{'whatToSearch': whatToSearch, 'source': source, 'keyword': keyword, 'orderBy': 'rule'}) }}" {% if orderBy == "rule"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_rule}}">Rule</span></a></th>
                             {% elseif currentPath=="search_interface_search_field_whatToSearch_entityType_source_entity" or currentPath=="search_interface_search_field_whatToSearch_entityType_source_entity_orderby"%}
 
-                                <th><a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field': field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'score'}) }}">SVM</a></th>
-                                <th><a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field': field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'svmConfidence'}) }}">Conf.</a></th>
-                                <th><a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field': field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'pattern'}) }}">Pattern</a></th>
-                                <th><a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field': field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'term'}) }}">Term</a></th>
-                                <th><a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field': field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'rule'}) }}">Rule</a></th>
+                                <th><a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field': field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'score'}) }}" {% if orderBy == "score"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_svm}}">SVM</span></a></th>
+                                <th><a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field': field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'svmConfidence'}) }}" {% if orderBy == "svmConfidence"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_conf}}">Conf.</span></a></th>
+                                <th><a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field': field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'pattern'}) }}" {% if orderBy == "pattern"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_pattern}}">Pattern</span></a></th>
+                                <th><a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field': field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'term'}) }}" {% if orderBy == "term"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_term}}">Term</span></a></th>
+                                <th><a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field': field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'rule'}) }}" {% if orderBy == "rule"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_rule}}">Rule</span></a></th>
                             {% endif %}
                             <th>Sentence</th>
                         </thead>
@@ -302,9 +321,9 @@
                     <!-- here pagination block for abstracts -->
                     <div class="pagination">
                         {{ simple_paginator_render(
-                            'elasticSearch_keyword', 'abstracts',
+                            'elasticSearch_keyword_orderby', 'abstracts',
                                 {
-                                    'routeParams' : {'keyword' : keyword, 'whatToSearch' : whatToSearch, 'source' : source},
+                                    'routeParams' : {'keyword' : keyword, 'whatToSearch' : whatToSearch, 'source' : source, 'orderBy' : orderBy},
                                     'container_class' : 'pagination'
                                 }
                             )

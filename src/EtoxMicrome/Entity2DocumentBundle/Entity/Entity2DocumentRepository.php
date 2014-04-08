@@ -140,15 +140,30 @@ class Entity2DocumentRepository extends EntityRepository
     {//("hepatotoxicity","pubmed","CompoundDict",arrayEntityId)
         $valToSearch=$this->getValToSearch($field);//"i.e hepval, embval... etc"
         //We have to create a query that searchs all over the entityIds inside the $arrayEntityId
-        $orderBy=$this->getOrderBy($orderBy, $valToSearch);
-        if ($orderBy=="hepval"){
-            $orderBy="relationScore";
+        if($orderBy=="term"){
+            $orderBy="term asc";
+        }
+        elseif($orderBy=="relationType"){
+            $orderBy="relationType asc";
+        }
+        elseif($orderBy=="compoundName"){
+            $orderBy="compoundName asc";
+        }
+        elseif($orderBy=="relationScore"){
+            $orderBy="relationScore desc";
+        }elseif($orderBy=="curation"){
+            $orderBy="curation desc";
+        }else{
+            $orderBy=$this->getOrderBy($orderBy, $valToSearch);
+            if ($orderBy=="hepval"){
+                $orderBy="relationScore asc";
+            }
         }
         if($source=="all"){
             $sql="SELECT c2t2d
             FROM EtoxMicromeEntity2DocumentBundle:Compound2Term2Document c2t2d
             WHERE c2t2d.compoundName IN (:arrayEntityName)
-            ORDER BY c2t2d.$orderBy desc, c2t2d.hepval
+            ORDER BY c2t2d.$orderBy, c2t2d.hepval desc
             ";
             $query = $this->_em->createQuery($sql);
             $query->setParameter("arrayEntityName", $arrayEntityName);
@@ -157,13 +172,12 @@ class Entity2DocumentRepository extends EntityRepository
                 FROM EtoxMicromeEntity2DocumentBundle:Compound2Term2Document c2t2d
                 JOIN c2t2d.document d
                 WHERE c2t2d.compoundName IN (:arrayEntityName) AND d.kind = :source
-                ORDER BY c2t2d.$orderBy desc, c2t2d.hepval
+                ORDER BY c2t2d.$orderBy , c2t2d.hepval desc
             ";
             $query = $this->_em->createQuery($sql);
             $query->setParameter("arrayEntityName", $arrayEntityName);
             $query->setParameter("source", $source);
         }
-
         return $query;
 
     }
@@ -178,15 +192,30 @@ class Entity2DocumentRepository extends EntityRepository
         //Same method as getCompound2TermRelationsDQL but we are searching for terms instead of compounds!!  REFACTOR IT!!!!!
         $valToSearch=$this->getValToSearch($field);//"i.e hepval, embval... etc"
         //We have to create a query that searchs all over the entityIds inside the $arrayEntityId
-        $orderBy=$this->getOrderBy($orderBy, $valToSearch);
-        if ($orderBy=="hepval"){
-            $orderBy="relationScore";
+        if($orderBy=="term"){
+            $orderBy="term asc";
+        }
+        elseif($orderBy=="relationType"){
+            $orderBy="relationType asc";
+        }
+        elseif($orderBy=="compoundName"){
+            $orderBy="compoundName asc";
+        }
+        elseif($orderBy=="relationScore"){
+            $orderBy="relationScore desc";
+        }elseif($orderBy=="curation"){
+            $orderBy="curation desc";
+        }else{
+            $orderBy=$this->getOrderBy($orderBy, $valToSearch);
+            if ($orderBy=="hepval"){
+                $orderBy="relationScore desc";
+            }
         }
         if($source=="all"){
             $sql="SELECT c2t2d
             FROM EtoxMicromeEntity2DocumentBundle:Compound2Term2Document c2t2d
             WHERE c2t2d.term IN (:arrayEntityName)
-            ORDER BY c2t2d.$orderBy desc, c2t2d.hepval
+            ORDER BY c2t2d.$orderBy, c2t2d.hepval desc
             ";
             $query = $this->_em->createQuery($sql);
             $query->setParameter("arrayEntityName", $arrayEntityName);
@@ -195,7 +224,7 @@ class Entity2DocumentRepository extends EntityRepository
                 FROM EtoxMicromeEntity2DocumentBundle:Compound2Term2Document c2t2d
                 JOIN c2t2d.document d
                 WHERE c2t2d.term IN (:arrayEntityName) AND d.kind = :source
-                ORDER BY c2t2d.$orderBy desc, c2t2d.hepval
+                ORDER BY c2t2d.$orderBy, c2t2d.hepval desc
             ";
             $query = $this->_em->createQuery($sql);
             $query->setParameter("arrayEntityName", $arrayEntityName);
@@ -240,21 +269,32 @@ class Entity2DocumentRepository extends EntityRepository
         //We have to create a query that searchs all over the entityIds inside the $arrayEntityId
         $orderBy=$this->getOrderBy($orderBy, $valToSearch);
         if ($orderBy=="hepval" or $orderBy=="inductionScore"){
-            $orderBy="inductionScore";
+            $orderBy="inductionScore desc";
             $secondOrderBy="svmInduction";
         }elseif($orderBy=="inhibitionScore"){
+            $orderBy="inhibitionScore desc";
             $secondOrderBy="svmInhibition";
         }elseif($orderBy=="metabolismScore"){
+            $orderBy=="metabolismScore desc";
             $secondOrderBy="svmMetabolism";
         }elseif($orderBy=="cypsMention"){
+            $orderBy=="cypsMention asc";
+            $secondOrderBy="svmInduction";
+        }elseif($orderBy=="patternRelation"){
+            $orderBy=="patternRelation asc";
+            $secondOrderBy="svmInduction";
+        }elseif($orderBy=="compoundName"){
+            $orderBy=="compoundName asc";
+            $secondOrderBy="svmInduction";
+        }elseif($orderBy=="curation"){
+            $orderBy="curation desc";
             $secondOrderBy="svmInduction";
         }
-
         if($source=="all"){
             $sql="SELECT c2c2d
             FROM EtoxMicromeEntity2DocumentBundle:Compound2Cyp2Document c2c2d
             WHERE c2c2d.cypsMention IN (:arrayEntityName)
-            ORDER BY c2c2d.$orderBy desc, c2c2d.$secondOrderBy desc
+            ORDER BY c2c2d.$orderBy, c2c2d.$secondOrderBy desc
             ";
             $query = $this->_em->createQuery($sql);
             $query->setParameter("arrayEntityName", $arrayEntityName);
@@ -263,7 +303,7 @@ class Entity2DocumentRepository extends EntityRepository
             FROM EtoxMicromeEntity2DocumentBundle:Compound2Cyp2Document c2c2d
             JOIN c2c2d.document d
             WHERE c2c2d.cypsMention IN (:arrayEntityName) AND d.kind= :source
-            ORDER BY c2c2d.$orderBy desc, c2c2d.$secondOrderBy desc
+            ORDER BY c2c2d.$orderBy, c2c2d.$secondOrderBy desc
             ";
             $query = $this->_em->createQuery($sql);
             $query->setParameter("arrayEntityName", $arrayEntityName);
@@ -283,17 +323,29 @@ class Entity2DocumentRepository extends EntityRepository
 
     public function getCytochrome2CompoundRelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy)
     {//("hepatotoxicity","pubmed","CompoundDict",arrayEntityId)
-        $valToSearch=$this->getValToSearch($field);//"i.e hepval, embval... etc"
+       $valToSearch=$this->getValToSearch($field);//"i.e hepval, embval... etc"
         //We have to create a query that searchs all over the entityIds inside the $arrayEntityId
         $orderBy=$this->getOrderBy($orderBy, $valToSearch);
         if ($orderBy=="hepval" or $orderBy=="inductionScore"){
-            $orderBy="inductionScore";
+            $orderBy="inductionScore desc";
             $secondOrderBy="svmInduction";
         }elseif($orderBy=="inhibitionScore"){
+            $orderBy="inhibitionScore desc";
             $secondOrderBy="svmInhibition";
         }elseif($orderBy=="metabolismScore"){
+            $orderBy=="metabolismScore desc";
             $secondOrderBy="svmMetabolism";
         }elseif($orderBy=="cypsMention"){
+            $orderBy=="cypsMention asc";
+            $secondOrderBy="svmInduction";
+        }elseif($orderBy=="patternRelation"){
+            $orderBy=="patternRelation asc";
+            $secondOrderBy="svmInduction";
+        }elseif($orderBy=="compoundName"){
+            $orderBy=="compoundName asc";
+            $secondOrderBy="svmInduction";
+        }elseif($orderBy=="curation"){
+            $orderBy="curation desc";
             $secondOrderBy="svmInduction";
         }
 
@@ -301,7 +353,7 @@ class Entity2DocumentRepository extends EntityRepository
             $sql="SELECT c2c2d
             FROM EtoxMicromeEntity2DocumentBundle:Compound2Cyp2Document c2c2d
             WHERE c2c2d.compoundName IN (:arrayEntityName)
-            ORDER BY c2c2d.$orderBy desc, c2c2d.$secondOrderBy desc
+            ORDER BY c2c2d.$orderBy, c2c2d.$secondOrderBy desc
             ";
             $query = $this->_em->createQuery($sql);
             $query->setParameter("arrayEntityName", $arrayEntityName);
@@ -310,7 +362,7 @@ class Entity2DocumentRepository extends EntityRepository
             FROM EtoxMicromeEntity2DocumentBundle:Compound2Cyp2Document c2c2d
             JOIN c2c2d.document d
             WHERE c2c2d.compoundName IN (:arrayEntityName) AND d.kind= :source
-            ORDER BY c2c2d.$orderBy desc, c2c2d.$secondOrderBy desc
+            ORDER BY c2c2d.$orderBy, c2c2d.$secondOrderBy desc
             ";
             $query = $this->_em->createQuery($sql);
             $query->setParameter("arrayEntityName", $arrayEntityName);
@@ -355,14 +407,22 @@ class Entity2DocumentRepository extends EntityRepository
         $valToSearch=$this->getValToSearch($field);//"i.e hepval, embval... etc"
         //We have to create a query that searchs all over the entityIds inside the $arrayEntityId
         $orderBy=$this->getOrderBy($orderBy, $valToSearch);
-        if ($orderBy=="hepval"){
-            $orderBy="relationScore";
+        if ($orderBy=="hepval" or $orderBy=="relationScore"){
+            $orderBy="relationScore DESC";
+        }elseif($orderBy=="liverMarkerName"){
+            $orderBy="liverMarkerName ASC";
+        }elseif($orderBy=="relationType"){
+            $orderBy="relationType ASC";
+        }elseif($orderBy=="relationQualifier"){
+            $orderBy="relationQualifier ASC";
+        }elseif($orderBy=="curation"){
+            $orderBy="curation desc";
         }
         if($source=="all"){
             $sql="SELECT c2m2d
             FROM EtoxMicromeEntity2DocumentBundle:Compound2Marker2Document c2m2d
             WHERE c2m2d.liverMarkerName IN (:arrayEntityName)
-            ORDER BY c2m2d.$orderBy DESC
+            ORDER BY c2m2d.$orderBy
             ";
             $query = $this->_em->createQuery($sql);
             $query->setParameter("arrayEntityName", $arrayEntityName);
@@ -371,7 +431,7 @@ class Entity2DocumentRepository extends EntityRepository
             FROM EtoxMicromeEntity2DocumentBundle:Compound2Marker2Document c2m2d
             JOIN c2m2d.document d
             WHERE c2m2d.liverMarkerName IN (:arrayEntityName) and d.kind=:source
-            ORDER BY c2m2d.$orderBy DESC
+            ORDER BY c2m2d.$orderBy
             ";
             $query = $this->_em->createQuery($sql);
             $query->setParameter("arrayEntityName", $arrayEntityName);
@@ -392,14 +452,22 @@ class Entity2DocumentRepository extends EntityRepository
         $valToSearch=$this->getValToSearch($field);//"i.e hepval, embval... etc"
         //We have to create a query that searchs all over the entityIds inside the $arrayEntityId
         $orderBy=$this->getOrderBy($orderBy, $valToSearch);
-        if ($orderBy=="hepval"){
-            $orderBy="relationScore";
+        if ($orderBy=="hepval" or $orderBy=="relationScore"){
+            $orderBy="relationScore DESC";
+        }elseif($orderBy=="liverMarkerName"){
+            $orderBy="liverMarkerName ASC";
+        }elseif($orderBy=="relationType"){
+            $orderBy="relationType ASC";
+        }elseif($orderBy=="relationQualifier"){
+            $orderBy="relationQualifier ASC";
+        }elseif($orderBy=="curation"){
+            $orderBy="curation desc";
         }
         if($source=="all"){
             $sql="SELECT c2m2d
             FROM EtoxMicromeEntity2DocumentBundle:Compound2Marker2Document c2m2d
             WHERE c2m2d.compoundName IN (:arrayEntityName)
-            ORDER BY c2m2d.$orderBy DESC
+            ORDER BY c2m2d.$orderBy
             ";
             $query = $this->_em->createQuery($sql);
             $query->setParameter("arrayEntityName", $arrayEntityName);
@@ -408,7 +476,7 @@ class Entity2DocumentRepository extends EntityRepository
             FROM EtoxMicromeEntity2DocumentBundle:Compound2Marker2Document c2m2d
             JOIN c2m2d.document d
             WHERE c2m2d.compoundName IN (:arrayEntityName) and d.kind=:source
-            ORDER BY c2m2d.$orderBy DESC
+            ORDER BY c2m2d.$orderBy
             ";
             $query = $this->_em->createQuery($sql);
             $query->setParameter("arrayEntityName", $arrayEntityName);
@@ -691,34 +759,77 @@ class Entity2DocumentRepository extends EntityRepository
         }
 
         if($qualifier=="Cytochrome"){
+            $addWarning=false;
+            $addAmbigous=false;
+            $message="getEntitySummary for cytochrome";
             $cytochrome2Document=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Cytochrome2Document')->findOneById($entity2DocumentId);
             //ld($cytochrome2Document);
             if ($cytochrome2Document!=null){
                 $cytochromeName=$cytochrome2Document->getCypsMention();
+                //ld($cytochromeName);
                 $cytochrome=$em->getRepository('EtoxMicromeEntityBundle:Cytochrome')->findOneByName($cytochromeName);
-
-                if ($cytochrome==null){
-                    //If we haven't found a cytochrome, we need to look with the canonical vs. canonical field of the cytochromes. But we need to see first if there is a specie commentioned in the document, if it is, we use it in the search, if don't we use the default specie, Homo sapiens. If there are more than one we choose rat
-                    //Firs we look if there's a specie commentioned in this document:
-                    $documentId=$cytochrome2Document->getDocument()->getId();
-                    $specie2documentArray=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Specie2Document')->findByDocument($documentId);
-                    if(count($specie2documentArray)==0){
-                        $ncbiTaxId=9606;//Homo sapiens
-                    }elseif(count($specie2documentArray)==1){
-                        $specie2document=$specie2documentArray[0];
-                        $ncbiTaxId=$specie2document->getSpecie()->getNcbiTaxId();
-                    }else{//If there are more than one specie co-mentioned in the document we choose rat
-                        $ncbiTaxId=10116;//rat
-                    }
-                    //Now we have the specie and we can search for the canonical
-                    //Firs we get the canonical to search with
-                    $canonical=$cytochrome2Document->getCypsCanonical();
-                    $cytochrome=$em->getRepository('EtoxMicromeEntityBundle:Cytochrome')->findOneByCanonicalTax($canonical,$ncbiTaxId);
+                //ld($cytochrome);
+                //First we search inside the cytochrome_dictionary for the name if nothing is found we search for the canonical: In both cases we end up with a list of accessions
+                $arraycytochromes=$em->getRepository('EtoxMicromeEntityBundle:Cytochrome')->findByName($cytochromeName);
+                //ld($arraycytochromes);
+                if(count($arraycytochromes)==0){
+                    $arraycytochromes=$em->getRepository('EtoxMicromeEntityBundle:Cytochrome')->findByCanonical($cytochromeName);
                 }
+                $arrayTaxIds=array();
+                foreach($arraycytochromes as $cytochrome){
+                    $arrayTaxIds[]=$cytochrome->getTax();
+                }
+                //ld($arrayTaxIds);
+
+
+
+                //Now we have to search the taxId comentioned inside this sentence:
+                $documentId=$cytochrome2Document->getDocument()->getId();
+                $specie2documentArray=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Specie2Document')->findByDocument($documentId);
+                if(count($specie2documentArray)==0){
+                    $ncbiTaxId=9606;//Homo sapiens
+                }elseif(count($specie2documentArray)==1){
+                    $specie2Document=$specie2documentArray[0];
+                    $ncbiTaxId=$specie2Document->getSpecie()->getNcbiTaxId();
+                    //Buscar si este ncbiTaxId se encuentra entre los taxid del array de cytochromes. Si existe lo seleccionamos. Si no existe seleccionamos humanos y añadimos warning. Mas adelante usaremos un web-service para recoger el mejor resultado de swissprot (o un outlink)
+                    $ncbiTaxIdIsInArray=$em->getRepository('EtoxMicromeEntityBundle:Cytochrome')->taxIdIsInArray($ncbiTaxId, $arraycytochromes);
+                    if($ncbiTaxIdIsInArray==false){
+                        $ncbiTaxId=9606;//Homo sapiens
+                        $addWarning=true;
+                    }
+                }else{
+                    //If there are more than one taxId we choose the
+                    if (count($arraycytochromes)==0){
+                        $ncbiTaxId=9606;
+                        $addWarning=true;
+                    }else{
+                        $arrayCytochromesSortedByRanking=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Specie2Document')->getBetterRanked($arraycytochromes);
+                        //ld($arrayCytochromesSortedByRanking);
+                        $bestMatch=$arrayCytochromesSortedByRanking[0];
+                        $ncbiTaxId=$bestMatch->getTax();
+                        $stringAmbiguos="";
+                        $counter=1;
+                        foreach($arrayCytochromesSortedByRanking as $cytochromeSorted){
+                            if($counter!=1){
+                                $accession=$cytochromeSorted->getEntityId();
+                                $stringAmbiguos=$stringAmbiguos . "<a href='http://www.uniprot.org/uniprot/$accession' target='_blank'> $accession</a>,";
+                            }
+                            $counter++;
+                        }
+                        $addAmbigous=true;
+                    }
+                    //We return the first $ncbiTaxId from the sorted array which is the taxId for the accession with the biggest ranking. Also return a field with key "Ambigous: list of accessions linked to http://www.uniprot.org/uniprot/accessionNumber "
+
+
+                }
+
+
+
+
                 if ($cytochrome!=null){
                     $entityId=$cytochrome->getEntityId();
                     if($entityId!=""){
-                        $dictionary["Entity Id"]=$entityId;
+                        $dictionary["Uniprot Ac."]="<a href='http://www.uniprot.org/uniprot/$entityId' target='_blank'> $entityId</a>,";
                     }
                     $name=$cytochrome->getName();
                     if($name!=""){
@@ -730,7 +841,10 @@ class Entity2DocumentRepository extends EntityRepository
                     }
                     $tax=$cytochrome->getTax();
                     if($tax!=""){
-                        $dictionary["Tax"]=$tax;
+                        $dictionary["NCBI taxId"]=$ncbiTaxId;
+                    }
+                    if($addWarning){
+                            $dictionary['Warning']="Potential CYPs mention and species association error!";
                     }
                     $score=$cytochrome->getScore();
                     if($score!=""){
@@ -738,7 +852,12 @@ class Entity2DocumentRepository extends EntityRepository
                     }
                     $canonical=$cytochrome->getCanonical();
                     if($canonical!=""){
-                        $dictionary["Canonical"]=$canonical;
+                        //http://bioinformatics.charite.de/supercyp/index.php?site=cyp_drug_ia#cyp=3A4
+                        $sufix=substr($canonical, 3);
+                        $dictionary["Canonical"]="<a href='http://bioinformatics.charite.de/supercyp/index.php?site=cyp_drug_ia#cyp=$sufix' target='_blank'> $canonical</a>";
+                    }
+                    if ($addAmbigous){
+                        $dictionary['Ambigous']=$stringAmbiguos;
                     }
                 }
             }

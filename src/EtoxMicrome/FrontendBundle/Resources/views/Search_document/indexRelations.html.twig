@@ -27,7 +27,7 @@
                         </div>
                     {% endif %}
                 {% endif %}
-                <h3>Ranked sentences in Documents for {{foundFor}}: <span class="underline">{{ entityBackup }}</span></h3>
+                <h3>Ranked sentences in Documents for {{foundFor}}: <span class="underline">{{ entityBackup }}</span> search</h3>
                 <div class="btmspc-dbl">
                     <small>
                         <em>
@@ -40,55 +40,101 @@
                 </div>
                 <table id="tableResults" class="tablesorter">
                     <thead>
-                        <th>Source</th>
-                            {% if entityType=="Cytochrome" %}
-                                <th>
-                                    <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'cypsMention'}) }}" {% if orderBy == "cypsMention"%} class="active"{% endif %}
-                                    >Mention
-                                    </a>
-                                </th>
-                                <th>
-                                    <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'inductionScore'}) }}" {% if orderBy == "inductionScore"%} class="active"{% endif %}
-                                    >Induct.
-                                    </a>
-                                </th>
-                                <th>
-                                    <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'inhibitionScore'}) }}" {% if orderBy == "inhibitionScore"%} class="active"{% endif %}
-                                    >Inhibit
-                                    </a>
-                                </th>
-                                <th>
-                                    <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'metabolismScore'}) }}" {% if orderBy == "metabolismScore"%} class="active"{% endif %}
-                                    >Metabolism
-                                    </a>
-                                </th>
-                            {% endif %}
-                            {% if entityType=="CompoundDict" %}
-                                <th>
-                                    <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'compoundName'}) }}" {% if orderBy == "compoundName"%} class="active"{% endif %}
-                                    >Mention
-                                    </a>
-                                </th>
-                                <th>
-                                    <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'relationScore'}) }}" {% if orderBy == "relationScore"%} class="active"{% endif %}
-                                    >Score
-                                    </a>
-                                </th>
-                            {% endif %}
-                            {% if entityType=="Marker" %}
-                                <th>
-                                    <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'liverMarkerName'}) }}" {% if orderBy == "liverMarkerName"%} class="active"{% endif %}
-                                    >Marker name
-                                    </a>
-                                </th>
-                                <th>
-                                    <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'relationScore'}) }}" {% if orderBy == "relationScore"%} class="active"{% endif %}
-                                    >Rel. score
-                                    </a>
-                                </th>
-                            {% endif %}
+                        <th><span data-tooltip class="has-tip" title="{{ mouseover_source}}">Source</span></th>
 
-                       <th>Sentence</th>
+                        {% if entityType=="CompoundDict" %}
+                            <th>
+                                <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'compoundName'}) }}" {% if orderBy == "compoundName"%} class="active"{% endif %}
+                                ><span data-tooltip class="has-tip" title="{{ mouseover_compound_relation_compound}}">Compound</span>
+                                </a>
+                            </th>
+                            <th>
+                                <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'relationType'}) }}" {% if orderBy == "relationType"%} class="active"{% endif %}
+                                ><span data-tooltip class="has-tip" title="{{ mouseover_compound_relation_relation}}">Relation</span>
+                                </a>
+                            </th>
+                            <th>
+                                <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'term'}) }}" {% if orderBy == "term"%} class="active"{% endif %}
+                                ><span data-tooltip class="has-tip" title="{{ mouseover_compound_relation_term}}">Term</span>
+                                </a>
+                            </th>
+                            <th>
+                                <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'relationScore'}) }}" {% if orderBy == "relationScore"%} class="active"{% endif %}
+                                ><span data-tooltip class="has-tip" title="{{ mouseover_compound_relation_score}}">Score</span>
+                                </a>
+                            </th>
+                        {% endif %}
+                        {% if entityType=="Cytochrome" %}
+                            <th>
+                                <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'compoundName'}) }}" {% if orderBy == "compoundName"%} class="active"{% endif %}
+                                ><span data-tooltip class="has-tip" title="{{ mouseover_cytochrome_relation_compound }}">Compound</span>
+                                </a>
+                            </th>
+                            <th>
+                                <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'patternRelation'}) }}" {% if orderBy == "patternRelation"%} class="active"{% endif %}
+                                ><span data-tooltip class="has-tip" title="{{ mouseover_cytochrome_relation_relation}}">Relation</span>
+                                </a>
+                            </th>
+                            <th>
+                                <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'cypsMention'}) }}" {% if orderBy == "cypsMention"%} class="active"{% endif %}
+                                ><span data-tooltip class="has-tip" title="{{ mouseover_cytochrome_relation_cytochrome}}">CYP</span>
+                                </a>
+                            </th>
+                            <th>
+                                <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'inductionScore'}) }}" {% if orderBy == "inductionScore"%} class="active"{% endif %}
+                                ><span data-tooltip class="has-tip" title="{{ mouseover_cytochrome_relation_induction}}">Induct.</span>
+                                </a>
+                            </th>
+                            <th>
+                                <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'inhibitionScore'}) }}" {% if orderBy == "inhibitionScore"%} class="active"{% endif %}
+                                ><span data-tooltip class="has-tip" title="{{ mouseover_cytochrome_relation_inhibition}}">Inhib.</span>
+                                </a>
+                            </th>
+                            <th>
+                                <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'metabolismScore'}) }}" {% if orderBy == "metabolismScore"%} class="active"{% endif %}
+                                ><span data-tooltip class="has-tip" title="{{ mouseover_cytochrome_relation_metabolism}}">Metab.</span>
+                                </a>
+                            </th>
+                        {% endif %}
+                         {% if entityType=="Marker" %}
+                            <th>
+                                <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'compoundName'}) }}" {% if orderBy == "compoundName"%} class="active"{% endif %}
+                                ><span data-tooltip class="has-tip" title="{{ mouseover_marker_relation_compound}}">Compound</span>
+                                </a>
+                            </th>
+                            <th>
+                                <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'relationType'}) }}" {% if orderBy == "relationType"%} class="active"{% endif %}
+                                ><span data-tooltip class="has-tip" title="{{ mouseover_marker_relation_relation}}">Relation</span>
+                                </a>
+                            </th>
+                            <th>
+                                <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'liverMarkerName'}) }}" {% if orderBy == "liverMarkerName"%} class="active"{% endif %}
+                                ><span data-tooltip class="has-tip" title="{{ mouseover_marker_relation_marker}}">Marker</span>
+                                </a>
+                            </th>
+                            <th>
+                                <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'relationScore'}) }}" {% if orderBy == "relationScore"%} class="active"{% endif %}
+                                ><span data-tooltip class="has-tip" title="{{ mouseover_marker_relation_score}}">Score</span>
+                                </a>
+                            </th>
+                        {% endif %}
+                        <th>Sentence</th>
+                        <th>
+                            <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'relationQualifier'}) }}" {% if orderBy == "relationScore"%} class="active"{% endif %}
+                            >{% if entityType=="CompoundDict" %}
+                                <span data-tooltip class="has-tip" title="{{ mouseover_compound_relation_qualifier}}">Qualifier</span>
+                            {%elseif entityType=="Cytochrome"%}
+                                <span data-tooltip class="has-tip" title="{{ mouseover_cytochrome_relation_qualifier}}">Qualifier</span>
+                            {%elseif entityType=="Marker"%}
+                                <span data-tooltip class="has-tip" title="{{ mouseover_marker_relation_qualifier}}">Qualifier</span>
+                            {% endif %}
+                            </a>
+                        </th>
+                        <th>
+                            <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'curation'}) }}" {% if orderBy == "curation"%} class="active"{% endif %}
+                            ><span data-tooltip class="has-tip" title="{{ mouseover_relation_curation}}">Curation
+                            </a>
+                        </th>
                     </thead>
                     <tbody>
                         {% set contador = 1 %}
@@ -96,6 +142,49 @@
                             <tr class="document {{ cycle(['odd', 'even'], contador) }}">
                                 {% set contador = contador + 1 %}
                                 {% set kind = entity2Document.document.getKind %}
+                                {% set compoundName = entity2Document.compoundName %}
+                                {% if entityType=="CompoundDict" %}
+                                    {% set term = entity2Document.term %}
+                                    {% set relationType = entity2Document.relationType %}
+                                    {% if relationType=="UP" %}
+                                        {% set relationType = "INCREASE" %}
+                                    {% elseif relationType=="DOWN" %}
+                                        {% set relationType = "DECREASE" %}
+                                    {% endif %}
+                                    {% set relationScore = entity2Document.relationScore %}
+                                    {% set relationScore = relationScore|number_format(2) %}
+                                    {% set relationQualifier = entity2Document.relationQualifier %}
+                                    {% set curation=entity2Document.getCuration %}
+                                    {% if curation is empty %}
+                                        {% set curation=0 %}
+                                    {% endif %}
+                                    {% set className = entity2Document.getClassName %}
+                                    {% set curationHtml= curation | setCurationHtml(entity2Document.getId(), entityType, className) %}
+                                {% set relationEvidence = entity2Document.relationEvidence %}
+                                {%endif%}
+                                {% if entityType=="Cytochrome" %}
+                                    {% set term = entity2Document.cypsMention %}
+                                {%endif%}
+                                {% if entityType=="Marker" %}
+                                    {% set term = entity2Document.liverMarkerName %}
+                                    {% set relationType = entity2Document.relationType %}
+                                    {% if relationType=="UP" %}
+                                        {% set relationType = "INCREASE" %}
+                                    {% elseif relationType=="DOWN" %}
+                                        {% set relationType = "DECREASE" %}
+                                    {% endif %}
+                                    {% set relationScore = entity2Document.relationScore %}
+                                    {% set relationScore = relationScore|number_format(2) %}
+                                    {% set relationQualifier = entity2Document.relationQualifier %}
+                                    {% set relationEvidence = entity2Document.relationEvidence %}
+                                    {% set curation=entity2Document.getCuration %}
+                                    {% if curation is empty %}
+                                        {% set curation=0 %}
+                                    {% endif %}
+                                    {% set className = entity2Document.getClassName %}
+                                    {% set curationHtml= curation | setCurationHtml(entity2Document.getId(), entityType, className) %}
+                                {%endif%}
+
                                 {% if entityType=="Cytochrome" %}
                                     {% set inductionScore = entity2Document.inductionScore %}
                                     {% set inhibitionScore = entity2Document.inhibitionScore %}
@@ -103,24 +192,13 @@
                                     {% set patternRelation = entity2Document.patternRelation %}
                                     {% set relationQualifier = entity2Document.relationQualifier %}
                                     {% set cypsMention = entity2Document.cypsMention %}
+                                    {% set curation=entity2Document.getCuration %}
+                                    {% if curation is empty %}
+                                        {% set curation=0 %}
+                                    {% endif %}
+                                    {% set className = entity2Document.getClassName %}
+                                    {% set curationHtml= curation | setCurationHtml(entity2Document.getId(), entityType, className) %}
                                 {%endif%}
-
-                                {% if entityType=="CompoundDict" %}
-                                    {% set relationScore = entity2Document.relationScore %}
-                                    {% set relationScore = relationScore|number_format(2) %}
-                                    {% set relationQualifier = entity2Document.relationQualifier %}
-                                    {% set relationEvidence = entity2Document.relationEvidence %}
-                                    {% set compoundName = entity2Document.compoundName %}
-                                {%endif%}
-
-                                {% if entityType=="Marker" %}
-                                    {% set liverMarkerName = entity2Document.liverMarkerName %}
-                                    {% set relationScore = entity2Document.relationScore %}
-                                    {% set relationScore = relationScore|number_format(2) %}
-                                    {% set relationQualifier = entity2Document.relationQualifier %}
-                                    {% set relationEvidence = entity2Document.relationEvidence %}
-                                {%endif%}
-
                                 <td>
                                 {% if kind == "pubmed" %}
                                     {% set pmid=entity2Document.document.getUid %}
@@ -140,18 +218,41 @@
                                     {% set pmidCut = arrayPmid[1] %}
                                     {% set link="http://www.ncbi.nlm.nih.gov/pubmed/" ~ pmidCut %}
                                     {% set imageRoute = 'images/fulltext.png' %}
-                                    <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/></a>
+                                        <span data-tooltip='sticky{{ tooltipCounter }}'>
+                                            <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/></a>
+                                        </span>
+                                    {% set tooltip =  "<div id='sticky"~tooltipCounter~"' class='atip' >Pubmed link: <a href='"~link ~"'>"~link~"</a><br>Pubmed Id: "~ pmidCut ~"</div>" %}
+                                    {% set tooltipCounter = tooltipCounter + 1 %}
+                                    {% set stringStickyTooltip = stringStickyTooltip ~ tooltip  %}
                                 {% elseif kind == "nda" %}
-                                    {% set link="http://www.fda.gov" %}
+                                    {% set link="http://www.accessdata.fda.gov/scripts/cder/drugsatfda/index.cfm" %}
                                     {% set imageRoute = 'images/nda.png' %}
-                                    <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/></a>
+                                    <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/ alt="FDA New Drug Approvals (NDAs)" title="FDA New Drug Approvals (NDAs)"></a>
                                 {% elseif kind == "epar" %}
-                                    {% set link="http://www.fda.gov" %}
+                                    {% set link="www.ema.europa.eu/ema/index.jsp?curl=pages/medicines/landing/epar_search.jsp" %}
                                     {% set imageRoute = 'images/epar.png' %}
-                                    <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/></a>
+                                     <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/ alt="European Public Assessment Reports (EPARs)" title="European Public Assessment Reports (EPARs)"></a>
                                 {% endif %}
                                 </td>
+                                <td class="center">
+                                    {{ compoundName }}
+                                </td>
+                                 {% if entityType=="CompoundDict" or entityType=="Marker" %}
+                                    <td class="center">
+                                        {{ relationType }}
+                                    </td>
+                                    <td class="center">
+                                        {{ term }}
+                                    </td>
+                                    <td class="center">
+                                        {{ relationScore }}
+                                    </td>
+                                 {% endif %}
+
                                 {% if entityType=="Cytochrome" %}
+                                    <td class="center">
+                                        {{ patternRelation }}
+                                    </td>
                                     <td class="center">
                                         {{ cypsMention }}
                                     </td>
@@ -165,23 +266,6 @@
                                         {{ metabolismScore | raw }}
                                     </td>
 
-                                {% endif %}
-                                {% if entityType=="CompoundDict" %}
-                                    <td class="center">
-                                        {{ compoundName |raw }}
-                                    </td>
-                                    <td class="center">
-                                        {{ relationScore |raw }}
-                                    </td>
-                                {% endif %}
-
-                                {% if entityType=="Marker" %}
-                                    <td class="center">
-                                        {{ liverMarkerName |raw }}
-                                    </td>
-                                    <td class="center">
-                                        {{ relationScore |raw }}
-                                    </td>
                                 {% endif %}
 
                                 {% set text=entity2Document.document.getText %}
@@ -205,19 +289,22 @@
                                         {{ text | raw }}
                                     {% endif %}
                                     <br/>
-                                    {% if relationEvidence is defined%}
-                                        [Rel. evidence: {{ relationEvidence }}]
-                                    {% endif %}
-                                    <br/>
-                                    {% if relationQualifier is defined%}
-                                        [Rel. qualifier: {{ relationQualifier }}]
-                                    {% endif %}
-                                    <br/>
-                                    {% if patternRelation is defined%}
-                                        [Pattern relation: {{ patternRelation }}]
-                                    {% endif %}
-                                    <br/>
+                                    {% if entityType=="CompoundDict" or entityType=="Marker" %}
+                                        <small>
+                                            [Rel. evidence: {{ relationEvidence }}]
 
+                                        </small>
+                                    {% endif %}
+                                </td>
+                                <td class="center">
+                                    {{ relationQualifier }}
+                                </td>
+                                <td class="center">
+                                    <small>
+                                        <div id="free-curation-{{ entity2Document.getId }}">
+                                            {{ curationHtml | raw }}
+                                        </div>
+                                    </small>
                                 </td>
                             </tr>
                         {% endfor %}
@@ -247,7 +334,7 @@
                         <a href="#documents" id="jumpToDocuments">(View sentences)</a>
                     </div>
                 {% endif %}
-                <h3>Ranked Abstracts for {{foundFor}}: <span class="underline">{{ entityBackup }}</span></h3>
+                <h3>Ranked Abstracts for {{foundFor}}: <span class="underline">{{ entityBackup }}</span> search</h3>
                 <div class="btmspc-dbl">
                     <small>
                         <em>
@@ -261,7 +348,7 @@
 
                 <table id="tableResults" class="tablesorter">
                     <thead>
-                        <th>Source</th>
+                        <th><span data-tooltip class="has-tip" title="{{ mouseover_source}}">Source</span></th>
                         <th>
                             <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'score'}) }}" {% if orderBy == "score"%} class="active"{% endif %}
                             >SVM

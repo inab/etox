@@ -159,4 +159,13 @@ class CytochromeRepository extends EntityRepository
         $entity=$cytochrome[0];
         return $entity;
     }
+    public function taxIdIsInArray($ncbiTaxId, $arraycytochromes){
+        $isInArray=false;
+        foreach($arraycytochromes as $cytochrome){
+            if($ncbiTaxId==$cytochrome->getTax()){
+                $isInArray==true;
+            }
+        }
+        return $isInArray;
+    }
 }

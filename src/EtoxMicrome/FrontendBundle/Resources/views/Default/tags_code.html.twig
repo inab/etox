@@ -1,27 +1,27 @@
 {% set arrayCompounds=['CompoundDict','CompoundMesh','CompoundNer'] %}
 <dl class="tabs">
   {% if entityType=="keyword" %}
-    <dd class="active"><a href="#keywords" name="keyword">Keywords</a></dd>
+    <dd class="active"><a href="#keywords" name="keyword"><span data-tooltip class="has-tip" title="Free text search">Keywords</span></a></dd>
   {% else %}
-    <dd><a href="#keywords" name="keyword">Keywords</a></dd>
+    <dd><a href="#keywords" name="keyword"><span data-tooltip class="has-tip" title="Free text search">Keywords</span></a></dd>
   {% endif %}
 
   {% if entityType in arrayCompounds %}
-    <dd class="active"><a href="#compounds" name="compoundDict">Compounds</a></dd>
+    <dd class="active"><a href="#compounds" name="compoundDict"><span data-tooltip class="has-tip" title="Chemical compound search">Compounds</span></a></dd>
   {% else %}
-    <dd><a href="#compounds" name="compoundDict">Compounds</a></dd>
+    <dd><a href="#compounds" name="compoundDict"><span data-tooltip class="has-tip" title="Chemical compound search">Compounds</span></a></dd>
   {% endif %}
 
   {% if entityType=="Cytochrome" %}
-    <dd class="active"><a href="#cytochromes" name="cytochrome">Cytochromes</a></dd>
+    <dd class="active"><a href="#cytochromes" name="cytochrome"><span data-tooltip class="has-tip" title="Cytochromes P450 (CYPs) search">Cytochromes</span></a></dd>
   {% else %}
-    <dd><a href="#cytochromes" name="cytochrome">Cytochromes</a></dd>
+    <dd><a href="#cytochromes" name="cytochrome"><span data-tooltip class="has-tip" title="Cytochromes P450 (CYPs) search">Cytochromes</span></a></dd>
   {% endif %}
 
   {% if entityType=="Marker" %}
-    <dd class="active"><a href="#markers" name="marker">Markers</a></dd>
+    <dd class="active"><a href="#markers" name="marker"><span data-tooltip class="has-tip" title="Liver toxicity marker search">Markers</span></a></dd>
   {% else %}
-    <dd class="hide-for-small"><a href="#markers" name="marker">Markers</a></dd>
+    <dd class="hide-for-small"><a href="#markers" name="marker"><span data-tooltip class="has-tip" title="Liver toxicity marker search">Markers</span></a></dd>
   {% endif %}
 
 
@@ -50,27 +50,27 @@
                     <legend>What are you searching?</legend>
                     {% set whatToSearch_keyword = default_whatToSearch_keyword %}
                     {% if whatToSearch_keyword=="any" %}
-                        <label for="radioWhatToSearch"><input name="keywordWhatToSearch" type="radio" id="radioKeywordWhatToSearch" style="display:none;" CHECKED value="any"><span class="custom radio"></span> Any</label>
+                        <span data-tooltip class="has-tip" title="Search all documents"><label for="radioWhatToSearch"><input name="keywordWhatToSearch" type="radio" id="radioKeywordWhatToSearch" style="display:none;" CHECKED value="any"><span class="custom radio"></span> Any</label></span>
                     {% else %}
-                        <label for="radioWhatToSearch"><input name="keywordWhatToSearch" type="radio" id="radioKeywordWhatToSearch" style="display:none;" value="any"><span class="custom radio"></span> Any</label>
+                        <span data-tooltip class="has-tip" title="Search all documents"><label for="radioWhatToSearch"><input name="keywordWhatToSearch" type="radio" id="radioKeywordWhatToSearch" style="display:none;" value="any"><span class="custom radio"></span> Any</label></span>
                     {% endif %}
 
                     {% if whatToSearch_keyword=="withCompound" %}
-                        <label for="radioWhatToSearch"><input name="keywordWhatToSearch" type="radio" id="radioKeywordWhatToSearch" style="display:none;" CHECKED value="withCompounds"><span class="custom radio checked"></span> With compounds</label>
+                        <span data-tooltip class="has-tip" title="Search in text where compounds are comentioned"><label for="radioWhatToSearch"><input name="keywordWhatToSearch" type="radio" id="radioKeywordWhatToSearch" style="display:none;" CHECKED value="withCompounds"><span class="custom radio checked"></span> With compounds</label></span>
                     {% else %}
-                        <label for="radioWhatToSearch"><input name="keywordWhatToSearch" type="radio" id="radioKeywordWhatToSearch" style="display:none;" value="withCompounds"><span class="custom radio"></span> With Compounds</label>
+                        <span data-tooltip class="has-tip" title="Search in text where compounds are comentioned"><label for="radioWhatToSearch"><input name="keywordWhatToSearch" type="radio" id="radioKeywordWhatToSearch" style="display:none;" value="withCompounds"><span class="custom radio"></span> With Compounds</label></span>
                     {% endif %}
 
                     {% if whatToSearch_keyword=="withCytochrome" %}
-                        <label for="radioWhatToSearch"><input name="keywordWhatToSearch" type="radio" id="radioKeywordWhatToSearch" style="display:none;" CHECKED value="withCytochromes"><span class="custom radio"></span> With CYPs</label>
+                        <span data-tooltip class="has-tip" title="Search in text where CYPs are comentioned"><label for="radioWhatToSearch"><input name="keywordWhatToSearch" type="radio" id="radioKeywordWhatToSearch" style="display:none;" CHECKED value="withCytochromes"><span class="custom radio"></span> With CYPs</label></span>
                     {% else %}
-                        <label for="radioWhatToSearch"><input name="keywordWhatToSearch" type="radio" id="radioKeywordWhatToSearch" style="display:none;" value="withCytochromes"><span class="custom radio"></span> With CYPs</label>
+                        <span data-tooltip class="has-tip" title="Search in text where CYPs are comentioned"><label for="radioWhatToSearch"><input name="keywordWhatToSearch" type="radio" id="radioKeywordWhatToSearch" style="display:none;" value="withCytochromes"><span class="custom radio"></span> With CYPs</label></span>
                     {% endif %}
 
                     {% if whatToSearch_keyword=="withMarker" %}
-                        <label for="radioWhatToSearch"><input name="keywordWhatToSearch" type="radio" id="radioKeywordWhatToSearch" style="display:none;" CHECKED value="withMarkers"><span class="custom radio"></span> With Markers</label>
+                        <span data-tooltip class="has-tip" title="Search in text where markers are comentioned"><label for="radioWhatToSearch"><input name="keywordWhatToSearch" type="radio" id="radioKeywordWhatToSearch" style="display:none;" CHECKED value="withMarkers"><span class="custom radio"></span> With Markers</label></span>
                     {% else %}
-                        <label for="radioWhatToSearch"><input name="keywordWhatToSearch" type="radio" id="radioKeywordWhatToSearch" style="display:none;" value="withMarkers"><span class="custom radio"></span> With Markers</label>
+                        <span data-tooltip class="has-tip" title="Search in text where markers are comentioned"><label for="radioWhatToSearch"><input name="keywordWhatToSearch" type="radio" id="radioKeywordWhatToSearch" style="display:none;" value="withMarkers"><span class="custom radio"></span> With Markers</label></span>
                     {% endif %}
                 </fieldset>
             </form>
@@ -89,35 +89,35 @@
                         {% set keywordSource = default_source %}
                     {% endif %}
                     {% if keywordSource=="all" %}
-                        <label for="radioSource"><input name="keywordSource" type="radio" id="radioKeywordSource" style="display:none;" CHECKED value="all"><span class="custom radio"></span> All</label>
+                        <span data-tooltip class="has-tip" title="Search in all sentences"><label for="radioSource"><input name="keywordSource" type="radio" id="radioKeywordSource" style="display:none;" CHECKED value="all"><span class="custom radio"></span> All</label></span>
                     {% else %}
-                        <label for="radioSource"><input name="keywordSource" type="radio" id="radioKeywordSource" style="display:none;" value="all"><span class="custom radio"></span> All</label>
+                        <span data-tooltip class="has-tip" title="Search in all sentences"><label for="radioSource"><input name="keywordSource" type="radio" id="radioKeywordSource" style="display:none;" value="all"><span class="custom radio"></span> All</label></span>
                     {% endif %}
                     {% if keywordSource=="pubmed" %}
-                        <label for="radioSource"><input name="keywordSource" type="radio" id="radioKeywordSource" style="display:none;" CHECKED value="pubmed"><span class="custom radio"></span> Pubmed</label>
+                        <span data-tooltip class="has-tip" title="Search in all PubMed sentences"><label for="radioSource"><input name="keywordSource" type="radio" id="radioKeywordSource" style="display:none;" CHECKED value="pubmed"><span class="custom radio"></span> Pubmed</label></span>
                     {% else %}
-                        <label for="radioSource"><input name="keywordSource" type="radio" id="radioKeywordSource" style="display:none;" value="pubmed"><span class="custom radio"></span> Pubmed</label>
+                        <span data-tooltip class="has-tip" title="Search in all PubMed sentences"><label for="radioSource"><input name="keywordSource" type="radio" id="radioKeywordSource" style="display:none;" value="pubmed"><span class="custom radio"></span> Pubmed</label></span>
                     {% endif %}
                     {% if keywordSource=="fulltext" %}
-                        <label for="radioSource"><input name="keywordSource" type="radio" id="radioKeywordSource" style="display:none;" CHECKED value="fulltext"><span class="custom radio"></span> Fulltext</label>
+                        <span data-tooltip class="has-tip" title="Search in all full text sentences"><label for="radioSource"><input name="keywordSource" type="radio" id="radioKeywordSource" style="display:none;" CHECKED value="fulltext"><span class="custom radio"></span> Fulltext</label></span>
                     {% else %}
-                        <label for="radioSource"><input name="keywordSource" type="radio" id="radioKeywordSource" style="display:none;" value="fulltext"><span class="custom radio"></span> Fulltext</label>
+                        <span data-tooltip class="has-tip" title="Search in all full text sentences"><label for="radioSource"><input name="keywordSource" type="radio" id="radioKeywordSource" style="display:none;" value="fulltext"><span class="custom radio"></span> Fulltext</label></span>
                     {% endif %}
                     {% if keywordSource=="nda" %}
-                        <label for="radioSource"><input name="keywordSource" type="radio" id="radioKeywordSource" style="display:none;" CHECKED value="nda"><span class="custom radio"></span> NDA</label>
+                        <span data-tooltip class="has-tip" title="Search in FDA New Drug Approvals (NDAs) sentences"><label for="radioSource"><input name="keywordSource" type="radio" id="radioKeywordSource" style="display:none;" CHECKED value="nda"><span class="custom radio"></span> NDA</label></span>
                     {% else %}
-                        <label for="radioSource"><input name="keywordSource" type="radio" id="radioKeywordSource" style="display:none;" value="nda"><span class="custom radio"></span> NDA</label>
+                        <span data-tooltip class="has-tip" title="Search in FDA New Drug Approvals (NDAs) sentences"><label for="radioSource"><input name="keywordSource" type="radio" id="radioKeywordSource" style="display:none;" value="nda"><span class="custom radio"></span> NDA</label></span>
                     {% endif %}
                     {% if keywordSource=="epar" %}
-                        <label for="radioSource"><input name="keywordSource" type="radio" id="radioKeywordSource" style="display:none;" CHECKED value="epar"><span class="custom radio"></span> EPAR</label>
+                        <span data-tooltip class="has-tip" title="Search in all European public assessment reports (EPAR) sentences"><label for="radioSource"><input name="keywordSource" type="radio" id="radioKeywordSource" style="display:none;" CHECKED value="epar"><span class="custom radio"></span> EPAR</label></span>
                     {% else %}
-                        <label for="radioSource"><input name="keywordSource" type="radio" id="radioKeywordSource" style="display:none;" value="epar"><span class="custom radio"></span> EPAR</label>
+                        <span data-tooltip class="has-tip" title="Search in all European public assessment reports (EPAR) sentences"><label for="radioSource"><input name="keywordSource" type="radio" id="radioKeywordSource" style="display:none;" value="epar"><span class="custom radio"></span> EPAR</label></span>
                     {% endif %}
                     <hr/>
                     {% if keywordSource=="abstract" %}
-                        <label for="radioSource"><input name="keywordSource" type="radio" id="radioKeywordSource" style="display:none;" CHECKED value="abstract"><span class="custom radio"></span> Abstracts</label>
+                        <span data-tooltip class="has-tip" title="Search in PubMed abstracts (chemicals indexed by MeSH)"><label for="radioSource"><input name="keywordSource" type="radio" id="radioKeywordSource" style="display:none;" CHECKED value="abstract"><span class="custom radio"></span> Abstracts</label></span>
                     {% else %}
-                        <label for="radioSource"><input name="keywordSource" type="radio" id="radioKeywordSource" style="display:none;" value="abstract"><span class="custom radio"></span> Abstracts</label>
+                        <span data-tooltip class="has-tip" title="Search in PubMed abstracts (chemicals indexed by MeSH)"><label for="radioSource"><input name="keywordSource" type="radio" id="radioKeywordSource" style="display:none;" value="abstract"><span class="custom radio"></span> Abstracts</label></span>
                     {% endif %}
                 </fieldset>
             </form>
@@ -151,15 +151,15 @@
                         {% set whatToSearchCytochrome = default_whatToSearch %}
                     {% endif %}
                     {% if whatToSearch=="name" %}
-                        <label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" CHECKED value="name"><span class="custom radio"></span> Name</label>
+                        <span data-tooltip class="has-tip" title="Chemical compound/drug name"><label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" CHECKED value="name"><span class="custom radio"></span> Name</label></span>
                     {% else %}
-                        <label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" value="name"><span class="custom radio"></span> Name</label>
+                        <span data-tooltip class="has-tip" title="Chemical compound/drug name"><label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" value="name"><span class="custom radio"></span> Name</label></span>
                     {% endif %}
 
                     {% if whatToSearch=="id" %}
-                        <label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" CHECKED value="id"><span class="custom radio checked"></span> Id</label>
+                        <span data-tooltip class="has-tip" title="Chemical compound database identifier (Drugbank, ChEBI, PubChem compound, PubChem substance, CAS RN, Human Metabolome database, KEGG compound, KEGG drug, MeSH substance)"><label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" CHECKED value="id"><span class="custom radio checked"></span> Chemical identifiers</label></span>
                     {% else %}
-                        <label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" value="id"><span class="custom radio"></span> Id</label>
+                        <span data-tooltip class="has-tip" title="Chemical compound database identifier (Drugbank, ChEBI, PubChem compound, PubChem substance, CAS RN, Human Metabolome database, KEGG compound, KEGG drug, MeSH substance)"><label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" value="id"><span class="custom radio"></span> Chemical identifiers</label></span>
                     {% endif %}
 
                     {% if whatToSearch=="smile" %}
@@ -169,9 +169,9 @@
                     {% endif %}
 
                     {% if whatToSearch=="inChi" %}
-                        <label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" CHECKED value="inChi"><span class="custom radio"></span> inChi</label>
+                        <label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" CHECKED value="inChi"><span class="custom radio"></span> InChI</label>
                     {% else %}
-                        <label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" value="smile"><span class="custom radio"></span> inChi</label>
+                        <label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" value="smile"><span class="custom radio"></span> InChI</label>
                     {% endif %}
 
                     {% if whatToSearch=="any" %}
@@ -181,21 +181,21 @@
                     {% endif %}
 
                     {% if whatToSearch=="withCytochromes" %}
-                        <label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" CHECKED value="withCytochromes"><span class="custom radio"></span> With CYPs</label>
+                        <span data-tooltip class="has-tip" title="Co-ocurrences in sentences with CYPs"><label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" CHECKED value="withCytochromes"><span class="custom radio"></span> With CYPs</label></span>
                     {% else %}
-                        <label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" value="withCytochromes"><span class="custom radio"></span> With CYPs</label>
+                        <span data-tooltip class="has-tip" title="Co-ocurrences in sentences with CYPs"><label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" value="withCytochromes"><span class="custom radio"></span> With CYPs</label></span>
                     {% endif %}
 
                     {% if whatToSearch=="withMarkers" %}
-                        <label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" CHECKED value="withMarkers"><span class="custom radio"></span> With Markers</label>
+                        <span data-tooltip class="has-tip" title="Co-ocurrences in sentences with liver markers"><label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" CHECKED value="withMarkers"><span class="custom radio"></span> With Markers</label></span>
                     {% else %}
-                        <label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" value="withMarkers"><span class="custom radio"></span> With Markers</label>
+                        <span data-tooltip class="has-tip" title="Co-ocurrences in sentences with liver markers"><label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" value="withMarkers"><span class="custom radio"></span> With Markers</label></span>
                     {% endif %}
 
                     {% if whatToSearch=="compoundsTermsRelations" %}
-                        <label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" CHECKED value="compoundsTermsRelations"><span class="custom radio"></span> Relations</label>
+                        <span data-tooltip class="has-tip" title="Compound/drug relation to adverse hepatobiliary events"><label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" CHECKED value="compoundsTermsRelations"><span class="custom radio"></span> Term relations</label></span>
                     {% else %}
-                        <label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" value="compoundsTermsRelations"><span class="custom radio"></span> Relations</label>
+                        <span data-tooltip class="has-tip" title="Compound/drug relation to adverse hepatobiliary events"><label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" value="compoundsTermsRelations"><span class="custom radio"></span> Term relations</label></span>
                     {% endif %}
 
                 </fieldset>
@@ -216,35 +216,35 @@
                     {% endif %}
 
                     {% if compoundSource=="all" %}
-                        <label for="radioSource"><input name="compoundSource" type="radio" id="radioCompoundSource" style="display:none;" CHECKED value="all"><span class="custom radio"></span> All</label>
+                        <span data-tooltip class="has-tip" title="Search in all sentences"><label for="radioSource"><input name="compoundSource" type="radio" id="radioCompoundSource" style="display:none;" CHECKED value="all"><span class="custom radio"></span> All</label></span>
                     {% else %}
-                        <label for="radioSource"><input name="compoundSource" type="radio" id="radioCompoundSource" style="display:none;" value="all"><span class="custom radio"></span> All</label>
+                        <span data-tooltip class="has-tip" title="Search in all sentences"><label for="radioSource"><input name="compoundSource" type="radio" id="radioCompoundSource" style="display:none;" value="all"><span class="custom radio"></span> All</label></span>
                     {% endif %}
                     {% if compoundSource=="pubmed" %}
-                        <label for="radioSource"><input name="compoundSource" type="radio" id="radioCompoundSource" style="display:none;" CHECKED value="pubmed"><span class="custom radio"></span> Pubmed</label>
+                        <span data-tooltip class="has-tip" title="Search in all PubMed sentences"><label for="radioSource"><input name="compoundSource" type="radio" id="radioCompoundSource" style="display:none;" CHECKED value="pubmed"><span class="custom radio"></span> Pubmed</label></span>
                     {% else %}
-                        <label for="radioSource"><input name="compoundSource" type="radio" id="radioCompoundSource" style="display:none;" value="pubmed"><span class="custom radio"></span> Pubmed</label>
+                        <span data-tooltip class="has-tip" title="Search in all PubMed sentences"><label for="radioSource"><input name="compoundSource" type="radio" id="radioCompoundSource" style="display:none;" value="pubmed"><span class="custom radio"></span> Pubmed</label></span>
                     {% endif %}
                     {% if compoundSource=="fulltext" %}
-                        <label for="radioSource"><input name="compoundSource" type="radio" id="radioCompoundSource" style="display:none;" CHECKED value="fulltext"><span class="custom radio"></span> Fulltext</label>
+                        <span data-tooltip class="has-tip" title="Search in all full text sentences"><label for="radioSource"><input name="compoundSource" type="radio" id="radioCompoundSource" style="display:none;" CHECKED value="fulltext"><span class="custom radio"></span> Fulltext</label></span>
                     {% else %}
-                        <label for="radioSource"><input name="compoundSource" type="radio" id="radioCompoundSource" style="display:none;" value="fulltext"><span class="custom radio"></span> Fulltext</label>
+                        <span data-tooltip class="has-tip" title="Search in all full text sentences"><label for="radioSource"><input name="compoundSource" type="radio" id="radioCompoundSource" style="display:none;" value="fulltext"><span class="custom radio"></span> Fulltext</label></span>
                     {% endif %}
                     {% if compoundSource=="nda" %}
-                        <label for="radioSource"><input name="compoundSource" type="radio" id="radioCompoundSource" style="display:none;" CHECKED value="nda"><span class="custom radio"></span> NDA</label>
+                        <span data-tooltip class="has-tip" title="Search in FDA New Drug Approvals (NDAs) sentences"><label for="radioSource"><input name="compoundSource" type="radio" id="radioCompoundSource" style="display:none;" CHECKED value="nda"><span class="custom radio"></span> NDA</label></span>
                     {% else %}
-                        <label for="radioSource"><input name="compoundSource" type="radio" id="radioCompoundSource" style="display:none;" value="nda"><span class="custom radio"></span> NDA</label>
+                        <span data-tooltip class="has-tip" title="Search in FDA New Drug Approvals (NDAs) sentences"><label for="radioSource"><input name="compoundSource" type="radio" id="radioCompoundSource" style="display:none;" value="nda"><span class="custom radio"></span> NDA</label></span>
                     {% endif %}
                     {% if compoundSource=="epar" %}
-                        <label for="radioSource"><input name="compoundSource" type="radio" id="radioCompoundSource" style="display:none;" CHECKED value="epar"><span class="custom radio"></span> EPAR</label>
+                        <span data-tooltip class="has-tip" title="Search in all European public assessment reports (EPAR) sentences"><label for="radioSource"><input name="compoundSource" type="radio" id="radioCompoundSource" style="display:none;" CHECKED value="epar"><span class="custom radio"></span> EPAR</label></span>
                     {% else %}
-                        <label for="radioSource"><input name="compoundSource" type="radio" id="radioCompoundSource" style="display:none;" value="epar"><span class="custom radio"></span> EPAR</label>
+                        <span data-tooltip class="has-tip" title="Search in all European public assessment reports (EPAR) sentences"><label for="radioSource"><input name="compoundSource" type="radio" id="radioCompoundSource" style="display:none;" value="epar"><span class="custom radio"></span> EPAR</label></span>
                     {% endif %}
                     <hr/>
                     {% if compoundSource=="abstract" %}
-                        <label for="radioSource"><input name="compoundSource" type="radio" id="radioCompoundSource" style="display:none;" CHECKED value="abstract"><span class="custom radio"></span> Abstracts</label>
+                        <span data-tooltip class="has-tip" title="Search in PubMed abstracts (chemicals indexed by MeSH)"><label for="radioSource"><input name="compoundSource" type="radio" id="radioCompoundSource" style="display:none;" CHECKED value="abstract"><span class="custom radio"></span> Abstracts</label></span>
                     {% else %}
-                        <label for="radioSource"><input name="compoundSource" type="radio" id="radioCompoundSource" style="display:none;" value="abstract"><span class="custom radio"></span> Abstracts</label>
+                        <span data-tooltip class="has-tip" title="Search in PubMed abstracts (chemicals indexed by MeSH)"><label for="radioSource"><input name="compoundSource" type="radio" id="radioCompoundSource" style="display:none;" value="abstract"><span class="custom radio"></span> Abstracts</label></span>
                     {% endif %}
                 </fieldset>
             </form>
@@ -275,40 +275,40 @@
             <form class="custom">
                 <fieldset>
                     <legend>What are you searching?</legend>
-                    {% if whatToSearch=="name" %}
-                        <label for="radioWhatToSearch"><input name="cytochromeWhatToSearch" type="radio" id="radioCytochromeWhatToSearch" style="display:none;" CHECKED value="name"><span class="custom radio"></span> Name</label>
+                    {% if whatToSearchCytochrome=="name" %}
+                         <span data-tooltip class="has-tip" title="Cytochrome P450 gene/protein name or symbol"><label for="radioWhatToSearch"><input name="cytochromeWhatToSearch" type="radio" id="radioCytochromeWhatToSearch" style="display:none;" CHECKED value="name"><span class="custom radio"></span> CYPs name/symbol</label></span>
                     {% else %}
-                        <label for="radioWhatToSearch"><input name="cytochromeWhatToSearch" type="radio" id="radioCytochromeWhatToSearch" style="display:none;" value="name"><span class="custom radio"></span> Name</label>
+                         <span data-tooltip class="has-tip" title="Cytochrome P450 gene/protein name or symbol"><label for="radioWhatToSearch"><input name="cytochromeWhatToSearch" type="radio" id="radioCytochromeWhatToSearch" style="display:none;" value="name"><span class="custom radio"></span> CYPs name/symbol</label></span>
                     {% endif %}
 
-                    {% if whatToSearch=="id" %}
-                        <label for="radioWhatToSearch"><input name="cytochromeWhatToSearch" type="radio" id="radioCytochromeWhatToSearch" style="display:none;" CHECKED value="id"><span class="custom radio checked"></span> Id</label>
+                    {% if whatToSearchCytochrome=="id" %}
+                        <span data-tooltip class="has-tip" title="Cytochrome P450 gene/protein UniProt database primary accession number."><label for="radioWhatToSearch"><input name="cytochromeWhatToSearch" type="radio" id="radioCytochromeWhatToSearch" style="display:none;" CHECKED value="id"><span class="custom radio checked"></span> CYPs UniProt accession</label></span>
                     {% else %}
-                        <label for="radioWhatToSearch"><input name="cytochromeWhatToSearch" type="radio" id="radioCytochromeWhatToSearch" style="display:none;" value="id"><span class="custom radio"></span> Id</label>
+                        <span data-tooltip class="has-tip" title="Cytochrome P450 gene/protein UniProt database primary accession number."><label for="radioWhatToSearch"><input name="cytochromeWhatToSearch" type="radio" id="radioCytochromeWhatToSearch" style="display:none;" value="id"><span class="custom radio"></span> CYPs UniProt accession</label></span>
                     {% endif %}
 
-                    {% if whatToSearch=="canonical" %}
-                        <label for="radioWhatToSearch"><input name="cytochromeWhatToSearch" type="radio" id="radioCytochromeWhatToSearch" style="display:none;" CHECKED value="canonical"><span class="custom radio"></span> Canonical</label>
+                    {% if whatToSearchCytochrome=="canonical" %}
+                        <span data-tooltip class="has-tip" title="Name of the Cytochrome P450 gene according to the standard hierarchical gene naming nomenclature convention. See: http://www.cypalleles.ki.se"><label for="radioWhatToSearch"><label for="radioWhatToSearch"><input name="cytochromeWhatToSearch" type="radio" id="radioCytochromeWhatToSearch" style="display:none;" CHECKED value="canonical"><span class="custom radio"></span> CYPs nomenclature</label></span>
                     {% else %}
-                        <label for="radioWhatToSearch"><input name="cytochromeWhatToSearch" type="radio" id="radioCytochromeWhatToSearch" style="display:none;" value="canonical"><span class="custom radio"></span> Canonical</label>
+                        <span data-tooltip class="has-tip" title="Name of the Cytochrome P450 gene according to the standard hierarchical gene naming nomenclature convention. See: http://www.cypalleles.ki.se"><label for="radioWhatToSearch"><label for="radioWhatToSearch"><input name="cytochromeWhatToSearch" type="radio" id="radioCytochromeWhatToSearch" style="display:none;" value="canonical"><span class="custom radio"></span> CYPs nomenclature</label></span>
                     {% endif %}
 
-                    {% if whatToSearch=="any" %}
-                        <label for="radioWhatToSearch"><input name="cytochromeWhatToSearch" type="radio" id="radioCytochromeWhatToSearch" style="display:none;" CHECKED value="any"><span class="custom radio"></span> Any (Free search)</label>
+                    {% if whatToSearchCytochrome=="any" %}
+                        <span data-tooltip class="has-tip" title="Free text search within CYPs mentioning sentences"><label for="radioWhatToSearch"><input name="cytochromeWhatToSearch" type="radio" id="radioCytochromeWhatToSearch" style="display:none;" CHECKED value="any"><span class="custom radio"></span> Any (Free search)</label></span>
                     {% else %}
-                        <label for="radioWhatToSearch"><input name="cytochromeWhatToSearch" type="radio" id="radioCytochromeWhatToSearch" style="display:none;" value="any"><span class="custom radio"></span> Any (Free search)</label>
+                        <span data-tooltip class="has-tip" title="Free text search within CYPs mentioning sentences"><label for="radioWhatToSearch"><input name="cytochromeWhatToSearch" type="radio" id="radioCytochromeWhatToSearch" style="display:none;" value="any"><span class="custom radio"></span> Any (Free search)</label></span>
                     {% endif %}
 
-                    {% if whatToSearch=="withCompounds" %}
-                        <label for="radioWhatToSearch"><input name="cytochromeWhatToSearch" type="radio" id="radioCytochromeWhatToSearch" style="display:none;" CHECKED value="withCompounds"><span class="custom radio"></span> With Compounds</label>
+                    {% if whatToSearchCytochrome=="withCompounds" %}
+                        <span data-tooltip class="has-tip" title="Search within sentences where CYPs co-occur with automatically detected chemical entity mentions"><label for="radioWhatToSearch"><input name="cytochromeWhatToSearch" type="radio" id="radioCytochromeWhatToSearch" style="display:none;" CHECKED value="withCompounds"><span class="custom radio"></span> With Compounds</label></span>
                     {% else %}
-                        <label for="radioWhatToSearch"><input name="cytochromeWhatToSearch" type="radio" id="radioCytochromeWhatToSearch" style="display:none;" value="withCompounds"><span class="custom radio"></span> With Compounds</label>
+                        <span data-tooltip class="has-tip" title="Search within sentences where CYPs co-occur with automatically detected chemical entity mentions"><label for="radioWhatToSearch"><input name="cytochromeWhatToSearch" type="radio" id="radioCytochromeWhatToSearch" style="display:none;" value="withCompounds"><span class="custom radio"></span> With Compounds</label></span>
                     {% endif %}
 
                     {% if whatToSearch=="compoundsCytochromesRelations" %}
-                        <label for="radioWhatToSearch"><input name="cytochromeWhatToSearch" type="radio" id="radioCytochromeWhatToSearch" style="display:none;" CHECKED value="compoundsCytochromesRelations"><span class="custom radio"></span> Relations</label>
+                        <span data-tooltip class="has-tip" title="Search for sentences based CYPs-chemical compound/drug relations detected by a pattern and/or machine learning method. Extracted relations cover induction, inhibition or metabolism interactions. You can query either by names of CYPs or chemicals/drugs""><label for="radioWhatToSearch"><input name="cytochromeWhatToSearch" type="radio" id="radioCytochromeWhatToSearch" style="display:none;" CHECKED value="compoundsCytochromesRelations"><span class="custom radio"></span> CYPs-chemical relations</label></span>
                     {% else %}
-                        <label for="radioWhatToSearch"><input name="cytochromeWhatToSearch" type="radio" id="radioCytochromeWhatToSearch" style="display:none;" value="compoundsCytochromesRelations"><span class="custom radio"></span> Relations</label>
+                        <span data-tooltip class="has-tip" title="Search for sentences based CYPs-chemical compound/drug relations detected by a pattern and/or machine learning method. Extracted relations cover induction, inhibition or metabolism interactions. You can query either by names of CYPs or chemicals/drugs""><label for="radioWhatToSearch"><input name="cytochromeWhatToSearch" type="radio" id="radioCytochromeWhatToSearch" style="display:none;" value="compoundsCytochromesRelations"><span class="custom radio"></span> CYPs-chemical relations</label></span>
                     {% endif %}
 
 
@@ -330,29 +330,29 @@
                     {% endif %}
 
                     {% if cytochromeSource=="all" %}
-                        <label for="radioSource"><input name="cytochromeSource" type="radio" id="radioCytochromeSource" style="display:none;" CHECKED value="all"><span class="custom radio"></span> All</label>
+                        <span data-tooltip class="has-tip" title="Search in all sentences"><label for="radioSource"><input name="cytochromeSource" type="radio" id="radioCytochromeSource" style="display:none;" CHECKED value="all"><span class="custom radio"></span> All</label></span>
                     {% else %}
-                        <label for="radioSource"><input name="cytochromeSource" type="radio" id="radioCytochromeSource" style="display:none;" value="all"><span class="custom radio"></span> All</label>
+                        <span data-tooltip class="has-tip" title="Search in all sentences"><label for="radioSource"><input name="cytochromeSource" type="radio" id="radioCytochromeSource" style="display:none;" value="all"><span class="custom radio"></span> All</label></span>
                     {% endif %}
                     {% if cytochromeSource=="pubmed" %}
-                        <label for="radioSource"><input name="cytochromeSource" type="radio" id="radioCytochromeSource" style="display:none;" CHECKED value="pubmed"><span class="custom radio"></span> Pubmed</label>
+                        <span data-tooltip class="has-tip" title="Search in all PubMed sentences"><label for="radioSource"><input name="cytochromeSource" type="radio" id="radioCytochromeSource" style="display:none;" CHECKED value="pubmed"><span class="custom radio"></span> Pubmed</label></span>
                     {% else %}
-                        <label for="radioSource"><input name="cytochromeSource" type="radio" id="radioCytochromeSource" style="display:none;" value="pubmed"><span class="custom radio"></span> Pubmed</label>
+                        <span data-tooltip class="has-tip" title="Search in all PubMed sentences"><label for="radioSource"><input name="cytochromeSource" type="radio" id="radioCytochromeSource" style="display:none;" value="pubmed"><span class="custom radio"></span> Pubmed</label></span>
                     {% endif %}
                     {% if cytochromeSource=="fulltext" %}
-                        <label for="radioSource"><input name="cytochromeSource" type="radio" id="radioCytochromeSource" style="display:none;" CHECKED value="fulltext"><span class="custom radio"></span> Fulltext</label>
+                        <span data-tooltip class="has-tip" title="Search in all full text sentences"><label for="radioSource"><input name="cytochromeSource" type="radio" id="radioCytochromeSource" style="display:none;" CHECKED value="fulltext"><span class="custom radio"></span> Fulltext</label></span>
                     {% else %}
-                        <label for="radioSource"><input name="cytochromeSource" type="radio" id="radioCytochromeSource" style="display:none;" value="fulltext"><span class="custom radio"></span> Fulltext</label>
+                        <span data-tooltip class="has-tip" title="Search in all full text sentences"><label for="radioSource"><input name="cytochromeSource" type="radio" id="radioCytochromeSource" style="display:none;" value="fulltext"><span class="custom radio"></span> Fulltext</label></span>
                     {% endif %}
                     {% if cytochromeSource=="nda" %}
-                        <label for="radioSource"><input name="cytochromeSource" type="radio" id="radioCytochromeSource" style="display:none;" CHECKED value="nda"><span class="custom radio"></span> NDA</label>
+                        <span data-tooltip class="has-tip" title="Search in FDA New Drug Approvals (NDAs) sentences"><label for="radioSource"><input name="cytochromeSource" type="radio" id="radioCytochromeSource" style="display:none;" CHECKED value="nda"><span class="custom radio"></span> NDA</label></span>
                     {% else %}
-                        <label for="radioSource"><input name="cytochromeSource" type="radio" id="radioCytochromeSource" style="display:none;" value="nda"><span class="custom radio"></span> NDA</label>
+                        <span data-tooltip class="has-tip" title="Search in FDA New Drug Approvals (NDAs) sentences"><label for="radioSource"><input name="cytochromeSource" type="radio" id="radioCytochromeSource" style="display:none;" value="nda"><span class="custom radio"></span> NDA</label></span>
                     {% endif %}
                     {% if cytochromeSource=="epar" %}
-                        <label for="radioSource"><input name="cytochromeSource" type="radio" id="radioCytochromeSource" style="display:none;" CHECKED value="epar"><span class="custom radio"></span> EPAR</label>
+                        <span data-tooltip class="has-tip" title="Search in all European public assessment reports (EPAR) sentences"><label for="radioSource"><input name="cytochromeSource" type="radio" id="radioCytochromeSource" style="display:none;" CHECKED value="epar"><span class="custom radio"></span> EPAR</label></span>
                     {% else %}
-                        <label for="radioSource"><input name="cytochromeSource" type="radio" id="radioCytochromeSource" style="display:none;" value="epar"><span class="custom radio"></span> EPAR</label>
+                        <span data-tooltip class="has-tip" title="Search in all European public assessment reports (EPAR) sentences"><label for="radioSource"><input name="cytochromeSource" type="radio" id="radioCytochromeSource" style="display:none;" value="epar"><span class="custom radio"></span> EPAR</label></span>
                     {% endif %}
 
                 </fieldset>
@@ -385,33 +385,33 @@
                 <fieldset>
                     <legend>What are you searching?</legend>
                     {% if whatToSearch=="name" %}
-                        <label for="radioWhatToSearch"><input name="markerWhatToSearch" type="radio" id="radioMarkerWhatToSearch" style="display:none;" CHECKED value="name"><span class="custom radio"></span> Name</label>
+                        <span data-tooltip class="has-tip" title="Name or symbol of the biochemical liver test marker. Correspond to one of 17 enzymes and chemical compounds assayed as biochemical markers of adverse liver reactions (e.g. ALT, AST, SDH, GGT, 5'-NT, LAP, SGPT,...)."><label for="radioWhatToSearch"><input name="markerWhatToSearch" type="radio" id="radioMarkerWhatToSearch" style="display:none;" CHECKED value="name"><span class="custom radio"></span> Marker name/symbol</label></span>
                     {% else %}
-                        <label for="radioWhatToSearch"><input name="markerWhatToSearch" type="radio" id="radioMarkerWhatToSearch" style="display:none;" value="name"><span class="custom radio"></span> Name</label>
+                        <span data-tooltip class="has-tip" title="Name or symbol of the biochemical liver test marker. Correspond to one of 17 enzymes and chemical compounds assayed as biochemical markers of adverse liver reactions (e.g. ALT, AST, SDH, GGT, 5'-NT, LAP, SGPT,...)."><label for="radioWhatToSearch"><input name="markerWhatToSearch" type="radio" id="radioMarkerWhatToSearch" style="display:none;" value="name"><span class="custom radio"></span> Marker name/symbol</label></span>
                     {% endif %}
 
                     {% if whatToSearch=="id" %}
-                        <label for="radioWhatToSearch"><input name="markerWhatToSearch" type="radio" id="radioMarkerWhatToSearch" style="display:none;" CHECKED value="id"><span class="custom radio checked"></span> Id</label>
+                        <span data-tooltip class="has-tip" title="Marker UniProt accession number or PubChem compound Id (e.g. P00441, P04040, P07195, P07203,..)"><label for="radioWhatToSearch"><input name="markerWhatToSearch" type="radio" id="radioMarkerWhatToSearch" style="display:none;" CHECKED value="id"><span class="custom radio checked"></span> Marker identifier</label></span>
                     {% else %}
-                        <label for="radioWhatToSearch"><input name="markerWhatToSearch" type="radio" id="radioMarkerWhatToSearch" style="display:none;" value="id"><span class="custom radio"></span> Id</label>
+                        <span data-tooltip class="has-tip" title="Marker UniProt accession number or PubChem compound Id (e.g. P00441, P04040, P07195, P07203,..)"><label for="radioWhatToSearch"><input name="markerWhatToSearch" type="radio" id="radioMarkerWhatToSearch" style="display:none;" value="id"><span class="custom radio"></span> Marker identifier</label></span>
                     {% endif %}
 
                     {% if whatToSearch=="any" %}
-                        <label for="radioWhatToSearch"><input name="markerWhatToSearch" type="radio" id="radioMarkerWhatToSearch" style="display:none;" CHECKED value="any"><span class="custom radio checked"></span> Any (Free search)</label>
+                        <span data-tooltip class="has-tip" title="Free text search within liver marker mentioning sentences"><label for="radioWhatToSearch"><input name="markerWhatToSearch" type="radio" id="radioMarkerWhatToSearch" style="display:none;" CHECKED value="any"><span class="custom radio checked"></span> Any (Free search)</label></span>
                     {% else %}
-                        <label for="radioWhatToSearch"><input name="markerWhatToSearch" type="radio" id="radioMarkerWhatToSearch" style="display:none;" value="any"><span class="custom radio"></span> Any (Free search)</label>
+                        <span data-tooltip class="has-tip" title="Free text search within liver marker mentioning sentences"><label for="radioWhatToSearch"><input name="markerWhatToSearch" type="radio" id="radioMarkerWhatToSearch" style="display:none;" value="any"><span class="custom radio"></span> Any (Free search)</label></span>
                     {% endif %}
 
                     {% if whatToSearch=="withCompounds" %}
-                        <label for="radioWhatToSearch"><input name="markerWhatToSearch" type="radio" id="radioMarkerWhatToSearch" style="display:none;" CHECKED value="withCompounds"><span class="custom radio checked"></span> With Compounds</label>
+                        <span data-tooltip class="has-tip" title="Search within sentences where liver markers co-occur with automatically detected chemical entity mentions"><label for="radioWhatToSearch"><input name="markerWhatToSearch" type="radio" id="radioMarkerWhatToSearch" style="display:none;" CHECKED value="withCompounds"><span class="custom radio checked"></span> With Compounds</label></span>
                     {% else %}
-                        <label for="radioWhatToSearch"><input name="markerWhatToSearch" type="radio" id="radioMarkerWhatToSearch" style="display:none;" value="withCompounds"><span class="custom radio"></span> With Compounds</label>
+                        <span data-tooltip class="has-tip" title="Search within sentences where liver markers co-occur with automatically detected chemical entity mentions"><label for="radioWhatToSearch"><input name="markerWhatToSearch" type="radio" id="radioMarkerWhatToSearch" style="display:none;" value="withCompounds"><span class="custom radio"></span> With Compounds</label></span>
                     {% endif %}
 
                     {% if whatToSearch=="compoundsMarkersRelations" %}
-                        <label for="radioWhatToSearch"><input name="markerWhatToSearch" type="radio" id="radioMarkerWhatToSearch" style="display:none;" CHECKED value="compoundsMarkersRelations"><span class="custom radio checked"></span> Relations</label>
+                        <span data-tooltip class="has-tip" title="Search for sentence based biochemical liver markers-chemical compound/drug relations detected by a pattern and/or machine learning method. Extracted relations cover increase, decrease or alteration interactions. You can enter either names of liver markers or chemicals"><label for="radioWhatToSearch"><input name="markerWhatToSearch" type="radio" id="radioMarkerWhatToSearch" style="display:none;" CHECKED value="compoundsMarkersRelations"><span class="custom radio checked"></span> Marker-chemical relations</label></span>
                     {% else %}
-                        <label for="radioWhatToSearch"><input name="markerWhatToSearch" type="radio" id="radioMarkerWhatToSearch" style="display:none;" value="compoundsMarkersRelations"><span class="custom radio"></span> Relations</label>
+                        <span data-tooltip class="has-tip" title="Search for sentence based biochemical liver markers-chemical compound/drug relations detected by a pattern and/or machine learning method. Extracted relations cover increase, decrease or alteration interactions. You can enter either names of liver markers or chemicals"><label for="radioWhatToSearch"><input name="markerWhatToSearch" type="radio" id="radioMarkerWhatToSearch" style="display:none;" value="compoundsMarkersRelations"><span class="custom radio"></span> Marker-chemical relations</label></span>
                     {% endif %}
                 </fieldset>
             </form>
@@ -431,29 +431,29 @@
                     {% endif %}
 
                     {% if markerSource=="all" %}
-                        <label for="radioSource"><input name="markerSource" type="radio" id="radioMarkerSource" style="display:none;" CHECKED value="all"><span class="custom radio"></span> All</label>
+                        <span data-tooltip class="has-tip" title="Search in all sentences"><label for="radioSource"><input name="markerSource" type="radio" id="radioMarkerSource" style="display:none;" CHECKED value="all"><span class="custom radio"></span> All</label></span>
                     {% else %}
-                        <label for="radioSource"><input name="markerSource" type="radio" id="radioMarkerSource" style="display:none;" value="all"><span class="custom radio"></span> All</label>
+                        <span data-tooltip class="has-tip" title="Search in all sentences"><label for="radioSource"><input name="markerSource" type="radio" id="radioMarkerSource" style="display:none;" value="all"><span class="custom radio"></span> All</label></span>
                     {% endif %}
                     {% if markerSource=="pubmed" %}
-                        <label for="radioSource"><input name="markerSource" type="radio" id="radioMarkerSource" style="display:none;" CHECKED value="pubmed"><span class="custom radio"></span> Pubmed</label>
+                        <span data-tooltip class="has-tip" title="Search in all PubMed sentences"><label for="radioSource"><label for="radioSource"><input name="markerSource" type="radio" id="radioMarkerSource" style="display:none;" CHECKED value="pubmed"><span class="custom radio"></span> Pubmed</label></span>
                     {% else %}
-                        <label for="radioSource"><input name="markerSource" type="radio" id="radioMarkerSource" style="display:none;" value="pubmed"><span class="custom radio"></span> Pubmed</label>
+                        <span data-tooltip class="has-tip" title="Search in all PubMed sentences"><label for="radioSource"><label for="radioSource"><input name="markerSource" type="radio" id="radioMarkerSource" style="display:none;" value="pubmed"><span class="custom radio"></span> Pubmed</label></span>
                     {% endif %}
                     {% if markerSource=="fulltext" %}
-                        <label for="radioSource"><input name="markerSource" type="radio" id="radioMarkerSource" style="display:none;" CHECKED value="fulltext"><span class="custom radio"></span> Fulltext</label>
+                        <span data-tooltip class="has-tip" title="Search in all full text sentences"><label for="radioSource"><input name="markerSource" type="radio" id="radioMarkerSource" style="display:none;" CHECKED value="fulltext"><span class="custom radio"></span> Fulltext</label></span>
                     {% else %}
-                        <label for="radioSource"><input name="markerSource" type="radio" id="radioMarkerSource" style="display:none;" value="fulltext"><span class="custom radio"></span> Fulltext</label>
+                        <span data-tooltip class="has-tip" title="Search in all full text sentences"><label for="radioSource"><input name="markerSource" type="radio" id="radioMarkerSource" style="display:none;" value="fulltext"><span class="custom radio"></span> Fulltext</label></span>
                     {% endif %}
                     {% if markerSource=="nda" %}
-                        <label for="radioSource"><input name="markerSource" type="radio" id="radioMarkerSource" style="display:none;" CHECKED value="nda"><span class="custom radio"></span> NDA</label>
+                        <span data-tooltip class="has-tip" title="Search in FDA New Drug Approvals (NDAs) sentences"><label for="radioSource"><input name="markerSource" type="radio" id="radioMarkerSource" style="display:none;" CHECKED value="nda"><span class="custom radio"></span> NDA</label></span>
                     {% else %}
-                        <label for="radioSource"><input name="markerSource" type="radio" id="radioMarkerSource" style="display:none;" value="nda"><span class="custom radio"></span> NDA</label>
+                        <span data-tooltip class="has-tip" title="Search in FDA New Drug Approvals (NDAs) sentences"><label for="radioSource"><input name="markerSource" type="radio" id="radioMarkerSource" style="display:none;" value="nda"><span class="custom radio"></span> NDA</label></span>
                     {% endif %}
                     {% if markerSource=="epar" %}
-                        <label for="radioSource"><input name="markerSource" type="radio" id="radioMarkerSource" style="display:none;" CHECKED value="epar"><span class="custom radio"></span> EPAR</label>
+                        <span data-tooltip class="has-tip" title="Search in all European public assessment reports (EPAR) sentences"><label for="radioSource"><input name="markerSource" type="radio" id="radioMarkerSource" style="display:none;" CHECKED value="epar"><span class="custom radio"></span> EPAR</label></span>
                     {% else %}
-                        <label for="radioSource"><input name="markerSource" type="radio" id="radioMarkerSource" style="display:none;" value="epar"><span class="custom radio"></span> EPAR</label>
+                        <span data-tooltip class="has-tip" title="Search in all European public assessment reports (EPAR) sentences"><label for="radioSource"><input name="markerSource" type="radio" id="radioMarkerSource" style="display:none;" value="epar"><span class="custom radio"></span> EPAR</label></span>
                     {% endif %}
                 </fieldset>
             </form>

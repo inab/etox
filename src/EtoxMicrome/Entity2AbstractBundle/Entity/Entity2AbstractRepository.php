@@ -223,7 +223,7 @@ class Entity2AbstractRepository extends EntityRepository
             $name=$entity->getName();
 
             if($name!=""){
-                $dictionary["name"]=$name;
+                $dictionary["name"]="<a href='http://www.ncbi.nlm.nih.gov/pubmed/?term=\"$name\"[MeSH+Terms]' target='_blank'>$name</a>";
             }
             $chemIdPlus=$entity->getChemIdPlus();
             if($chemIdPlus!=""){

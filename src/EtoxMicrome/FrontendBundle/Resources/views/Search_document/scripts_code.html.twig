@@ -16,6 +16,10 @@
             switch(entityType){
                 case "keyword":
                     whatToSearch = $('input[name=keywordWhatToSearch]:checked').val();
+                    if(whatToSearch==null){
+                        alert("You have mark \"What are you searching?\" option");
+                        return false;
+                    }
                     entityName = $('#tags-keywords').val();
                     entityName = entityName.trim();
                     source=$('input[name=keywordSource]:checked').val();
@@ -45,6 +49,10 @@
                 case "compound":
                 case "compoundDict":
                     whatToSearch=$('input[name=compoundWhatToSearch]:checked').val();
+                    if(whatToSearch==null){
+                        alert("You have mark \"What are you searching?\" option");
+                        return false;
+                    }
                     entityName = $('#tags-compounds').val();
                     entityName = entityName.trim();
                     source=$('input[name=compoundSource]:checked').val();
@@ -76,6 +84,10 @@
                     break;
                 case "cytochrome":
                     whatToSearch=$('input[name=cytochromeWhatToSearch]:checked').val();
+                    if(whatToSearch==null){
+                        alert("You have mark \"What are you searching?\" option");
+                        return false;
+                    }
                     entityName = $('#tags-cytochromes').val();
                     entityName = entityName.trim();
                     source=$('input[name=cytochromeSource]:checked').val();
@@ -91,6 +103,10 @@
                     break;
                 case "marker":
                     whatToSearch=$('input[name=markerWhatToSearch]:checked').val();
+                    if(whatToSearch==null){
+                        alert("You have mark \"What are you searching?\" option");
+                        return false;
+                    }
                     entityName = $('#tags-markers').val();
                     entityName = entityName.trim();
                     source=$('input[name=markerSource]:checked').val();
@@ -189,5 +205,103 @@
             );
         }
 
+        function curateCompound2Term2Document(sfAction, compound2Term2DocumentId, action){
+            idTrigger=action+"-"+compound2Term2DocumentId;
+            $.ajax(
+              {
+                url: sfAction,
+                dataType: "json",
+                beforeSend: function()
+                {
+                    //$('#free-curation-'+compound2Term2DocumentId).remove();
+                    //newText=$("<span class='loading_data'> Loading data...</span>");
+                    //$("#"+idTrigger).append(newText);
+                },
+                complete: function()
+                {
+                    //newText.remove();
+                    //$("#"+idTrigger).append(newText);
+                },
+                success: function (data, status)
+                {
+                    //We genereate a string with the new curation html code to insert
+                    newCurationHtml= data["htmlCuration"];
+                    $("#free-curation-"+compound2Term2DocumentId).html(newCurationHtml);
+
+
+                },
+                error: function (data, status, e)
+                {
+                    alert('Something happened loading requested data:.\n'+data.error);
+                }
+            }
+            );
+        }
+
+        function curateCompound2Cyp2Document(sfAction, compound2Cyp2DocumentId, action){
+            idTrigger=action+"-"+compound2Cyp2DocumentId;
+            $.ajax(
+              {
+                url: sfAction,
+                dataType: "json",
+                beforeSend: function()
+                {
+                    //$('#free-curation-'+compound2Cyp2DocumentId).remove();
+                    //newText=$("<span class='loading_data'> Loading data...</span>");
+                    //$("#"+idTrigger).append(newText);
+                },
+                complete: function()
+                {
+                    //newText.remove();
+                    //$("#"+idTrigger).append(newText);
+                },
+                success: function (data, status)
+                {
+                    //We genereate a string with the new curation html code to insert
+                    newCurationHtml= data["htmlCuration"];
+                    $("#free-curation-"+compound2Cyp2DocumentId).html(newCurationHtml);
+
+
+                },
+                error: function (data, status, e)
+                {
+                    alert('Something happened loading requested data:.\n'+data.error);
+                }
+            }
+            );
+        }
+
+        function curateCompound2Marker2Document(sfAction, compound2Marker2DocumentId, action){
+            idTrigger=action+"-"+compound2Marker2DocumentId;
+            $.ajax(
+              {
+                url: sfAction,
+                dataType: "json",
+                beforeSend: function()
+                {
+                    //$('#free-curation-'+compound2Marker2DocumentId).remove();
+                    //newText=$("<span class='loading_data'> Loading data...</span>");
+                    //$("#"+idTrigger).append(newText);
+                },
+                complete: function()
+                {
+                    //newText.remove();
+                    //$("#"+idTrigger).append(newText);
+                },
+                success: function (data, status)
+                {
+                    //We genereate a string with the new curation html code to insert
+                    newCurationHtml= data["htmlCuration"];
+                    $("#free-curation-"+compound2Marker2DocumentId).html(newCurationHtml);
+
+
+                },
+                error: function (data, status, e)
+                {
+                    alert('Something happened loading requested data:.\n'+data.error);
+                }
+            }
+            );
+        }
     </script>
 {% endblock %}

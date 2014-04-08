@@ -133,6 +133,18 @@ ajax_entity2abstract_curation:
     pattern: /curate/entity2abstract/{entity2Abstract}/{action}/
     defaults: { _controller: EtoxMicromeEntity2AbstractBundle:Curation:addCurationEntity2Abstract}
 
+ajax_compound2term2document_curation:
+    pattern: /curate/compound2term2document/{compound2Term2Document}/{action}/
+    defaults: { _controller: EtoxMicromeEntity2DocumentBundle:Curation:addCurationCompound2Term2Document}
+
+ajax_compound2cyp2document_curation:
+    pattern: /curate/compound2cyp2document/{compound2Cyp2Document}/{action}/
+    defaults: { _controller: EtoxMicromeEntity2DocumentBundle:Curation:addCurationCompound2Cyp2Document}
+
+ajax_compound2marker2document_curation:
+    pattern: /curate/compound2marker2document/{compound2Marker2Document}/{action}/
+    defaults: { _controller: EtoxMicromeEntity2DocumentBundle:Curation:addCurationCompound2Marker2Document}
+
 ajax_cytochrome2document_curation:
     pattern: /curate/cytochrome2document/{cytochrome2Document}/{action}/
     defaults: { _controller: EtoxMicromeEntity2DocumentBundle:Curation:addCurationCytochrome2Document}

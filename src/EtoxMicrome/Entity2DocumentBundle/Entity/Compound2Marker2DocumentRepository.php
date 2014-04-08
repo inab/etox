@@ -25,4 +25,39 @@ class Compound2Marker2DocumentRepository extends EntityRepository
         return $query;
 
     }
+
+    public function updateCompound2Marker2DocumentCuration($compound2Marker2DocumentId, $action)
+    {
+        //Explain for the homologous updateEntity2DocumentCuration at Entity2DocumentRepository
+        /*Here we get the entity2Document and the action to take for the curation value.
+        $action can be check or cross.
+        If $action==check, then we have to add one to the curation field of the Entity2Document register
+        If $action==cross, then we have to substract one to the curation field of the Entity2Document register
+
+        After that, taking into account the curation value, we have to generate the html to render inside the curation
+        */
+
+        //ld($entity2DocumentId);
+        //ldd($action);
+
+        $em = $this->getEntityManager();
+        $compound2Marker2Document=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Compound2Marker2Document')->findOneById($compound2Marker2DocumentId);
+        if (!$compound2Marker2Document) {
+            throw $this->createNotFoundException(
+                "Cannot curate this Compound2Marker2Document $compound2Marker2DocumentId"
+            );
+        }
+        else{
+            $curation=$compound2Marker2Document->getCuration();
+            if ($action=="check"){
+                $compound2Marker2Document->setCuration($curation + 1);
+            }elseif($action=="cross"){
+                $compound2Marker2Document->setCuration($curation - 1);
+            }
+            $em->flush();
+            $curationReturn=$compound2Marker2Document->getCuration();
+            return($curationReturn);
+        }
+        return ($curationReturn);
+    }
 }

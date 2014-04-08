@@ -22,9 +22,9 @@
                     {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
                         <li><a href="{{ path('homepage') }}">User Area</a></li>
                     {% endif %}
-                    <li><a href="https://www.surveymonkey.com/" target="_blank">Feedback</a></li>
+                    <li><a href="https://docs.google.com/forms/d/1a7iej8rV8Hat1EtOtPZlaku4HeqoDLE9gg4vRpOPIXk/viewform" target="_blank">Feedback</a></li>
                     <li><a href="mailto:mkrallinger@cnio.es">Contact</a></li>
-                    <li><strong>Search by:</strong> </li>
+                    <li><strong>Select toxicity endpoint:</strong> </li>
                     <li>
                         <select accesskey="S" id="searchby" onchange="goToPage()">
                             {% if field is defined %}
