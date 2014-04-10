@@ -35,11 +35,11 @@ class CurationController extends Controller
         );
 
         if($curation<0){
-            $htmlCuration="<small>(Annotate relation: <a class='check-no check $curation' id=\"check-$entity2Abstract\" onclick=\"curateEntity2Abstract('$url_check',$entity2Abstract,'check')\"> </a> <a class='cross-yes cross' id=\"cross-$entity2Abstract\" onclick=\"curateEntity2Abstract('$url_cross',$entity2Abstract,'cross')\"> </a>)</small>";
+            $htmlCuration="<small><a class='check-no check $curation' id=\"check-$entity2Abstract\" onclick=\"curateEntity2Abstract('$url_check',$entity2Abstract,'check')\"> </a> <a class='cross-yes cross' id=\"cross-$entity2Abstract\" onclick=\"curateEntity2Abstract('$url_cross',$entity2Abstract,'cross')\"> </a> $curation</small>";
         }elseif($curation==0){
-            $htmlCuration="<small>(Annotate relation: <a class='check-no check $curation' id=\"check-$entity2Abstract\" onclick=\"curateEntity2Document('$url_check',$entity2Abstract,'check')\"> </a> <a class='cross-no cross' id=\"cross-$entity2Abstract\" onclick=\"curateEntity2Abstract('$url_cross',$entity2Abstract,'cross')\"> </a>)</small>";
+            $htmlCuration="<small><a class='check-no check $curation' id=\"check-$entity2Abstract\" onclick=\"curateEntity2Document('$url_check',$entity2Abstract,'check')\"> </a> <a class='cross-no cross' id=\"cross-$entity2Abstract\" onclick=\"curateEntity2Abstract('$url_cross',$entity2Abstract,'cross')\"> </a>$curation</small>";
         }elseif($curation>0){
-            $htmlCuration="<small>(Annotate relation: <a class='check-yes check $curation' id=\"check-$entity2Abstract\" onclick=\"curateEntity2Document('$url_check',$entity2Abstract,'check')\"> </a> <a class='cross-no cross' id=\"cross-$entity2Abstract\" onclick=\"curateEntity2Abstract('$url_cross',$entity2Abstract,'cross')\"> </a>)</small>";
+            $htmlCuration="<small><a class='check-yes check $curation' id=\"check-$entity2Abstract\" onclick=\"curateEntity2Document('$url_check',$entity2Abstract,'check')\"> </a> <a class='cross-no cross' id=\"cross-$entity2Abstract\" onclick=\"curateEntity2Abstract('$url_cross',$entity2Abstract,'cross')\"> </a>$curation</small>";
         }
         $response=array("responseCode"=>200,  "htmlCuration"=>$htmlCuration);
         return new Response(json_encode($response));

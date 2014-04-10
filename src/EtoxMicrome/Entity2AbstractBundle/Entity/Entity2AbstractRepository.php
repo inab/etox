@@ -58,7 +58,6 @@ class Entity2AbstractRepository extends EntityRepository
     public function getEntity2AbstractFromFieldDQL($field, $entityType, $arrayEntityName, $orderBy)
     {//("hepatotoxicity","CompoundDict",arrayEntityId)
         $message="inside getEntity2AbstractFromFieldDQL";
-        ld($orderBy);
         $valToSearch=$this->getValToSearch($field);//"i.e hepval, embval... etc"
         if ($orderBy=="hepval" or $orderBy=="score"){
             $orderBy="hepval desc";

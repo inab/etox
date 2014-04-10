@@ -84,7 +84,9 @@
                             ><span data-tooltip class="has-tip" title="{{ mouseover_rule}}">Rule</span></a>
                         </th>
                         <th>Sentence</th>
-                        <th><span data-tooltip class="has-tip" title="{{ mouseover_curation}}">Curation</span></th>
+                        {% if entityType=="Cytochrome" %}
+                            <th><span data-tooltip class="has-tip" title="{{ mouseover_curation}}">Curation</span></th>
+                        {% endif %}
                     </thead>
                     <tbody>
                         {% set contador = 1 %}
@@ -169,18 +171,20 @@
                                     {% endif %}
 
                                 </td>
-                                <td class="center">
-                                    <small>
+                                {% if entityType=="Cytochrome" %}
+                                    <td class="center">
                                         {% set curation=entity2Document.getCuration %}
                                         {% if curation is empty %}
                                             {% set curation=0 %}
                                         {% endif %}
                                         {% set curationHtml= curation | setCurationHtml(entity2Document.getId(), entityType, "document") %}
                                         <div id="free-curation-{{ entity2Document.getId }}">
-                                            {{ curationHtml | raw }}
+                                            <small>
+                                                {{ curationHtml | raw }}<br/>{{ curation }}
+                                            </small>
                                         </div>
-                                    </small>
-                                </td>
+                                    </td>
+                                {% endif %}
                             </tr>
                         {% endfor %}
                     </tbody>
@@ -320,16 +324,16 @@
                                     {{ text| raw }}
                                 </td>
                                 <td class="center">
-                                    <small>
-                                        {% set curation=entity2Abstract.getCuration %}
-                                        {% if curation is empty %}
-                                            {% set curation=0 %}
-                                        {% endif %}
-                                        {% set curationHtml= curation | setCurationHtml(entity2Abstract.getId(), entityType, "abstract") %}
-                                        <div id="free-curation-{{ entity2Abstract.getId }}">
-                                            {{ curationHtml | raw }}
-                                        </div>
-                                    </small>
+                                    {% set curation=entity2Abstract.getCuration %}
+                                    {% if curation is empty %}
+                                        {% set curation=0 %}
+                                    {% endif %}
+                                    {% set curationHtml= curation | setCurationHtml(entity2Abstract.getId(), entityType, "abstract") %}
+                                    <div id="free-curation-{{ entity2Abstract.getId }}">
+                                        <small>
+                                            {{ curationHtml | raw }}<br/>{{ curation }}
+                                        </small>
+                                    </div>
                                 </td>
                             </tr>
                         {% endfor %}

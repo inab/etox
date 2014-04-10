@@ -515,6 +515,7 @@ class Entity2DocumentRepository extends EntityRepository
 
     public function updateEntity2DocumentCuration($entity2DocumentId, $action)
     {
+        $message="updateEntity2DocumentCuration";
         /*Here we get the entity2Document and the action to take for the curation value.
         $action can be check or cross.
         If $action==check, then we have to add one to the curation field of the Entity2Document register
@@ -814,7 +815,6 @@ class Entity2DocumentRepository extends EntityRepository
                             $humanFound=true;
                         }
                     }
-
                     if($humanFound){//If a human is found we check CYPS ranking for human only
                         $arrayCytochromesSortedByRanking=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Specie2Document')->getBetterRanked($arraycytochromes, "9606");
                     }else{//If a human is not found, we check CYPS ranking for all of the cytochromes
@@ -837,7 +837,6 @@ class Entity2DocumentRepository extends EntityRepository
                             $sameSpecie=true;
                         }
                     }
-
                     if($sameSpecie){//If the specie has been found, we check CYPs ranking for that taxId
                         $arrayCytochromesSortedByRanking=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Specie2Document')->getBetterRanked($arraycytochromes, $cytochromeTaxId);
                     }else{//If the specie has not been found, we add a Warning and check ranking for all cytochromes
@@ -849,7 +848,6 @@ class Entity2DocumentRepository extends EntityRepository
                     //3.3.- If there is more than one co-occurrence between CYPs mention and species
                     //We check mention against dictionary names if nothing is found then we check against canonicals
                     $arraycytochromes=$em->getRepository('EtoxMicromeEntityBundle:Cytochrome')->findByName($cytochromeName);
-                    ld($arraycytochromes);
                     if(count($arraycytochromes)==0){
                         $arraycytochromes=$em->getRepository('EtoxMicromeEntityBundle:Cytochrome')->findByCanonical($cytochromeName);
                     }

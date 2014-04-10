@@ -329,11 +329,11 @@
                                     {{ relationQualifier }}
                                 </td>
                                 <td class="center">
-                                    <small>
-                                        <div id="free-curation-{{ entity2Document.getId }}">
-                                            {{ curationHtml | raw }}
-                                        </div>
-                                    </small>
+                                    <div id="free-curation-{{ entity2Document.getId }}">
+                                        <small>
+                                        {{ curationHtml | raw }}<br/>{{ curation }}
+                                        </small>
+                                    </div>
                                 </td>
                             </tr>
                         {% endfor %}
