@@ -15,7 +15,6 @@ class Specie2DocumentRepository extends EntityRepository
     public function getBetterRanked($arraycytochromes, $taxId){
         //This function receives some cytochromes and sort them by the ranking of its uniprot accession, taking into account the taxId to filter them
         $message="Inside getBetterRanked";
-        ld($message);
         if($taxId!="all"){
             //We filter the arraycytochromes taking into account only the cytochromes with the taxId desired.
             $arrayTmp=array();

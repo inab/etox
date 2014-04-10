@@ -769,10 +769,7 @@ class Entity2DocumentRepository extends EntityRepository
         if($qualifier=="Cytochrome"){
             $warning=false;
             $message="getEntitySummary for cytochrome";
-            ld($message);
-            ld($entity2DocumentId);
             $cytochrome2Document=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Cytochrome2Document')->findOneById($entity2DocumentId);
-            ld($cytochrome2Document);
             if ($cytochrome2Document!=null){
                 //////////////////////////////////////////////////////////////////////
                 ////////////////////////CYP NORMALIZATION PROTOCOL////////////////////
@@ -783,7 +780,6 @@ class Entity2DocumentRepository extends EntityRepository
                 //1.- We select CYPs mentioning sentence
                 $cytochromeName=$cytochrome2Document->getCypsMention();
                 $cytochrome=$em->getRepository('EtoxMicromeEntityBundle:Cytochrome')->findOneByName($cytochromeName);
-                ld($cytochrome);
 
                 //2.- We select the species for the same sentence
                 $specie2documentArray=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Specie2Document')->findByDocument($documentId);
@@ -806,7 +802,6 @@ class Entity2DocumentRepository extends EntityRepository
                     //We check mention against dictionary names if nothing is found then we check against canonicals
                 if($numberCoocurrences==0){
                     $arraycytochromes=$em->getRepository('EtoxMicromeEntityBundle:Cytochrome')->findByName($cytochromeName);
-                    ld($arraycytochromes);
                     if(count($arraycytochromes)==0){
                         $arraycytochromes=$em->getRepository('EtoxMicromeEntityBundle:Cytochrome')->findByCanonical($cytochromeName);
                     }
@@ -819,7 +814,7 @@ class Entity2DocumentRepository extends EntityRepository
                             $humanFound=true;
                         }
                     }
-                    ld($humanFound);
+
                     if($humanFound){//If a human is found we check CYPS ranking for human only
                         $arrayCytochromesSortedByRanking=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Specie2Document')->getBetterRanked($arraycytochromes, "9606");
                     }else{//If a human is not found, we check CYPS ranking for all of the cytochromes
@@ -830,7 +825,6 @@ class Entity2DocumentRepository extends EntityRepository
                     //3.2.- If there is one co-occurrence between CYPs mention and species
                     //We check mention against dictionary names if nothing is found then we check against canonicals
                     $arraycytochromes=$em->getRepository('EtoxMicromeEntityBundle:Cytochrome')->findByName($cytochromeName);
-                    ld($arraycytochromes);
                     if(count($arraycytochromes)==0){
                         $arraycytochromes=$em->getRepository('EtoxMicromeEntityBundle:Cytochrome')->findByCanonical($cytochromeName);
                     }
@@ -843,6 +837,7 @@ class Entity2DocumentRepository extends EntityRepository
                             $sameSpecie=true;
                         }
                     }
+
                     if($sameSpecie){//If the specie has been found, we check CYPs ranking for that taxId
                         $arrayCytochromesSortedByRanking=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Specie2Document')->getBetterRanked($arraycytochromes, $cytochromeTaxId);
                     }else{//If the specie has not been found, we add a Warning and check ranking for all cytochromes
