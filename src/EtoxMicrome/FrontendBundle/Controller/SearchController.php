@@ -130,6 +130,12 @@ class SearchController extends Controller
         $max=-10000;
         $min=10000;
         $totalHits=count($arrayEntity2Document);
+        if($totalHits==0){
+            $arrayResults[0]=0;
+            $arrayResults[1]=0;
+            $arrayResults[2]=0;
+            return $arrayResults;
+        }
         $className=$arrayEntity2Document[0]->getClassName();
         if($orderBy=="hepval" or $orderBy=="score"){
             foreach($arrayEntity2Document as $entity2Document){
@@ -195,6 +201,12 @@ class SearchController extends Controller
         $max=-10000;
         $min=10000;
         $totalHits=count($arrayDocumentsIntersection);
+        if($totalHits==0){
+            $arrayResults[0]=0;
+            $arrayResults[1]=0;
+            $arrayResults[2]=0;
+            return $arrayResults;
+        }
         $valToSearch=$this->getValToSearch($field);
         $orderBy=$this->getOrderBy($orderBy, $valToSearch);
         foreach($arrayDocumentsIntersection as $result){
@@ -220,6 +232,12 @@ class SearchController extends Controller
         $max=-10000;
         $min=10000;
         $totalHits=count($arrayCompound2Relation2Documents);
+        if($totalHits==0){
+            $arrayResults[0]=0;
+            $arrayResults[1]=0;
+            $arrayResults[2]=0;
+            return $arrayResults;
+        }
         $className=$arrayCompound2Relation2Documents[0]->getClassName();
         if($className=="Compound2Term2Document"){
             foreach($arrayCompound2Relation2Documents as $compound2Relation2Document){
@@ -861,6 +879,9 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
         //Function that receives a resultSetDocuments and extracts the mean value of the score
 
         $arrayResults=$resultSetDocuments->getResults();
+        if(count($arrayResults)==0){
+            return 0;
+        }
         $arrayInput=array();
         foreach($arrayResults as $result){
             if($orderBy=="score"){
@@ -879,7 +900,12 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
             }
             $arrayInput[]=$data;
         }
-        $output=$this->mmmr($arrayInput, $operation);
+        if(count($arrayInput)!=0){
+            $output=$this->mmmr($arrayInput, $operation);
+        }
+        else{
+            $output=0;
+        }
         return $output;
     }
 
@@ -888,6 +914,9 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
         //Function that receives a resultSetDocuments and extracts the mean value of the score
         //First we have to see what className is coming, then we sort by different scores/fields...
         $arrayInput=array();
+        if(count($arrayEntity2Document)==0){
+            return 0;
+        }
         if($orderBy=="hepval" or $orderBy=="score"){
             foreach($arrayEntity2Document as $entity2Document){
                 $data=$entity2Document->getHepval();
@@ -930,13 +959,21 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                 $arrayInput[]=$data;
             }
         }
-        $output=$this->mmmr($arrayInput, $operation);
+        if(count($arrayInput)!=0){
+            $output=$this->mmmr($arrayInput, $operation);
+        }
+        else{
+            $output=0;
+        }
         return $output;
     }
 
     public function getMmmrScoreFromIntersection($resultSetDocuments, $orderBy, $operation = 'mean'){
         //Function that receives a resultSetDocuments and extracts the mean value of the score
         $arrayInput=array();
+        if(count($resultSetDocuments)==0){
+            return 0;
+        }
         if($orderBy=="score"){
                 $orderBy="hepval";
             }elseif($orderBy=="pattern"){
@@ -954,7 +991,12 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
             }
             $arrayInput[]=$data;
         }
-        $output=$this->mmmr($arrayInput, $operation);
+        if(count($arrayInput)!=0){
+            $output=$this->mmmr($arrayInput, $operation);
+        }
+        else{
+            $output=0;
+        }
         return $output;
     }
 
@@ -963,6 +1005,9 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
         //Function that receives a resultSetDocuments and extracts the mean value of the score
         //First we have to see what className is coming, then we sort by different scores/fields...
         $arrayInput=array();
+        if(count($arrayCompound2Relation2Documents)==0){
+            return 0;
+        }
         $className=$arrayCompound2Relation2Documents[0]->getClassName();
         if($className=="Compound2Term2Document"){
             foreach($arrayCompound2Relation2Documents as $compound2Relation2Document){
@@ -1024,8 +1069,46 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                 $arrayInput[]=$data;
             }
         }
-        $output=$this->mmmr($arrayInput, $operation);
+
+        if(count($arrayInput)!=0){
+            $output=$this->mmmr($arrayInput, $operation);
+        }
+        else{
+            $output=0;
+        }
         return $output;
+    }
+
+    public function getRidOfDuplicatedEntries($compound2Documents){
+        //Temporary function to get rid of the duplicated based in the unique index of document_id and name of the compound2Document
+        $arrayOutput=array();
+        $dictionaryOfArrays=array();
+
+        foreach($compound2Documents as $entity2Document){
+            $documentId=$entity2Document->getDocument()->getId();
+            $name=$entity2Document->getName();
+            if (array_key_exists($documentId, $dictionaryOfArrays)) {
+                //If exists the key then we look for the name
+                $arrayNames=$dictionaryOfArrays[$documentId];
+                if (in_array($name, $arrayNames)) {
+                    //If found inside the array we don't do anything
+                }else{
+                    //If not found, we add to both arrays
+                    $arrayOutput[]=$entity2Document;
+                    $arrayNames[]=$name;
+                    $dictionaryOfArrays[$documentId]=$arrayNames;
+                }
+            }else{
+                //We add to both arrays
+                $arrayTmp=array();
+                $arrayTmp[]=$name;
+                $dictionaryOfArrays[$documentId]=$arrayTmp;
+                $arrayOutput[]=$entity2Document;
+            }
+            //The structure is a dictionary of arrays. If the element exists we don't add the $entity2Document to the $arrayOutput
+        }
+        return($arrayOutput);
+
     }
 
     public function searchFieldWhatToSearchEntityTypeSourceEntityAction($field, $whatToSearch, $entityType, $source, $entityName, $orderBy)
@@ -1251,7 +1334,7 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                         'field' => $field,
                         'entityType' => $entityType,
                         'keyword' => $entityName,
-                        'arrayResultsDoc' => $arrayDocumentsIntersection,
+                        'arrayResultsDoc' => $arrayResultsDoc,
                         'resultSetDocuments' => $arrayTotalMaxMin,
                         'whatToSearch' => $whatToSearch,
                         'source' => $source,
@@ -1291,7 +1374,7 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                         'field' => $field,
                         'entityType' => $entityType,
                         'keyword' => $entityName,
-                        'arrayResultsDoc' => $arrayDocumentsIntersection,
+                        'arrayResultsDoc' => $arrayResultsDoc,
                         'resultSetDocuments' => $arrayTotalMaxMin,
                         'whatToSearch' => $whatToSearch,
                         'source' => $source,
@@ -1335,7 +1418,7 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                         'field' => $field,
                         'entityType' => $entityType,
                         'keyword' => $entityName,
-                        'arrayResultsDoc' => $arrayDocumentsIntersection,
+                        'arrayResultsDoc' => $arrayResultsDoc,
                         'resultSetDocuments' => $arrayTotalMaxMin,
                         'whatToSearch' => $whatToSearch,
                         'source' => $source,
@@ -1381,7 +1464,7 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                         'field' => $field,
                         'entityType' => $entityType,
                         'keyword' => $entityName,
-                        'arrayResultsDoc' => $arrayDocumentsIntersection,
+                        'arrayResultsDoc' => $arrayResultsDoc,
                         'resultSetDocuments' => $arrayTotalMaxMin,
                         'whatToSearch' => $whatToSearch,
                         'source' => $source,
@@ -1741,6 +1824,7 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
             ));
         }
         $arrayEntityId=array_unique($arrayEntityId);//We get rid of the duplicates
+        //ld($arrayEntityId);
         if($entityType=="Cytochrome"){
             //We create an array of cytochromes from an array with their enityId
             $arrayEntities=array();
@@ -1784,6 +1868,7 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
 
             }
             $arrayEntityName=array_unique($arrayEntityName);//We get rid of the duplicates
+            //ld($arrayEntityName);
             if($entityType=="CompoundDict" or $entityType=="CompoundMesh"){
                 //We search into Abstracts only if we are looking for Compounds
 
@@ -1812,6 +1897,10 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                 */
                 if (in_array($source, $arraySourcesDocuments)){
                     $compound2Documents=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntity2DocumentFromFieldDQL($field, $entityType, $arrayEntityName, $source, $orderBy)->getResult();
+
+                    ///Temporary function to get rid of the duplicated entries. Duplicates should be removed from the entity2document table itself
+                    //$compound2Documents=$this->getRidOfDuplicatedEntries($compound2Documents);
+
                     //When dealing with withRelations arrays, we only have this array to get the needed values that we retreive in interface using resultSetArrays... Which are: totalHits, Max. Score, Min. Score
                     //So we implement a function to get all this info inside an arrayTotalMaxMin. Being arrayTotalMaxMin[0]=totalHits, arrayTotalMaxMin[1]=Max.score, arrayTotalMaxMin[2]=Min.score
                     $arrayTotalMaxMin=$this->getTotalMaxMinArrayForEntities($compound2Documents, $orderBy, $field);

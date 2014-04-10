@@ -8,23 +8,23 @@ use Doctrine\ORM\Mapping as ORM;
  * Entity2Document
  *
  * @ORM\Table(indexes={
-        @ORM\Index(name="entity2Document_document_id", columns={"document_id"}),
-        @ORM\Index(name="entity2Document_name_index", columns={"name"}),
-        @ORM\Index(name="entity2Document_curation", columns={"curation"}),
-        @ORM\Index(name="entity2document_hepval", columns={"hepval"}),
-        @ORM\Index(name="entity2document_cardval", columns={"cardval"}),
-        @ORM\Index(name="entity2document_nephval", columns={"nephval"}),
-        @ORM\Index(name="entity2document_phosval", columns={"phosval"}),
-        @ORM\Index(name="entity2document_patterncount", columns={"""patternCount"""}),
-        @ORM\Index(name="entity2document_rulescore", columns={"""ruleScore"""}),
-        @ORM\Index(name="entity2document_qualifier_name", columns={"qualifier", "name"}),
-        @ORM\Index(name="entity2document_qualifier_kind_name", columns={"qualifier", "kind", "name"}),
-        @ORM\Index(name="entity2document_qualifier", columns={"qualifier"}),
-        @ORM\Index(name="entity2document_svm_confidence_index", columns={"""svmConfidence"""}),
-        @ORM\Index(name="entity2document_heptermnormscore", columns={"""hepTermNormScore"""}),
-        @ORM\Index(name="entity2document_heptermvarscore", columns={"""hepTermVarScore"""}),
-        @ORM\Index(name="entity2document_kind", columns={"kind"})
-    }, name="entity2document")
+        @ORM\Index(name="entity2Document_document_id_new", columns={"document_id"}),
+        @ORM\Index(name="entity2Document_name_index_new", columns={"name"}),
+        @ORM\Index(name="entity2Document_curation_new", columns={"curation"}),
+        @ORM\Index(name="entity2document_hepval_new", columns={"hepval"}),
+        @ORM\Index(name="entity2document_cardval_new", columns={"cardval"}),
+        @ORM\Index(name="entity2document_nephval_new", columns={"nephval"}),
+        @ORM\Index(name="entity2document_phosval_new", columns={"phosval"}),
+        @ORM\Index(name="entity2document_patterncount_new", columns={"""patternCount"""}),
+        @ORM\Index(name="entity2document_rulescore_new", columns={"""ruleScore"""}),
+        @ORM\Index(name="entity2document_qualifier_name_new", columns={"qualifier", "name"}),
+        @ORM\Index(name="entity2document_qualifier_kind_name_new", columns={"qualifier", "kind", "name"}),
+        @ORM\Index(name="entity2document_qualifier_new", columns={"qualifier"}),
+        @ORM\Index(name="entity2document_svm_confidence_index_new", columns={"""svmConfidence"""}),
+        @ORM\Index(name="entity2document_heptermnormscore_new", columns={"""hepTermNormScore"""}),
+        @ORM\Index(name="entity2document_heptermvarscore_new", columns={"""hepTermVarScore"""}),
+        @ORM\Index(name="entity2document_kind_new", columns={"kind"})
+    }, name="entity2document_new")
  * @ORM\Entity(repositoryClass="EtoxMicrome\Entity2DocumentBundle\Entity\Entity2DocumentRepository")
  */
 class Entity2Document

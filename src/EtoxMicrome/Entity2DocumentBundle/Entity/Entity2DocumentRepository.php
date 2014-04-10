@@ -61,22 +61,21 @@ class Entity2DocumentRepository extends EntityRepository
         $orderBy=$this->getOrderBy($orderBy, $valToSearch);
         if ($source=="all"){//Depending on the source we add or not the d.kind=source parameter to the query
 
-            //$sql="SELECT e2d,d
-            //    FROM EtoxMicromeEntity2DocumentBundle:Entity2Document e2d
-            //    JOIN e2d.document d
-            //    WHERE e2d.name IN (:arrayEntityName)
-            //    AND e2d.qualifier = :entityType
-            //    AND d.$orderBy is not null
-            //    ORDER BY d.$orderBy DESC
-            //    ";
+            /*$sql="SELECT e2d, d
+                FROM EtoxMicromeEntity2DocumentBundle:Entity2Document e2d
+                JOIN e2d.document d
+                WHERE e2d.name IN (:arrayEntityName)
+                AND e2d.qualifier = :entityType
+                AND e2d.$orderBy is not null
+                ";
+            */
             $sql="SELECT e2d
                     FROM EtoxMicromeEntity2DocumentBundle:Entity2Document e2d
                     WHERE e2d.name IN (:arrayEntityName)
-                    AND e2d.qualifier = :entityType
                     AND e2d.$orderBy is not null
+                    AND e2d.qualifier = :entityType
                     ORDER BY e2d.$orderBy DESC
                 ";
-
             $query = $this->_em->createQuery($sql);
             $query->setParameter("arrayEntityName", $arrayEntityName);
             $query->setParameter('entityType', $entityType);

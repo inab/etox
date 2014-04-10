@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Compound2Term2Document
  *
- * @ORM\Table(indexes={ @ORM\Index(name="compound2term2document_sentenceId_index", columns={"""sentenceId"""}), @ORM\Index(name="compound2term2document_compound_index", columns={"""compoundName"""}), @ORM\Index(name="compound2term2document_term_index", columns={"term"}), @ORM\Index(name="compound2term2document_document_id", columns={"document_id"}), @ORM\Index(name="compound2term2document_relation_score", columns={"""relationScore"""}), @ORM\Index(name="compound2term2document_curation", columns={"curation"}) } )
+ * @ORM\Table(indexes={ @ORM\Index(name="compound2term2document_sentenceId_index_new", columns={"""sentenceId"""}), @ORM\Index(name="compound2term2document_compound_index_new", columns={"""compoundName"""}), @ORM\Index(name="compound2term2document_term_index_new", columns={"term"}), @ORM\Index(name="compound2term2document_document_id_new", columns={"document_id"}), @ORM\Index(name="compound2term2document_relation_score_new", columns={"""relationScore"""}), @ORM\Index(name="compound2term2document_curation_new", columns={"curation"}) }, name="compound2term2document_new" )
  * @ORM\Entity(repositoryClass="EtoxMicrome\Entity2DocumentBundle\Entity\Compound2Term2DocumentRepository")
  */
 class Compound2Term2Document

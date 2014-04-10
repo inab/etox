@@ -789,6 +789,7 @@ class UtilityExtension extends \Twig_Extension
         }
         //ld($entityBackup);
         $text=implode(" ", $arrayText);
+        //$text=str_ireplace($entityBackup, '<mark class="termSearched">'.$entityBackup.'</mark>' , $text);
         $arrayReturn=array();
         $arrayReturn[0]=$text;
         $arrayReturn[1]=$mouseoverDivs;
