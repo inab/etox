@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Cytochrome2Document
  *
- * @ORM\Table(indexes={@ORM\Index(name="cytochrome2Document_tagMethod_index", columns={"""tagMethod"""}), @ORM\Index(name="cytochrome2Document_cypsMention_index", columns={"""cypsMention"""}), @ORM\Index(name="cytochrome2Document_hepval", columns={"hepval"}), @ORM\Index(name="cytochrome2Document_patterncount", columns={"""patternCount"""}), @ORM\Index(name="cytochrome2Document_rulescore", columns={"""ruleScore"""}), @ORM\Index(name="cytochrome2Document_heptermnormscore", columns={"""hepTermNormScore"""}), @ORM\Index(name="cytochrome2Document_heptermvarscore", columns={"""hepTermVarScore"""}), @ORM\Index(name="cytochrome2Document_svmconfidence", columns={"""svmConfidence"""}) } )
+ * @ORM\Table(indexes={@ORM\Index(name="cytochrome2Document_tagMethod_index_new", columns={"""tagMethod"""}), @ORM\Index(name="cytochrome2Document_cypsMention_index_new", columns={"""cypsMention"""}), @ORM\Index(name="cytochrome2Document_hepval_new", columns={"hepval"}), @ORM\Index(name="cytochrome2Document_patterncount_new", columns={"""patternCount"""}), @ORM\Index(name="cytochrome2Document_rulescore_new", columns={"""ruleScore"""}), @ORM\Index(name="cytochrome2Document_heptermnormscore_new", columns={"""hepTermNormScore"""}), @ORM\Index(name="cytochrome2Document_heptermvarscore_new", columns={"""hepTermVarScore"""}), @ORM\Index(name="cytochrome2Document_svmconfidence_new", columns={"""svmConfidence"""}) } ,name="cytochrome2document_new" )
  * @ORM\Entity(repositoryClass="EtoxMicrome\Entity2DocumentBundle\Entity\Cytochrome2DocumentRepository")
  */
 class Cytochrome2Document
