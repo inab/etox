@@ -31,6 +31,7 @@ class UtilityExtension extends \Twig_Extension
         'setCurationHtml' => new \Twig_Filter_Method($this, 'setCurationHtml'),
         'highlightRelations' => new \Twig_Filter_Method($this, 'highlightRelations'),
         'getScoreToShow' => new \Twig_Filter_Method($this, 'getScoreToShow'),
+        'getScoreToShowRelations' => new \Twig_Filter_Method($this, 'getScoreToShowRelations'),
         'getOrderToSource' => new \Twig_Filter_Method($this, 'getOrderToSource'),
 
         );
@@ -1403,6 +1404,24 @@ class UtilityExtension extends \Twig_Extension
                 break;
             case $orderBy == "ruleScore":
                 $orderBy ="Rule";
+                break;
+        }
+        return $orderBy;
+    }
+
+    public function getScoreToShowRelations($orderBy){
+        switch ($orderBy) {
+            case $orderBy == "hepval":
+                $orderBy ="Induct.";
+                break;
+            case $orderBy == "inductionScore":
+                $orderBy ="Induct.";
+                break;
+            case $orderBy == "inhibitionScore":
+                $orderBy ="Inhib.";
+                break;
+            case $orderBy == "metabolismScore":
+                $orderBy ="Metab.";
                 break;
         }
         return $orderBy;

@@ -504,4 +504,15 @@ class Cytochrome2Document
     {
         return $this->updated;
     }
+
+    /**
+     * Get className
+     *
+     * @return string
+     */
+    public function getClassName()
+    {
+        $className="Cytochrome2Document";
+        return $className;
+    }
 }

@@ -163,21 +163,25 @@
                     {% endif %}
 
                     {% if whatToSearch=="smile" %}
-                        <label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" CHECKED value="smile"><span class="custom radio"></span> Smile</label>
+                        <span data-tooltip class="has-tip" title="SMILES Formula (Simplified Molecular-Input Line-Entry System). Only exact match search is currently enabled.
+<br/>See: http://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system"><label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" CHECKED value="smile"><span class="custom radio"></span> SMILES</label></span>
                     {% else %}
-                        <label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" value="smile"><span class="custom radio"></span> Smile</label>
+                        <span data-tooltip class="has-tip" title="SMILES Formula (Simplified Molecular-Input Line-Entry System). Only exact match search is currently enabled.
+<br/>See: http://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system"><label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" value="smile"><span class="custom radio"></span> SMILES</label></span>
                     {% endif %}
 
                     {% if whatToSearch=="inChi" %}
-                        <label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" CHECKED value="inChi"><span class="custom radio"></span> InChI</label>
+                        <span data-tooltip class="has-tip" title=" IUPAC International Chemical Identifier (InChI). Only exact match search is currently enabled.
+<br/>See: http://www.iupac.org/home/publications/e-resources/inchi.html"><label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" CHECKED value="inChi"><span class="custom radio"></span> InChI</label></span>
                     {% else %}
-                        <label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" value="smile"><span class="custom radio"></span> InChI</label>
+                        <span data-tooltip class="has-tip" title=" IUPAC International Chemical Identifier (InChI). Only exact match search is currently enabled.
+<br/>See: http://www.iupac.org/home/publications/e-resources/inchi.html"><label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" value="smile"><span class="custom radio"></span> InChI</label></span>
                     {% endif %}
 
                     {% if whatToSearch=="any" %}
-                        <label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" CHECKED value="any"><span class="custom radio"></span> Any (Free search)</label>
+                        <span data-tooltip class="has-tip" title="Free text search within Compounds mentioning sentences"><label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" CHECKED value="any"><span class="custom radio"></span> Any (Free search)</label></span>
                     {% else %}
-                        <label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" value="any"><span class="custom radio"></span> Any (Free search)</label>
+                        <span data-tooltip class="has-tip" title="Free text search within Compounds mentioning sentences"><label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" value="any"><span class="custom radio"></span> Any (Free search)</label></span>
                     {% endif %}
 
                     {% if whatToSearch=="withCytochromes" %}
@@ -275,6 +279,11 @@
             <form class="custom">
                 <fieldset>
                     <legend>What are you searching?</legend>
+                    {% if whatToSearch is not defined %}
+                        {% set whatToSearchCytochrome = default_whatToSearch %}
+                    {% else %}
+                        {% set whatToSearchCytochrome = whatToSearch %}
+                    {% endif %}
                     {% if whatToSearchCytochrome=="name" %}
                          <span data-tooltip class="has-tip" title="Cytochrome P450 gene/protein name or symbol"><label for="radioWhatToSearch"><input name="cytochromeWhatToSearch" type="radio" id="radioCytochromeWhatToSearch" style="display:none;" CHECKED value="name"><span class="custom radio"></span> CYPs name/symbol</label></span>
                     {% else %}

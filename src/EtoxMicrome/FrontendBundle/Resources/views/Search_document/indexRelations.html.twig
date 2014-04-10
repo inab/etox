@@ -4,7 +4,7 @@
     {% include 'FrontendBundle:Search_document:tags_code.html.twig' %}
     <div id="evidences">
         {% set entityName=entity.getName %}
-        <a href="{{ path('export_abstracts',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'entityName': entityName, 'download': true}) }}">(Generate a file with results)</a>
+        <!-- <a href="{{ path('export_abstracts',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'entityName': entityName, 'download': true}) }}">(Generate a file with results)</a>  -->
         {% set tooltipCounter=1 %}
         {% set stringStickyTooltip = "" %}
         {% set foundFor=entityType %}
@@ -16,7 +16,27 @@
         {% endif %}
         {% set entityId = entity.getId %}
         {% if arrayEntity2Document is defined %}
-            {{orderBy}}
+            <div class="results-summary">
+                    {% set totalHits = arrayTotalMaxMin[0] %}
+                    {% if entityType=="CompoundDict" or entityType=="Marker"%}
+                        {% set scoreToShow = "Score" %}
+                    {% elseif entityType=="Cytochrome" %}
+                        {% set scoreToShow = orderBy | getScoreToShowRelations %}
+                    {% endif %}
+                    {% set maxScore= arrayTotalMaxMin[1] %}
+                    {% set minScore= arrayTotalMaxMin[2] %}
+                    {% set order =  orderBy | getOrderToSource %}
+                    <table>
+                        <tr>
+                            <td><strong>Total of mentions displayed:</strong> {{ totalHits }}</td>
+                            <td><strong>Max. {{scoreToShow}}:</strong> {{ maxScore |number_format(2) }}</td>
+                            <td><strong>Minim. {{scoreToShow}}:</strong> {{ minScore |number_format(2) }}</td>
+                            <td><strong>{{scoreToShow}} mean:</strong> {{ meanScore | number_format(2) }}</td>
+                            <td><strong>{{scoreToShow}} median:</strong> {{ medianScore | number_format(2) }}</td>
+                        </tr>
+                    </table>
+                </div>
+            <div class="clear-both"></div>
             <div id="documentsResults">
                 <a name="documents"></a>
                 {% if entityType in ["Cytochrome", "Marker"] %}
@@ -27,7 +47,17 @@
                         </div>
                     {% endif %}
                 {% endif %}
-                <h3>Ranked sentences in Documents for {{foundFor}}: <span class="underline">{{ entityBackup }}</span> search</h3>
+
+                {% if entityType == "CompoundDict" %}
+                    {% set mentioning="compound-toxicity term" %}
+                {% elseif entityType =="Cytochrome" %}
+                    {% set mentioning="compound-CYPs" %}
+                {% elseif entityType =="Marker" %}
+                    {% set mentioning="compound-liver marker" %}
+                {% endif %}
+
+
+                <h3>Ranked sentences in Documents for {{foundFor}}: <span class="underline">{{ entityBackup }}</span> search in sentences with {{ mentioning }} relations</h3>
                 <div class="btmspc-dbl">
                     <small>
                         <em>
@@ -191,6 +221,7 @@
                                     {% set metabolismScore = entity2Document.metabolismScore %}
                                     {% set patternRelation = entity2Document.patternRelation %}
                                     {% set relationQualifier = entity2Document.relationQualifier %}
+                                    {% set relationEvidence = entity2Document.patternEvidence %}
                                     {% set cypsMention = entity2Document.cypsMention %}
                                     {% set curation=entity2Document.getCuration %}
                                     {% if curation is empty %}
@@ -289,12 +320,10 @@
                                         {{ text | raw }}
                                     {% endif %}
                                     <br/>
-                                    {% if entityType=="CompoundDict" or entityType=="Marker" %}
                                         <small>
                                             [Rel. evidence: {{ relationEvidence }}]
 
                                         </small>
-                                    {% endif %}
                                 </td>
                                 <td class="center">
                                     {{ relationQualifier }}

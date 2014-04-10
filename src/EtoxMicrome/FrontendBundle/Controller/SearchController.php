@@ -125,6 +125,178 @@ class SearchController extends Controller
         return $intersectionArray;
     }
 
+    public function getTotalMaxMinArrayForEntities($arrayEntity2Document, $orderBy, $field){
+        //Same function as before but this time whe dont have an array of Results but an array of compound2term/cyp/...2document
+        $max=-10000;
+        $min=10000;
+        $totalHits=count($arrayEntity2Document);
+        $className=$arrayEntity2Document[0]->getClassName();
+        if($orderBy=="hepval" or $orderBy=="score"){
+            foreach($arrayEntity2Document as $entity2Document){
+                $data=$entity2Document->getHepval();
+                if($data>$max){
+                    $max=$data;
+                }
+                if($data<$min){
+                    $min=$data;
+                }
+            }
+        }elseif($orderBy=="svmConfidence" ){
+            foreach($arrayEntity2Document as $entity2Document){
+                $data=$entity2Document->getSvmConfidence();
+                if($data>$max){
+                    $max=$data;
+                }
+                if($data<$min){
+                    $min=$data;
+                }
+            }
+        }elseif($orderBy=="pattern" ){
+            foreach($arrayEntity2Document as $entity2Document){
+                $data=$entity2Document->getPatternCount();
+                if($data>$max){
+                    $max=$data;
+                }
+                if($data<$min){
+                    $min=$data;
+                }
+            }
+        }elseif($orderBy=="term" ){
+            foreach($arrayEntity2Document as $entity2Document){
+                $data=$entity2Document->getHepTermVarScore();
+                if($data>$max){
+                    $max=$data;
+                }
+                if($data<$min){
+                    $min=$data;
+                }
+            }
+        }elseif($orderBy=="rule" ){
+            foreach($arrayEntity2Document as $entity2Document){
+                $data=$entity2Document->getRuleScore();
+                if($data>$max){
+                    $max=$data;
+                }
+                if($data<$min){
+                    $min=$data;
+                }
+            }
+        }
+
+        $arrayResults=array();
+        $arrayResults[0]=$totalHits;
+        $arrayResults[1]=$max;
+        $arrayResults[2]=$min;
+
+        return $arrayResults;
+    }
+
+    public function getTotalMaxMinArray($arrayDocumentsIntersection, $orderBy, $field){
+        $max=-10000;
+        $min=10000;
+        $totalHits=count($arrayDocumentsIntersection);
+        $valToSearch=$this->getValToSearch($field);
+        $orderBy=$this->getOrderBy($orderBy, $valToSearch);
+        foreach($arrayDocumentsIntersection as $result){
+            $arraySource=$result->getSource();
+            $data=$arraySource[$orderBy];
+            if($data>$max){
+                $max=$data;
+            }
+            if($data<$min){
+                $min=$data;
+            }
+        }
+        $arrayResults=array();
+        $arrayResults[0]=$totalHits;
+        $arrayResults[1]=$max;
+        $arrayResults[2]=$min;
+
+        return $arrayResults;
+    }
+
+    public function getTotalMaxMinArrayForRelations($arrayCompound2Relation2Documents, $orderBy, $field){
+        //Same function as before but this time whe dont have an array of Results but an array of compound2term/cyp/...2document
+        $max=-10000;
+        $min=10000;
+        $totalHits=count($arrayCompound2Relation2Documents);
+        $className=$arrayCompound2Relation2Documents[0]->getClassName();
+        if($className=="Compound2Term2Document"){
+            foreach($arrayCompound2Relation2Documents as $compound2Relation2Document){
+                $data=$compound2Relation2Document->getRelationScore();
+                if($data>$max){
+                    $max=$data;
+                }
+                if($data<$min){
+                    $min=$data;
+                }
+            }
+        }
+        if($className=="Compound2Cyp2Document"){
+            if($orderBy=="hepval" or $orderBy=="inductionScore"){
+                foreach($arrayCompound2Relation2Documents as $compound2Relation2Document){
+                    $data=$compound2Relation2Document->getInductionScore();
+                    if($data>$max){
+                        $max=$data;
+                    }
+                    if($data<$min){
+                        $min=$data;
+                    }
+                }
+            }elseif($orderBy=="inhibitionScore"){
+                foreach($arrayCompound2Relation2Documents as $compound2Relation2Document){
+                    $data=$compound2Relation2Document->getInhibitionScore();
+                    if($data>$max){
+                        $max=$data;
+                    }
+                    if($data<$min){
+                        $min=$data;
+                    }
+                }
+            }elseif($orderBy=="metabolismScore"){
+                foreach($arrayCompound2Relation2Documents as $compound2Relation2Document){
+                    $data=$compound2Relation2Document->getMetabolismScore();
+                    if($data>$max){
+                        $max=$data;
+                    }
+                    if($data<$min){
+                        $min=$data;
+                    }
+                }
+            }else{
+                foreach($arrayCompound2Relation2Documents as $compound2Relation2Document){
+                    $data=$compound2Relation2Document->getInductionScore();
+                    if($data>$max){
+                        $max=$data;
+                    }
+                    if($data<$min){
+                        $min=$data;
+                    }
+                }
+            }
+        }
+        if($className=="Compound2Marker2Document"){
+            foreach($arrayCompound2Relation2Documents as $compound2Relation2Document){
+                $data=$compound2Relation2Document->getRelationScore();
+                if($data>$max){
+                    $max=$data;
+                }
+                if($data<$min){
+                    $min=$data;
+                }
+            }
+        }
+        $arrayResults=array();
+        $arrayResults[0]=$totalHits;
+        $arrayResults[1]=$max;
+        $arrayResults[2]=$min;
+
+        return $arrayResults;
+    }
+
+
+
+
     public function queryExpansionCompoundDict($entity, $entityType, $whatToSearch){
             $message="query expansion CompoundDict whatToSearch-> name";
             //CompoundDict query expansion. We get all the possible id related to the $entity->name
@@ -711,6 +883,57 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
         return $output;
     }
 
+     public function getMmmrScoreFromEntities($arrayEntity2Document, $orderBy, $operation = 'mean'){
+        $message="getMmmrScoreFromRelation";
+        //Function that receives a resultSetDocuments and extracts the mean value of the score
+        //First we have to see what className is coming, then we sort by different scores/fields...
+        $arrayInput=array();
+        if($orderBy=="hepval" or $orderBy=="score"){
+            foreach($arrayEntity2Document as $entity2Document){
+                $data=$entity2Document->getHepval();
+                if($data==null){
+                    $data=0;
+                }
+                $arrayInput[]=$data;
+            }
+        }elseif($orderBy=="svmConfidence" ){
+            foreach($arrayEntity2Document as $entity2Document){
+                $data=$entity2Document->getSvmConfidence();
+                if($data==null){
+                    $data=0;
+                }
+                $arrayInput[]=$data;
+            }
+        }elseif($orderBy=="pattern" ){
+            foreach($arrayEntity2Document as $entity2Document){
+                $data=$entity2Document->getPatternCount();
+                if($data==null){
+                    $data=0;
+                }
+                $arrayInput[]=$data;
+            }
+        }elseif($orderBy=="term" ){
+            foreach($arrayEntity2Document as $entity2Document){
+                $data=$entity2Document->getHepTermVarScore();
+                if($data==null){
+                    $data=0;
+                }
+                $arrayInput[]=$data;
+            }
+        }
+        elseif($orderBy=="rule" ){
+            foreach($arrayEntity2Document as $entity2Document){
+                $data=$entity2Document->getRuleScore();
+                if($data==null){
+                    $data=0;
+                }
+                $arrayInput[]=$data;
+            }
+        }
+        $output=$this->mmmr($arrayInput, $operation);
+        return $output;
+    }
+
     public function getMmmrScoreFromIntersection($resultSetDocuments, $orderBy, $operation = 'mean'){
         //Function that receives a resultSetDocuments and extracts the mean value of the score
         $arrayInput=array();
@@ -730,6 +953,76 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                 $data=0;
             }
             $arrayInput[]=$data;
+        }
+        $output=$this->mmmr($arrayInput, $operation);
+        return $output;
+    }
+
+    public function getMmmrScoreFromRelation($arrayCompound2Relation2Documents, $orderBy, $operation = 'mean'){
+        $message="getMmmrScoreFromRelation";
+        //Function that receives a resultSetDocuments and extracts the mean value of the score
+        //First we have to see what className is coming, then we sort by different scores/fields...
+        $arrayInput=array();
+        $className=$arrayCompound2Relation2Documents[0]->getClassName();
+        if($className=="Compound2Term2Document"){
+            foreach($arrayCompound2Relation2Documents as $compound2Relation2Document){
+                $data=$compound2Relation2Document->getRelationScore();
+                if($data==null){
+                    $data=0;
+                }
+                $arrayInput[]=$data;
+            }
+        }
+
+        if($className=="Compound2Cyp2Document"){
+
+            if($orderBy=="hepval"){
+                //by default we summarize by inductionScore
+                foreach($arrayCompound2Relation2Documents as $compound2Relation2Document){
+                    $data=$compound2Relation2Document->getInductionScore();
+                    if($data==null){
+                        $data=0;
+                    }
+                    $arrayInput[]=$data;
+                }
+            }elseif($orderBy=="inhibitionScore"){
+                //by default we summarize by inductionScore
+                foreach($arrayCompound2Relation2Documents as $compound2Relation2Document){
+                    $data=$compound2Relation2Document->getInhibitionScore();
+                    if($data==null){
+                        $data=0;
+                    }
+                    $arrayInput[]=$data;
+                }
+            }elseif($orderBy=="metabolismScore"){
+                //by default we summarize by inductionScore
+                foreach($arrayCompound2Relation2Documents as $compound2Relation2Document){
+                    $data=$compound2Relation2Document->getMetabolismScore();
+                    if($data==null){
+                        $data=0;
+                    }
+                    $arrayInput[]=$data;
+                }
+            }else{
+                //by default we summarize by inductionScore
+                foreach($arrayCompound2Relation2Documents as $compound2Relation2Document){
+                    $data=$compound2Relation2Document->getInductionScore();
+                    if($data==null){
+                        $data=0;
+                    }
+                    $arrayInput[]=$data;
+                }
+            }
+
+        }
+        if($className=="Compound2Marker2Document"){
+            foreach($arrayCompound2Relation2Documents as $compound2Relation2Document){
+                $data=$compound2Relation2Document->getRelationScore();
+                if($data==null){
+                    $data=0;
+                }
+                $arrayInput[]=$data;
+            }
         }
         $output=$this->mmmr($arrayInput, $operation);
         return $output;
@@ -939,10 +1232,6 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                     $finderDocWithCytochromes = $this->container->get('fos_elastica.index.etoxindex2.documentswithcytochromes');
                     $resultSetDocWithCytochromes = $finderDocWithCytochromes->search($elasticaQuery);
                     $arrayDocumentsWithCytochromes=$resultSetDocWithCytochromes->getResults();//$results has an array of results objects, data can be obtained by the getSource method
-
-                    $resultSetAbstracts = false;
-                    $arrayResultsAbs =array();
-
                     $arrayDocumentsIntersection=$this->performIntersectionArrayDocuments($arrayDocumentsWithCompounds, $arrayDocumentsWithCytochromes);
                     $arrayResultsDoc = $paginator
                         ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), 'documents')
@@ -955,6 +1244,23 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                     $medianScore=$this->getMmmrScoreFromIntersection($arrayDocumentsIntersection, $orderBy, 'median');
                     //We restore size to its default value
                     $elasticaQuery->setSize($this->container->getParameter('etoxMicrome.total_documents_elasticsearch_retrieval'));
+                    //When dealing with withIntersection arrays, we only have this array to get the needed values that we retreive in interface using resultSetArrays... Which are: totalHits, Max. Score, Min. Score
+                    //So we implement a function to get all this info inside an arrayTotalMaxMin. Being arrayTotalMaxMin[0]=totalHits, arrayTotalMaxMin[1]=Max.score, arrayTotalMaxMin[2]=Min.score
+                    $arrayTotalMaxMin=$this->getTotalMaxMinArray($arrayDocumentsIntersection, $orderBy, $field);
+                    return $this->render('FrontendBundle:Search_keyword:indexWithIntersection.html.twig', array(
+                        'field' => $field,
+                        'entityType' => $entityType,
+                        'keyword' => $entityName,
+                        'arrayResultsDoc' => $arrayDocumentsIntersection,
+                        'resultSetDocuments' => $arrayTotalMaxMin,
+                        'whatToSearch' => $whatToSearch,
+                        'source' => $source,
+                        'entityName' => $entityName,
+                        'orderBy' => $orderBy,
+                        'hitsShowed' => $hitsShowed,
+                        'meanScore' => $meanScore,
+                        'medianScore' => $medianScore,
+                    ));
                 }
                 if($entityType=="Marker"){
                     //We have to make a free search against the intersection of documentswithcompounds with documentswithmarkers
@@ -963,8 +1269,6 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                     $finder = false;
                     $finderDocWithCompounds = $this->container->get('fos_elastica.index.etoxindex2.documentswithcompounds');
                     $finderDocWithMarkers = $this->container->get('fos_elastica.index.etoxindex2.documentswithmarkers');
-                    $resultSetAbstracts = false;
-                    $arrayResultsAbs =array();
                     $arrayDocumentsWithCompounds = $finderDocWithCompounds->search($elasticaQuery);
                     $resultSetDocuments=$arrayDocumentsWithCompounds;////// WARNING!! DELETE THIS LINE
                     $arrayDocumentsWithMarkers=$finderDocWithMarkers->search($elasticaQuery);
@@ -980,6 +1284,23 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                     $medianScore=$this->getMmmrScoreFromIntersection($arrayDocumentsIntersection, $orderBy, 'median');
                     //We restore size to its default value
                     $elasticaQuery->setSize($this->container->getParameter('etoxMicrome.total_documents_elasticsearch_retrieval'));
+                    //When dealing with withIntersection arrays, we only have this array to get the needed values that we retreive in interface using resultSetArrays... Which are: totalHits, Max. Score, Min. Score
+                    //So we implement a function to get all this info inside an arrayTotalMaxMin. Being arrayTotalMaxMin[0]=totalHits, arrayTotalMaxMin[1]=Max.score, arrayTotalMaxMin[2]=Min.score
+                    $arrayTotalMaxMin=$this->getTotalMaxMinArray($arrayDocumentsIntersection, $orderBy, $field);
+                    return $this->render('FrontendBundle:Search_keyword:indexWithIntersection.html.twig', array(
+                        'field' => $field,
+                        'entityType' => $entityType,
+                        'keyword' => $entityName,
+                        'arrayResultsDoc' => $arrayDocumentsIntersection,
+                        'resultSetDocuments' => $arrayTotalMaxMin,
+                        'whatToSearch' => $whatToSearch,
+                        'source' => $source,
+                        'entityName' => $entityName,
+                        'orderBy' => $orderBy,
+                        'hitsShowed' => $hitsShowed,
+                        'meanScore' => $meanScore,
+                        'medianScore' => $medianScore,
+                    ));
                 }
             }elseif($whatToSearch=="withCytochromes"){
                 if($entityType=="CompoundDict"){
@@ -987,8 +1308,6 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                     //In order to perform the intersection we change the size of the results
                     $elasticaQuery->setSize(1500);
                     $finder = false;
-                    $resultSetAbstracts = false;
-                    $arrayResultsAbs =array();
                     $documentsInfo = $this->container->get('fos_elastica.index.etoxindex2.documentswithcompounds');
                     $resultSetDocuments = $documentsInfo->search($elasticaQuery);
                     $arrayDocumentsWithCompounds=$resultSetDocuments->getResults();//$results has an array of results objects, data can be obtained by the getSource method
@@ -1009,6 +1328,23 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                     $medianScore=$this->getMmmrScoreFromIntersection($arrayDocumentsIntersection, $orderBy, 'median');
                     //We restore size to its default value
                     $elasticaQuery->setSize($this->container->getParameter('etoxMicrome.total_documents_elasticsearch_retrieval'));
+                    //When dealing with withIntersection arrays, we only have this array to get the needed values that we retreive in interface using resultSetArrays... Which are: totalHits, Max. Score, Min. Score
+                    //So we implement a function to get all this info inside an arrayTotalMaxMin. Being arrayTotalMaxMin[0]=totalHits, arrayTotalMaxMin[1]=Max.score, arrayTotalMaxMin[2]=Min.score
+                    $arrayTotalMaxMin=$this->getTotalMaxMinArray($arrayDocumentsIntersection, $orderBy, $field);
+                    return $this->render('FrontendBundle:Search_keyword:indexWithIntersection.html.twig', array(
+                        'field' => $field,
+                        'entityType' => $entityType,
+                        'keyword' => $entityName,
+                        'arrayResultsDoc' => $arrayDocumentsIntersection,
+                        'resultSetDocuments' => $arrayTotalMaxMin,
+                        'whatToSearch' => $whatToSearch,
+                        'source' => $source,
+                        'entityName' => $entityName,
+                        'orderBy' => $orderBy,
+                        'hitsShowed' => $hitsShowed,
+                        'meanScore' => $meanScore,
+                        'medianScore' => $medianScore,
+                    ));
                 }
             }elseif($whatToSearch=="withMarkers"){
                 if($entityType=="CompoundDict"){
@@ -1038,6 +1374,23 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                     $medianScore=$this->getMmmrScoreFromIntersection($arrayDocumentsIntersection, $orderBy, 'median');
                     //We restore size to its default value
                     $elasticaQuery->setSize($this->container->getParameter('etoxMicrome.total_documents_elasticsearch_retrieval'));
+                    //When dealing with withIntersection arrays, we only have this array to get the needed values that we retreive in interface using resultSetArrays... Which are: totalHits, Max. Score, Min. Score
+                    //So we implement a function to get all this info inside an arrayTotalMaxMin. Being arrayTotalMaxMin[0]=totalHits, arrayTotalMaxMin[1]=Max.score, arrayTotalMaxMin[2]=Min.score
+                    $arrayTotalMaxMin=$this->getTotalMaxMinArray($arrayDocumentsIntersection, $orderBy, $field);
+                    return $this->render('FrontendBundle:Search_keyword:indexWithIntersection.html.twig', array(
+                        'field' => $field,
+                        'entityType' => $entityType,
+                        'keyword' => $entityName,
+                        'arrayResultsDoc' => $arrayDocumentsIntersection,
+                        'resultSetDocuments' => $arrayTotalMaxMin,
+                        'whatToSearch' => $whatToSearch,
+                        'source' => $source,
+                        'entityName' => $entityName,
+                        'orderBy' => $orderBy,
+                        'hitsShowed' => $hitsShowed,
+                        'meanScore' => $meanScore,
+                        'medianScore' => $medianScore,
+                    ));
                 }
             }
             return $this->render('FrontendBundle:Search_keyword:index.html.twig', array(
@@ -1073,6 +1426,14 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                             }
                         }
                         $arrayEntityName=array_unique($arrayEntityName);
+
+                        $compound2Term2Documents=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getTerm2CompoundRelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy)->getResult();
+                        //When dealing with withRelations arrays, we only have this array to get the needed values that we retreive in interface using resultSetArrays... Which are: totalHits, Max. Score, Min. Score
+                        //So we implement a function to get all this info inside an arrayTotalMaxMin. Being arrayTotalMaxMin[0]=totalHits, arrayTotalMaxMin[1]=Max.score, arrayTotalMaxMin[2]=Min.score
+                        $arrayTotalMaxMin=$this->getTotalMaxMinArrayForRelations($compound2Term2Documents, $orderBy, $field);
+                        $meanScore=$this->getMmmrScoreFromRelation($compound2Term2Documents, $orderBy, 'mean');
+                        $medianScore=$this->getMmmrScoreFromRelation($compound2Term2Documents, $orderBy, 'median');
+
                         $arrayEntity2Document = $paginator
                                 ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "documents")
                                 ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "documents")
@@ -1088,7 +1449,10 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                             'entityBackup' => $entityBackup,
                             'arrayEntity2Document' => $arrayEntity2Document,
                             'entityName' => $entityName,
+                            'arrayTotalMaxMin' => $arrayTotalMaxMin,
                             'orderBy' => $orderBy,
+                            'meanScore' => $meanScore,
+                            'medianScore' => $medianScore,
                             'firstRelation' => 'HepatotoxKeyword',
                         ));
                     }
@@ -1139,12 +1503,19 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                     ));
                 }
                 else{
+                    $compound2Term2Documents=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getCompound2TermRelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy)->getResult();
+                    //When dealing with withRelations arrays, we only have this array to get the needed values that we retreive in interface using resultSetArrays... Which are: totalHits, Max. Score, Min. Score
+                    //So we implement a function to get all this info inside an arrayTotalMaxMin. Being arrayTotalMaxMin[0]=totalHits, arrayTotalMaxMin[1]=Max.score, arrayTotalMaxMin[2]=Min.score
+                    $arrayTotalMaxMin=$this->getTotalMaxMinArrayForRelations($compound2Term2Documents, $orderBy, $field);
+                    $meanScore=$this->getMmmrScoreFromRelation($compound2Term2Documents, $orderBy, 'mean');
+                    $medianScore=$this->getMmmrScoreFromRelation($compound2Term2Documents, $orderBy, 'median');
                     $arrayEntity2Document = $paginator
                         ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "documents")
                         ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "documents")
                         ->paginate($em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getCompound2TermRelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy), 'documents')
                         ->getResult()
                     ;
+
                     return $this->render('FrontendBundle:Search_document:indexRelations.html.twig', array(
                     'field' => $field,
                     'whatToSearch' => $whatToSearch,
@@ -1154,7 +1525,10 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                     'entityBackup' => $entityBackup,
                     'arrayEntity2Document' => $arrayEntity2Document,
                     'entityName' => $entityName,
+                    'arrayTotalMaxMin' => $arrayTotalMaxMin,
                     'orderBy' => $orderBy,
+                    'meanScore' => $meanScore,
+                    'medianScore' => $medianScore,
                 ));
                 }
             }
@@ -1171,6 +1545,14 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                             $arrayEntityName[]=($entidad->getName());
                         }
                         $arrayEntityName=array_unique($arrayEntityName);
+
+                        $compound2Cytochrome2Documents=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getCytochrome2CompoundRelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy)->getResult();
+                            //When dealing with withRelations arrays, we only have this array to get the needed values that we retreive in interface using resultSetArrays... Which are: totalHits, Max. Score, Min. Score
+                            //So we implement a function to get all this info inside an arrayTotalMaxMin. Being arrayTotalMaxMin[0]=totalHits, arrayTotalMaxMin[1]=Max.score, arrayTotalMaxMin[2]=Min.score
+                        $arrayTotalMaxMin=$this->getTotalMaxMinArrayForRelations($compound2Cytochrome2Documents, $orderBy, $field);
+                        $meanScore=$this->getMmmrScoreFromRelation($compound2Cytochrome2Documents, $orderBy, 'mean');
+                        $medianScore=$this->getMmmrScoreFromRelation($compound2Cytochrome2Documents, $orderBy, 'median');
+
                         $arrayEntity2Document = $paginator
                                 ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "documents")
                                 ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "documents")
@@ -1186,7 +1568,10 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                             'entityBackup' => $entityBackup,
                             'arrayEntity2Document' => $arrayEntity2Document,
                             'entityName' => $entityName,
+                            'arrayTotalMaxMin' => $arrayTotalMaxMin,
                             'orderBy' => $orderBy,
+                            'meanScore' => $meanScore,
+                            'medianScore' => $medianScore,
                             'firstRelation' => 'CompoundDict',
                         ));
                     }
@@ -1210,7 +1595,12 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                         'entityName' => $entityName,
                     ));
                 }
-                ld($orderBy);
+                $compound2Cytochrome2Documents=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getCompound2Cytochrome2RelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy)->getResult();
+                    //When dealing with withRelations arrays, we only have this array to get the needed values that we retreive in interface using resultSetArrays... Which are: totalHits, Max. Score, Min. Score
+                    //So we implement a function to get all this info inside an arrayTotalMaxMin. Being arrayTotalMaxMin[0]=totalHits, arrayTotalMaxMin[1]=Max.score, arrayTotalMaxMin[2]=Min.score
+                $arrayTotalMaxMin=$this->getTotalMaxMinArrayForRelations($compound2Cytochrome2Documents, $orderBy, $field);
+                $meanScore=$this->getMmmrScoreFromRelation($compound2Cytochrome2Documents, $orderBy, 'mean');
+                $medianScore=$this->getMmmrScoreFromRelation($compound2Cytochrome2Documents, $orderBy, 'median');
                 $arrayEntity2Document = $paginator
                     ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "documents")
                     ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "documents")
@@ -1226,7 +1616,10 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                     'entityBackup' => $entityBackup,
                     'arrayEntity2Document' => $arrayEntity2Document,
                     'entityName' => $entityName,
+                    'arrayTotalMaxMin' => $arrayTotalMaxMin,
                     'orderBy' => $orderBy,
+                    'meanScore' => $meanScore,
+                    'medianScore' => $medianScore,
                 ));
             }
         }elseif($whatToSearch=="compoundsMarkersRelations"){
@@ -1242,6 +1635,12 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                             $arrayEntityName[]=($entidad->getName());
                         }
                         $arrayEntityName=array_unique($arrayEntityName);
+                        $compound2Marker2Documents=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getMarker2CompoundRelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy)->getResult();
+                        //When dealing with withRelations arrays, we only have this array to get the needed values that we retreive in interface using resultSetArrays... Which are: totalHits, Max. Score, Min. Score
+                        //So we implement a function to get all this info inside an arrayTotalMaxMin. Being arrayTotalMaxMin[0]=totalHits, arrayTotalMaxMin[1]=Max.score, arrayTotalMaxMin[2]=Min.score
+                        $arrayTotalMaxMin=$this->getTotalMaxMinArrayForRelations($compound2Marker2Documents, $orderBy, $field);
+                        $meanScore=$this->getMmmrScoreFromRelation($compound2Marker2Documents, $orderBy, 'mean');
+                        $medianScore=$this->getMmmrScoreFromRelation($compound2Marker2Documents, $orderBy, 'median');
                         $arrayEntity2Document = $paginator
                                 ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "documents")
                                 ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "documents")
@@ -1257,7 +1656,10 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                             'entityBackup' => $entityBackup,
                             'arrayEntity2Document' => $arrayEntity2Document,
                             'entityName' => $entityName,
+                            'arrayTotalMaxMin' => $arrayTotalMaxMin,
                             'orderBy' => $orderBy,
+                            'meanScore' => $meanScore,
+                            'medianScore' => $medianScore,
                             'firstRelation' => 'CompoundDict',
                         ));
                     }
@@ -1281,6 +1683,12 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                         'entityName' => $entityName,
                     ));
                 }
+                $compound2Marker2Documents=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getCompound2MarkerRelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy)->getResult();
+                //When dealing with withRelations arrays, we only have this array to get the needed values that we retreive in interface using resultSetArrays... Which are: totalHits, Max. Score, Min. Score
+                //So we implement a function to get all this info inside an arrayTotalMaxMin. Being arrayTotalMaxMin[0]=totalHits, arrayTotalMaxMin[1]=Max.score, arrayTotalMaxMin[2]=Min.score
+                $arrayTotalMaxMin=$this->getTotalMaxMinArrayForRelations($compound2Marker2Documents, $orderBy, $field);
+                $meanScore=$this->getMmmrScoreFromRelation($compound2Marker2Documents, $orderBy, 'mean');
+                $medianScore=$this->getMmmrScoreFromRelation($compound2Marker2Documents, $orderBy, 'median');
                 $arrayEntity2Document = $paginator
                     ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "documents")
                     ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "documents")
@@ -1296,7 +1704,10 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                     'entityBackup' => $entityBackup,
                     'arrayEntity2Document' => $arrayEntity2Document,
                     'entityName' => $entityName,
+                    'arrayTotalMaxMin' => $arrayTotalMaxMin,
                     'orderBy' => $orderBy,
+                    'meanScore' => $meanScore,
+                    'medianScore' => $medianScore,
                 ));
             }
         }
@@ -1345,6 +1756,12 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
             $arrayNames=array_unique($arrayNames);//We get rid of the duplicates
             $arrayCanonicals=array_unique($arrayCanonicals);//We get rid of the duplicates
 
+            $cytochrome2Documents=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Cytochrome2Document')->getCytochrome2DocumentFromFieldDQL($field, $entityType, $arrayNames, $arrayCanonicals, $source, $orderBy)->getResult();
+            //When dealing with withRelations arrays, we only have this array to get the needed values that we retreive in interface using resultSetArrays... Which are: totalHits, Max. Score, Min. Score
+            //So we implement a function to get all this info inside an arrayTotalMaxMin. Being arrayTotalMaxMin[0]=totalHits, arrayTotalMaxMin[1]=Max.score, arrayTotalMaxMin[2]=Min.score
+            $arrayTotalMaxMin=$this->getTotalMaxMinArrayForEntities($cytochrome2Documents, $orderBy, $field);
+            $meanScore=$this->getMmmrScoreFromEntities($cytochrome2Documents, $orderBy, 'mean');
+            $medianScore=$this->getMmmrScoreFromEntities($cytochrome2Documents, $orderBy, 'median');
             $arrayEntity2Document = $paginator
                 ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "documents")
                 ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "documents")
@@ -1394,6 +1811,12 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                 ldd($arrayEntity2Document);
                 */
                 if (in_array($source, $arraySourcesDocuments)){
+                    $compound2Documents=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntity2DocumentFromFieldDQL($field, $entityType, $arrayEntityName, $source, $orderBy)->getResult();
+                    //When dealing with withRelations arrays, we only have this array to get the needed values that we retreive in interface using resultSetArrays... Which are: totalHits, Max. Score, Min. Score
+                    //So we implement a function to get all this info inside an arrayTotalMaxMin. Being arrayTotalMaxMin[0]=totalHits, arrayTotalMaxMin[1]=Max.score, arrayTotalMaxMin[2]=Min.score
+                    $arrayTotalMaxMin=$this->getTotalMaxMinArrayForEntities($compound2Documents, $orderBy, $field);
+                    $meanScore=$this->getMmmrScoreFromEntities($compound2Documents, $orderBy, 'mean');
+                    $medianScore=$this->getMmmrScoreFromEntities($compound2Documents, $orderBy, 'median');
                     $arrayEntity2Document = $paginator
                         ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "documents")
                         ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "documents")
@@ -1409,10 +1832,19 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                         'entityBackup' => $entityBackup,
                         'arrayEntity2Document' => $arrayEntity2Document,
                         'entityName' => $entityName,
+                        'arrayTotalMaxMin' => $arrayTotalMaxMin,
                         'orderBy' => $orderBy,
+                        'meanScore' => $meanScore,
+                        'medianScore' => $medianScore,
                     ));
                 }
                 if (in_array($source, $arraySourcesAbstracts)){
+                    $compound2Abstracts=$em->getRepository('EtoxMicromeEntity2AbstractBundle:Entity2Abstract')->getEntity2AbstractFromFieldDQL($field, "CompoundMesh", $arrayEntityName, $orderBy)->getResult();
+                    //When dealing with withRelations arrays, we only have this array to get the needed values that we retreive in interface using resultSetArrays... Which are: totalHits, Max. Score, Min. Score
+                    //So we implement a function to get all this info inside an arrayTotalMaxMin. Being arrayTotalMaxMin[0]=totalHits, arrayTotalMaxMin[1]=Max.score, arrayTotalMaxMin[2]=Min.score
+                    $arrayTotalMaxMin=$this->getTotalMaxMinArrayForEntities($compound2Abstracts, $orderBy, $field);
+                    $meanScore=$this->getMmmrScoreFromEntities($compound2Abstracts, $orderBy, 'mean');
+                    $medianScore=$this->getMmmrScoreFromEntities($compound2Abstracts, $orderBy, 'median');
                     $arrayEntity2Abstract = $paginator
                         ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "abstracts")
                         ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "abstracts")
@@ -1428,7 +1860,10 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                         'entityBackup' => $entityBackup,
                         'arrayEntity2Abstract' => $arrayEntity2Abstract,
                         'entityName' => $entityName,
+                        'arrayTotalMaxMin' => $arrayTotalMaxMin,
                         'orderBy' => $orderBy,
+                        'meanScore' => $meanScore,
+                        'medianScore' => $medianScore,
                     ));
                 }
 
@@ -1436,6 +1871,13 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
             }else{//Neither Compounds nor Cytochromes
                 //We just search into Documents
                 if($entityType=="Marker"){
+                    $marker2Documents=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntity2DocumentFromFieldDQL($field, $entityType, $arrayEntityName, $source, $orderBy)->getResult();
+                    //When dealing with withRelations arrays, we only have this array to get the needed values that we retreive in interface using resultSetArrays... Which are: totalHits, Max. Score, Min. Score
+                    //So we implement a function to get all this info inside an arrayTotalMaxMin. Being arrayTotalMaxMin[0]=totalHits, arrayTotalMaxMin[1]=Max.score, arrayTotalMaxMin[2]=Min.score
+                    $arrayTotalMaxMin=$this->getTotalMaxMinArrayForEntities($marker2Documents, $orderBy, $field);
+                    $meanScore=$this->getMmmrScoreFromEntities($marker2Documents, $orderBy, 'mean');
+                    $medianScore=$this->getMmmrScoreFromEntities($marker2Documents, $orderBy, 'median');
+
                     $arrayEntity2Document = $paginator
                     ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "documents")
                     ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "documents")
@@ -1452,7 +1894,10 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                     'entityBackup' => $entityBackup,
                     'arrayEntity2Document' => $arrayEntity2Document,
                     'entityName' => $entityName,
+                    'arrayTotalMaxMin' => $arrayTotalMaxMin,
                     'orderBy' => $orderBy,
+                    'meanScore' => $meanScore,
+                    'medianScore' => $medianScore,
                 ));
             }
         }
@@ -1465,7 +1910,10 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
         'entityBackup' => $entityBackup,
         'arrayEntity2Document' => $arrayEntity2Document,
         'entityName' => $entityName,
+        'arrayTotalMaxMin' => $arrayTotalMaxMin,
         'orderBy' => $orderBy,
+        'meanScore' => $meanScore,
+        'medianScore' => $medianScore,
         ));
     }
 

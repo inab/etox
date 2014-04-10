@@ -219,21 +219,25 @@
                     {% endif %}
 
                     {% if whatToSearchCompound=="smile" %}
-                        <label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" CHECKED value="smile"><span class="custom radio"></span> Smile</label>
+                        <span data-tooltip class="has-tip" title="SMILES Formula (Simplified Molecular-Input Line-Entry System). Only exact match search is currently enabled.
+<br/>See: http://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system"><label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" CHECKED value="smile"><span class="custom radio"></span> SMILES</label></span>
                     {% else %}
-                        <label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" value="smile"><span class="custom radio"></span> Smile</label>
+                        <span data-tooltip class="has-tip" title="SMILES Formula (Simplified Molecular-Input Line-Entry System). Only exact match search is currently enabled.
+<br/>See: http://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system"><label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" value="smile"><span class="custom radio"></span> SMILES</label></span>
                     {% endif %}
 
                     {% if whatToSearchCompound=="inChi" %}
-                        <label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" CHECKED value="inChi"><span class="custom radio"></span> InChI</label>
+                        <span data-tooltip class="has-tip" title=" IUPAC International Chemical Identifier (InChI). Only exact match search is currently enabled.
+<br/>See: http://www.iupac.org/home/publications/e-resources/inchi.html"><label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" CHECKED value="inChi"><span class="custom radio"></span> InChI</label></span>
                     {% else %}
-                        <label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" value="smile"><span class="custom radio"></span> InChI</label>
+                        <span data-tooltip class="has-tip" title="S IUPAC International Chemical Identifier (InChI). Only exact match search is currently enabled.
+<br/>See: http://www.iupac.org/home/publications/e-resources/inchi.html"><label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" value="smile"><span class="custom radio"></span> InChI</label></span>
                     {% endif %}
 
                     {% if whatToSearchCompound=="any" %}
-                        <label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" CHECKED value="any"><span class="custom radio"></span> Any (Free search)</label>
+                        <span data-tooltip class="has-tip" title="Free text search within Compounds mentioning sentences"><label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" CHECKED value="any"><span class="custom radio"></span> Any (Free search)</label></span>
                     {% else %}
-                        <label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" value="any"><span class="custom radio"></span> Any (Free search)</label>
+                        <span data-tooltip class="has-tip" title="Free text search within Compounds mentioning sentences"><label for="radioWhatToSearch"><input name="compoundWhatToSearch" type="radio" id="radioCompoundWhatToSearch" style="display:none;" value="any"><span class="custom radio"></span> Any (Free search)</label></span>
                     {% endif %}
 
                     {% if whatToSearchCompound=="withCytochromes" %}
@@ -358,9 +362,9 @@
                         <span data-tooltip class="has-tip" title="Search within sentences where CYPs co-occur with automatically detected chemical entity mentions"><label for="radioWhatToSearch"><input name="cytochromeWhatToSearch" type="radio" id="radioCytochromeWhatToSearch" style="display:none;" value="withCompounds"><span class="custom radio"></span> With Compounds</label></span>
                     {% endif %}
                     {% if whatToSearch=="compoundsCytochromesRelations" %}
-                        <span data-tooltip class="has-tip" title="Search for sentences based CYPs-chemical compound/drug relations detected by a pattern and/or machine learning method. Extracted relations cover induction, inhibition or metabolism interactions. You can query either by names of CYPs or chemicals/drugs"><input name="cytochromeWhatToSearch" type="radio" id="radioCytochromeWhatToSearch" style="display:none;" CHECKED value="compoundsCytochromesRelations"><span class="custom radio"></span> CYPs-chemical relations</label></span>
+                        <span data-tooltip class="has-tip" title="Search for sentences based CYPs-chemical compound/drug relations detected by a pattern and/or machine learning method. Extracted relations cover induction, inhibition or metabolism interactions. You can query either by names of CYPs or chemicals/drugs"><label for="radioWhatToSearch"><input name="cytochromeWhatToSearch" type="radio" id="radioCytochromeWhatToSearch" style="display:none;" CHECKED value="compoundsCytochromesRelations"><span class="custom radio"></span> CYPs-chemical relations</label></span>
                     {% else %}
-                        <span data-tooltip class="has-tip" title="Search for sentences based CYPs-chemical compound/drug relations detected by a pattern and/or machine learning method. Extracted relations cover induction, inhibition or metabolism interactions. You can query either by names of CYPs or chemicals/drugs"><input name="cytochromeWhatToSearch" type="radio" id="radioCytochromeWhatToSearch" style="display:none;" value="compoundsCytochromesRelations"><span class="custom radio"></span> CYPs-chemical relations</label></span>
+                        <span data-tooltip class="has-tip" title="Search for sentences based CYPs-chemical compound/drug relations detected by a pattern and/or machine learning method. Extracted relations cover induction, inhibition or metabolism interactions. You can query either by names of CYPs or chemicals/drugs"><label for="radioWhatToSearch"><input name="cytochromeWhatToSearch" type="radio" id="radioCytochromeWhatToSearch" style="display:none;" value="compoundsCytochromesRelations"><span class="custom radio"></span> CYPs-chemical relations</label></span>
                     {% endif %}
                 </fieldset>
             </form>

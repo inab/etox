@@ -12,8 +12,21 @@ use Doctrine\ORM\EntityRepository;
  */
 class Specie2DocumentRepository extends EntityRepository
 {
-    public function getBetterRanked($arraycytochromes){
+    public function getBetterRanked($arraycytochromes, $taxId){
+        //This function receives some cytochromes and sort them by the ranking of its uniprot accession, taking into account the taxId to filter them
         $message="Inside getBetterRanked";
+        ld($message);
+        if($taxId!="all"){
+            //We filter the arraycytochromes taking into account only the cytochromes with the taxId desired.
+            $arrayTmp=array();
+            foreach($arraycytochromes as $cytochrome){
+                $tax=$cytochrome->getTax();
+                if($tax==$taxId){
+                    $arrayTmp[]=$cytochrome;
+                }
+            }
+            $arraycytochromes=$arrayTmp;
+        }
         usort($arraycytochromes, function($cyt1,$cyt2){
             $message="Inside usort cmp";
             $ranking1=$cyt1->getCypUniprotRanking();

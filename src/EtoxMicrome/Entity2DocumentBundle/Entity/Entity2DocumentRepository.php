@@ -149,15 +149,10 @@ class Entity2DocumentRepository extends EntityRepository
         elseif($orderBy=="compoundName"){
             $orderBy="compoundName asc";
         }
-        elseif($orderBy=="relationScore"){
+        elseif($orderBy=="relationScore" or $orderBy=="hepval"){
             $orderBy="relationScore desc";
         }elseif($orderBy=="curation"){
             $orderBy="curation desc";
-        }else{
-            $orderBy=$this->getOrderBy($orderBy, $valToSearch);
-            if ($orderBy=="hepval"){
-                $orderBy="relationScore asc";
-            }
         }
         if($source=="all"){
             $sql="SELECT c2t2d
@@ -201,15 +196,10 @@ class Entity2DocumentRepository extends EntityRepository
         elseif($orderBy=="compoundName"){
             $orderBy="compoundName asc";
         }
-        elseif($orderBy=="relationScore"){
+        elseif($orderBy=="relationScore" or $orderBy=="hepval"){
             $orderBy="relationScore desc";
         }elseif($orderBy=="curation"){
             $orderBy="curation desc";
-        }else{
-            $orderBy=$this->getOrderBy($orderBy, $valToSearch);
-            if ($orderBy=="hepval"){
-                $orderBy="relationScore desc";
-            }
         }
         if($source=="all"){
             $sql="SELECT c2t2d
@@ -625,14 +615,32 @@ class Entity2DocumentRepository extends EntityRepository
                 if($name!=""){
                     $dictionary["name"]=$name;
                 }
+                /*We don't need the tax
                 $tax=$entity->getTax();
                 if($tax!=""){
                     $dictionary["tax"]=$tax;
                 }
+                */
+                $entityId=$entity->getEntityId();
+
                 $markerType=$entity->getMarkerType();
-                if($markerType!=""){
-                    $dictionary["markerType"]=$markerType;
+                if($markerType=="marker"){
+                    $markerType="Unspecific";
+                }elseif($markerType=="pubchem"){
+                    $markerType="Compound";
+                    //entityId="CID 10964";// outlink="http://pubchem.ncbi.nlm.nih.gov/summary/summary.cgi?cid=10964"
+                    $entityIdCut=substr($entityId, 4);
+                    $outlink="http://pubchem.ncbi.nlm.nih.gov/summary/summary.cgi?cid=$entityIdCut";
+                    $dictionary["Marker id"]="<a href='$outlink' target='_blank'>$entityId</a>";
+                }elseif($markerType=="protein_uniprot"){
+                    $markerType="Protein";
+                    //entityId=P24298  //outlink=http://www.uniprot.org/uniprot/P24298
+                    $outlink="http://www.uniprot.org/uniprot/$entityId";
+                    $dictionary["Marker id"]="<a href='$outlink' target='_blank'>$entityId</a>";
                 }
+
+                $dictionary["Marker Type"]=$markerType;
+
             }
         }
 
@@ -759,106 +767,141 @@ class Entity2DocumentRepository extends EntityRepository
         }
 
         if($qualifier=="Cytochrome"){
-            $addWarning=false;
-            $addAmbigous=false;
+            $warning=false;
             $message="getEntitySummary for cytochrome";
+            ld($message);
+            ld($entity2DocumentId);
             $cytochrome2Document=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Cytochrome2Document')->findOneById($entity2DocumentId);
-            //ld($cytochrome2Document);
+            ld($cytochrome2Document);
             if ($cytochrome2Document!=null){
-                $cytochromeName=$cytochrome2Document->getCypsMention();
-                //ld($cytochromeName);
-                $cytochrome=$em->getRepository('EtoxMicromeEntityBundle:Cytochrome')->findOneByName($cytochromeName);
-                //ld($cytochrome);
-                //First we search inside the cytochrome_dictionary for the name if nothing is found we search for the canonical: In both cases we end up with a list of accessions
-                $arraycytochromes=$em->getRepository('EtoxMicromeEntityBundle:Cytochrome')->findByName($cytochromeName);
-                //ld($arraycytochromes);
-                if(count($arraycytochromes)==0){
-                    $arraycytochromes=$em->getRepository('EtoxMicromeEntityBundle:Cytochrome')->findByCanonical($cytochromeName);
-                }
-                $arrayTaxIds=array();
-                foreach($arraycytochromes as $cytochrome){
-                    $arrayTaxIds[]=$cytochrome->getTax();
-                }
-                //ld($arrayTaxIds);
-
-
-
-                //Now we have to search the taxId comentioned inside this sentence:
+                //////////////////////////////////////////////////////////////////////
+                ////////////////////////CYP NORMALIZATION PROTOCOL////////////////////
+                //////////////////////////////////////////////////////////////////////
+                //We already have the document info and the cytochrome info.
                 $documentId=$cytochrome2Document->getDocument()->getId();
+
+                //1.- We select CYPs mentioning sentence
+                $cytochromeName=$cytochrome2Document->getCypsMention();
+                $cytochrome=$em->getRepository('EtoxMicromeEntityBundle:Cytochrome')->findOneByName($cytochromeName);
+                ld($cytochrome);
+
+                //2.- We select the species for the same sentence
                 $specie2documentArray=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Specie2Document')->findByDocument($documentId);
-                if(count($specie2documentArray)==0){
-                    $ncbiTaxId=9606;//Homo sapiens
-                }elseif(count($specie2documentArray)==1){
-                    $specie2Document=$specie2documentArray[0];
-                    $ncbiTaxId=$specie2Document->getSpecie()->getNcbiTaxId();
-                    //Buscar si este ncbiTaxId se encuentra entre los taxid del array de cytochromes. Si existe lo seleccionamos. Si no existe seleccionamos humanos y añadimos warning. Mas adelante usaremos un web-service para recoger el mejor resultado de swissprot (o un outlink)
-                    $ncbiTaxIdIsInArray=$em->getRepository('EtoxMicromeEntityBundle:Cytochrome')->taxIdIsInArray($ncbiTaxId, $arraycytochromes);
-                    if($ncbiTaxIdIsInArray==false){
-                        $ncbiTaxId=9606;//Homo sapiens
-                        $addWarning=true;
-                    }
-                }else{
-                    //If there are more than one taxId we choose the
-                    if (count($arraycytochromes)==0){
-                        $ncbiTaxId=9606;
-                        $addWarning=true;
-                    }else{
-                        $arrayCytochromesSortedByRanking=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Specie2Document')->getBetterRanked($arraycytochromes);
-                        //ld($arrayCytochromesSortedByRanking);
-                        $bestMatch=$arrayCytochromesSortedByRanking[0];
-                        $ncbiTaxId=$bestMatch->getTax();
-                        $stringAmbiguos="";
-                        $counter=1;
-                        foreach($arrayCytochromesSortedByRanking as $cytochromeSorted){
-                            if($counter!=1){
-                                $accession=$cytochromeSorted->getEntityId();
-                                $stringAmbiguos=$stringAmbiguos . "<a href='http://www.uniprot.org/uniprot/$accession' target='_blank'> $accession</a>,";
-                            }
-                            $counter++;
-                        }
-                        $addAmbigous=true;
-                    }
-                    //We return the first $ncbiTaxId from the sorted array which is the taxId for the accession with the biggest ranking. Also return a field with key "Ambigous: list of accessions linked to http://www.uniprot.org/uniprot/accessionNumber "
-
-
+                    //We also create an array with the species co-mentioned that we will be usefull later.
+                $arraySpecies=array();
+                foreach($specie2documentArray as $specie2Document){
+                    $arraySpecies[]=$specie2Document->getSpecie();
                 }
 
-
-
+                //3.- We search if there are co-ocurrence of CYPs-mention taxId with the species tax
+                $cytochromeTaxId=$cytochrome->getTax();
+                $numberCoocurrences=0;
+                foreach($specie2documentArray as $specie2Document){
+                    $specieDocumentTaxId=$specie2Document->getSpecie()->getNcbiTaxId();
+                    if($cytochromeTaxId==$specieDocumentTaxId){
+                        $numberCoocurrences=$numberCoocurrences+1;
+                    }
+                }
+                    //3.1.- If there is no co-occurrence between CYPs mention and species
+                    //We check mention against dictionary names if nothing is found then we check against canonicals
+                if($numberCoocurrences==0){
+                    $arraycytochromes=$em->getRepository('EtoxMicromeEntityBundle:Cytochrome')->findByName($cytochromeName);
+                    ld($arraycytochromes);
+                    if(count($arraycytochromes)==0){
+                        $arraycytochromes=$em->getRepository('EtoxMicromeEntityBundle:Cytochrome')->findByCanonical($cytochromeName);
+                    }
+                        //So far we have the name, taxid and accession for each cytochrome inside each cytochrome object inside arraycytochromes.
+                        //We search if there is a human taxId for any of the cytochromes inisde the arraycytochromes
+                    $humanFound=false;
+                    foreach($arraycytochromes as $cytochromeTmp){
+                        $tmpTaxId=$cytochromeTmp->getTax();
+                        if($tmpTaxId=="9606"){
+                            $humanFound=true;
+                        }
+                    }
+                    ld($humanFound);
+                    if($humanFound){//If a human is found we check CYPS ranking for human only
+                        $arrayCytochromesSortedByRanking=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Specie2Document')->getBetterRanked($arraycytochromes, "9606");
+                    }else{//If a human is not found, we check CYPS ranking for all of the cytochromes
+                        $arrayCytochromesSortedByRanking=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Specie2Document')->getBetterRanked($arraycytochromes, "all");
+                    }
+                    $firstHitRankingOutput=$arrayCytochromesSortedByRanking[0];
+                }elseif($numberCoocurrences==1){
+                    //3.2.- If there is one co-occurrence between CYPs mention and species
+                    //We check mention against dictionary names if nothing is found then we check against canonicals
+                    $arraycytochromes=$em->getRepository('EtoxMicromeEntityBundle:Cytochrome')->findByName($cytochromeName);
+                    ld($arraycytochromes);
+                    if(count($arraycytochromes)==0){
+                        $arraycytochromes=$em->getRepository('EtoxMicromeEntityBundle:Cytochrome')->findByCanonical($cytochromeName);
+                    }
+                        //So far we have the name, taxid and accession for each cytochrome inside each cytochrome object inside arraycytochromes.
+                        //We have to check if the cytochromeTaxId is the same as co-ocurring taxId for any of the cytochromes inisde the arraycytochromes
+                    $sameSpecie=false;
+                    foreach($arraycytochromes as $cytochromeTmp){
+                        $tmpTaxId=$cytochromeTmp->getTax();
+                        if($tmpTaxId==$cytochromeTaxId){
+                            $sameSpecie=true;
+                        }
+                    }
+                    if($sameSpecie){//If the specie has been found, we check CYPs ranking for that taxId
+                        $arrayCytochromesSortedByRanking=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Specie2Document')->getBetterRanked($arraycytochromes, $cytochromeTaxId);
+                    }else{//If the specie has not been found, we add a Warning and check ranking for all cytochromes
+                        $warning=true;
+                        $arrayCytochromesSortedByRanking=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Specie2Document')->getBetterRanked($arraycytochromes, "all");
+                    }
+                    $firstHitRankingOutput=$arrayCytochromesSortedByRanking[0];
+                }else{
+                    //3.3.- If there is more than one co-occurrence between CYPs mention and species
+                    //We check mention against dictionary names if nothing is found then we check against canonicals
+                    $arraycytochromes=$em->getRepository('EtoxMicromeEntityBundle:Cytochrome')->findByName($cytochromeName);
+                    ld($arraycytochromes);
+                    if(count($arraycytochromes)==0){
+                        $arraycytochromes=$em->getRepository('EtoxMicromeEntityBundle:Cytochrome')->findByCanonical($cytochromeName);
+                    }
+                        //So far we have the name, taxid and accession for each cytochrome inside each cytochrome object inside arraycytochromes.
+                        //We have to check if the taxIds of the cytochromes inside the arraycytochromes are in the list of the co-ocurring species list ()
+                        //We create a list with the cytochromes that have co-ocurring taxIdsOfCytochromes with the species co-mentioned in the document
+                    $taxIdInListSpecies=false;
+                    $arrayWithCytochromesCoocurring=array();
+                    foreach($arraySpecies as $specie){
+                        $taxIdInSpecie=$specie->getNcbiTaxId();
+                        foreach($arraycytochromes as $cytochrome){
+                            $cytTaxId=$cytochrome->getTax();
+                            if($cytTaxId==$taxIdInSpecie){
+                                $arrayWithCytochromesCoocurring[]=$cytochrome;
+                                $taxIdInListSpecies=true;
+                            }
+                        }
+                    }
+                    if($taxIdInListSpecies){//If there are cytochromes co-ocurring, we have to check ranking for that cytochromes
+                        $arrayCytochromesSortedByRanking=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Specie2Document')->getBetterRanked($arrayWithCytochromesCoocurring, "all");
+                    }else{//If there are no cytochromes co-ocurring, we add a Warning and check ranking for all of the cytochromes
+                        $warning=true;
+                        $arrayCytochromesSortedByRanking=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Specie2Document')->getBetterRanked($arraycytochromes, "all");
+                    }
+                    $firstHitRankingOutput=$arrayCytochromesSortedByRanking[0];
+                }
+                //////////////////////////////////////////////////////////////////////
+                ///////////////////END OF CYP NORMALIZATION PROTOCOL//////////////////
+                //////////////////////////////////////////////////////////////////////
 
                 if ($cytochrome!=null){
-                    $entityId=$cytochrome->getEntityId();
-                    if($entityId!=""){
-                        $dictionary["Uniprot Ac."]="<a href='http://www.uniprot.org/uniprot/$entityId' target='_blank'> $entityId</a>,";
+                    //
+                    $dictionary['Name/Mention']=$firstHitRankingOutput->getName();
+                    $canonical=$firstHitRankingOutput->getCanonical();
+                    $canonicalCut=substr($canonical, 3);
+                    $dictionary['Canonical']="<a href=\"http://bioinformatics.charite.de/supercyp/index.php?site=cyp_drug_ia#cyp=$canonicalCut\" target=\"_blank\">$canonical</a>";
+                    $ncbiTaxId=$firstHitRankingOutput->getTax();
+                    $specie=$em->getRepository('EtoxMicromeEntityBundle:Specie')->findOneByNcbiTaxId($ncbiTaxId);
+                    $specieName=$specie->getName();
+                    $dictionary['Specie/TaxId']="$specieName/$ncbiTaxId";
+                    $accession=$firstHitRankingOutput->getEntityId();
+                    $dictionary['Uniprot accession']="<a href=\"http://www.uniprot.org/uniprot/$accession\" target=\"_blank\">$accession</a>";
+                    if($warning){
+                        $dictionary['Warning!']="Potential species mismatch between CYPs name dictionary and sentence context";
                     }
-                    $name=$cytochrome->getName();
-                    if($name!=""){
-                        $dictionary["Name"]=$name;
-                    }
-                    $type=$cytochrome->getType();
-                    if($type!=""){
-                        $dictionary["Type"]=$type;
-                    }
-                    $tax=$cytochrome->getTax();
-                    if($tax!=""){
-                        $dictionary["NCBI taxId"]=$ncbiTaxId;
-                    }
-                    if($addWarning){
-                            $dictionary['Warning']="Potential CYPs mention and species association error!";
-                    }
-                    $score=$cytochrome->getScore();
-                    if($score!=""){
-                        $dictionary["Score"]=round($score,3);
-                    }
-                    $canonical=$cytochrome->getCanonical();
-                    if($canonical!=""){
-                        //http://bioinformatics.charite.de/supercyp/index.php?site=cyp_drug_ia#cyp=3A4
-                        $sufix=substr($canonical, 3);
-                        $dictionary["Canonical"]="<a href='http://bioinformatics.charite.de/supercyp/index.php?site=cyp_drug_ia#cyp=$sufix' target='_blank'> $canonical</a>";
-                    }
-                    if ($addAmbigous){
-                        $dictionary['Ambigous']=$stringAmbiguos;
-                    }
+
+
                 }
             }
         }

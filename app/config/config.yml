@@ -118,12 +118,12 @@ fos_user:
         confirmation:
             enabled:    true
             from_email:
-                address:    registration@limtox.com
+                address:    acanada@cnio.es
                 sender_name:    Limtox Registration
     resetting:
         email:
             from_email:
-                address:    resetting@limtox.com
+                address:    acanada@cnio.es
                 sender_name:    Limtox Resetting
     from_email:
         address:    noreply@limtox.com

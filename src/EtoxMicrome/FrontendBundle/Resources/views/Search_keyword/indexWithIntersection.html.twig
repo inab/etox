@@ -1,0 +1,198 @@
+{% extends '::frontend.html.twig' %}
+{% block title %}Listing Evidences {% endblock %}
+{% block article %}
+    {% include 'FrontendBundle:Search_keyword:tags_code.html.twig' %}
+    {% set tooltipCounter=1 %}
+    {% set stringStickyTooltip = "" %}
+    <div id="evidences">
+        {% if resultSetDocuments | length != 0 %}
+            <div id="documentsResults">
+                <a name="documents"></a>
+                <h3>Ranked sentences in Documents for "<span class="underline">{{ keyword }}</span>" keyword search in sentences also mentioning {{ whatToSearch|slice(4) }}</h3>
+                <div class="btmspc-dbl">
+                    <small>
+                        <em>
+                            Entity mentions are highlighted as follows:
+                            <mark class="termSearched">What you searched</mark>, <mark class="compound">Compounds</mark>, <mark class="cytochrome">Cytochromes</mark>, <mark class="marker">Markers</mark>, <mark class="term">Terms</mark>, <mark class="specie">Species</mark>
+                        </em>
+                        . Curated evidences are indicated by:
+                        <a class="curated" href="#"> </a>
+                    </small>
+                </div>
+                <div class="results-summary">
+                    {% set totalHits = resultSetDocuments[0] %}
+                    {% set scoreToShow = orderBy | getScoreToShow %}
+                    {% set maxScore= resultSetDocuments[1] %}
+                    {% set minScore= resultSetDocuments[2] %}
+                    {% set order =  orderBy | getOrderToSource %}
+                    <table>
+                        <tr>
+                            <td><strong>Total of mentions displayed:</strong> {{ hitsShowed }}</td>
+                            <td><strong>Max. {{scoreToShow}} score:</strong> {{ maxScore |number_format(2) }}</td>
+                            <td><strong>Minim. {{scoreToShow}} score:</strong> {{ minScore |number_format(2) }}</td>
+                            <td><strong>{{scoreToShow}} mean:</strong> {{ meanScore | number_format(2) }}</td>
+                            <td><strong>{{scoreToShow}} median:</strong> {{ medianScore | number_format(2) }}</td>
+                        </tr>
+                        {% if totalHits > 150  and whatToSearch!="withCytochromes" and whatToSearch!="withMarkers" and whatToSearch!="withCompounds"%}
+                            <tr>
+                                {% set totalHits = resultSetDocuments.getTotalHits %}
+                                <td colspan="5"><strong>Total of mentions:</strong> {{ totalHits }}. (All above scores are for the {{hitsShowed}} displayed hits). <br/>Click here to display all results</td>
+                            </tr>
+                        {% endif %}
+                    </table>
+                </div>
+                <div class="clear-both"></div>
+                <table id="tableResults" class="tablesorter">
+                <thead>
+                    <th><span data-tooltip class="has-tip" title="{{ mouseover_source}}">Source</span></th>
+                    {% set currentPath = app.request.attributes.get('_route') %}
+                    {% if currentPath=="elasticSearch_keyword" or currentPath=="elasticSearch_keyword_orderby" %}
+                        <th><a href="{{ path('elasticSearch_keyword_orderby',{'whatToSearch': whatToSearch, 'source': source, 'keyword': keyword, 'orderBy': 'score'}) }}" {% if orderBy == "score"%} class="active"{% endif %} ><span data-tooltip class="has-tip" title="{{ mouseover_svm}}">SVM</span></a></th>
+                        <th><a href="{{ path('elasticSearch_keyword_orderby',{'whatToSearch': whatToSearch, 'source': source, 'keyword': keyword, 'orderBy': 'svmConfidence'}) }}" {% if orderBy == "svmConfidence"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_conf}}">Conf.</span></a></th>
+                        <th><a href="{{ path('elasticSearch_keyword_orderby',{'whatToSearch': whatToSearch, 'source': source, 'keyword': keyword, 'orderBy': 'pattern'}) }}" {% if orderBy == "pattern"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_pattern}}">Pattern</span></a></th>
+                        <th><a href="{{ path('elasticSearch_keyword_orderby',{'whatToSearch': whatToSearch, 'source': source, 'keyword': keyword, 'orderBy': 'term'}) }}" {% if orderBy == "term"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_term}}">Term</span></a></th>
+                        <th><a href="{{ path('elasticSearch_keyword_orderby',{'whatToSearch': whatToSearch, 'source': source, 'keyword': keyword, 'orderBy': 'rule'}) }}" {% if orderBy == "rule"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_rule}}">Rule</span></a></th>
+
+                    {% elseif currentPath=="search_interface_search_field_whatToSearch_entityType_source_entity" or currentPath=="search_interface_search_field_whatToSearch_entityType_source_entity_orderby"%}
+
+                        <th><a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field': field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'score'}) }}" {% if orderBy == "score"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_svm}}">SVM</span></a></th>
+                        <th><a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field': field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'svmConfidence'}) }}" {% if orderBy == "svmConfidence"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_conf}}">Conf.</span></a></th>
+                        <th><a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field': field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'pattern'}) }}" {% if orderBy == "pattern"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_pattern}}">Pattern</span></a></th>
+                        <th><a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field': field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'term'}) }}" {% if orderBy == "term"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_term}}">Term</span></a></th>
+                        <th><a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field': field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'rule'}) }}" {% if orderBy == "rule"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_rule}}">Rule</span></a></th>
+
+
+                    {% endif %}
+                    <th>Sentence</th>
+                </thead>
+                <tbody>
+                    {% set contador = 1 %}
+                    {% for result in arrayResultsDoc %}
+                        <tr class="document {{ cycle(['odd', 'even'], contador) }}">
+                            {% set contador = contador + 1 %}
+                            {% set className = result.getType %}
+                            {% set text=result.getSource['text'] %}
+                            {% set score = result.getSource['hepval'] | number_format(2)%}
+                            {% set score = score|colorCodingScore %}
+                            {% set patternCount = result.getSource['patternCount'] %}
+                            {% set patternCount = patternCount|colorCodingScore %}
+                            {% set ruleScore = result.getSource['ruleScore'] %}
+                            {% set ruleScore = ruleScore | number_format(2)%}
+                            {% set ruleScore = ruleScore|colorCodingScore %}
+                            {% set termScore = result.getSource['hepTermVarScore'] %}
+                            {% set termScore = termScore|colorCodingScore %}
+                            {% set svmConfidence = result.getSource['svmConfidence'] %}
+                            {% set svmConfidence = svmConfidence | number_format(2)%}
+                            {% set svmConfidence = svmConfidence|colorCodingScore %}
+                            {% if className == 'abstracts' %}
+                                {{ text | highlightEntitiesAbstracts (result.getSource['text'], keyword, field, whatToSearch, source, entityType)| raw }}
+                                {% set pmid=result.getSource['pmid'] %}
+                                {% set link="http://www.ncbi.nlm.nih.gov/pubmed/" ~ pmid %}
+                                {% set imageRoute = 'images/pubmed.png' %}
+                                {% set score = result.getSource['hepval'] | number_format(2)%}
+                            {% elseif className == 'documents' or className == 'documentswithcompounds' or className == 'documentswithcytochromes' or className == 'documentswithmarkers'%}
+                                {% set kind = result.getSource['kind'] %}
+                                {% if kind == "pubmed" %}
+                                    {% set pmid=result.getSource['uid'] %}
+                                    {% set sid=result.getSource['sentenceId'] %}
+                                    {% set link="http://www.ncbi.nlm.nih.gov/pubmed/" ~ pmid %}
+                                    {% set imageRoute = 'images/pubmed.png' %}
+                                    <td class="center">
+                                    <span data-tooltip='sticky{{ tooltipCounter }}'>
+                                        <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/></a>
+                                    </span>
+                                    </td>
+                                    {% set tooltip =  "<div id='sticky"~tooltipCounter~"' class='atip' >Pubmed link: <a href='"~link ~"'>"~link~"</a><br>Pubmed Id: "~ pmid ~"<br/>Sentence Id: "~ sid ~"<br/></div>" %}
+                                    {% set tooltipCounter = tooltipCounter + 1 %}
+                                    {% set stringStickyTooltip = stringStickyTooltip ~ tooltip  %}
+                                {% elseif kind == "fulltext" %}
+                                    {% set pmid=result.getSource['uid'] %}
+                                    {% set arrayPmid = pmid|split('_') %}
+                                    {% set pmidCut = arrayPmid[1] %}
+                                    {% set link="http://www.ncbi.nlm.nih.gov/pubmed/" ~ pmidCut %}
+                                    {% set imageRoute = 'images/fulltext.png' %}
+                                    <td class="center">
+                                        <span data-tooltip='sticky{{ tooltipCounter }}'>
+                                            <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/></a>
+                                        </span>
+                                    </td>
+                                    {% set tooltip =  "<div id='sticky"~tooltipCounter~"' class='atip' >Pubmed link: <a href='"~link ~"'>"~link~"</a><br>Pubmed Id: "~ pmidCut ~"</div>" %}
+                                    {% set tooltipCounter = tooltipCounter + 1 %}
+                                    {% set stringStickyTooltip = stringStickyTooltip ~ tooltip  %}
+                                {% elseif kind == "nda" %}
+                                    {% set link="http://www.accessdata.fda.gov/scripts/cder/drugsatfda/index.cfm" %}
+                                    {% set imageRoute = 'images/nda.png' %}
+                                    <td class="center">
+                                        <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/ alt="FDA New Drug Approvals (NDAs)" title="FDA New Drug Approvals (NDAs)"></a>
+                                    </td>
+                                {% elseif kind == "epar" %}
+                                    {% set link="www.ema.europa.eu/ema/index.jsp?curl=pages/medicines/landing/epar_search.jsp" %}
+                                    {% set imageRoute = 'images/epar.png' %}
+                                    <td class="center">
+                                            <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/ alt="European Public Assessment Reports (EPARs)" title="European Public Assessment Reports (EPARs)"></a>
+                                    </td>
+                                {% endif %}
+                                {% set arrayText= text | highlightEntitiesDocumentsKeywords (result.getSource['sentenceId'],keyword,field,whatToSearch, source, entityType, tooltipCounter) %}
+                                {% set text = arrayText[0] | raw %}
+                                {% set stringStickyTooltip = stringStickyTooltip ~ arrayText[1] %}
+                                {% set tooltipCounter = arrayText[2] %}
+                            {% endif%}
+                            <td class="center">
+                                {{ score  | raw}}
+                            </td>
+                            <td class="center">
+                                {{ svmConfidence  | raw}}
+                            </td>
+                            <td class="center">
+                                {{ patternCount  | raw}}
+                            </td>
+                            <td class="center">
+                                {{ termScore  | raw}}
+                            </td>
+                            <td class="center">
+                                {{ ruleScore  | raw}}
+                            </td>
+                            <td>
+                                {{ text | raw }}
+                            </td>
+                        </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <!-- here pagination block for documents  -->
+                {% set currentPath = app.request.attributes.get('_route') %}
+                {{ currentPath }}
+                {% if currentPath == "elasticSearch_keyword" or currentPath=="elasticSearch_keyword_orderby" %}
+                    <div class="pagination">
+                        {{ simple_paginator_render(
+                            'elasticSearch_keyword_orderby', 'documents',
+                                {
+                                    'routeParams' : {'keyword' : keyword, 'whatToSearch' : whatToSearch, 'source' : source, 'orderBy' : orderBy},
+                                    'container_class' : 'pagination'
+                                }
+                            )
+                        }}
+                    </div>
+                {% elseif currentPath=="search_interface_search_field_whatToSearch_entityType_source_entity" or currentPath=="search_interface_search_field_whatToSearch_entityType_source_entity_orderby" %}
+                    <div class="pagination">
+                        {{ simple_paginator_render(
+                            'search_interface_search_field_whatToSearch_entityType_source_entity_orderby', 'documents',
+                                {
+                                    'routeParams' : {'field' : field, 'entityType' : entityType, 'entityName' : keyword, 'whatToSearch' : whatToSearch, 'source' : source, 'orderBy' : orderBy},
+                                    'container_class' : 'pagination'
+                                }
+                            )
+                        }}
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+        {# Here we rebuild the stringStickyTooltip inside its container divs #}
+        <div id="mystickytooltip" class="stickytooltip">
+            <div style="padding:5px">
+                {{ stringStickyTooltip | raw }}
+            </div>
+            <div class="stickystatus"></div>
+        </div>
+    {% include 'FrontendBundle:Search_document:scripts_code.html.twig' %}
+{% endblock %}

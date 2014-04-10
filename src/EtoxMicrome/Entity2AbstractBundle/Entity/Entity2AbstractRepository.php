@@ -58,8 +58,21 @@ class Entity2AbstractRepository extends EntityRepository
     public function getEntity2AbstractFromFieldDQL($field, $entityType, $arrayEntityName, $orderBy)
     {//("hepatotoxicity","CompoundDict",arrayEntityId)
         $message="inside getEntity2AbstractFromFieldDQL";
+        ld($orderBy);
         $valToSearch=$this->getValToSearch($field);//"i.e hepval, embval... etc"
-        $orderBy=$this->getOrderBy($orderBy, $valToSearch);
+        if ($orderBy=="hepval" or $orderBy=="score"){
+            $orderBy="hepval desc";
+        }elseif($orderBy=="svmConfidence"){
+            $orderBy="svmConfidence desc";
+        }elseif($orderBy=="pattern"){
+            $orderBy="patternCount asc";
+        }elseif($orderBy=="term"){
+            $orderBy="hepTermVarScore asc";
+        }elseif($orderBy=="rule"){
+            $orderBy="ruleScore asc";
+        }elseif($orderBy=="curation"){
+            $orderBy="curation desc";
+        }
         /*$sql="SELECT e2a,a
             FROM EtoxMicromeEntity2AbstractBundle:Entity2Abstract e2a
             JOIN e2a.abstracts a
@@ -74,12 +87,12 @@ class Entity2AbstractRepository extends EntityRepository
             WHERE e2a.name IN (:arrayEntityName)
             AND e2a.qualifier = :entityType
             AND e2a.$valToSearch is not NULL
-            ORDER BY e2a.$orderBy desc
+            ORDER BY e2a.$orderBy
             ";
         $query = $this->_em->createQuery($sql);
         $query->setParameter("arrayEntityName", $arrayEntityName);
         $query->setParameter('entityType', $entityType);
-        $query->setMaxResults(10);
+        //ldd($query->getSql());
         /*
         $rawSql = $query->getSql();
         print_r(array(
