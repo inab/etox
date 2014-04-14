@@ -1961,12 +1961,12 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                 //We just search into Documents
                 if($entityType=="Marker"){
                     $marker2Documents=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntity2DocumentFromFieldDQL($field, $entityType, $arrayEntityName, $source, $orderBy)->getResult();
+                    //ld(count($marker2Documents));
                     //When dealing with withRelations arrays, we only have this array to get the needed values that we retreive in interface using resultSetArrays... Which are: totalHits, Max. Score, Min. Score
                     //So we implement a function to get all this info inside an arrayTotalMaxMin. Being arrayTotalMaxMin[0]=totalHits, arrayTotalMaxMin[1]=Max.score, arrayTotalMaxMin[2]=Min.score
                     $arrayTotalMaxMin=$this->getTotalMaxMinArrayForEntities($marker2Documents, $orderBy, $field);
                     $meanScore=$this->getMmmrScoreFromEntities($marker2Documents, $orderBy, 'mean');
                     $medianScore=$this->getMmmrScoreFromEntities($marker2Documents, $orderBy, 'median');
-
                     $arrayEntity2Document = $paginator
                     ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "documents")
                     ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "documents")

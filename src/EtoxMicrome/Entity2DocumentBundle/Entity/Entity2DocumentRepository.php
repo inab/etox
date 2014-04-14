@@ -79,6 +79,7 @@ class Entity2DocumentRepository extends EntityRepository
             $query = $this->_em->createQuery($sql);
             $query->setParameter("arrayEntityName", $arrayEntityName);
             $query->setParameter('entityType', $entityType);
+            $query->setMaxResults(10000);
         }else{
             $sql="SELECT e2d,d
                 FROM EtoxMicromeEntity2DocumentBundle:Entity2Document e2d
@@ -95,6 +96,7 @@ class Entity2DocumentRepository extends EntityRepository
             $query->setParameter("arrayEntityName", $arrayEntityName);
             $query->setParameter('entityType', $entityType);
             $query->setParameter('source', $source);
+            $query->setMaxResults(10000);
         }
         /*
         $rawSql = $query->getSql();
@@ -126,6 +128,7 @@ class Entity2DocumentRepository extends EntityRepository
 
         $query = $this->_em->createQuery($sql);
         $query->setParameter("arrayEntityName", $arrayEntityName);
+        $query->setMaxResults(10000);
         return $query;
 
     }
@@ -161,6 +164,7 @@ class Entity2DocumentRepository extends EntityRepository
             ";
             $query = $this->_em->createQuery($sql);
             $query->setParameter("arrayEntityName", $arrayEntityName);
+            $query->setMaxResults(10000);
         }else{
             $sql="SELECT c2t2d, d
                 FROM EtoxMicromeEntity2DocumentBundle:Compound2Term2Document c2t2d
@@ -171,6 +175,7 @@ class Entity2DocumentRepository extends EntityRepository
             $query = $this->_em->createQuery($sql);
             $query->setParameter("arrayEntityName", $arrayEntityName);
             $query->setParameter("source", $source);
+            $query->setMaxResults(10000);
         }
         return $query;
 
@@ -208,6 +213,7 @@ class Entity2DocumentRepository extends EntityRepository
             ";
             $query = $this->_em->createQuery($sql);
             $query->setParameter("arrayEntityName", $arrayEntityName);
+            $query->setMaxResults(10000);
         }else{
             $sql="SELECT c2t2d, d
                 FROM EtoxMicromeEntity2DocumentBundle:Compound2Term2Document c2t2d
@@ -218,6 +224,7 @@ class Entity2DocumentRepository extends EntityRepository
             $query = $this->_em->createQuery($sql);
             $query->setParameter("arrayEntityName", $arrayEntityName);
             $query->setParameter("source", $source);
+            $query->setMaxResults(10000);
         }
 
         return $query;
@@ -243,6 +250,7 @@ class Entity2DocumentRepository extends EntityRepository
 
         $query = $this->_em->createQuery($sql);
         $query->setParameter("arrayEntityName", $arrayEntityName);
+        $query->setMaxResults(10000);
         return $query;
 
     }
@@ -287,6 +295,7 @@ class Entity2DocumentRepository extends EntityRepository
             ";
             $query = $this->_em->createQuery($sql);
             $query->setParameter("arrayEntityName", $arrayEntityName);
+            $query->setMaxResults(10000);
         }else{
             $sql="SELECT c2c2d, d
             FROM EtoxMicromeEntity2DocumentBundle:Compound2Cyp2Document c2c2d
@@ -297,6 +306,7 @@ class Entity2DocumentRepository extends EntityRepository
             $query = $this->_em->createQuery($sql);
             $query->setParameter("arrayEntityName", $arrayEntityName);
             $query->setParameter("source", $source);
+            $query->setMaxResults(10000);
         }
 
         //We have to create a query that searchs all over the entityIds inside the $arrayEntityId
@@ -346,6 +356,7 @@ class Entity2DocumentRepository extends EntityRepository
             ";
             $query = $this->_em->createQuery($sql);
             $query->setParameter("arrayEntityName", $arrayEntityName);
+            $query->setMaxResults(10000);
         }else{
             $sql="SELECT c2c2d, d
             FROM EtoxMicromeEntity2DocumentBundle:Compound2Cyp2Document c2c2d
@@ -356,6 +367,7 @@ class Entity2DocumentRepository extends EntityRepository
             $query = $this->_em->createQuery($sql);
             $query->setParameter("arrayEntityName", $arrayEntityName);
             $query->setParameter("source", $source);
+            $query->setMaxResults(10000);
         }
 
         //We have to create a query that searchs all over the entityIds inside the $arrayEntityId
@@ -381,8 +393,8 @@ class Entity2DocumentRepository extends EntityRepository
 
         $query = $this->_em->createQuery($sql);
         $query->setParameter("arrayEntityName", $arrayEntityName);
+        $query->setMaxResults(10000);
         return $query;
-
     }
 
     public function getCompound2MarkerRelations($field, $typeOfEntity, $arrayEntityName, $source, $orderBy)
@@ -415,6 +427,7 @@ class Entity2DocumentRepository extends EntityRepository
             ";
             $query = $this->_em->createQuery($sql);
             $query->setParameter("arrayEntityName", $arrayEntityName);
+            $query->setMaxResults(10000);
         }else{
             $sql="SELECT c2m2d, d
             FROM EtoxMicromeEntity2DocumentBundle:Compound2Marker2Document c2m2d
@@ -425,6 +438,7 @@ class Entity2DocumentRepository extends EntityRepository
             $query = $this->_em->createQuery($sql);
             $query->setParameter("arrayEntityName", $arrayEntityName);
             $query->setParameter("source", $source);
+            $query->setMaxResults(10000);
         }
         return $query;
     }
@@ -460,6 +474,7 @@ class Entity2DocumentRepository extends EntityRepository
             ";
             $query = $this->_em->createQuery($sql);
             $query->setParameter("arrayEntityName", $arrayEntityName);
+            $query->setMaxResults(10000);
         }else{
             $sql="SELECT c2m2d, d
             FROM EtoxMicromeEntity2DocumentBundle:Compound2Marker2Document c2m2d
@@ -470,6 +485,7 @@ class Entity2DocumentRepository extends EntityRepository
             $query = $this->_em->createQuery($sql);
             $query->setParameter("arrayEntityName", $arrayEntityName);
             $query->setParameter("source", $source);
+            $query->setMaxResults(10000);
         }
         return $query;
     }

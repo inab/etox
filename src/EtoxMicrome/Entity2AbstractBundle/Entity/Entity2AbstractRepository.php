@@ -91,6 +91,7 @@ class Entity2AbstractRepository extends EntityRepository
         $query = $this->_em->createQuery($sql);
         $query->setParameter("arrayEntityName", $arrayEntityName);
         $query->setParameter('entityType', $entityType);
+        $query->setMaxResults(10000);
         //ldd($query->getSql());
         /*
         $rawSql = $query->getSql();
@@ -121,6 +122,7 @@ class Entity2AbstractRepository extends EntityRepository
         //ld($sql);
         $query = $this->_em->createQuery($sql);
         $query->setParameter("arrayEntityName", $arrayEntityName);
+        $query->setMaxResults(10000);
         return $query;
 
     }
@@ -143,6 +145,7 @@ class Entity2AbstractRepository extends EntityRepository
         //ld($sql);
         $query = $this->_em->createQuery($sql);
         $query->setParameter("arrayEntityName", $arrayEntityName);
+        $query->setMaxResults(10000);
         return $query;
 
     }
@@ -165,6 +168,7 @@ class Entity2AbstractRepository extends EntityRepository
         //ld($sql);
         $query = $this->_em->createQuery($sql);
         $query->setParameter("arrayEntityName", $arrayEntityName);
+        $query->setMaxResults(10000);
         return $query;
 
     }
@@ -181,6 +185,7 @@ class Entity2AbstractRepository extends EntityRepository
             WHERE e2a.abstracts = :abstractId
         ');
         $consulta->setParameter('abstractId', $abstractId);
+        $query->setMaxResults(10000);
         return $consulta->execute();
     }
 
