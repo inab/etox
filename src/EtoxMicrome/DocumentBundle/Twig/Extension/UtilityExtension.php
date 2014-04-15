@@ -41,8 +41,10 @@ class UtilityExtension extends \Twig_Extension
     {
         //Returns an array with the valid position/s to make the highlight or a void array if there is no position...
         $arrayPositions=array();
+        //ld($arrayText);
+        $foundPlace=false;//We use this variable to switch finding method to include complex words and more
         foreach($arrayText as $i => $word){
-            if(strcasecmp($word, $entityName)==0){
+            if(strpos($word, $entityName) !== false){
                 if (in_array($i, $arrayHighlighted)){
                     //do nothing
                 }else{
@@ -50,7 +52,6 @@ class UtilityExtension extends \Twig_Extension
                 }
             }
         }
-
         return $arrayPositions;
     }
 
@@ -127,12 +128,10 @@ class UtilityExtension extends \Twig_Extension
 
         */
         $arrayText=str_word_count($text, 1, '0..9()=-');
-
         $arrayHighlighted=array();
 
         //With arrayHepKeywordTermVariant2Document we can highlight Hepatotoxicity Terms
         $arrayHepKeywordTermVariant2Document = $em->getRepository('EtoxMicromeEntity2DocumentBundle:HepKeywordTermVariant2Document')->findHepKeywordTermVariant2Document($document);
-
         foreach ($arrayHepKeywordTermVariant2Document as $term2Document){
             $entityName=$term2Document->getTermVariant();
             //If the name==entityBackup, we don't do anything, we'll change it at the end
@@ -254,7 +253,7 @@ class UtilityExtension extends \Twig_Extension
         }
         //With arrayCytochrome2Document we can highlight Cytochromes
         $arrayCytochrome2Document = $em->getRepository('EtoxMicromeEntity2DocumentBundle:Cytochrome2Document')->findCytochrome2DocumentFromDocument($document);
-
+        //ld($arrayCytochrome2Document);
         foreach ($arrayCytochrome2Document as $cytochrome2Document){
             $entityName=$cytochrome2Document->getCypsMention();
             $cytochrome2DocumentId=$cytochrome2Document->getId();
@@ -361,7 +360,6 @@ class UtilityExtension extends \Twig_Extension
                 }
             }
         }
-
         //With arrayHepKeywordTermNorm2Document we can highlight Hepatotoxicity Terms
         $arrayHepKeywordTermNorm2Document = $em->getRepository('EtoxMicromeEntity2DocumentBundle:HepKeywordTermNorm2Document')->findHepKeywordTermNorm2Document($document);
         foreach ($arrayHepKeywordTermNorm2Document as $term2Document){
@@ -497,6 +495,7 @@ class UtilityExtension extends \Twig_Extension
             $entityName=$entity2Document->getName();
             $entityNameUrlEncoded=urlencode($entityName);
             $qualifier=$entity2Document->getQualifier();
+            //ld($qualifier);
             $entity2DocumentId=$entity2Document->getId();
             //If the name==entityBackup, we don't do anything, we'll change it at the end
             if (strcasecmp($entityName, $entityBackup) != 0) {
@@ -635,6 +634,7 @@ class UtilityExtension extends \Twig_Extension
                         if($numberWords==1){
                             //We search a possible place/s for the highlight iterating over the arrayText taking into account the arrayHighlighted positions already highlighted
                             $arrayPlaces=$this->findPlaceSingleWord($entityName,$arrayText,$arrayHighlighted);
+                            //ld($arrayPlaces);
                             //Once the positions are knwon, we do the replacement inside the positions of the $arrayText and keep the track of the position
                             foreach($arrayPlaces as $place){
                                 array_push($arrayHighlighted, $place);
