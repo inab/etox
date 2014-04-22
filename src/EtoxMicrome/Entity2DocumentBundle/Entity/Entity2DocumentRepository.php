@@ -786,17 +786,20 @@ class Entity2DocumentRepository extends EntityRepository
             $warning=false;
             $message="getEntitySummary for cytochrome";
             $cytochrome2Document=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Cytochrome2Document')->findOneById($entity2DocumentId);
+            //ld($cytochrome2Document);
             if ($cytochrome2Document!=null){
                 //////////////////////////////////////////////////////////////////////
                 ////////////////////////CYP NORMALIZATION PROTOCOL////////////////////
                 //////////////////////////////////////////////////////////////////////
                 //We already have the document info and the cytochrome info.
                 $documentId=$cytochrome2Document->getDocument()->getId();
-
                 //1.- We select CYPs mentioning sentence
                 $cytochromeName=$cytochrome2Document->getCypsMention();
                 $cytochrome=$em->getRepository('EtoxMicromeEntityBundle:Cytochrome')->findOneByName($cytochromeName);
-
+                if($cytochrome==null){
+                    //Doesn't exist a cytochrome with that name... we should look for a cytochrome by canonical??
+                    $cytochrome=$em->getRepository('EtoxMicromeEntityBundle:Cytochrome')->searchEntityGivenACanonical($cytochrome2Document->getCypsCanonical());
+                }
                 //2.- We select the species for the same sentence
                 $specie2documentArray=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Specie2Document')->findByDocument($documentId);
                     //We also create an array with the species co-mentioned that we will be usefull later.
@@ -820,6 +823,15 @@ class Entity2DocumentRepository extends EntityRepository
                     $arraycytochromes=$em->getRepository('EtoxMicromeEntityBundle:Cytochrome')->findByName($cytochromeName);
                     if(count($arraycytochromes)==0){
                         $arraycytochromes=$em->getRepository('EtoxMicromeEntityBundle:Cytochrome')->findByCanonical($cytochromeName);
+                        if(count($arraycytochromes)==0){
+                            $dictionary['Warning!']="Potential species mismatch between CYPs name dictionary and sentence context";
+                            foreach($dictionary as $key => $value){
+                                if ($value!=""){
+                                    $stringOutput=$stringOutput."<strong>$key:</strong> $value<br/>";
+                                }
+                            }
+                            return $stringOutput;
+                        }
                     }
                         //So far we have the name, taxid and accession for each cytochrome inside each cytochrome object inside arraycytochromes.
                         //We search if there is a human taxId for any of the cytochromes inisde the arraycytochromes
