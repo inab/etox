@@ -185,7 +185,7 @@ class Entity2AbstractRepository extends EntityRepository
             WHERE e2a.abstracts = :abstractId
         ');
         $consulta->setParameter('abstractId', $abstractId);
-        $query->setMaxResults(10000);
+        $consulta->setMaxResults(10000);
         return $consulta->execute();
     }
 
