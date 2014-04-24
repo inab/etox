@@ -160,7 +160,6 @@
             </table>
             <!-- here pagination block for documents  -->
                 {% set currentPath = app.request.attributes.get('_route') %}
-                {{ currentPath }}
                 {% if currentPath == "elasticSearch_keyword" or currentPath=="elasticSearch_keyword_orderby" %}
                     <div class="pagination">
                         {{ simple_paginator_render(
