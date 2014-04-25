@@ -576,7 +576,7 @@ class Entity2DocumentRepository extends EntityRepository
                 //Once we have the entity itself we have to create a dictionary to save with key=field, value=field_value which can be processed to create the string to the mouseover
                 $name=$entity->getName();
                 if($name!=""){
-                    $dictionary["name"]=$name;
+                    $dictionary["name"]="<a href='http://www.chemspider.com/Search.aspx?q=$name' target='_blank'>$name</a>";
                 }
                 $chemIdPlus=$entity->getChemIdPlus();
                 if($chemIdPlus!=""){
@@ -584,31 +584,31 @@ class Entity2DocumentRepository extends EntityRepository
                 }
                 $chebi=$entity->getChebi();
                 if($chebi!=""){
-                    $dictionary["chebi"]=$chebi;
+                    $dictionary["chebi"]="<a href='http://www.ebi.ac.uk/chebi/searchId.do?chebiId=$chebi' target='_blank'>$chebi</a>";;
                 }
                 $inChi=$entity->getInChi();
                 if($inChi!=""){
-                    $dictionary["inChi"]=$inChi;
+                    $dictionary["inChi"]="<a href='http://www.chemspider.com/Search.aspx?q=$inChi' target='_blank'>$inChi</a>";;
                 }
                 $drugBank=$entity->getDrugBank();
                 if($drugBank!=""){
-                    $dictionary["drugBank"]=$drugBank;
+                    $dictionary["drugBank"]="<a href='http://www.drugbank.ca/drugs/$drugBank' target='_blank'>$drugBank</a>";
                 }
                 $humanMetabolome=$entity->getHumanMetabolome();
                 if($humanMetabolome!=""){
-                    $dictionary["humanMetabolome"]=$humanMetabolome;
+                    $dictionary["humanMetabolome"]="<a href='http://www.hmdb.ca/metabolites/$humanMetabolome' target='_blank'>$humanMetabolome</a>";
                 }
                 $keggCompound=$entity->getKeggCompound();
                 if($keggCompound!=""){
-                    $dictionary["keggCompound"]=$keggCompound;
+                    $dictionary["keggCompound"]="<a href='http://www.genome.jp/dbget-bin/www_bget?cpd:$keggCompound' target='_blank'>$keggCompound</a>";
                 }
                 $keggDrug=$entity->getKeggDrug();
                 if($keggDrug!=""){
-                    $dictionary["keggDrug"]=$keggDrug;
+                    $dictionary["keggDrug"]="<a href='http://www.genome.jp/dbget-bin/www_bget?dr:$keggDrug' target='_blank'>$keggDrug</a>";
                 }
                 $mesh=$entity->getMesh();
                 if($mesh!=""){
-                    $dictionary["mesh"]=$mesh;
+                    $dictionary["mesh"]="<a href='http://www.nlm.nih.gov/cgi/mesh/2014/MB_cgi?field=uid&term=$mesh' target='_blank'>$mesh</a>";
                 }
                 $nrDbIds=$entity->getNrDbIds();
                 if($nrDbIds!=""){
@@ -616,7 +616,15 @@ class Entity2DocumentRepository extends EntityRepository
                 }
                 $smile=$entity->getSmile();
                 if($smile!=""){
-                    $dictionary["smile"]=$smile;
+                    $dictionary["smile"]="<form method='post' action='http://www.chemspider.com/WebAPI.aspx'>
+                                            <select name='mode' style='width:210px;display:none'>
+                                                <option value='search'>Search Service</option>
+                                            </select>
+                                            <!--<input type='hidden' name='molfile' />-->
+                                            <textarea name='molfile' cols='50' row='50'>$smile</textarea>
+                                            <input type='submit' value='Search SMILE in ChemSpider' />
+                                        </form>
+                    ";
                 }
             }
         }
@@ -676,7 +684,7 @@ class Entity2DocumentRepository extends EntityRepository
                 }
                 $ncbiTaxId=$entity->getNcbiTaxId();
                 if($ncbiTaxId!=""){
-                    $dictionary["NCBItaxId"]=$ncbiTaxId;
+                    $dictionary["NCBItaxId"]="<a href='http://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=$ncbiTaxId&lvl=0' target='_blank'>$ncbiTaxId</a>";
                 }
                 $specieCategory=$entity->getSpecieCategory();
                 if($specieCategory!=""){
@@ -922,7 +930,7 @@ class Entity2DocumentRepository extends EntityRepository
                     $ncbiTaxId=$firstHitRankingOutput->getTax();
                     $specie=$em->getRepository('EtoxMicromeEntityBundle:Specie')->findOneByNcbiTaxId($ncbiTaxId);
                     $specieName=$specie->getName();
-                    $dictionary['Specie/TaxId']="$specieName/$ncbiTaxId";
+                    $dictionary['Specie/TaxId']="$specieName/<a href='http://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=$ncbiTaxId&lvl=0' target='_blank'>$ncbiTaxId</a>";
                     $accession=$firstHitRankingOutput->getEntityId();
                     $dictionary['Uniprot accession']="<a href=\"http://www.uniprot.org/uniprot/$accession\" target=\"_blank\">$accession</a>";
                     if($warning){
