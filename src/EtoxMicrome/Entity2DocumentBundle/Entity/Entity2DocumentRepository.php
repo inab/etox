@@ -616,7 +616,7 @@ class Entity2DocumentRepository extends EntityRepository
                 }
                 $smile=$entity->getSmile();
                 if($smile!=""){
-                    $dictionary["smile"]="<form method='post' action='http://www.chemspider.com/WebAPI.aspx'>
+                    $dictionary["smile"]="<form method='post' action='http://www.chemspider.com/WebAPI.aspx' target='_blank'>
                                             <select name='mode' style='width:210px;display:none'>
                                                 <option value='search'>Search Service</option>
                                             </select>
