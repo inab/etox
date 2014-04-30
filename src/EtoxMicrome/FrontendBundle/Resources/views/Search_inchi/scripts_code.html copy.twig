@@ -1,0 +1,164 @@
+{% block javascripts_footer %}
+    <script>
+        $(".bigSearch").click(function() {
+            //We setup the url to search for. We need field(hepatotoxicity, other), WhatToSearch(name, id, structure, canonical...), entityType (Compound, Cyp, Marker...etc) and entityName
+            //Getting field:
+            var field = ($('#searchby').find(":selected").text()).toLowerCase();
+            if (field==""){
+                alert("Please select what is the field of your search in the \"Search by\" select box");
+                return false;
+            }
+            if(field=="select one"){
+                field="hepatotoxicity";
+            }
+            var entityType=$('.tabs dd.active a').attr('name');
+            //Getting whatToSearch and entityName depends on entityType:
+            switch(entityType){
+                case "keyword":
+                    whatToSearch = $('input[name=keywordWhatToSearch]:checked').val();
+                    entityName = $('#tags-keywords').val();
+                    source=$('input[name=keywordSource]:checked').val();
+                    if(source==""){
+                        alert("You have to check a source to continue");
+                        return false;
+                    }
+                    if (entityName==""){
+                        alert("Please type the entity to search for");
+                        return false;
+                    }
+                    else{
+                        link="{{ path('search_interface_search') }}"+"keyword"+"/"+whatToSearch+"/"+source+"/"+entityName+"/";
+                        $('.bigSearch').attr('href',link);
+                    }
+                    break;
+                case "compound":
+                case "compoundDict":
+                    whatToSearch=$('input[name=compoundWhatToSearch]:checked').val();
+                    entityName = $('#tags-compounds').val();
+                    source=$('input[name=compoundSource]:checked').val();
+                    if(entityName==""){
+                        alert("You have to type a Compound name, id or structure to continue");
+                        return false;
+                    }
+                    if(source==""){
+                        alert("You have to check a source to continue");
+                        return false;
+                    }
+                    link='{{ path('search_interface_search') }}'+field+'/'+whatToSearch+'/'+entityType+'/'+source+'/'+entityName+'/';
+                    $('.bigSearch').attr('href',link);
+                    break;
+                case "cytochrome":
+                    whatToSearch=$('input[name=cytochromeWhatToSearch]:checked').val();
+                    entityName = $('#tags-cytochromes').val();
+                    source=$('input[name=cytochromeSource]:checked').val();
+                    if(entityName==""){
+                        alert("You have to type a Cytochrome name, id or canonical to continue");
+                        return false;
+                    }
+                    if(source==""){
+                        alert("You have to check a source to continue");
+                        return false;
+                    }
+                    $('.bigSearch').attr('href','{{ path('search_interface_search') }}'+field+'/'+whatToSearch+'/'+entityType+'/'+source+'/'+entityName+'/');
+                    break;
+                case "marker":
+                    whatToSearch=$('input[name=markerWhatToSearch]:checked').val();
+                    entityName = $('#tags-markers').val();
+                    source=$('input[name=markerSource]:checked').val();
+                    if(entityName==""){
+                        alert("You have to type a Marker name, id or structure to continue");
+                        return false;
+                    }
+                    if(source==""){
+                        alert("You have to check a source to continue");
+                        return false;
+                    }
+                    $('.bigSearch').attr('href','{{ path('search_interface_search') }}'+field+'/'+whatToSearch+'/'+entityType+'/'+source+'/'+entityName+'/');
+                    break;
+            }
+
+            //Once we have all the parameters required for the search, we generate the route
+
+
+        });
+
+        $("#jumpToAbstracts").click(function(e) {
+            e.preventDefault();
+            $('#documentsResults').slideToggle();
+            $('#abstractsResults').slideToggle();
+
+        });
+        $("#jumpToDocuments").click(function(e) {
+            e.preventDefault();
+            $('#abstractsResults').slideToggle();
+            $('#documentsResults').slideToggle();
+        });
+
+        function curateEntity2Document(sfAction, entity2DocumentId, action){
+            idTrigger=action+"-"+entity2DocumentId;
+            $.ajax(
+              {
+                url: sfAction,
+                dataType: "json",
+                beforeSend: function()
+                {
+                    //$('#free-curation-'+entity2DocumentId).remove();
+                    //newText=$("<span class='loading_data'> Loading data...</span>");
+                    //$("#"+idTrigger).append(newText);
+                },
+                complete: function()
+                {
+                    //newText.remove();
+                    //$("#"+idTrigger).append(newText);
+                },
+                success: function (data, status)
+                {
+                    //We genereate a string with the new curation html code to insert
+                    newCurationHtml= data["htmlCuration"];
+                    $("#free-curation-"+entity2DocumentId).html(newCurationHtml);
+
+
+                },
+                error: function (data, status, e)
+                {
+                    alert('Something happened loading requested data:.\n'+data.error);
+                }
+            }
+            );
+        }
+
+        function curateEntity2Abstract(sfAction, entity2AbstractId, action){
+            idTrigger=action+"-"+entity2AbstractId;
+            $.ajax(
+              {
+                url: sfAction,
+                dataType: "json",
+                beforeSend: function()
+                {
+                    //$('#free-curation-'+entity2AbstractId).remove();
+                    //newText=$("<span class='loading_data'> Loading data...</span>");
+                    //$("#"+idTrigger).append(newText);
+                },
+                complete: function()
+                {
+                    //newText.remove();
+                    //$("#"+idTrigger).append(newText);
+                },
+                success: function (data, status)
+                {
+                    //We genereate a string with the new curation html code to insert
+                    newCurationHtml= data["htmlCuration"];
+                    $("#free-curation-"+entity2AbstractId).html(newCurationHtml);
+
+
+                },
+                error: function (data, status, e)
+                {
+                    alert('Something happened loading requested data:.\n'+data.error);
+                }
+            }
+            );
+        }
+
+    </script>
+{% endblock %}

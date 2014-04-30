@@ -71,6 +71,15 @@ search_interface_search:
     pattern: /search/
     defaults: { _controller: FrontendBundle:Search:search}
 
+search_interface_inChi:
+    pattern: /search/inChi/
+    defaults: { _controller: FrontendBundle:Search:searchInchi}
+
+search_interface_inChi_orderby:
+    pattern: /search/inChi/{orderBy}/
+    defaults: { _controller: FrontendBundle:Search:searchInchi}
+
+
 elasticSearch_keyword:
     pattern: /search/keyword/{whatToSearch}/{source}/{keyword}/
     defaults: { _controller: FrontendBundle:Search:searchKeyword}
@@ -152,3 +161,19 @@ ajax_cytochrome2document_curation:
 ajax_marker2document_curation:
     pattern: /curate/marker2document/{marker2Document}/{action}/
     defaults: { _controller: EtoxMicromeEntity2DocumentBundle:Curation:addCurationMarker2Document}
+
+compound_list_summaries:
+    pattern: /compound_list_summary/{id}/
+    defaults: { _controller: EtoxMicromeEntityBundle:Summaries:showSummary}
+
+compound_list_summaries_initial:
+    pattern: /compound_list_summary/{id}/{initial}/
+    defaults: { _controller: EtoxMicromeEntityBundle:Summaries:showSummaryInitial}
+
+cytochrome_list_summaries:
+    pattern: /cytochrome_list_summary/
+    defaults: { _controller: EtoxMicromeEntityBundle:Summaries:showCytochromeSummary}
+
+cytochrome_list_summaries_initial:
+    pattern: /cytochrome_list_summary/{initial}/{orderBy}/
+    defaults: { _controller: EtoxMicromeEntityBundle:Summaries:showCytochromeSummaryInitial}

@@ -1,0 +1,73 @@
+{% extends '::frontend.html.twig' %}
+{% block title %}Compound List Summary {% endblock %}
+{% block article %}
+    <div class="wrapper">
+        <h1>Compounds list summary</h1>
+        <div class="alphabet">
+            <a class="first" href="{{ path('cytochrome_list_summaries_initial',{'initial':'a', 'orderBy': 'name'}) }}" >A</a>
+            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'b', 'orderBy': 'name'}) }}" >B</a>
+            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'c', 'orderBy': 'name'}) }}" >C</a>
+            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'d', 'orderBy': 'name'}) }}" >D</a>
+            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'e', 'orderBy': 'name'}) }}" >E</a>
+            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'f', 'orderBy': 'name'}) }}" >F</a>
+            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'g', 'orderBy': 'name'}) }}" >G</a>
+            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'h', 'orderBy': 'name'}) }}" >H</a>
+            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'i', 'orderBy': 'name'}) }}" >I</a>
+            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'j', 'orderBy': 'name'}) }}" >J</a>
+            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'k', 'orderBy': 'name'}) }}" >K</a>
+            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'l', 'orderBy': 'name'}) }}" >L</a>
+            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'m', 'orderBy': 'name'}) }}" >M</a>
+            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'n', 'orderBy': 'name'}) }}" >N</a>
+            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'o', 'orderBy': 'name'}) }}" >O</a>
+            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'p', 'orderBy': 'name'}) }}" >P</a>
+            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'q', 'orderBy': 'name'}) }}" >Q</a>
+            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'r', 'orderBy': 'name'}) }}" >R</a>
+            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'s', 'orderBy': 'name'}) }}" >S</a>
+            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'t', 'orderBy': 'name'}) }}" >T</a>
+            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'u', 'orderBy': 'name'}) }}" >U</a>
+            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'v', 'orderBy': 'name'}) }}" >V</a>
+            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'w', 'orderBy': 'name'}) }}" >W</a>
+            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'x', 'orderBy': 'name'}) }}" >X</a>
+            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'y', 'orderBy': 'name'}) }}" >Y</a>
+            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'z', 'orderBy': 'name'}) }}" >Z</a>
+            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'0', 'orderBy': 'name'}) }}" >0-9</a>
+            <a class="last" href="{{ path('cytochrome_list_summaries_initial',{'initial':'-', 'orderBy': 'name'}) }}" >+-</a>
+        </div>
+        Total number of CYPs: {{ total_number_of_cytochromes }}<br/>
+        Total number of CYPs starting by '{{ initial }}/{{ initial | upper }}': {{ numberOfCytochromes }}
+        <div id="compounds">
+            <table id="compounds-table">
+                <thead>
+                    <tr>
+                        <th><a href="{{ path('cytochrome_list_summaries_initial',{'initial': initial, 'orderBy': 'name'}) }}" >Cytochrome Name</a></th>
+                        <th><a href="{{ path('cytochrome_list_summaries_initial',{'initial': initial, 'orderBy': 'canonical'}) }}" >Canonical Name</a></th>
+                        <th><a href="{{ path('cytochrome_list_summaries_initial',{'initial': initial, 'orderBy': 'entityId'}) }}" >Uniprot id</a></th>
+                        <th><a href="{{ path('cytochrome_list_summaries_initial',{'initial': initial, 'orderBy': 'tax'}) }}" >Tax id</a></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cytochrome in arrayCytochromes %}
+                    <tr>
+                        <td>{{ cytochrome.getName }}</td>
+                        <td>{{ cytochrome.getCanonical }}</td>
+                        <td>{{ cytochrome.getEntityId }}</td>
+                        <td>{{ cytochrome.getTax }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="pagination">
+            {{ simple_paginator_render(
+                'cytochrome_list_summaries_initial', 'cytochromes',
+                    {
+                        'routeParams' : {'initial' : initial, 'orderBy' : 'name'},
+                        'container_class' : 'pagination'
+                    }
+                )
+            }}
+        </div>
+    </div>
+
+    {% include 'FrontendBundle:Search_document:scripts_code.html.twig' %}
+{% endblock %}

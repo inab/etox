@@ -1,0 +1,488 @@
+{% extends '::frontend.html.twig' %}
+{% block title %}Listing Evidences {% endblock %}
+{% block article %}
+    {% include 'FrontendBundle:Search_document:tags_code.html.twig' %}
+    <div id="evidences">
+        {% set entityName=entity.getName %}
+        <!-- <a href="{{ path('export_abstracts',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'entityName': entityName, 'download': true}) }}">(Generate a file with results)</a>  -->
+        {% set tooltipCounter=1 %}
+        {% set stringStickyTooltip = "" %}
+        {% set foundFor=entityType %}
+        {% if foundFor=="CompoundDict" %}
+            {% set foundFor="Compound" %}
+        {% endif %}
+        {% if orderBy is not defined %}
+            {% set orderBy = default_orderby %}
+        {% endif %}
+        {% set entityId = entity.getId %}
+        {% if arrayEntity2Document is defined %}
+            <div class="results-summary">
+                    {% set totalHits = arrayTotalMaxMin[0] %}
+                    {% if entityType=="CompoundDict" or entityType=="Marker"%}
+                        {% set scoreToShow = "Score" %}
+                    {% elseif entityType=="Cytochrome" %}
+                        {% set scoreToShow = orderBy | getScoreToShowRelations %}
+                    {% endif %}
+                    {% set maxScore= arrayTotalMaxMin[1] %}
+                    {% set minScore= arrayTotalMaxMin[2] %}
+                    {% set order =  orderBy | getOrderToSource %}
+                    <table>
+                        <tr>
+                            <td><strong>Total of mentions displayed:</strong> {{ totalHits }}</td>
+                            <td><strong>Max. {{scoreToShow}}:</strong> {{ maxScore |number_format(2) }}</td>
+                            <td><strong>Minim. {{scoreToShow}}:</strong> {{ minScore |number_format(2) }}</td>
+                            <td><strong>{{scoreToShow}} mean:</strong> {{ meanScore | number_format(2) }}</td>
+                            <td><strong>{{scoreToShow}} median:</strong> {{ medianScore | number_format(2) }}</td>
+                        </tr>
+                    </table>
+                </div>
+            <div class="clear-both"></div>
+            <div id="documentsResults">
+                <a name="documents"></a>
+                {% if entityType in ["Cytochrome", "Marker"] %}
+                {% else %}
+                    {% if arrayEntity2Abstract is defined %}
+                        <div class="jumpToDocuments">
+                            <a href="#" id="jumpToAbstracts">(View abstracts)</a>
+                        </div>
+                    {% endif %}
+                {% endif %}
+
+                {% if entityType == "CompoundDict" %}
+                    {% set mentioning="compound-toxicity term" %}
+                {% elseif entityType =="Cytochrome" %}
+                    {% set mentioning="compound-CYPs" %}
+                {% elseif entityType =="Marker" %}
+                    {% set mentioning="compound-liver marker" %}
+                {% endif %}
+
+
+                <h3>Ranked sentences in Documents for {{foundFor}}: <span class="underline">{{ entityBackup }}</span> search in sentences with {{ mentioning }} relations</h3>
+                <div class="btmspc-dbl">
+                    <small>
+                        <em>
+                            Entity mentions are highlighted as follows:
+                            <mark class="termSearched">What you searched</mark>, <mark class="compound">Compounds</mark>, <mark class="cytochrome">Cytochromes</mark>, <mark class="marker">Markers</mark>, <mark class="term">Terms</mark>, <mark class="specie">Species</mark>
+                        </em>
+                        . Curated evidences are indicated by:
+                        <a class="curated" href="#"> </a>
+                    </small>
+                </div>
+                <table id="tableResults" class="tablesorter">
+                    <thead>
+                        <th><span data-tooltip class="has-tip" title="{{ mouseover_source}}">Source</span></th>
+
+                        {% if entityType=="CompoundDict" %}
+                            <th>
+                                <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'compoundName'}) }}" {% if orderBy == "compoundName"%} class="active"{% endif %}
+                                ><span data-tooltip class="has-tip" title="{{ mouseover_compound_relation_compound}}">Compound</span>
+                                </a>
+                            </th>
+                            <th>
+                                <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'relationType'}) }}" {% if orderBy == "relationType"%} class="active"{% endif %}
+                                ><span data-tooltip class="has-tip" title="{{ mouseover_compound_relation_relation}}">Relation</span>
+                                </a>
+                            </th>
+                            <th>
+                                <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'term'}) }}" {% if orderBy == "term"%} class="active"{% endif %}
+                                ><span data-tooltip class="has-tip" title="{{ mouseover_compound_relation_term}}">Term</span>
+                                </a>
+                            </th>
+                            <th>
+                                <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'relationScore'}) }}" {% if orderBy == "relationScore"%} class="active"{% endif %}
+                                ><span data-tooltip class="has-tip" title="{{ mouseover_compound_relation_score}}">Score</span>
+                                </a>
+                            </th>
+                        {% endif %}
+                        {% if entityType=="Cytochrome" %}
+                            <th>
+                                <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'compoundName'}) }}" {% if orderBy == "compoundName"%} class="active"{% endif %}
+                                ><span data-tooltip class="has-tip" title="{{ mouseover_cytochrome_relation_compound }}">Compound</span>
+                                </a>
+                            </th>
+                            <th>
+                                <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'patternRelation'}) }}" {% if orderBy == "patternRelation"%} class="active"{% endif %}
+                                ><span data-tooltip class="has-tip" title="{{ mouseover_cytochrome_relation_relation}}">Relation</span>
+                                </a>
+                            </th>
+                            <th>
+                                <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'cypsMention'}) }}" {% if orderBy == "cypsMention"%} class="active"{% endif %}
+                                ><span data-tooltip class="has-tip" title="{{ mouseover_cytochrome_relation_cytochrome}}">CYP</span>
+                                </a>
+                            </th>
+                            <th>
+                                <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'inductionScore'}) }}" {% if orderBy == "inductionScore"%} class="active"{% endif %}
+                                ><span data-tooltip class="has-tip" title="{{ mouseover_cytochrome_relation_induction}}">Induct.</span>
+                                </a>
+                            </th>
+                            <th>
+                                <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'inhibitionScore'}) }}" {% if orderBy == "inhibitionScore"%} class="active"{% endif %}
+                                ><span data-tooltip class="has-tip" title="{{ mouseover_cytochrome_relation_inhibition}}">Inhib.</span>
+                                </a>
+                            </th>
+                            <th>
+                                <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'metabolismScore'}) }}" {% if orderBy == "metabolismScore"%} class="active"{% endif %}
+                                ><span data-tooltip class="has-tip" title="{{ mouseover_cytochrome_relation_metabolism}}">Metab.</span>
+                                </a>
+                            </th>
+                        {% endif %}
+                         {% if entityType=="Marker" %}
+                            <th>
+                                <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'compoundName'}) }}" {% if orderBy == "compoundName"%} class="active"{% endif %}
+                                ><span data-tooltip class="has-tip" title="{{ mouseover_marker_relation_compound}}">Compound</span>
+                                </a>
+                            </th>
+                            <th>
+                                <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'relationType'}) }}" {% if orderBy == "relationType"%} class="active"{% endif %}
+                                ><span data-tooltip class="has-tip" title="{{ mouseover_marker_relation_relation}}">Relation</span>
+                                </a>
+                            </th>
+                            <th>
+                                <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'liverMarkerName'}) }}" {% if orderBy == "liverMarkerName"%} class="active"{% endif %}
+                                ><span data-tooltip class="has-tip" title="{{ mouseover_marker_relation_marker}}">Marker</span>
+                                </a>
+                            </th>
+                            <th>
+                                <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'relationScore'}) }}" {% if orderBy == "relationScore"%} class="active"{% endif %}
+                                ><span data-tooltip class="has-tip" title="{{ mouseover_marker_relation_score}}">Score</span>
+                                </a>
+                            </th>
+                        {% endif %}
+                        <th>Sentence</th>
+                        <th>
+                            <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'relationQualifier'}) }}" {% if orderBy == "relationScore"%} class="active"{% endif %}
+                            >{% if entityType=="CompoundDict" %}
+                                <span data-tooltip class="has-tip" title="{{ mouseover_compound_relation_qualifier}}">Qualifier</span>
+                            {%elseif entityType=="Cytochrome"%}
+                                <span data-tooltip class="has-tip" title="{{ mouseover_cytochrome_relation_qualifier}}">Qualifier</span>
+                            {%elseif entityType=="Marker"%}
+                                <span data-tooltip class="has-tip" title="{{ mouseover_marker_relation_qualifier}}">Qualifier</span>
+                            {% endif %}
+                            </a>
+                        </th>
+                        <th>
+                            <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'curation'}) }}" {% if orderBy == "curation"%} class="active"{% endif %}
+                            ><span data-tooltip class="has-tip" title="{{ mouseover_relation_curation}}">Curation
+                            </a>
+                        </th>
+                    </thead>
+                    <tbody>
+                        {% set contador = 1 %}
+                        {% for entity2Document in arrayEntity2Document %}
+                            <tr class="document {{ cycle(['odd', 'even'], contador) }}">
+                                {% set contador = contador + 1 %}
+                                {% set kind = entity2Document.document.getKind %}
+                                {% set compoundName = entity2Document.compoundName %}
+                                {% if entityType=="CompoundDict" %}
+                                    {% set term = entity2Document.term %}
+                                    {% set relationType = entity2Document.relationType %}
+                                    {% if relationType=="UP" %}
+                                        {% set relationType = "INCREASE" %}
+                                    {% elseif relationType=="DOWN" %}
+                                        {% set relationType = "DECREASE" %}
+                                    {% endif %}
+                                    {% set relationScore = entity2Document.relationScore %}
+                                    {% set relationScore = relationScore|number_format(2) %}
+                                    {% set relationQualifier = entity2Document.relationQualifier %}
+                                    {% set curation=entity2Document.getCuration %}
+                                    {% if curation is empty %}
+                                        {% set curation=0 %}
+                                    {% endif %}
+                                    {% set className = entity2Document.getClassName %}
+                                    {% set curationHtml= curation | setCurationHtml(entity2Document.getId(), entityType, className) %}
+                                {% set relationEvidence = entity2Document.relationEvidence %}
+                                {%endif%}
+                                {% if entityType=="Cytochrome" %}
+                                    {% set term = entity2Document.cypsMention %}
+                                {%endif%}
+                                {% if entityType=="Marker" %}
+                                    {% set term = entity2Document.liverMarkerName %}
+                                    {% set relationType = entity2Document.relationType %}
+                                    {% if relationType=="UP" %}
+                                        {% set relationType = "INCREASE" %}
+                                    {% elseif relationType=="DOWN" %}
+                                        {% set relationType = "DECREASE" %}
+                                    {% endif %}
+                                    {% set relationScore = entity2Document.relationScore %}
+                                    {% set relationScore = relationScore|number_format(2) %}
+                                    {% set relationQualifier = entity2Document.relationQualifier %}
+                                    {% set relationEvidence = entity2Document.relationEvidence %}
+                                    {% set curation=entity2Document.getCuration %}
+                                    {% if curation is empty %}
+                                        {% set curation=0 %}
+                                    {% endif %}
+                                    {% set className = entity2Document.getClassName %}
+                                    {% set curationHtml= curation | setCurationHtml(entity2Document.getId(), entityType, className) %}
+                                {%endif%}
+
+                                {% if entityType=="Cytochrome" %}
+                                    {% set inductionScore = entity2Document.inductionScore %}
+                                    {% set inhibitionScore = entity2Document.inhibitionScore %}
+                                    {% set metabolismScore = entity2Document.metabolismScore %}
+                                    {% set patternRelation = entity2Document.patternRelation %}
+                                    {% set relationQualifier = entity2Document.relationQualifier %}
+                                    {% set relationEvidence = entity2Document.patternEvidence %}
+                                    {% set cypsMention = entity2Document.cypsMention %}
+                                    {% set curation=entity2Document.getCuration %}
+                                    {% if curation is empty %}
+                                        {% set curation=0 %}
+                                    {% endif %}
+                                    {% set className = entity2Document.getClassName %}
+                                    {% set curationHtml= curation | setCurationHtml(entity2Document.getId(), entityType, className) %}
+                                {%endif%}
+                                <td>
+                                {% if kind == "pubmed" %}
+                                    {% set pmid=entity2Document.document.getUid %}
+                                    {% set link="http://www.ncbi.nlm.nih.gov/pubmed/" ~ pmid %}
+                                    {% set imageRoute = 'images/pubmed.png' %}
+                                    {% set sid=entity2Document.document.getSentenceId %}
+                                    <span data-tooltip='sticky{{ tooltipCounter }}'>
+                                            <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/></a>
+                                        </span>
+                                    {% set tooltip =  "<div id='sticky"~tooltipCounter~"' class='atip' >Pubmed link: <a href='"~link ~"'>"~link~"</a><br>Pubmed Id: "~ pmid ~"<br/>Sentence Id: "~ sid ~"<br/></div>" %}
+                                    {% set tooltipCounter = tooltipCounter + 1 %}
+                                    {% set stringStickyTooltip = stringStickyTooltip ~ tooltip  %}
+
+                                {% elseif kind == "fulltext" %}
+                                    {% set pmid=entity2Document.document.getUid %}
+                                    {% set arrayPmid = pmid|split('_') %}
+                                    {% set pmidCut = arrayPmid[1] %}
+                                    {% set link="http://www.ncbi.nlm.nih.gov/pubmed/" ~ pmidCut %}
+                                    {% set imageRoute = 'images/fulltext.png' %}
+                                        <span data-tooltip='sticky{{ tooltipCounter }}'>
+                                            <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/></a>
+                                        </span>
+                                    {% set tooltip =  "<div id='sticky"~tooltipCounter~"' class='atip' >Pubmed link: <a href='"~link ~"'>"~link~"</a><br>Pubmed Id: "~ pmidCut ~"</div>" %}
+                                    {% set tooltipCounter = tooltipCounter + 1 %}
+                                    {% set stringStickyTooltip = stringStickyTooltip ~ tooltip  %}
+                                {% elseif kind == "nda" %}
+                                    {% set link="http://www.accessdata.fda.gov/scripts/cder/drugsatfda/index.cfm" %}
+                                    {% set imageRoute = 'images/nda.png' %}
+                                    <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/ alt="FDA New Drug Approvals (NDAs)" title="FDA New Drug Approvals (NDAs)"></a>
+                                {% elseif kind == "epar" %}
+                                    {% set link="www.ema.europa.eu/ema/index.jsp?curl=pages/medicines/landing/epar_search.jsp" %}
+                                    {% set imageRoute = 'images/epar.png' %}
+                                     <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/ alt="European Public Assessment Reports (EPARs)" title="European Public Assessment Reports (EPARs)"></a>
+                                {% endif %}
+                                </td>
+                                <td class="center">
+                                    {{ compoundName }}
+                                </td>
+                                 {% if entityType=="CompoundDict" or entityType=="Marker" %}
+                                    <td class="center">
+                                        {{ relationType }}
+                                    </td>
+                                    <td class="center">
+                                        {{ term }}
+                                    </td>
+                                    <td class="center">
+                                        {{ relationScore }}
+                                    </td>
+                                 {% endif %}
+
+                                {% if entityType=="Cytochrome" %}
+                                    <td class="center">
+                                        {{ patternRelation }}
+                                    </td>
+                                    <td class="center">
+                                        {{ cypsMention }}
+                                    </td>
+                                    <td class="center">
+                                        {{ inductionScore | raw }}
+                                    </td>
+                                    <td class="center">
+                                        {{ inhibitionScore | raw }}
+                                    </td>
+                                    <td class="center">
+                                        {{ metabolismScore | raw }}
+                                    </td>
+
+                                {% endif %}
+
+                                {% set text=entity2Document.document.getText %}
+                                {% if firstRelation is defined %}
+                                    {% if firstRelation=="HepatotoxKeyword"%}
+                                        {% set arrayText= text | highlightEntitiesDocuments (entity2Document.document,entityBackup,field,whatToSearch, source, "HepatotoxKeyword", tooltipCounter) %}
+                                    {% endif %}
+                                    {% if firstRelation=="CompoundDict"%}
+                                        {% set arrayText= text | highlightEntitiesDocuments (entity2Document.document,entityBackup,field,whatToSearch, source, "CompoundDict", tooltipCounter) %}
+                                    {% endif %}
+                                {% else %}
+                                    {% set arrayText= text | highlightEntitiesDocuments (entity2Document.document,entityBackup,field,whatToSearch, source, entityType, tooltipCounter) %}
+                                {% endif %}
+                                {% set text = arrayText[0] | raw %}
+                                {% set stringStickyTooltip = stringStickyTooltip ~ arrayText[1] %}
+                                {% set tooltipCounter = arrayText[2] %}
+                                <td>
+                                    {% if kind in ['fulltext','epar','nda'] %}
+                                        "{{ text | raw }}"
+                                    {% else %}
+                                        {{ text | raw }}
+                                    {% endif %}
+                                    <br/>
+                                        <small>
+                                            [Rel. evidence: {{ relationEvidence }}]
+
+                                        </small>
+                                </td>
+                                <td class="center">
+                                    {{ relationQualifier }}
+                                </td>
+                                <td class="center">
+                                    <div id="free-curation-{{ entity2Document.getId }}">
+                                        <small>
+                                        {{ curationHtml | raw }}<br/>{{ curation }}
+                                        </small>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+
+                <!-- here pagination block for Documents -->
+               <div class="pagination">
+                    {{ simple_paginator_render(
+                        'search_interface_search_field_whatToSearch_entityType_source_entity_orderby', 'documents',
+                            {
+                                'routeParams' : {'field' : field, 'whatToSearch' : whatToSearch, 'entityType' : entityType, 'source' : source, 'entityName' : entityBackup, 'orderBy' : orderBy},
+                                'container_class' : 'pagination'
+                            }
+                        )
+                    }}
+                </div>
+            </div>
+        {% endif %}
+        {% if arrayEntity2Abstract is defined %}
+            Entra!!!!
+            <div id="abstractsResults">
+                <a name="abstracts"></a>
+                {% if arrayEntity2Document is defined %}
+                    <div class="jumpToDocuments">
+                        <a href="#documents" id="jumpToDocuments">(View sentences)</a>
+                    </div>
+                {% endif %}
+                <h3>Ranked Abstracts for {{foundFor}}: <span class="underline">{{ entityBackup }}</span> search</h3>
+                <div class="btmspc-dbl">
+                    <small>
+                        <em>
+                            Entity mentions are highlighted as follows:
+                            <mark class="termSearched">What you searched</mark>, <mark class="compound">Compounds</mark>, <mark class="cytochrome">CYPs</mark>, <mark class="marker">Markers</mark>, <mark class="keyword">Keywords</mark>, <mark class="specie">Species</mark>
+                        </em>
+                        . Curated evidences are indicated by:
+                        <a class="curated" href="#"> </a>
+                    </small>
+                </div>
+
+                <table id="tableResults" class="tablesorter">
+                    <thead>
+                        <th><span data-tooltip class="has-tip" title="{{ mouseover_source}}">Source</span></th>
+                        <th>
+                            <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'score'}) }}" {% if orderBy == "score"%} class="active"{% endif %}
+                            >SVM
+                            </a>
+                        </th>
+                        <th>
+                            <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'svmConfidence'}) }}"  {% if orderBy == "svmConfidence"%} class="active"{% endif %}
+                            >Conf.</a>
+                        </th>
+                        <th>
+                            <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'pattern'}) }}" {% if orderBy == "pattern"%} class="active"{% endif %}
+                            >Pattern
+                            </a>
+                        </th>
+                        <th>
+                            <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'term'}) }}"  {% if orderBy == "term"%} class="active"{% endif %}
+                            >Term</a>
+                        </th>
+                        <th>
+                            <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'rule'}) }}"  {% if orderBy == "rule"%} class="active"{% endif %}
+                            >Rule</a>
+                        </th>
+
+                        <th>Sentence</th>
+                    </thead>
+                    <tbody>
+                        {% set contador = 1 %}
+                        {% for entity2Abstract in arrayEntity2Abstract %}
+                            <tr class="document {{ cycle(['odd', 'even'], contador) }}">
+                                {% set contador = contador + 1 %}
+                                {% set pmid=entity2Abstract.abstracts.getPmid %}
+                                {% set link="http://www.ncbi.nlm.nih.gov/pubmed/" ~ pmid %}
+                                {% set imageRoute = 'images/pubmed.png' %}
+                                {% set tooltip =  "<div id='sticky"~tooltipCounter~"' class='atip' >Pubmed link: <a href='"~link ~"'>"~link~"</a><br>Pubmed Id: "~ pmid ~"</div>" %}
+
+                                {% set stringStickyTooltip = stringStickyTooltip ~ tooltip  %}
+                                {% set score = entity2Abstract.abstracts.getHepval %}
+                                {% set score = score|number_format(2) %}
+                                {% set score = score|colorCodingScore %}
+                                {% set patternCount = entity2Abstract.abstracts.getPatternCount %}
+                                {% set patternCount = patternCount|colorCodingScore %}
+                                {% set ruleScore = entity2Abstract.abstracts.getRuleScore %}
+                                {# set ruleScore = ruleScore|number_format(2) #}
+                                {% set ruleScore = ruleScore|colorCodingScore %}
+                                {% set termScore = entity2Abstract.abstracts.getHepTermVarScore %}
+                                {% set termScore = termScore|colorCodingScore %}
+                                {% set svmConfidence = entity2Abstract.abstracts.getSvmConfidence %}
+                                {% set svmConfidence = svmConfidence|number_format(3) %}
+                                {% set svmConfidence = svmConfidence|colorCodingScore %}
+                                <td>
+                                    <span data-tooltip='sticky{{ tooltipCounter }}'>
+                                        <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/></a>
+                                    </span>
+                                </td>
+                                {% set tooltipCounter = tooltipCounter + 1 %}
+                                <td class="center">
+                                    {{ score |raw }}
+                                </td>
+                                <td class="center">
+                                    {{ svmConfidence |raw }}
+                                </td>
+                                <td class="center">
+                                    {{ patternCount | raw }}
+                                </td>
+                                <td class="center">
+                                    {{ termScore |raw }}
+                                </td>
+                                <td class="center">
+                                    {{ ruleScore |raw }}
+                                </td>
+                                 {% set text = entity2Abstract.abstracts.getText %}
+                                 {% set arrayText= text | highlightEntitiesAbstracts (entity2Abstract.abstracts,entityBackup,field,whatToSearch, source, entityType, tooltipCounter) %}
+                                {% set text = arrayText[0] | raw %}
+                                {% set stringStickyTooltip = stringStickyTooltip ~ arrayText[1] %}
+                                {% set tooltipCounter = arrayText[2] %}
+                                <td>
+                                    {{ text| raw }}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+
+                <!-- here pagination block for Abstracts -->
+
+               <div class="pagination">
+                    {{ simple_paginator_render(
+                        'search_interface_search_field_whatToSearch_entityType_source_entity', 'abstracts',
+                            {
+                                'routeParams' : {'field' : field, 'whatToSearch' : whatToSearch, 'entityType' : entityType, 'source' : source, 'entityName' : entityBackup},
+                                'container_class' : 'pagination'
+                            }
+                        )
+                    }}
+                </div>
+            </div>
+        {% endif %}
+        {# Here we rebuild the stringStickyTooltip inside its container divs #}
+        <div id="mystickytooltip" class="stickytooltip">
+            <div style="padding:5px">
+                {{ stringStickyTooltip | raw }}
+            </div>
+            <div class="stickystatus"></div>
+        </div>
+
+    {% include 'FrontendBundle:Search_document:scripts_code.html.twig' %}
+{% endblock %}

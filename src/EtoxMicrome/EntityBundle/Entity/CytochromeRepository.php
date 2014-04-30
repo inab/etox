@@ -159,6 +159,7 @@ class CytochromeRepository extends EntityRepository
         $entity=$cytochrome[0];
         return $entity;
     }
+
     public function taxIdIsInArray($ncbiTaxId, $arraycytochromes){
         $isInArray=false;
         foreach($arraycytochromes as $cytochrome){
@@ -167,5 +168,29 @@ class CytochromeRepository extends EntityRepository
             }
         }
         return $isInArray;
+    }
+
+    public function getCytochromeSummary($initial, $orderBy)
+    {
+        $message="Here";
+        if($initial=="0"){
+
+        }elseif($initial=="-"){
+
+        }else{
+            $initialUpper=strtoupper($initial);
+            $query = $this->_em->createQuery("
+                SELECT c
+                FROM EtoxMicromeEntityBundle:Cytochrome c
+                WHERE c.name like  :initial
+                OR c.name like  :initialUpper
+                ORDER BY c.$orderBy
+            ");
+            $query->setParameter("initial", $initial."%");
+            $query->setParameter("initialUpper", $initialUpper."%");
+        }
+
+        $arrayCytochromes=$query->getResult();
+        return $arrayCytochromes;
     }
 }

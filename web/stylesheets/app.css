@@ -524,7 +524,7 @@ img.outlinkLogo{
     vertical-align: bottom;
 }
 .atip{
-    max-width: 400px;
+    max-width: 500px;
 }
 /* -----------------------------------------
     Content
@@ -714,4 +714,81 @@ input.datepicker {
     padding: 0.5em;
     transition: all 0.15s linear 0s;
     width: 153px;
+}
+
+
+/* -----------------------------------------
+    Entity summaries
+----------------------------------------- */
+
+.wrapper
+{
+    width: 680px;
+    margin: 0 auto;
+}
+
+    .wrapper h1
+    {
+        color: #555;
+        text-align: center;
+        text-shadow: rgba(0, 0, 0, 0.15) 0px 0px 1px;
+        letter-spacing: 2px;
+    }
+
+#compounds
+{
+    width: 650px;
+}
+
+.alphabet
+{
+    margin: 0 0 10px;
+    overflow: hidden;
+}
+
+    .alphabet a, #compounds-table tr
+    {
+        transition: background-color 0.3s ease-in-out;
+        -moz-transition: background-color 0.3s ease-in-out;
+        -webkit-transition: background-color 0.3s ease-in-out;
+    }
+
+    .alphabet a
+    {
+        width: 20px;
+        float: left;
+        color: #333;
+        cursor: pointer;
+        height: 20px;
+        border: 1px solid #CCC;
+        display: block;
+        padding: 2px 2px;
+        font-size: 14px;
+        text-align: center;
+        line-height: 20px;
+        text-shadow: 0 1px 0 rgba(255, 255, 255, .5);
+        border-right: none;
+        text-decoration: none;
+        background-color: #F1F1F1;
+    }
+
+        .alphabet a.first
+        {
+            border-radius: 3px 0 0 3px;
+        }
+
+        .alphabet a.last
+        {
+            border-right: 1px solid silver;
+            border-radius: 0 3px 3px 0;
+        }
+
+        .alphabet a:hover,
+        .alphabet a.active
+        {
+            background: #FBF8E9;
+            font-weight: bold;
+        }
+#compounds-table th, #compounds-table td{
+    text-align: center;
 }

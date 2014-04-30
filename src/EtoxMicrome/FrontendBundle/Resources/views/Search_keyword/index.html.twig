@@ -106,6 +106,7 @@
                                     {% set stringStickyTooltip = stringStickyTooltip ~ tooltip  %}
                                 {% elseif kind == "fulltext" %}
                                     {% set pmid=result.getSource['uid'] %}
+                                    {% set sid=result.getSource['sentenceId'] %}
                                     {% set arrayPmid = pmid|split('_') %}
                                     {% set pmidCut = arrayPmid[1] %}
                                     {% set link="http://www.ncbi.nlm.nih.gov/pubmed/" ~ pmidCut %}
@@ -115,21 +116,33 @@
                                             <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/></a>
                                         </span>
                                     </td>
-                                    {% set tooltip =  "<div id='sticky"~tooltipCounter~"' class='atip' >Pubmed link: <a href='"~link ~"'>"~link~"</a><br>Pubmed Id: "~ pmidCut ~"</div>" %}
+                                    {% set tooltip =  "<div id='sticky"~tooltipCounter~"' class='atip' >Pubmed link: <a href='"~link ~"'>"~link~"</a><br>Pubmed Id: "~ pmidCut ~"<br/>Sentence Id: "~ sid ~"</div>" %}
                                     {% set tooltipCounter = tooltipCounter + 1 %}
                                     {% set stringStickyTooltip = stringStickyTooltip ~ tooltip  %}
                                 {% elseif kind == "nda" %}
                                     {% set link="http://www.accessdata.fda.gov/scripts/cder/drugsatfda/index.cfm" %}
+                                    {% set sid=result.getSource['sentenceId'] %}
                                     {% set imageRoute = 'images/nda.png' %}
                                     <td class="center">
-                                        <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/ alt="FDA New Drug Approvals (NDAs)" title="FDA New Drug Approvals (NDAs)"></a>
+                                        <span data-tooltip='sticky{{ tooltipCounter }}'>
+                                            <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/ alt="FDA New Drug Approvals (NDAs)" title="FDA New Drug Approvals (NDAs)"></a>
+                                        </span>
                                     </td>
+                                    {% set tooltip =  "<div id='sticky"~tooltipCounter~"' class='atip' >Sentence Id: "~ sid ~"</div>" %}
+                                    {% set tooltipCounter = tooltipCounter + 1 %}
+                                    {% set stringStickyTooltip = stringStickyTooltip ~ tooltip  %}
                                 {% elseif kind == "epar" %}
                                     {% set link="www.ema.europa.eu/ema/index.jsp?curl=pages/medicines/landing/epar_search.jsp" %}
                                     {% set imageRoute = 'images/epar.png' %}
+                                    {% set sid=result.getSource['sentenceId'] %}
                                     <td class="center">
+                                        <span data-tooltip='sticky{{ tooltipCounter }}'>
                                             <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/ alt="European Public Assessment Reports (EPARs)" title="European Public Assessment Reports (EPARs)"></a>
+                                        </span>
                                     </td>
+                                    {% set tooltip =  "<div id='sticky"~tooltipCounter~"' class='atip' >Sentence Id: "~ sid ~"</div>" %}
+                                    {% set tooltipCounter = tooltipCounter + 1 %}
+                                    {% set stringStickyTooltip = stringStickyTooltip ~ tooltip  %}
                                 {% endif %}
                                 {% set arrayText= text | highlightEntitiesDocumentsKeywords (result.getSource['sentenceId'],keyword,field,whatToSearch, source, entityType, tooltipCounter) %}
                                 {% set text = arrayText[0] | raw %}

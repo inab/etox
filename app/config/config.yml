@@ -66,7 +66,7 @@ twig:
         mouseover_marker_relation_score: "Chemical-marker relation score. If the relation was detected by a pattern based approach the score is 1, otherwise a SVM relationship sentence classifier score is provided."
         mouseover_marker_relation_qualifier: "The relation qualifier refers to affirmed or negated relationships. AA: (chemical affirmed, marker affirmed); AN:  (chemical affirmed, marker negated); NA: (chemical negated, marker affirmed); NN:  (chemical negated, marker negated)"
         mouseover_relation_curation: "Manually validated item."
-
+        total_number_of_cytochromes: 793956
 
 
 # Assetic Configuration
@@ -341,8 +341,8 @@ parameters:
     etoxMicrome.default_orderby:  "hepval"
 
     etoxMicrome.total_documents_elasticsearch_retrieval: 150
-
     etoxMicrome.evidences_per_page: 10
+    etoxMicrome.cytochromes_per_page: 200
     etoxMicrome.number_of_pages: 15
 
 #Configuration to activate twig extension utilidades

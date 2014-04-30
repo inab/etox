@@ -559,6 +559,72 @@ class SearchController extends Controller
         return($this->searchFieldWhatToSearchEntityTypeSourceEntityAction($field, $whatToSearch, $entityType, $source, $entityName, $orderBy));
     }
 
+    public function searchInchiAction()
+    {
+        $request = $this->get('request');
+        $inChi=$request->query->get('InChI');
+        $entityName=$inChi;
+        $field = $this->container->getParameter('etoxMicrome.default_field');//{"hepatotoxicity","embryotoxicity", etc...}
+        $whatToSearch = "inChi";//{"name","id", "structure", "canonical"}
+        $entityType= "CompoundDict";//{compound","cyp","marker","keyword"}
+        $source= $this->container->getParameter('etoxMicrome.default_source');//{"pubmed","fulltext","nda","epar"}
+        $orderBy = $this->container->getParameter('etoxMicrome.default_orderby'); //{"score","patternCount","ruleScore","termScore"}
+
+        $em = $this->getDoctrine()->getManager();
+        $arrayCompounds = $em->getRepository('EtoxMicromeEntityBundle:CompoundDict')->getEntityFromInchi($inChi);
+        if (count($arrayCompounds)==0){
+            return $this->render('FrontendBundle:Default:no_results.html.twig', array(
+                'field' => $field,
+                'whatToSearch' => $whatToSearch,
+                'entityType' => $entityType,
+                'entity' => $inChi,
+                'entityName' => $entityName,
+            ));
+        }
+        else{
+             //We create an array of cytochromes from an array with their enityId
+            $arrayNames=array();
+            foreach ($arrayCompounds as $compound){
+                $arrayEntityName[] = $compound->getName();
+            }
+            $arrayEntityName=array_unique($arrayEntityName);//We get rid of the duplicates
+            $compound2Documents=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntity2DocumentFromFieldDQL($field, $entityType, $arrayEntityName, $source, $orderBy)->getResult();
+            if (count($compound2Documents)==0){
+                return $this->render('FrontendBundle:Default:no_results.html.twig', array(
+                    'field' => $field,
+                    'whatToSearch' => $whatToSearch,
+                    'entityType' => $entityType,
+                    'entity' => $inChi,
+                    'entityName' => $entityName,
+                ));
+            }
+            $arrayTotalMaxMin=$this->getTotalMaxMinArrayForEntities($compound2Documents, $orderBy, $field);
+            $meanScore=$this->getMmmrScoreFromEntities($compound2Documents, $orderBy, 'mean');
+            $medianScore=$this->getMmmrScoreFromEntities($compound2Documents, $orderBy, 'median');
+            $paginator = $this->get('ideup.simple_paginator');
+            $arrayEntity2Document = $paginator
+                ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "documents")
+                ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "documents")
+                ->paginate($em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntity2DocumentFromFieldDQL($field, $entityType, $arrayEntityName, $source, $orderBy), 'documents')
+                ->getResult()
+            ;
+            return $this->render('FrontendBundle:Search_inchi:index.html.twig', array(
+                'field' => $field,
+                'whatToSearch' => $whatToSearch,
+                'entityType' => $entityType,
+                'source' => $source,
+                'entityBackup' => $entityName,
+                'arrayEntityName' => $arrayEntityName,
+                'arrayEntity2Document' => $arrayEntity2Document,
+                'entityName' => $entityName,
+                'arrayTotalMaxMin' => $arrayTotalMaxMin,
+                'orderBy' => $orderBy,
+                'meanScore' => $meanScore,
+                'medianScore' => $medianScore,
+            ));
+        }
+    }
+
     public function searchFieldAction($field)
     {   //search page with default values (Abstract origin, Hepatotoxicity field and dictionary method)
         //$field = $this->container->getParameter('etoxMicrome.default_field');//{"hepatotoxicity","embryotoxicity", etc...}
@@ -1799,7 +1865,6 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
         ////////////////////////////////////////////////////////////////////////////////////////
         if(count($entity)!=0){
             #We have the entityId. We need to do a QUERY EXPANSION depending on the typeOfEntity we have
-
             $arrayEntityId=$this->queryExpansion($entity, $entityType, $whatToSearch);
             //$arrayEntityId=array();
             //array_push($arrayEntityId, $entity);
@@ -2088,6 +2153,17 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
             }else{ //For "pubmed", "fulltext", "nda", "epar" and "all"
                 $documentsInfo = $this->container->get('fos_elastica.index.etoxindex2.documents');/** To get resultSet to get values for summary**/
                 $resultSetDocuments = $documentsInfo->search($elasticaQuery);
+                $arrayResults=$resultSetDocuments->getResults();
+                /*
+                $contador=1;
+                foreach ($arrayResults as $result){
+                    if ($contador<11){
+                        ld($result);
+                        $contador++;
+                    }
+                }
+                ldd($message);
+                */
                 $meanScore=$this->getMmmrScore($resultSetDocuments, $orderBy, 'mean');
                 $medianScore=$this->getMmmrScore($resultSetDocuments, $orderBy, 'median');
                 $rangeScore=$this->getMmmrScore($resultSetDocuments, $orderBy, 'range');

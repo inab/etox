@@ -65,6 +65,20 @@ class CompoundDictRepository extends EntityRepository
         return $entity;
     }
 
+    public function getEntityFromInchi($inchi)
+    {
+        $message="Inside getEntityFromInchi at CompoundDictRepository";
+        $inchi="InChI=".$inchi;//We recover the full InChI name to search inside the compounddict table
+        $query = $this->_em->createQuery("
+            SELECT c
+            FROM EtoxMicromeEntityBundle:CompoundDict c
+            WHERE c.inChi= :inchi
+        ");
+        $query->setParameter('inchi', $inchi);
+        $arrayCompounds=$query->getResult();
+        //We return all the Compounds with the InChI given.
+        return $arrayCompounds;
+    }
     public function getIdFromGenericField($key, $value, $arrayEntityId)
     {
         $message="Inside getEntityIdFromName at CompoundDictRepository";
@@ -149,5 +163,48 @@ class CompoundDictRepository extends EntityRepository
         //We return only one entity. Later on we will make the query expansion so we will collect all of them
 
         return $entity;
+    }
+
+    public function getCompoundsSummary($id, $initial)
+    {
+        if($initial=="0"){
+            $query = $this->_em->createQuery("
+                SELECT c
+                FROM EtoxMicromeEntityBundle:CompoundDict c
+                WHERE (c.$id !='' AND c.name like '1%')
+                OR (c.$id !='' AND c.name like '2%')
+                OR (c.$id !='' AND c.name like '3%')
+                OR (c.$id !='' AND c.name like '4%')
+                OR (c.$id !='' AND c.name like '5%')
+                OR (c.$id !='' AND c.name like '6%')
+                OR (c.$id !='' AND c.name like '7%')
+                OR (c.$id !='' AND c.name like '8%')
+                OR (c.$id !='' AND c.name like '9%')
+                ORDER BY c.name
+            ");
+        }elseif($initial=="-"){
+            $query = $this->_em->createQuery("
+                SELECT c
+                FROM EtoxMicromeEntityBundle:CompoundDict c
+                WHERE (c.$id !='' AND c.name like '+%')
+                OR (c.$id !='' AND c.name like '-%')
+                OR (c.$id !='' AND c.name like '\(%')
+                OR (c.$id !='' AND c.name like '\)%')
+                ORDER BY c.name asc
+            ");
+        }else{
+            $initialUpper=strtoupper($initial);
+            $query = $this->_em->createQuery("
+                SELECT c
+                FROM EtoxMicromeEntityBundle:CompoundDict c
+                WHERE (c.$id !='' AND c.name like  :initial)
+                OR (c.$id !='' AND c.name like  :initialUpper)
+            ");
+            $query->setParameter("initial", $initial."%");
+            $query->setParameter("initialUpper", $initialUpper."%");
+        }
+
+        $arrayCompounds=$query->getResult();
+        return $arrayCompounds;
     }
 }
