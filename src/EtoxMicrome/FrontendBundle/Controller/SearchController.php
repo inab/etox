@@ -559,7 +559,7 @@ class SearchController extends Controller
         return($this->searchFieldWhatToSearchEntityTypeSourceEntityAction($field, $whatToSearch, $entityType, $source, $entityName, $orderBy));
     }
 
-    public function searchInchiAction()
+    public function searchInchiAction($orderBy)
     {
         $request = $this->get('request');
         $inChi=$request->query->get('InChI');
@@ -568,8 +568,6 @@ class SearchController extends Controller
         $whatToSearch = "inChi";//{"name","id", "structure", "canonical"}
         $entityType= "CompoundDict";//{compound","cyp","marker","keyword"}
         $source= $this->container->getParameter('etoxMicrome.default_source');//{"pubmed","fulltext","nda","epar"}
-        $orderBy = $this->container->getParameter('etoxMicrome.default_orderby'); //{"score","patternCount","ruleScore","termScore"}
-
         $em = $this->getDoctrine()->getManager();
         $arrayCompounds = $em->getRepository('EtoxMicromeEntityBundle:CompoundDict')->getEntityFromInchi($inChi);
         if (count($arrayCompounds)==0){

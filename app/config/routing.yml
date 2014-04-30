@@ -73,11 +73,11 @@ search_interface_search:
 
 search_interface_inChi:
     pattern: /search/inChi/
-    defaults: { _controller: FrontendBundle:Search:searchInchi}
+    defaults: { _controller: FrontendBundle:Search:searchInchi, orderBy: 'hepval'}
 
 search_interface_inChi_orderby:
     pattern: /search/inChi/{orderBy}/
-    defaults: { _controller: FrontendBundle:Search:searchInchi}
+    defaults: { _controller: FrontendBundle:Search:searchInchi, orderBy: 'hepval'}
 
 
 elasticSearch_keyword:
@@ -111,7 +111,7 @@ search_interface_search_field_whatToSearch_entityType_source_entity:
 
 search_interface_search_field_whatToSearch_entityType_source_entity_orderby:
     pattern: /search/{field}/{whatToSearch}/{entityType}/{source}/{entityName}/orderBy/{orderBy}/
-    defaults: { _controller: FrontendBundle:Search:searchFieldWhatToSearchEntityTypeSourceEntity, orderBy: "hepval"}
+    defaults: { _controller: FrontendBundle:Search:searchFieldWhatToSearchEntityTypeSourceEntity}
 
 
 autocomplete:
