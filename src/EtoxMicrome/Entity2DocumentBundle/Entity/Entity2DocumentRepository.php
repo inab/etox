@@ -949,4 +949,16 @@ class Entity2DocumentRepository extends EntityRepository
         }
         return ($stringOutput);
     }
+
+    public function countCompound2Document($compoundName)
+    {
+        $message="inside countCompound2Document";
+        $em = $this->getEntityManager();
+        $query = $em->createQuery('SELECT COUNT(c2d.id) FROM EtoxMicromeEntity2DocumentBundle:Entity2Document c2d where c2d.name= :compoundName');
+        $query->setParameter("compoundName", $compoundName);
+        $count = $query->getSingleScalarResult();
+
+        return $count;
+
+    }
 }

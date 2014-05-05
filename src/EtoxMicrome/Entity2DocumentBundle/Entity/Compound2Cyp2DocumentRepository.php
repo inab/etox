@@ -59,4 +59,16 @@ class Compound2Cyp2DocumentRepository extends EntityRepository
         }
         return ($curationReturn);
     }
+
+    public function countCompound2CypRelations($compoundName)
+    {
+        $message="inside countCompound2CypRelations";
+        $em = $this->getEntityManager();
+        $query = $em->createQuery('SELECT COUNT(c2t2d.id) FROM EtoxMicromeEntity2DocumentBundle:Compound2Cyp2Document c2t2d where c2t2d.compoundName= :compoundName');
+        $query->setParameter("compoundName", $compoundName);
+        $count = $query->getSingleScalarResult();
+
+        return $count;
+
+    }
 }

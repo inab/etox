@@ -1,62 +1,108 @@
 {% extends '::frontend.html.twig' %}
 {% block title %}Compound List Summary {% endblock %}
 {% block article %}
-    <div class="wrapper">
         <h1>Compounds list summary</h1>
-        Show compounds with: <a href="{{ path('compound_list_summaries',{'id':'drugBank'}) }}">DrugBank id</a>, <a href="{{ path('compound_list_summaries',{'id':'chebi'}) }}">ChEBI id</a>, <a href="{{ path('compound_list_summaries',{'id':'pubChemCompound'}) }}">PubChem compound</a><br/>
+        <!-- Show compounds with: <a href="{{ path('compound_list_summaries',{'id':'drugBank'}) }}">DrugBank id</a>, <a href="{{ path('compound_list_summaries',{'id':'chebi'}) }}">ChEBI id</a>, <a href="{{ path('compound_list_summaries',{'id':'pubChemCompound'}) }}">PubChem compound</a><br/> -->
         <div class="alphabet">
-                    <a class="first" href="#" onclick="getCompoundList('/app_dev.php/compound_list_summary/{{ id }}/a/')">A</a>
-                    <a href="#" onclick="getCompoundList('/app_dev.php/compound_list_summary/{{ id }}/b/')">B</a>
-                    <a href="#" onclick="getCompoundList('/app_dev.php/compound_list_summary/{{ id }}/c/')">C</a>
-                    <a href="#" onclick="getCompoundList('/app_dev.php/compound_list_summary/{{ id }}/d/')">D</a>
-                    <a href="#" onclick="getCompoundList('/app_dev.php/compound_list_summary/{{ id }}/e/')">E</a>
-                    <a href="#" onclick="getCompoundList('/app_dev.php/compound_list_summary/{{ id }}/f/')">F</a>
-                    <a href="#" onclick="getCompoundList('/app_dev.php/compound_list_summary/{{ id }}/g/')">G</a>
-                    <a href="#" onclick="getCompoundList('/app_dev.php/compound_list_summary/{{ id }}/h/')">H</a>
-                    <a href="#" onclick="getCompoundList('/app_dev.php/compound_list_summary/{{ id }}/i/')">I</a>
-                    <a href="#" onclick="getCompoundList('/app_dev.php/compound_list_summary/{{ id }}/j/')">J</a>
-                    <a href="#" onclick="getCompoundList('/app_dev.php/compound_list_summary/{{ id }}/k/')">K</a>
-                    <a href="#" onclick="getCompoundList('/app_dev.php/compound_list_summary/{{ id }}/l/')">L</a>
-                    <a href="#" onclick="getCompoundList('/app_dev.php/compound_list_summary/{{ id }}/m/')">M</a>
-                    <a href="#" onclick="getCompoundList('/app_dev.php/compound_list_summary/{{ id }}/n/')">N</a>
-                    <a href="#" onclick="getCompoundList('/app_dev.php/compound_list_summary/{{ id }}/o/')">O</a>
-                    <a href="#" onclick="getCompoundList('/app_dev.php/compound_list_summary/{{ id }}/p/')">P</a>
-                    <a href="#" onclick="getCompoundList('/app_dev.php/compound_list_summary/{{ id }}/q/')">Q</a>
-                    <a href="#" onclick="getCompoundList('/app_dev.php/compound_list_summary/{{ id }}/r/')">R</a>
-                    <a href="#" onclick="getCompoundList('/app_dev.php/compound_list_summary/{{ id }}/s/')">S</a>
-                    <a href="#" onclick="getCompoundList('/app_dev.php/compound_list_summary/{{ id }}/t/')">T</a>
-                    <a href="#" onclick="getCompoundList('/app_dev.php/compound_list_summary/{{ id }}/u/')">U</a>
-                    <a href="#" onclick="getCompoundList('/app_dev.php/compound_list_summary/{{ id }}/v/')">V</a>
-                    <a href="#" onclick="getCompoundList('/app_dev.php/compound_list_summary/{{ id }}/w/')">W</a>
-                    <a href="#" onclick="getCompoundList('/app_dev.php/compound_list_summary/{{ id }}/x/')">X</a>
-                    <a href="#" onclick="getCompoundList('/app_dev.php/compound_list_summary/{{ id }}/y/')">Y</a>
-                    <a href="#" onclick="getCompoundList('/app_dev.php/compound_list_summary/{{ id }}/z/')">Z</a>
-                    <a href="#" onclick="getCompoundList('/app_dev.php/compound_list_summary/{{ id }}/0/')">0-9</a>
-                    <a class="last" href="#" onclick="getCompoundList('/app_dev.php/compound_list_summary/{{ id }}/-/')">+-</a></div>
+                    <a class="first" href="{{ path('compound_list_summaries',{'id':id, 'initial':'a'}) }}">A</a>
+                    <a href="{{ path('compound_list_summaries',{'id':id, 'initial':'b'}) }}">B</a>
+                    <a href="{{ path('compound_list_summaries',{'id':id, 'initial':'c'}) }}" >C</a>
+                    <a href="{{ path('compound_list_summaries',{'id':id, 'initial':'d'}) }}" >D</a>
+                    <a href="{{ path('compound_list_summaries',{'id':id, 'initial':'e'}) }}" >E</a>
+                    <a href="{{ path('compound_list_summaries',{'id':id, 'initial':'f'}) }}" >F</a>
+                    <a href="{{ path('compound_list_summaries',{'id':id, 'initial':'g'}) }}" >G</a>
+                    <a href="{{ path('compound_list_summaries',{'id':id, 'initial':'h'}) }}" >H</a>
+                    <a href="{{ path('compound_list_summaries',{'id':id, 'initial':'i'}) }}" >I</a>
+                    <a href="{{ path('compound_list_summaries',{'id':id, 'initial':'j'}) }}" >J</a>
+                    <a href="{{ path('compound_list_summaries',{'id':id, 'initial':'k'}) }}" >K</a>
+                    <a href="{{ path('compound_list_summaries',{'id':id, 'initial':'l'}) }}" >L</a>
+                    <a href="{{ path('compound_list_summaries',{'id':id, 'initial':'m'}) }}" >M</a>
+                    <a href="{{ path('compound_list_summaries',{'id':id, 'initial':'n'}) }}" >N</a>
+                    <a href="{{ path('compound_list_summaries',{'id':id, 'initial':'o'}) }}" >O</a>
+                    <a href="{{ path('compound_list_summaries',{'id':id, 'initial':'p'}) }}" >P</a>
+                    <a href="{{ path('compound_list_summaries',{'id':id, 'initial':'q'}) }}" >Q</a>
+                    <a href="{{ path('compound_list_summaries',{'id':id, 'initial':'r'}) }}" >R</a>
+                    <a href="{{ path('compound_list_summaries',{'id':id, 'initial':'s'}) }}" >S</a>
+                    <a href="{{ path('compound_list_summaries',{'id':id, 'initial':'t'}) }}" >T</a>
+                    <a href="{{ path('compound_list_summaries',{'id':id, 'initial':'u'}) }}" >U</a>
+                    <a href="{{ path('compound_list_summaries',{'id':id, 'initial':'v'}) }}" >V</a>
+                    <a href="{{ path('compound_list_summaries',{'id':id, 'initial':'w'}) }}" >W</a>
+                    <a href="{{ path('compound_list_summaries',{'id':id, 'initial':'x'}) }}" >X</a>
+                    <a href="{{ path('compound_list_summaries',{'id':id, 'initial':'y'}) }}" >Y</a>
+                    <a href="{{ path('compound_list_summaries',{'id':id, 'initial':'z'}) }}" >Z</a>
+                    <a href="{{ path('compound_list_summaries',{'id':id, 'initial':'0'}) }}" >0-9</a>
+                    <a class="last" href="{{ path('compound_list_summaries',{'id':id, 'initial':'-'}) }}" /-/')">+-</a></div>
 
         <div id="compounds">
             <table id="compounds-table">
                 <thead>
                     <tr>
                         <th>Compound Name</th>
+                        <th>Aliases</th>
                         <th>DrugBank id</th>
-                        <th>ChEBI</th>
-                        <th>PubChem Compound</th>
+                        <th>Approval</th>
+                        <th>Category</th>
+                        <th>Target Rel.</th>
+                        <th>Terms Rel.</th>
+                        <th>CYPs Rel.</th>
+                        <th>Markers Rel.</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for compound in arrayCompounds %}
+                    {% for drugbank in drugBanks %}
+                    {% set drugbankid = drugbank.getDrugbankid %}
+                    {% set arrayAliases = dictionaryAliases[drugbankid] %}
                     <tr>
-                        <td>{{ compound.getName }}</td>
-                        <td>{{ compound.getDrugBank }}</td>
-                        <td>{{ compound.getChebi }}</td>
-                        <td>{{ compound.getPubChemCompound }}</td>
+                        <td>{{ drugbank.getDrugbankname }}</td>
+                        <td>
+                            <small>
+                                {% for alias in arrayAliases %}
+                                    {{alias}},&nbsp;
+                                {% endfor %}
+                            </small>
+                        </td>
+                        <td>{{ drugbankid }}</td>
+                        <td>{{ drugbank.getApproval }}</td>
+                        <td>{{ drugbank.getCategory }}</td>
+                        <td>
+                            <small>
+                                {% set stringTarget=drugbank.getTargetRelation %}
+                                {% set arrayTargets= stringTarget | split("|") %}
+                                {% for target in arrayTargets %}
+                                    {{ target }}<br>
+                                {% endfor %}
+                            </small>
+                        </td>
+                        <td>
+                            {% if dictionaryCountTermRelations[drugbankid] != 0 %}
+                            {{ dictionaryCountTermRelations[drugbankid] }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if dictionaryCountCypRelations[drugbankid] != 0 %}
+                            {{ dictionaryCountCypRelations[drugbankid] }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if dictionaryCountMarkerRelations[drugbankid] != 0 %}
+                            {{ dictionaryCountMarkerRelations[drugbankid] }}
+                            {% endif %}
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
+            <div class="pagination">
+                {{ simple_paginator_render(
+                    'compound_list_summaries', 'drugbanks',
+                        {
+                            'routeParams' : {'id' : id},
+                            'container_class' : 'pagination'
+                        }
+                    )
+                }}
+            </div>
         </div>
-    </div>
 
     {% include 'FrontendBundle:Search_document:scripts_code.html.twig' %}
 {% endblock %}

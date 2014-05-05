@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Cytochrome
  *
- * @ORM\Table(indexes={@ORM\Index(name="cytochrome_entity_index", columns={"""entityId"""}),@ORM\Index(name="cytochrome_name_index", columns={"name"}) } )
+ * @ORM\Table(indexes={@ORM\Index(name="cytochrome_entity_index", columns={"""entityId"""}),@ORM\Index(name="cytochrome_name_index", columns={"name"}), @ORM\Index(name="cytochrome_tax_index", columns={"tax"}) } )
  * @ORM\Entity(repositoryClass="EtoxMicrome\EntityBundle\Entity\CytochromeRepository")
  */
 class Cytochrome

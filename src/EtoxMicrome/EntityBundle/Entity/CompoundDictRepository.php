@@ -79,6 +79,21 @@ class CompoundDictRepository extends EntityRepository
         //We return all the Compounds with the InChI given.
         return $arrayCompounds;
     }
+
+    public function getEntityFromDrugbankId($drugBank)
+    {
+        $message="Inside getEntityFromDrugbankId at CompoundDictRepository";
+        $query = $this->_em->createQuery("
+            SELECT c
+            FROM EtoxMicromeEntityBundle:CompoundDict c
+            WHERE c.drugBank= :drugBank
+        ");
+        $query->setParameter('drugBank', $drugBank);
+        $arrayCompounds=$query->getResult();
+        //We return all the Compounds with the InChI given.
+        return $arrayCompounds;
+    }
+
     public function getIdFromGenericField($key, $value, $arrayEntityId)
     {
         $message="Inside getEntityIdFromName at CompoundDictRepository";

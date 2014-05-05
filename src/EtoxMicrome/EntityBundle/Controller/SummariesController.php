@@ -13,17 +13,107 @@ class SummariesController extends Controller
      * @Route("/hello/{name}")
      * @Template()
      */
-    public function showSummaryAction($id)
+    public function showSummaryAction($id, $initial)
     {
+        $message="Here!";
         $em = $this->getDoctrine()->getManager();
-        $arrayCompounds=$em->getRepository('EtoxMicromeEntityBundle:CompoundDict')->getCompoundsSummary($id, 'a');//We get compounds starting with a/A. Rest of compounds will be retrieved by ajax function
-        return $this->render('EtoxMicromeEntityBundle:EntitySummaries:index.html.twig', array(
-            'arrayCompounds' => $arrayCompounds,
-            'id' => $id,
-        ));
+
+        if(($id=="drugBank")or($id=="drugbank")){
+            $arrayDrugbanks=$em->getRepository('EtoxMicromeEntityBundle:Drugbank')->getDrugbanks($initial);//We get compounds starting with a/A. Rest of compounds will be retrieved by ajax function
+            //ld($arrayDrugbanks);
+            $arrayCompounds=$em->getRepository('EtoxMicromeEntityBundle:CompoundDict')->getCompoundsSummary($id, $initial);//We get compounds starting with a/A. Rest of compounds will be retrieved by ajax function_exists()
+
+            $dictionaryNames=array();
+            $dictionaryAliases=array();
+            $dictionaryCountTermRelations=array();
+            $dictionaryCountCypRelations=array();
+            $dictionaryCountMarkerRelations=array();
+            $dictionaryCountDocuments=array();
+
+            //First we create dictionaryAliases. with keys=drugbankId and values= all aliases of the names for the drugbankId
+            foreach($arrayDrugbanks as $drugBank){
+                $drugBankId=$drugBank->getDrugbankid();
+                $drugBankName=$drugBank->getDrugbankname();
+                $dictionaryNames[$drugBankId]=$drugBankName;
+                if (array_key_exists($drugBankId, $dictionaryAliases)){
+                    //If already in dictionaryAliases, we add new more Aliases to array
+                    $arrayAliases=$dictionaryAliases[$drugBankId];
+                    $arrayAliases[]=$drugBankName;
+                    $arrayAliases=array_unique($arrayAliases);
+                    $dictionaryAliases[$drugBankId]=$arrayAliases;
+                }else{
+                    $arrayNames=array();
+                    $arrayNames[]=$drugBankName;
+                    $dictionaryAliases[$drugBankId]=$arrayNames;
+                }
+            }
+
+            //Second we create the $dictionaryAliases
+            foreach($arrayCompounds as $compound){
+                $nameCompound=$compound->getName();
+                $drugBankId=$compound->getDrugBank();
+                if (array_key_exists($drugBankId, $dictionaryAliases)){
+                    //If already in dictionaryAliases, we add new more Aliases to array
+                    $arrayAliases=$dictionaryAliases[$drugBankId];
+                    $arrayAliases[]=$nameCompound;
+                    $arrayAliases=array_unique($arrayAliases);
+                    $dictionaryAliases[$drugBankId]=$arrayAliases;
+                }else{
+                    $arrayNames=array();
+                    $arrayNames[]=$nameCompound;
+                    $dictionaryAliases[$drugBankId]=$arrayNames;
+                    //we get the
+                }
+            }
+            //Third we create the $dictionaryCountTermRelations. with keys=drugbankId and values= counter of relations in termRelations table
+            foreach($arrayDrugbanks as $drugBank){
+                $totalCounterTermRelations=0;
+                $totalCounterCypRelations=0;
+                $totalCounterMarkerRelations=0;
+                //$totalCounterDocuments=0;
+                $drugBankId=$drugBank->getDrugbankid();
+                //We test for all the Aliases of this drugbankId
+                $arrayAliases=$dictionaryAliases[$drugBankId];
+                $stop=0;
+                foreach($arrayAliases as $alias){
+                    //Prior to count aparitions in relations table, we need to expand query with this $drugBankId
+                    //$arrayCompounds=$em->getRepository('EtoxMicromeEntityBundle:CompoundDict')->getEntityFromDrugbankId($drugBankId);//We get compounds starting with a/A. Rest of compounds will be retrieved by ajax function
+                        $counterTerm=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Compound2Term2Document')->countCompound2TermRelations($alias);
+                        $counterCyp=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Compound2Cyp2Document')->countCompound2CypRelations($alias);
+                        $counterMarker=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Compound2Marker2Document')->countCompound2MarkerRelations($alias);
+                        $counterDocuments=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->countCompound2Document($alias);
+                        $totalCounterTermRelations=$totalCounterTermRelations+$counterTerm;
+                        $totalCounterCypRelations=$totalCounterCypRelations+$counterCyp;
+                        $totalCounterMarkerRelations=$totalCounterMarkerRelations+$counterMarker;
+                        //$totalCounterDocuments=$totalCounterDocuments+$counterDocuments;
+                }
+                $dictionaryCountTermRelations[$drugBankId]=$totalCounterTermRelations;
+                $dictionaryCountCypRelations[$drugBankId]=$totalCounterCypRelations;
+                $dictionaryCountMarkerRelations[$drugBankId]=$totalCounterMarkerRelations;
+                //$dictionaryCountDocuments[$drugBankId]=$totalCounterDocuments;
+            }
+            //We build from this data a dictionary with keys=unique_DrugBank_id, values=Aliases for this Name
+            $paginator = $this->get('ideup.simple_paginator');
+            $drugBanks = $paginator
+                ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), 'drugbanks')
+                ->setItemsPerPage($this->container->getParameter('etoxMicrome.summaries_per_page'), 'drugbanks')
+                ->paginate($arrayDrugbanks,'drugbanks')
+                ->getResult()
+            ;
+            return $this->render('EtoxMicromeEntityBundle:EntitySummaries:index.html.twig', array(
+                'drugBanks' => $drugBanks,
+                'dictionaryAliases' => $dictionaryAliases,
+                'dictionaryNames' => $dictionaryNames,
+                'dictionaryCountTermRelations' => $dictionaryCountTermRelations,
+                'dictionaryCountCypRelations' => $dictionaryCountCypRelations,
+                'dictionaryCountMarkerRelations' => $dictionaryCountMarkerRelations,
+                'id' => $id,
+
+            ));
+        }
     }
 
-    public function showSummaryInitialAction($id, $initial)
+    public function GInitialAction($id, $initial)
     {
         $em = $this->getDoctrine()->getManager();
         $arrayCompounds=$em->getRepository('EtoxMicromeEntityBundle:CompoundDict')->getCompoundsSummary($id, $initial);//We get compounds starting with a/A. Rest of compounds will be retrieved by ajax function
@@ -52,18 +142,15 @@ class SummariesController extends Controller
         return new Response(json_encode($response));
     }
 
-    public function showCytochromeSummaryAction()
+    public function showCytochromeSummaryAction($specie,$initial)
     {
-        $initial = "a";
-        $orderBy = "name";
-        return($this->showCytochromeSummaryInitialAction($initial,$orderBy));
-    }
-
-    public function showCytochromeSummaryInitialAction($initial,$orderBy)
-    {
-
         $em = $this->getDoctrine()->getManager();
-        $cytochromes=$em->getRepository('EtoxMicromeEntityBundle:Cytochrome')->getCytochromeSummary($initial, $orderBy);//We get cytochromes starting with a/A. Rest of compounds will be retrieved by ajax function
+        //First we extract a list of cytochromes from cytochrome2document, of the specie+initial given:
+        if($specie=="human"){
+            $specie="9606";
+        }
+        $arrayCytochrome2Document=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Cytochrome2Document')->getCytochrome2DocumentList($initial,$specie);
+        ldd($arrayCytochrome2Document[0]);
         $numberOfCytochromes=count($cytochromes);
         $paginator = $this->get('ideup.simple_paginator');
         $arrayCytochromes = $paginator

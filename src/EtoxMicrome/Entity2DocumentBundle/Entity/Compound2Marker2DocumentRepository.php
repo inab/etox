@@ -60,4 +60,16 @@ class Compound2Marker2DocumentRepository extends EntityRepository
         }
         return ($curationReturn);
     }
+
+    public function countCompound2MarkerRelations($compoundName)
+    {
+        $message="inside countCompound2MarkerRelations";
+        $em = $this->getEntityManager();
+        $query = $em->createQuery('SELECT COUNT(c2t2d.id) FROM EtoxMicromeEntity2DocumentBundle:Compound2Marker2Document c2t2d where c2t2d.compoundName= :compoundName');
+        $query->setParameter("compoundName", $compoundName);
+        $count = $query->getSingleScalarResult();
+
+        return $count;
+
+    }
 }

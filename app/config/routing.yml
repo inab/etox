@@ -163,16 +163,16 @@ ajax_marker2document_curation:
     defaults: { _controller: EtoxMicromeEntity2DocumentBundle:Curation:addCurationMarker2Document}
 
 compound_list_summaries:
-    pattern: /compound_list_summary/{id}/
-    defaults: { _controller: EtoxMicromeEntityBundle:Summaries:showSummary}
+    pattern: /compound_list_summary/{id}/{initial}/
+    defaults: { _controller: EtoxMicromeEntityBundle:Summaries:showSummary, initial: "a"}
 
 compound_list_summaries_initial:
     pattern: /compound_list_summary/{id}/{initial}/
     defaults: { _controller: EtoxMicromeEntityBundle:Summaries:showSummaryInitial}
 
 cytochrome_list_summaries:
-    pattern: /cytochrome_list_summary/
-    defaults: { _controller: EtoxMicromeEntityBundle:Summaries:showCytochromeSummary}
+    pattern: /cytochrome_list_summary/{specie}/{initial}/
+    defaults: { _controller: EtoxMicromeEntityBundle:Summaries:showCytochromeSummary, specie: "human"}
 
 cytochrome_list_summaries_initial:
     pattern: /cytochrome_list_summary/{initial}/{orderBy}/

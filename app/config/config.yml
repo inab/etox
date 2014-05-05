@@ -35,10 +35,10 @@ twig:
         default_orderby:  "hepval"
         default_compound:  "Troglitazone"
         default_entityId: "CHEBI:9753"
-        default_keywordSearch:  "Lymphocite"
+        default_keywordSearch:  "bile salt"
         default_cytochromeName: "CYP1A1"
         default_cytochromeId: "A1A5B1"
-        default_markerName:  "liver tests"
+        default_markerName:  "AST"
         default_markerId:   "CID 5280352"
         default_source:   "all"
         mouseover_source: "Document source used (PubMed abstracts/sentences, full text articles, NDAs or EPARs)"
@@ -333,9 +333,9 @@ parameters:
     etoxMicrome.default_whatToSearch_keyword: "any"
     etoxMicrome.default_entityType: "CompoundDict"
     etoxMicrome.default_entityName:  "Troglitazone"
-    etoxMicrome.default_keywordSearch:  "Lymphocite"
+    etoxMicrome.default_keywordSearch:  "bile salt"
     etoxMicrome.default_cytochromeName: "CYP1A1"
-    etoxMicrome.default_markerName:  "liver tests"
+    etoxMicrome.default_markerName:  "AST"
     etoxMicrome.default_source:  "all"
     etoxMicrome.default_compound:  "Troglitazone"
     etoxMicrome.default_orderby:  "hepval"
@@ -343,6 +343,7 @@ parameters:
     etoxMicrome.total_documents_elasticsearch_retrieval: 150
     etoxMicrome.evidences_per_page: 10
     etoxMicrome.cytochromes_per_page: 200
+    etoxMicrome.summaries_per_page: 50
     etoxMicrome.number_of_pages: 15
 
 #Configuration to activate twig extension utilidades
