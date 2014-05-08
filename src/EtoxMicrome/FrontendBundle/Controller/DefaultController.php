@@ -17,4 +17,10 @@ class DefaultController extends Controller
         $respuesta = $this->render('FrontendBundle:Default:home.html.twig');
         return $respuesta;
     }
+
+    public function showTutorialAction()
+    {
+        $respuesta = $this->render('FrontendBundle:Default:tutorial.html.twig');
+        return $respuesta;
+    }
 }
