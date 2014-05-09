@@ -1,0 +1,30 @@
+{% extends '::frontend.html.twig' %}
+
+{% block article %}
+    <section class="row display" role="main">
+        <article class="twelve columns">
+            <h1>LimTox Video Tutorials</h1>
+            <ol class="tutorial">
+                <h2><li>General introduction to the LimTox webpage</li></h2>
+                <iframe width="853" height="480" src="//www.youtube.com/embed/KOD5aUqPtWI?rel=0" frameborder="0" allowfullscreen></iframe>
+                <h2><li>Compound basic name search</li></h2>
+                <iframe width="853" height="480" src="//www.youtube.com/embed/7hLf4wT5ixk?rel=0" frameborder="0" allowfullscreen></iframe>
+                <h2><li>Basic compound name search continuation</li></h2>
+                <iframe width="853" height="480" src="//www.youtube.com/embed/CrCIUNs_MUU?rel=0" frameborder="0" allowfullscreen></iframe>
+                <h2><li>Compound search using other query types (db ids, free search, cyps co-occurrence)</li></h2>
+                <iframe width="853" height="480" src="//www.youtube.com/embed/rJ-wnsNH7_I?rel=0" frameborder="0" allowfullscreen></iframe>
+                <h2><li>Search of chemical - hepatotoxicity term relations</li></h2>
+                <iframe width="853" height="480" src="//www.youtube.com/embed/WO8XPr_dD38?rel=0" frameborder="0" allowfullscreen></iframe>
+                <h2><li>Chemical queries in abstracts</li></h2>
+                <iframe width="853" height="480" src="//www.youtube.com/embed/DNffi2LWFg0?rel=0" frameborder="0" allowfullscreen></iframe>
+                <h2><li>Keyword/free text search query examples</li></h2>
+                <iframe width="853" height="480" src="//www.youtube.com/embed/thXHqrg06U4?rel=0" frameborder="0" allowfullscreen></iframe>
+                <h2><li>CYPs search queries</li></h2>
+                <iframe width="853" height="480" src="//www.youtube.com/embed/lfs4IKzMGns?rel=0" frameborder="0" allowfullscreen></iframe>
+                <h2><li>Liver enzyme/marker searches</li></h2>
+                <iframe width="853" height="480" src="//www.youtube.com/embed/WT-A78hFaq4?rel=0" frameborder="0" allowfullscreen></iframe>
+            </ol>
+        </article>
+    </section>
+    {% include 'FrontendBundle:Search_document:scripts_code.html.twig' %}
+{% endblock %}

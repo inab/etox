@@ -178,6 +178,10 @@ cytochrome_list_summaries_initial:
     pattern: /cytochrome_list_summary/{initial}/{orderBy}/
     defaults: { _controller: EtoxMicromeEntityBundle:Summaries:showCytochromeSummaryInitial}
 
-video_tutorial:
-    pattern: /tutorial/
-    defaults: { _controller: FrontendBundle:Default:showTutorial}
+help:
+    pattern: /help/
+    defaults: { _controller: FrontendBundle:Help:showHelp}
+
+tutorial:
+    pattern: /help/tutorial/
+    defaults: { _controller: FrontendBundle:Help:showTutorial}

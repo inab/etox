@@ -1,0 +1,45 @@
+{% extends '::frontend.html.twig' %}
+
+{% block article %}
+    <section class="row display" role="main">
+        <article class="twelve columns">
+            <ul>
+                <li><h6><a href="{{ path("tutorial") }}">Tutorial</a></h6></li>
+                <li><h6>Documentation</h6></li>
+                <li><h6>FAQs</h6></li>
+                <li><h6>API</h6></li>
+            </ul>
+
+            <p>
+                The <span data-tooltip="sticky1"> LiMTox</span> system is the first text mining approach that tries to extract associations between compounds and a particular toxicological end point at various levels of granularity and evidence types, all inspired by the content of toxicology reports. It integrates direct ranking of associations between compounds and hepatotoxicity through combination of heterogeneous complementary strategies from term co-mention, rules, and patterns to machine learning based text classification.  It also provides indirect associations to hepatotoxicity through the extraction of relations reflecting the effect of compounds at the level of metabolism and liver enzymes. Figure 1 provides a general overview of the LiMTox system.
+            </p>
+            <p>
+                The system design was inspired on an initial analysis of information contained in various data resources related to toxicology, covering databases, literature, EPARs and a small sample of printed EFPIA toxicological reports provided by one of the partners. This information was used to define the overall text mining strategy to be followed, the type of entities and methods to be used and which data types contain in the industry reports could be captured from the other document collections. Thereafter followed the document data set construction, automatic retrieval of EPARs, NDAs in addition to the entire PubMed database and a large set of full text articles. These documents were standardized, converted to plain text, pre-processed, tokenized (including sentence boundary recognition).
+            </p>
+            <p>
+                To avoid limitations related to the lack (at this stage) of a proper ontology useful for text indexing and retrieval of hepatotoxicity textual data we opted for a text categorization strategy requiring only a small seed set of high precision hepatotoxicity keywords. A collection of PubMed abstract records relevant for drug-induced liver diseases suitable for text mining purposes was assembled, mainly derived from the Comparative Toxicogenomics Database (CTD). A semi-supervised text classification system based on Support Vector Machines was constructed, both to do the classification at the level of abstracts/passages as well as individual sentences. This system contained distinct classifiers for sentences from scientific literature and for sentences from EPARs. Validation was done on documents annotated in CTD as relevant for drug-induced liver disease.
+            </p>
+            <p>
+                A crucial step was the recognition of chemical compounds in the various article collections. A dictionary lookup approach using a refined set from the Jochem lexicon was used to detect compound and drug names. Another strategy was based on named entity recognition systems, which rely on a statistical model of text to recognize mentions of chemical substances. Here we applied various taggers, i.e. OSCAR4, ChemicalTagger and an in house system. Finally the third strategy (only for scientific documents) consisted in using metadata in terms of chemical substance MeSH terms. To normalize/ground the compound mentions, in case of the dictionary based approach we returned external identifiers from one of these databases/types: ChemIDplus, ChEBI, CAS, PubChem compound, InCHI string, DrugBank. In addition to this we carried out a name to structure conversion of all the compound mentions to generate SMILES and Sdfiles.
+            </p>
+            <p>
+                To determine if the detected compound/drug mentions are directly associated to hepatotoxicity we used several strategies. One approach relied on building a lexical resource of terms relevant to this particular toxic end point and then retrieved co-mentions at the sentence level (term co-mention). Another strategy relied on rules that analyzed in the context of mention of compound location descriptions and adverse effect descriptions (rule matching). We also explored textual pattern based approaches that made used of n-gram statistics and part of speech tagging to define the actual extraction patterns (pattern matching).  Moreover, the result of the sentence and document classification system can be used for more efficient retrieval of hepatotoxicity evidence for a given search term or chemical substance (interpretation and validation). In addition to value as a search engine we have used this context based scoring of the sentences and documents to score/prioritize compounds for their relevance to hepatotoxicity (machine learning approach).
+            </p>
+            <p style="padding-bottom: 0px;>
+                Toxic end points are often analyzed in vivo toxicology studies (and also in other studies) using biochemical assays, as can be seen from the content of the EFPIA toxicological reports. We therefore also included indirect relationships that cover this information and are relevant to examine hepatotoxicity, namely entities studied in biochemical liver assays. This was addressed using a dictionary look-up approach using a specially constructed lexicon that contains the main entities assayed for this purpose in toxicology studies. Acronym disambiguation was also carried out to addresses ambiguity of the entity mentions. A rule based system to determine if there is an increase of this entities or decrease following drug administration was also implemented. This system should be able to detect increases in liver enzymes co-mentioned with compounds. Another entity type that indirectly is associated to drug induced liver diseases are CYPs. They often are important also in adverse drug-drug interactions.  We constructed a CYPs lexicon for humans and animals used in toxicology studies. For the recognition CYPs we applied both a dictionary lookup and a rule based system (that considered the CYPs nomenclature properties). We implemented a system to qualify the relation types of CYPs with respect to compounds into: induction, inhibition, and substrate.
+            </p>
+        </article>
+    </section>
+    <section class="row display">
+        <h6 class="twelve columns">LimTox pipeline</h6>
+    </section>
+    <section class="row">
+        <article class="twelve columns">
+            <img src="{{ asset('images/limtox_flow.png') }}" border="0" />
+            <p>
+            <small>LimTox literature mining system flow chart. The system consists in two main components, the information retrieval pipeline and the information/relation extraction modules. The first component works at the level of articles while the second one is concerned on the identification of semantic labels and their relations at the level of individual sentences</small>
+            </p>
+        </article>
+    </section>
+    {% include 'FrontendBundle:Search_document:scripts_code.html.twig' %}
+{% endblock %}
