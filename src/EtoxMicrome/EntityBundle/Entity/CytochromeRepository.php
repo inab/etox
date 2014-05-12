@@ -193,4 +193,60 @@ class CytochromeRepository extends EntityRepository
         $arrayCytochromes=$query->getResult();
         return $arrayCytochromes;
     }
+
+     public function getCytochromeList($initial, $specie)
+    {
+        //Extracts a list of cytochrome2document, of the initial given and a given specie
+        $em = $this->getEntityManager();
+        //To find out if we are searching for CYP...:
+        $isCyp=substr_compare($initial,"cyp",0,3,true);
+        $isP=substr_compare($initial,"p",0,1,true);
+        if($initial=="0"){
+            $query = $em->createQuery('
+                SELECT c
+                FROM EtoxMicromeEntity2DocumentBundle:Cytochrome2Document c2d
+                JOIN EtoxMicromeEntityBundle:Cytochrome c
+                WHERE (c2d.cypsMention like \'1%\' AND c.tax = :specie AND c2d.cypsMention = c.name)
+                OR (c2d.cypsMention like \'2%\' AND c.tax = :specie AND c2d.cypsMention = c.name)
+                OR (c2d.cypsMention like \'3%\' AND c.tax = :specie AND c2d.cypsMention = c.name)
+                OR (c2d.cypsMention like \'4%\' AND c.tax = :specie AND c2d.cypsMention = c.name)
+                OR (c2d.cypsMention like \'5%\' AND c.tax = :specie AND c2d.cypsMention = c.name)
+                OR (c2d.cypsMention like \'6%\' AND c.tax = :specie AND c2d.cypsMention = c.name)
+                OR (c2d.cypsMention like \'7%\' AND c.tax = :specie AND c2d.cypsMention = c.name)
+                OR (c2d.cypsMention like \'8%\' AND c.tax = :specie AND c2d.cypsMention = c.name)
+                OR (c2d.cypsMention like \'9%\' AND c.tax = :specie AND c2d.cypsMention = c.name)
+                OR (c2d.cypsMention like \'0%\' AND c.tax = :specie AND c2d.cypsMention = c.name)
+                order by c.name
+            ');
+        }elseif($isCyp==0){
+            $query = $em->createQuery('
+                SELECT c
+                FROM EtoxMicromeEntity2DocumentBundle:Cytochrome2Document c2d
+                JOIN EtoxMicromeEntityBundle:Cytochrome c
+                WHERE (c2d.cypsMention like :initial or c2d.cypsMention like :initialUpper)
+                AND c.tax = :specie
+                AND c2d.cypsMention = c.name
+                order by c.name
+            ');
+            $initialUpper=strtoupper($initial);
+            $query->setParameter('initial', $initial."%");
+            $query->setParameter('initialUpper', $initialUpper."%");
+        }else{
+            $query = $em->createQuery('
+                SELECT c
+                FROM EtoxMicromeEntity2DocumentBundle:Cytochrome2Document c2d
+                JOIN EtoxMicromeEntityBundle:Cytochrome c
+                WHERE (c2d.cypsMention like :initial or c2d.cypsMention like :initialUpper)
+                AND c.tax = :specie
+                AND c2d.cypsMention = c.name
+                order by c.name
+            ');
+            $initialUpper=strtoupper($initial);
+            $query->setParameter('initialUpper', $initialUpper."%");
+            $query->setParameter('initial', $initial."%");
+        }
+        $query->setParameter('specie', $specie);
+
+        return $query->execute();
+    }
 }

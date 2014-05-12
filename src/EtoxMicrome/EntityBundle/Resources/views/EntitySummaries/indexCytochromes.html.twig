@@ -2,47 +2,52 @@
 {% block title %}Compound List Summary {% endblock %}
 {% block article %}
     <div class="wrapper">
-        <h1>Compounds list summary</h1>
+        <h1>Cytochrome list summary</h1>
         <div class="alphabet">
-            <a class="first" href="{{ path('cytochrome_list_summaries_initial',{'initial':'a', 'orderBy': 'name'}) }}" >A</a>
-            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'b', 'orderBy': 'name'}) }}" >B</a>
-            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'c', 'orderBy': 'name'}) }}" >C</a>
-            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'d', 'orderBy': 'name'}) }}" >D</a>
-            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'e', 'orderBy': 'name'}) }}" >E</a>
-            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'f', 'orderBy': 'name'}) }}" >F</a>
-            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'g', 'orderBy': 'name'}) }}" >G</a>
-            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'h', 'orderBy': 'name'}) }}" >H</a>
-            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'i', 'orderBy': 'name'}) }}" >I</a>
-            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'j', 'orderBy': 'name'}) }}" >J</a>
-            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'k', 'orderBy': 'name'}) }}" >K</a>
-            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'l', 'orderBy': 'name'}) }}" >L</a>
-            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'m', 'orderBy': 'name'}) }}" >M</a>
-            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'n', 'orderBy': 'name'}) }}" >N</a>
-            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'o', 'orderBy': 'name'}) }}" >O</a>
-            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'p', 'orderBy': 'name'}) }}" >P</a>
-            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'q', 'orderBy': 'name'}) }}" >Q</a>
-            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'r', 'orderBy': 'name'}) }}" >R</a>
-            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'s', 'orderBy': 'name'}) }}" >S</a>
-            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'t', 'orderBy': 'name'}) }}" >T</a>
-            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'u', 'orderBy': 'name'}) }}" >U</a>
-            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'v', 'orderBy': 'name'}) }}" >V</a>
-            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'w', 'orderBy': 'name'}) }}" >W</a>
-            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'x', 'orderBy': 'name'}) }}" >X</a>
-            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'y', 'orderBy': 'name'}) }}" >Y</a>
-            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'z', 'orderBy': 'name'}) }}" >Z</a>
-            <a href="{{ path('cytochrome_list_summaries_initial',{'initial':'0', 'orderBy': 'name'}) }}" >0-9</a>
-            <a class="last" href="{{ path('cytochrome_list_summaries_initial',{'initial':'-', 'orderBy': 'name'}) }}" >+-</a>
+            Total number of CYPs: {{ total_number_of_cytochromes }}<br/>
+            <a class="first" href="{{ path('cytochrome_list_summaries',{'initial':'a', 'specie': specie}) }}" >A</a>
+            <a href="#" class="open-c">C</a>
+            <a href="{{ path('cytochrome_list_summaries',{'initial':'d', 'specie': specie}) }}" class="close-cp">D</a>
+            <a href="{{ path('cytochrome_list_summaries',{'initial':'e', 'specie': specie}) }}" class="close-cp">E</a>
+            <a href="{{ path('cytochrome_list_summaries',{'initial':'f', 'specie': specie}) }}" class="close-cp">F</a>
+            <a href="{{ path('cytochrome_list_summaries',{'initial':'h', 'specie': specie}) }}" class="close-cp">H</a>
+            <a href="{{ path('cytochrome_list_summaries',{'initial':'l', 'specie': specie}) }}" class="close-cp">L</a>
+            <a href="{{ path('cytochrome_list_summaries',{'initial':'m', 'specie': specie}) }}" class="close-cp">M</a>
+            <a href="{{ path('cytochrome_list_summaries',{'initial':'n', 'specie': specie}) }}" class="close-cp">N</a>
+            <a href="{{ path('cytochrome_list_summaries',{'initial':'o', 'specie': specie}) }}" class="close-cp">O</a>
+            <a href="{{ path('cytochrome_list_summaries',{'initial':'p', 'specie': specie}) }}" class="close-cp">P</a>
+            <a href="{{ path('cytochrome_list_summaries',{'initial':'r', 'specie': specie}) }}" class="close-cp">R</a>
+            <a href="{{ path('cytochrome_list_summaries',{'initial':'s', 'specie': specie}) }}" class="close-cp">S</a>
+            <a href="{{ path('cytochrome_list_summaries',{'initial':'t', 'specie': specie}) }}" class="close-cp">T</a>
+            <a href="{{ path('cytochrome_list_summaries',{'initial':'v', 'specie': specie}) }}" class="close-cp">V</a>
+            <a href="{{ path('cytochrome_list_summaries',{'initial':'0', 'specie': specie}) }}" class="close-cp last">0-9</a>
         </div>
-        Total number of CYPs: {{ total_number_of_cytochromes }}<br/>
+        <div id="cytochrome-c" class="alphabet">
+        {% if "cyp" in initial %}
+            <script>
+                $("#cytochrome-c").css("display", "block");
+            </script>
+        {% endif %}
+            Select one...<br/>
+            <a href="{{ path('cytochrome_list_summaries',{'initial':'cyp1', 'specie': specie}) }}" class="cyp first">CYP1</a>
+            <a href="{{ path('cytochrome_list_summaries',{'initial':'cyp2', 'specie': specie}) }}" class="cyp">CYP2</a>
+            <a href="{{ path('cytochrome_list_summaries',{'initial':'cyp3', 'specie': specie}) }}" class="cyp">CYP3</a>
+            <a href="{{ path('cytochrome_list_summaries',{'initial':'cyp4', 'specie': specie}) }}" class="cyp">CYP4</a>
+            <a href="{{ path('cytochrome_list_summaries',{'initial':'cyp5', 'specie': specie}) }}" class="cyp">CYP5</a>
+            <a href="{{ path('cytochrome_list_summaries',{'initial':'cyp6', 'specie': specie}) }}" class="cyp">CYP6</a>
+            <a href="{{ path('cytochrome_list_summaries',{'initial':'cyp7', 'specie': specie}) }}" class="cyp">CYP7</a>
+            <a href="{{ path('cytochrome_list_summaries',{'initial':'cyp8', 'specie': specie}) }}" class="cyp">CYP8</a>
+            <a href="{{ path('cytochrome_list_summaries',{'initial':'cyp9', 'specie': specie}) }}" class="cyp last">CYP9</a>
+        </div>
         Total number of CYPs starting by '{{ initial }}/{{ initial | upper }}': {{ numberOfCytochromes }}
         <div id="compounds">
             <table id="compounds-table">
                 <thead>
                     <tr>
-                        <th><a href="{{ path('cytochrome_list_summaries_initial',{'initial': initial, 'orderBy': 'name'}) }}" >Cytochrome Name</a></th>
-                        <th><a href="{{ path('cytochrome_list_summaries_initial',{'initial': initial, 'orderBy': 'canonical'}) }}" >Canonical Name</a></th>
-                        <th><a href="{{ path('cytochrome_list_summaries_initial',{'initial': initial, 'orderBy': 'entityId'}) }}" >Uniprot id</a></th>
-                        <th><a href="{{ path('cytochrome_list_summaries_initial',{'initial': initial, 'orderBy': 'tax'}) }}" >Tax id</a></th>
+                        <th>Cytochrome Name</th>
+                        <th>Canonical Name</th>
+                        <th>Uniprot id</th>
+                        <th>Tax id</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -59,9 +64,9 @@
         </div>
         <div class="pagination">
             {{ simple_paginator_render(
-                'cytochrome_list_summaries_initial', 'cytochromes',
+                'cytochrome_list_summaries', 'cytochromes',
                     {
-                        'routeParams' : {'initial' : initial, 'orderBy' : 'name'},
+                        'routeParams' : {'initial' : initial, 'specie' : specie},
                         'container_class' : 'pagination'
                     }
                 )

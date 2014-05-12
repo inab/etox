@@ -150,25 +150,4 @@ class Cytochrome2DocumentRepository extends EntityRepository
         }
         return ($curationReturn);
     }
-
-    public function getCytochrome2DocumentList($initial, $specie)
-    {
-        //Extracts a list of cytochromes from cytochrome2document, of the initial given (specie filter will be applied later on)
-
-        $em = $this->getEntityManager();
-        $query = $em->createQuery('
-            SELECT c2d
-            FROM EtoxMicromeEntity2DocumentBundle:Cytochrome2Document c2d
-            JOIN EtoxMicromeEntityBundle:Cytochrome c
-            WHERE (c2d.cypsMention like :initial or c2d.cypsMention like :initialUpper)
-            AND c.tax = :specie
-            AND c2d.cypsMention = c.name
-        ');
-        $initialUpper=strtoupper($initial);
-        $query->setParameter('initialUpper', $initialUpper."%");
-        $query->setParameter('initial', $initial."%");
-        $query->setParameter('specie', $specie);
-
-        return $query->execute();
-    }
 }

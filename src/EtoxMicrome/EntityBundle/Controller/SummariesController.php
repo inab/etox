@@ -149,8 +149,7 @@ class SummariesController extends Controller
         if($specie=="human"){
             $specie="9606";
         }
-        $arrayCytochrome2Document=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Cytochrome2Document')->getCytochrome2DocumentList($initial,$specie);
-        ldd($arrayCytochrome2Document[0]);
+        $cytochromes=$em->getRepository('EtoxMicromeEntityBundle:Cytochrome')->getCytochromeList($initial,$specie);
         $numberOfCytochromes=count($cytochromes);
         $paginator = $this->get('ideup.simple_paginator');
         $arrayCytochromes = $paginator
@@ -162,7 +161,7 @@ class SummariesController extends Controller
 
         return $this->render('EtoxMicromeEntityBundle:EntitySummaries:indexCytochromes.html.twig', array(
             'initial' => $initial,
-            'orderBy' => $orderBy,
+            'specie' => $specie,
             'arrayCytochromes' => $arrayCytochromes,
             'numberOfCytochromes' => $numberOfCytochromes,
         ));

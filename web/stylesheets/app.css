@@ -789,11 +789,18 @@ input.datepicker {
             background: #FBF8E9;
             font-weight: bold;
         }
+        .alphabet a.cyp{
+            width: 50px;
+        }
 #compounds-table th, #compounds-table td{
     text-align: center;
 }
-
-
+#cytochrome-c{
+    display: none;
+}
+#cytochrome-c .visible{
+    display: block !important;
+}
 
 /* -----------------------------------------
     Help
