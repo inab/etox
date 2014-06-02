@@ -26,7 +26,7 @@
                     {% set maxScore= arrayTotalMaxMin[1] %}
                     {% set minScore= arrayTotalMaxMin[2] %}
                     {% set order =  orderBy | getOrderToSource %}
-                    <table>
+                    <table class="summary">
                         <tr>
                             <td><strong>Total of mentions displayed:</strong> {{ totalHits }}</td>
                             <td><strong>Max. {{scoreToShow}}:</strong> {{ maxScore |number_format(2) }}</td>
@@ -34,7 +34,33 @@
                             <td><strong>{{scoreToShow}} mean:</strong> {{ meanScore | number_format(2) }}</td>
                             <td><strong>{{scoreToShow}} median:</strong> {{ medianScore | number_format(2) }}</td>
                         </tr>
+                        {% if (entityType=="CompoundDict" and whatToSearch=="name") or (entityType=="Cytochrome" and whatToSearch=="name") or (entityType=="Marker" and whatToSearch=="name") %}
+                            <tr>
+                                <td colspan="5">
+                                    <a href="#" class="toggleSummaryInfo"><strong>{{ entityBackup }} information</strong></a>
+                                </td>
+                            </tr>
+                        {% endif %}
                     </table>
+                    <div id="mouseoverSummary">
+                        <table>
+                            <tr>
+                                <td colspan="5">
+                                        {{ mouseoverSummary | raw }}
+                                </td>
+                            </tr>
+                            {% if entityType=="CompoundDict" and whatToSearch=="name" %}
+                            <tr>
+                                <td>
+                                    <strong>Alliases</strong>
+                                </td>
+                                <td colspan="4">
+                                    {{ allias | replace({("|"): ", "}) }}
+                                </td>
+                            </tr>
+                            {% endif %}
+                        </table>
+                    </div>
                 </div>
             <div class="clear-both"></div>
             <div id="documentsResults">

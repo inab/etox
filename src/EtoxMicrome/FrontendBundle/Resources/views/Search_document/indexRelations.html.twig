@@ -34,7 +34,34 @@
                             <td><strong>{{scoreToShow}} mean:</strong> {{ meanScore | number_format(2) }}</td>
                             <td><strong>{{scoreToShow}} median:</strong> {{ medianScore | number_format(2) }}</td>
                         </tr>
+                        {% if (entityType=="CompoundDict") or (entityType=="Cytochrome") or (entityType=="Marker") %}
+                            <tr>
+                                <td colspan="5">
+                                    <a href="#" class="toggleSummaryInfo"><strong>{{ entityBackup }} information</strong></a>
+                                </td>
+                            </tr>
+                        {% endif %}
+
                     </table>
+                    <div id="mouseoverSummary">
+                        <table>
+                            <tr>
+                                <td colspan="5">
+                                        {{ mouseoverSummary | raw }}
+                                </td>
+                            </tr>
+                            {% if (entityType=="CompoundDict" and firstRelation is not defined)%}
+                            <tr>
+                                <td>
+                                    <strong>Alliases</strong>
+                                </td>
+                                <td colspan="4">
+
+                                </td>
+                            </tr>
+                            {% endif %}
+                        </table>
+                    </div>
                 </div>
             <div class="clear-both"></div>
             <div id="documentsResults">

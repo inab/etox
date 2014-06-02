@@ -1573,7 +1573,6 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                             }
                         }
                         $arrayEntityName=array_unique($arrayEntityName);
-
                         $compound2Term2Documents=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getTerm2CompoundRelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy)->getResult();
                         //When dealing with withRelations arrays, we only have this array to get the needed values that we retreive in interface using resultSetArrays... Which are: totalHits, Max. Score, Min. Score
                         //So we implement a function to get all this info inside an arrayTotalMaxMin. Being arrayTotalMaxMin[0]=totalHits, arrayTotalMaxMin[1]=Max.score, arrayTotalMaxMin[2]=Min.score
@@ -1587,6 +1586,8 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                                 ->paginate($em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getTerm2CompoundRelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy), 'documents')
                                 ->getResult()
                         ;
+                        $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummaryFromName($entityName,"Term");
+                        $allias=array();
                         return $this->render('FrontendBundle:Search_document:indexRelations.html.twig', array(
                             'field' => $field,
                             'whatToSearch' => $whatToSearch,
@@ -1601,6 +1602,8 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                             'meanScore' => $meanScore,
                             'medianScore' => $medianScore,
                             'firstRelation' => 'HepatotoxKeyword',
+                            'mouseoverSummary' => $mouseoverSummary,
+                            'allias' => $allias,
                         ));
                     }
                 }
@@ -1637,6 +1640,8 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                         ->paginate($em->getRepository('EtoxMicromeEntity2AbstractBundle:Entity2Abstract')->getCompound2Term2DocumentRelationsDQL($field, $entityType, $arrayEntityName), 'abstracts')
                         ->getResult()
                     ;
+                    $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummaryFromName($entityName,"CompoundDict");
+                    $allias=array();
                     return $this->render('FrontendBundle:Search_document:indexRelations.html.twig', array(
                         'field' => $field,
                         'whatToSearch' => $whatToSearch,
@@ -1662,7 +1667,8 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                         ->paginate($em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getCompound2TermRelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy), 'documents')
                         ->getResult()
                     ;
-
+                    $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummaryFromName($entityName,"CompoundDict");
+                    $allias=$em->getRepository('EtoxMicromeEntityBundle:Alias')->getAliasFromName($entityName);
                     return $this->render('FrontendBundle:Search_document:indexRelations.html.twig', array(
                     'field' => $field,
                     'whatToSearch' => $whatToSearch,
@@ -1676,6 +1682,8 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                     'orderBy' => $orderBy,
                     'meanScore' => $meanScore,
                     'medianScore' => $medianScore,
+                    'mouseoverSummary' => $mouseoverSummary,
+                    'allias' => $allias,
                 ));
                 }
             }
@@ -1706,6 +1714,8 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                                 ->paginate($em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getCytochrome2CompoundRelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy), 'documents')
                                 ->getResult()
                         ;
+                        $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummaryFromName($entityName,"CompoundDict");
+                        $allias=array();
                         return $this->render('FrontendBundle:Search_document:indexRelations.html.twig', array(
                             'field' => $field,
                             'whatToSearch' => $whatToSearch,
@@ -1720,6 +1730,8 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                             'meanScore' => $meanScore,
                             'medianScore' => $medianScore,
                             'firstRelation' => 'CompoundDict',
+                            'mouseoverSummary' => $mouseoverSummary,
+                            'allias' => $allias,
                         ));
                     }
                 }
@@ -1754,6 +1766,8 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                     ->paginate($em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getCompound2Cytochrome2RelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy), 'documents')
                     ->getResult()
                 ;
+                $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummaryFromName($entityName,"Cytochrome");
+                $allias=array();
                 return $this->render('FrontendBundle:Search_document:indexRelations.html.twig', array(
                     'field' => $field,
                     'whatToSearch' => $whatToSearch,
@@ -1767,12 +1781,14 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                     'orderBy' => $orderBy,
                     'meanScore' => $meanScore,
                     'medianScore' => $medianScore,
+                    'mouseoverSummary' => $mouseoverSummary,
+                    'allias' => $allias,
                 ));
             }
         }elseif($whatToSearch=="compoundsMarkersRelations"){
             if($entityType=="Marker"){
                 $entity=$em->getRepository('EtoxMicromeEntityBundle:'.$entityType)->getEntityFromName($entityName);
-                if(count($entity)==0){//If there's no results searching with the cytochrome, we search with the compoundName!!....
+                if(count($entity)==0){//If there's no results searching with the Marker, we search with the compoundName!!....
                     $entity=$em->getRepository('EtoxMicromeEntityBundle:CompoundDict')->getEntityFromName($entityName);
                     if(count($entity)!=0){
                         //We do query expansion with the term!!!
@@ -1794,6 +1810,8 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                                 ->paginate($em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getMarker2CompoundRelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy), 'documents')
                                 ->getResult()
                         ;
+                        $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummaryFromName($entityName,"CompoundDict");
+                        $allias=array();
                         return $this->render('FrontendBundle:Search_document:indexRelations.html.twig', array(
                             'field' => $field,
                             'whatToSearch' => $whatToSearch,
@@ -1808,6 +1826,8 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                             'meanScore' => $meanScore,
                             'medianScore' => $medianScore,
                             'firstRelation' => 'CompoundDict',
+                            'mouseoverSummary' => $mouseoverSummary,
+                            'allias' => $allias,
                         ));
                     }
                 }
@@ -1836,6 +1856,8 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                 $arrayTotalMaxMin=$this->getTotalMaxMinArrayForRelations($compound2Marker2Documents, $orderBy, $field);
                 $meanScore=$this->getMmmrScoreFromRelation($compound2Marker2Documents, $orderBy, 'mean');
                 $medianScore=$this->getMmmrScoreFromRelation($compound2Marker2Documents, $orderBy, 'median');
+                $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummaryFromName($entityName,"Marker");
+                $allias=array();
                 $arrayEntity2Document = $paginator
                     ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "documents")
                     ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "documents")
@@ -1855,6 +1877,8 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                     'orderBy' => $orderBy,
                     'meanScore' => $meanScore,
                     'medianScore' => $medianScore,
+                    'mouseoverSummary' => $mouseoverSummary,
+                    'allias' => $allias,
                 ));
             }
         }
@@ -1915,9 +1939,11 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                 ->paginate($em->getRepository('EtoxMicromeEntity2DocumentBundle:Cytochrome2Document')->getCytochrome2DocumentFromFieldDQL($field, $entityType, $arrayNames, $arrayCanonicals, $source, $orderBy), 'documents')
                 ->getResult()
             ;
+            $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummaryFromName($entityName,"Cytochrome");
+            $allias=array();
 
-        }else
-        { //For Compounds and Markers
+        }else{
+            //For Compounds and Markers
             //In order to relate entities with documents, we have to use the names of the entities instead of their entityId. Therefore we translate $arrayEntityId to $arrayEntityName
             $arrayEntityName=array();
             $em = $this->getDoctrine()->getManager();
@@ -1931,7 +1957,6 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
 
             }
             $arrayEntityName=array_unique($arrayEntityName);//We get rid of the duplicates
-            //ld($arrayEntityName);
             if($entityType=="CompoundDict" or $entityType=="CompoundMesh"){
                 //We search into Abstracts only if we are looking for Compounds
 
@@ -1960,7 +1985,6 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                 */
                 if (in_array($source, $arraySourcesDocuments)){
                     $compound2Documents=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntity2DocumentFromFieldDQL($field, $entityType, $arrayEntityName, $source, $orderBy)->getResult();
-
                     ///Temporary function to get rid of the duplicated entries. Duplicates should be removed from the entity2document table itself
                     //$compound2Documents=$this->getRidOfDuplicatedEntries($compound2Documents);
 
@@ -1975,6 +1999,13 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                         ->paginate($em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntity2DocumentFromFieldDQL($field, $entityType, $arrayEntityName, $source, $orderBy), 'documents')
                         ->getResult()
                     ;
+                    if($whatToSearch=="name"){
+                        $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummaryFromName($entityName,"CompoundDict");
+                        $allias=$em->getRepository('EtoxMicromeEntityBundle:Alias')->getAliasFromName($entityName);
+                    }else{
+                        $mouseoverSummary="";
+                        $allias=array();
+                    }
                     return $this->render('FrontendBundle:Search_document:index.html.twig', array(
                         'field' => $field,
                         'whatToSearch' => $whatToSearch,
@@ -1988,6 +2019,8 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                         'orderBy' => $orderBy,
                         'meanScore' => $meanScore,
                         'medianScore' => $medianScore,
+                        'mouseoverSummary' => $mouseoverSummary,
+                        'allias' => $allias,
                     ));
                 }
                 if (in_array($source, $arraySourcesAbstracts)){
@@ -2037,6 +2070,8 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                     ->getResult()
                 ;
                 }
+                $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummaryFromName($entityName,"Marker");
+                $allias=array();
                 return $this->render('FrontendBundle:Search_document:index.html.twig', array(
                     'field' => $field,
                     'whatToSearch' => $whatToSearch,
@@ -2050,6 +2085,8 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                     'orderBy' => $orderBy,
                     'meanScore' => $meanScore,
                     'medianScore' => $medianScore,
+                    'mouseoverSummary' => $mouseoverSummary,
+                    'allias' => $allias,
                 ));
             }
         }
@@ -2066,6 +2103,8 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
         'orderBy' => $orderBy,
         'meanScore' => $meanScore,
         'medianScore' => $medianScore,
+        'mouseoverSummary' => $mouseoverSummary,
+        'allias' => $allias,
         ));
     }
 

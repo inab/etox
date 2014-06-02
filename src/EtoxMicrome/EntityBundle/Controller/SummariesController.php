@@ -19,9 +19,9 @@ class SummariesController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         if(($id=="drugBank")or($id=="drugbank")){
-            $arrayDrugbanks=$em->getRepository('EtoxMicromeEntityBundle:Drugbank')->getDrugbanks($initial);//We get compounds starting with a/A. Rest of compounds will be retrieved by ajax function
+            $arrayDrugbanks=$em->getRepository('EtoxMicromeEntityBundle:Drugbank')->getDrugbanks($initial);
             //ld($arrayDrugbanks);
-            $arrayCompounds=$em->getRepository('EtoxMicromeEntityBundle:CompoundDict')->getCompoundsSummary($id, $initial);//We get compounds starting with a/A. Rest of compounds will be retrieved by ajax function_exists()
+            $arrayCompounds=$em->getRepository('EtoxMicromeEntityBundle:CompoundDict')->getCompoundsSummary($id, $initial);
 
             $dictionaryNames=array();
             $dictionaryAliases=array();
@@ -48,6 +48,16 @@ class SummariesController extends Controller
                 }
             }
 
+            /*
+            foreach($arrayDrugbanks as $drugBank){
+                $drugBankId=$drugBank->getDrugbankid();
+                $drugBankName=$drugBank->getDrugbankname();
+                ld($drugBankName);
+                $stringAliases=$em->getRepository('EtoxMicromeEntityBundle:Alias')->getAliasFromName($drugBankName);
+                $arrayAliases=explode("|", $stringAliases);
+                $dictionaryAliases[$drugBankId]=$arrayAliases;
+            }
+            */
             //Second we create the $dictionaryAliases
             foreach($arrayCompounds as $compound){
                 $nameCompound=$compound->getName();

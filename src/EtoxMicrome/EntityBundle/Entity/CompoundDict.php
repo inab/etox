@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * CompoundDict
  *
- * @ORM\Table(indexes={@ORM\Index(name="compoundDict_name_index", columns={"name"}), @ORM\Index(name="compoundDict_chemIdPlus_index", columns={"""chemIdPlus"""}), @ORM\Index(name="compoundDict_chebi_index", columns={"chebi"}), @ORM\Index(name="compoundDict_inchi_index", columns={"""inChi"""}), @ORM\Index(name="compoundDict_casRegistryNumber_index", columns={"""casRegistryNumber"""}), @ORM\Index(name="compoundDict_pubChemCompound_index", columns={"""pubChemCompound"""}), @ORM\Index(name="compoundDict_pubChemSubstance_index", columns={"""pubChemSubstance"""}), @ORM\Index(name="compoundDict_drugBank_index", columns={"""drugBank"""}), @ORM\Index(name="compoundDict_humanMetabolome_index", columns={"""humanMetabolome"""}), @ORM\Index(name="compoundDict_keggCompound_index", columns={"""keggCompound"""}), @ORM\Index(name="compoundDict_keggDrug_index", columns={"""keggDrug"""}), @ORM\Index(name="compoundDict_mesh_index", columns={"mesh"}) } )
+ * @ORM\Table(indexes={@ORM\Index(name="compoundDict_new_name_index", columns={"name"}), @ORM\Index(name="compoundDict_new_chemIdPlus_index", columns={"""chemIdPlus"""}), @ORM\Index(name="compoundDict_new_chebi_index", columns={"chebi"}), @ORM\Index(name="compoundDict_new_inchi_index", columns={"""inChi"""}), @ORM\Index(name="compoundDict_new_casRegistryNumber_index", columns={"""casRegistryNumber"""}), @ORM\Index(name="compoundDict_new_pubChemCompound_index", columns={"""pubChemCompound"""}), @ORM\Index(name="compoundDict_new_pubChemSubstance_index", columns={"""pubChemSubstance"""}), @ORM\Index(name="compoundDict_new_drugBank_index", columns={"""drugBank"""}), @ORM\Index(name="compoundDict_new_humanMetabolome_index", columns={"""humanMetabolome"""}), @ORM\Index(name="compoundDict_new_keggCompound_index", columns={"""keggCompound"""}), @ORM\Index(name="compoundDict_new_keggDrug_index", columns={"""keggDrug"""}), @ORM\Index(name="compoundDict_new_mesh_index", columns={"mesh"}) } )
  * @ORM\Entity(repositoryClass="EtoxMicrome\EntityBundle\Entity\CompoundDictRepository")
  */
 class CompoundDict
@@ -59,7 +59,7 @@ class CompoundDict
     /**
      * @var string
      *
-     * @ORM\Column(name="""pubChemSubstance""", type="string", length=500)
+     * @ORM\Column(name="""pubChemSubstance""", type="string", length=500, nullable=true)
      */
     private $pubChemSubstance;
 
@@ -73,42 +73,42 @@ class CompoundDict
     /**
      * @var string
      *
-     * @ORM\Column(name="""drugBank""", type="string", length=500)
+     * @ORM\Column(name="""drugBank""", type="string", length=500, nullable=true)
      */
     private $drugBank;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="""humanMetabolome""", type="string", length=500)
+     * @ORM\Column(name="""humanMetabolome""", type="string", length=500, nullable=true)
      */
     private $humanMetabolome;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="""keggCompound""", type="string", length=500)
+     * @ORM\Column(name="""keggCompound""", type="string", length=500, nullable=true)
      */
     private $keggCompound;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="""keggDrug""", type="string", length=500)
+     * @ORM\Column(name="""keggDrug""", type="string", length=500, nullable=true)
      */
     private $keggDrug;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="mesh", type="string", length=500)
+     * @ORM\Column(name="mesh", type="string", length=500, nullable=true)
      */
     private $mesh;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="""nrDbIds""", type="integer")
+     * @ORM\Column(name="""nrDbIds""", type="integer", nullable=true)
      */
     private $nrDbIds;
 
@@ -122,7 +122,7 @@ class CompoundDict
     /**
      * @var integer
      *
-     * @ORM\Column(name="name2struct", type="integer")
+     * @ORM\Column(name="name2struct", type="integer", nullable=true)
      */
     private $name2struct;
 

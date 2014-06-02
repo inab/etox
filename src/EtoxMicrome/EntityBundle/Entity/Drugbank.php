@@ -56,6 +56,47 @@ class Drugbank
      */
     private $targetRelation;
 
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="hepval_counter", type="integer", nullable=true)
+     */
+    private $hepvalCounter;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="svm_confidence_counter", type="integer", nullable=true)
+     */
+    private $svmConfidenceCounter;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="pattern_counter", type="integer", nullable=true)
+     */
+    private $patternCounter;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="term_counter", type="integer", nullable=true)
+     */
+    private $termCounter;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="rule_counter", type="integer", nullable=true)
+     */
+    private $ruleCounter;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="total_mentions", type="integer", nullable=true)
+     */
+    private $totalMentions;
 
     /**
      * Get id
@@ -180,5 +221,143 @@ class Drugbank
     public function getTargetRelation()
     {
         return $this->targetRelation;
+    }
+
+    /**
+     * Set hepvalCounter
+     *
+     * @param integer $hepvalCounter
+     * @return Drugbank
+     */
+    public function setHepvalCounter($hepvalCounter)
+    {
+        $this->hepvalCounter = $hepvalCounter;
+
+        return $this;
+    }
+
+    /**
+     * Get hepvalCounter
+     *
+     * @return integer
+     */
+    public function getHepvalCounter()
+    {
+        return $this->hepvalCounter;
+    }
+
+    /**
+     * Set svmConfidenceCounter
+     *
+     * @param integer $svmConfidenceCounter
+     * @return Drugbank
+     */
+    public function setSvmConfidenceCounter($svmConfidenceCounter)
+    {
+        $this->svmConfidenceCounter = $svmConfidenceCounter;
+
+        return $this;
+    }
+
+    /**
+     * Get svmConfidenceCounter
+     *
+     * @return integer
+     */
+    public function getSvmConfidenceCounter()
+    {
+        return $this->svmConfidenceCounter;
+    }
+
+    /**
+     * Set patternCounter
+     *
+     * @param integer $patternCounter
+     * @return Drugbank
+     */
+    public function setPatternCounter($patternCounter)
+    {
+        $this->patternCounter = $patternCounter;
+
+        return $this;
+    }
+
+    /**
+     * Get patternCounter
+     *
+     * @return integer
+     */
+    public function getPatternCounter()
+    {
+        return $this->patternCounter;
+    }
+
+    /**
+     * Set termCounter
+     *
+     * @param integer $termCounter
+     * @return Drugbank
+     */
+    public function setTermCounter($termCounter)
+    {
+        $this->termCounter = $termCounter;
+
+        return $this;
+    }
+
+    /**
+     * Get termCounter
+     *
+     * @return integer
+     */
+    public function getTermCounter()
+    {
+        return $this->termCounter;
+    }
+
+    /**
+     * Set ruleCounter
+     *
+     * @param integer $ruleCounter
+     * @return Drugbank
+     */
+    public function setRuleCounter($ruleCounter)
+    {
+        $this->ruleCounter = $ruleCounter;
+
+        return $this;
+    }
+
+    /**
+     * Get ruleCounter
+     *
+     * @return integer
+     */
+    public function getRuleCounter()
+    {
+        return $this->ruleCounter;
+    }
+
+    /**
+     * Set totalMentions
+     *
+     * @param integer $totalMentions
+     * @return Drugbank
+     */
+    public function setTotalMentions($totalMentions)
+    {
+        $this->totalMentions = $totalMentions;
+
+        return $this;
+    }
+
+    /**
+     * Get totalMentions
+     *
+     * @return integer
+     */
+    public function getTotalMentions()
+    {
+        return $this->totalMentions;
     }
 }

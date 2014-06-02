@@ -46,6 +46,12 @@
                         <th>Terms Rel.</th>
                         <th>CYPs Rel.</th>
                         <th>Markers Rel.</th>
+                        <th>SVMs</th>
+                        <th>Conf.</th>
+                        <th>Pattern</th>
+                        <th>Term</th>
+                        <th>Rule</th>
+                        <th>Total Mentions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -62,8 +68,15 @@
                             </small>
                         </td>
                         <td>{{ drugbankid }}</td>
-                        <td>{{ drugbank.getApproval }}</td>
-                        <td>{{ drugbank.getCategory }}</td>
+                        <td>
+                            {% set approval = drugbank.getApproval %}
+                            {{ approval | replace({("|"): ", "}) }}
+
+                        </td>
+                        <td>
+                            {% set category = drugbank.getCategory %}
+                            {{ category | replace({("|"): ", "}) }}
+                        </td>
                         <td>
                             <small>
                                 {% set stringTarget=drugbank.getTargetRelation %}
@@ -87,6 +100,24 @@
                             {% if dictionaryCountMarkerRelations[drugbankid] != 0 %}
                             {{ dictionaryCountMarkerRelations[drugbankid] }}
                             {% endif %}
+                        </td>
+                        <td>
+                            {{ drugbank.getHepvalCounter }}
+                        </td>
+                        <td>
+                            {{ drugbank.getSvmConfidenceCounter }}
+                        </td>
+                        <td>
+                            {{ drugbank.getPatternCounter }}
+                        </td>
+                        <td>
+                            {{ drugbank.getTermCounter }}
+                        </td>
+                        <td>
+                            {{ drugbank.getRuleCounter }}
+                        </td>
+                        <td>
+                            {{ drugbank.getTotalMentions }}
                         </td>
                     </tr>
                     {% endfor %}

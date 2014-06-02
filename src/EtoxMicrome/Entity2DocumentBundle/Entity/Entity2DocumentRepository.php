@@ -950,6 +950,244 @@ class Entity2DocumentRepository extends EntityRepository
         return ($stringOutput);
     }
 
+    public function getEntitySummaryFromName($name, $qualifier){
+        $em = $this->getEntityManager();
+        $dictionary=array();
+        $stringOutput="";
+
+        if ($qualifier=="CompoundDict"){
+            $entity=$em->getRepository("EtoxMicromeEntityBundle:CompoundDict")->findOneByName($name);
+            if ($entity!=null){
+                //Once we have the entity itself we have to create a dictionary to save with key=field, value=field_value which can be processed to create the string to the mouseover
+                $name=$entity->getName();
+                if($name!=""){
+                    $dictionary["name"]="<a href='http://www.chemspider.com/Search.aspx?q=$name' target='_blank'>$name</a>";
+                }
+                $chemIdPlus=$entity->getChemIdPlus();
+                if($chemIdPlus!=""){
+                    $dictionary["chemIdPlus"]=$chemIdPlus;
+                }
+                $chebi=$entity->getChebi();
+                if($chebi!=""){
+                    $dictionary["chebi"]="<a href='http://www.ebi.ac.uk/chebi/searchId.do?chebiId=$chebi' target='_blank'>$chebi</a>";;
+                }
+                $inChi=$entity->getInChi();
+                if($inChi!=""){
+                    $dictionary["inChi"]="<a href='http://www.chemspider.com/Search.aspx?q=$inChi' target='_blank'>$inChi</a>";;
+                }
+                $drugBank=$entity->getDrugBank();
+                if($drugBank!=""){
+                    $dictionary["drugBank"]="<a href='http://www.drugbank.ca/drugs/$drugBank' target='_blank'>$drugBank</a>";
+                }
+                $humanMetabolome=$entity->getHumanMetabolome();
+                if($humanMetabolome!=""){
+                    $dictionary["humanMetabolome"]="<a href='http://www.hmdb.ca/metabolites/$humanMetabolome' target='_blank'>$humanMetabolome</a>";
+                }
+                $keggCompound=$entity->getKeggCompound();
+                if($keggCompound!=""){
+                    $dictionary["keggCompound"]="<a href='http://www.genome.jp/dbget-bin/www_bget?cpd:$keggCompound' target='_blank'>$keggCompound</a>";
+                }
+                $keggDrug=$entity->getKeggDrug();
+                if($keggDrug!=""){
+                    $dictionary["keggDrug"]="<a href='http://www.genome.jp/dbget-bin/www_bget?dr:$keggDrug' target='_blank'>$keggDrug</a>";
+                }
+                $mesh=$entity->getMesh();
+                if($mesh!=""){
+                    $dictionary["mesh"]="<a href='http://www.nlm.nih.gov/cgi/mesh/2014/MB_cgi?field=uid&term=$mesh' target='_blank'>$mesh</a>";
+                }
+                $nrDbIds=$entity->getNrDbIds();
+                if($nrDbIds!=""){
+                    $dictionary["nrDbIds"]=$nrDbIds;
+                }
+                $smile=$entity->getSmile();
+                if($smile!=""){
+                    $dictionary["smile"]="<form method='post' action='http://www.chemspider.com/WebAPI.aspx' target='_blank'>
+                                            <select name='mode' style='width:210px;display:none'>
+                                                <option value='search'>Search Service</option>
+                                            </select>
+                                            <!--<input type='hidden' name='molfile' />-->
+                                            <textarea name='molfile' cols='50' row='50'>$smile</textarea>
+                                            <input type='submit' value='Search SMILE in ChemSpider' />
+                                        </form>
+                    ";
+                }
+            }
+        }
+
+        if($qualifier=="Marker"){
+            $entity=$em->getRepository("EtoxMicromeEntityBundle:Marker")->findOneByName($name);
+            //Once we have the entity itself we have to create a dictionary to save with key=field, value=field_value which can be processed to create the string to the mouseover
+            if($entity!=null){
+                $name=$entity->getName();
+                if($name!=""){
+                    $dictionary["name"]=$name;
+                }
+                /*We don't need the tax
+                $tax=$entity->getTax();
+                if($tax!=""){
+                    $dictionary["tax"]=$tax;
+                }
+                */
+                $entityId=$entity->getEntityId();
+
+                $markerType=$entity->getMarkerType();
+                if($markerType=="marker"){
+                    $markerType="Unspecific";
+                }elseif($markerType=="pubchem"){
+                    $markerType="Compound";
+                    //entityId="CID 10964";// outlink="http://pubchem.ncbi.nlm.nih.gov/summary/summary.cgi?cid=10964"
+                    $entityIdCut=substr($entityId, 4);
+                    $outlink="http://pubchem.ncbi.nlm.nih.gov/summary/summary.cgi?cid=$entityIdCut";
+                    $dictionary["Marker id"]="<a href='$outlink' target='_blank'>$entityId</a>";
+                }elseif($markerType=="protein_uniprot"){
+                    $markerType="Protein";
+                    //entityId=P24298  //outlink=http://www.uniprot.org/uniprot/P24298
+                    $outlink="http://www.uniprot.org/uniprot/$entityId";
+                    $dictionary["Uniprot ID"]="<a href='$outlink' target='_blank'>$entityId</a>";
+                }
+
+                $dictionary["Marker Type"]=$markerType;
+
+            }
+        }
+
+        if($qualifier=="Specie"){
+            $entity=$em->getRepository("EtoxMicromeEntityBundle:Specie")->findOneByName($name);
+            //Once we have the entity itself we have to create a dictionary to save with key=field, value=field_value which can be processed to create the string to the mouseover
+            if ($entity!=null){
+                $name=$entity->getName();
+                if($name!=""){
+                    $dictionary["name"]=$name;
+                }
+                $nameClass=$entity->getNameClass();
+                if($nameClass!=""){
+                    $dictionary["nameClass"]=$nameClass;
+                }
+                $ncbiTaxId=$entity->getNcbiTaxId();
+                if($ncbiTaxId!=""){
+                    $dictionary["NCBItaxId"]="<a href='http://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=$ncbiTaxId&lvl=0' target='_blank'>$ncbiTaxId</a>";
+                }
+                $specieCategory=$entity->getSpecieCategory();
+                if($specieCategory!=""){
+                    $dictionary["specieCategory"]=$specieCategory;
+                }
+                $specieTox=$entity->getSpecieTox();
+                if($specieTox!=""){
+                    $dictionary["specieTox"]=$specieTox;
+                }
+            }
+
+        }
+
+        if($qualifier=="Cytochrome"){
+            $message="inside getEntitySummaryFromName for the cytochrome entityType";
+            $entity=$em->getRepository("EtoxMicromeEntityBundle:Cytochrome")->findOneByName($name);
+            //Once we have the entity itself we have to create a dictionary to save with key=field, value=field_value which can be processed to create the string to the mouseover
+            if ($entity!=null){
+                $name=$entity->getName();
+                if($name!=""){
+                    $dictionary["name"]=$name;
+                }
+                $entityId=$entity->getEntityId();
+                if($entityId!=""){
+                    $outlink="http://www.uniprot.org/uniprot/$entityId";
+                    $dictionary["UniprotID"]="<a href='$outlink' target='_blank'>$entityId</a>";
+                }
+                $type=$entity->getType();
+                if($type!=""){
+                    $dictionary["Type"]=$type;
+                }
+                $ncbiTaxId=$entity->getTax();
+                if($ncbiTaxId!=""){
+                    $dictionary["Tax"]="<a href='http://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=$ncbiTaxId&lvl=0' target='_blank'>$ncbiTaxId</a>";
+                }
+
+                $canonical=$entity->getCanonical();
+                if($canonical!=""){
+                    $dictionary["Canonical"]=$canonical;
+                }
+            }
+
+        }
+
+        if($qualifier=="Term"){
+            $message="inside getEntitySummaryFromName for the term entityType";
+            $entity=$em->getRepository("EtoxMicromeEntityBundle:Hepatotoxkeyword")->getEntityFromName($name);
+            //Once we have the entity itself we have to create a dictionary to save with key=field, value=field_value which can be processed to create the string to the mouseover
+            if ($entity!=null){
+                $term=$entity->getTerm();
+                if($term!=""){
+                    $dictionary["Term"]=$term;
+                }
+                $norm=$entity->getNorm();
+                if($norm!=""){
+                    $dictionary["Norm"]=$norm;
+                }
+                $pos=$entity->getPos();
+                if($pos!=""){
+                    $dictionary["Pos"]=$pos;
+                }
+                $efpia=$entity->getEFPIA();
+                if($efpia!=""){
+                    $dictionary["EFPIA"]=$efpia;
+                }
+                $costart=$entity->getCOSTART();
+                if($costart!=""){
+                    $dictionary["COSTART"]=$costart;
+                }
+                $medDra=$entity->getMedDRA();
+                if($medDra!=""){
+                    $dictionary["MedDRA"]=$medDra;
+                }
+                $mPheno=$entity->getMPheno();
+                if($mPheno!=""){
+                    $dictionary["MPheno"]=$mPheno;
+                }
+                $adverseEvents=$entity->getAdverseEvents();
+                if($adverseEvents!=""){
+                    $dictionary["Adverse Events"]=$adverseEvents;
+                }
+                $do=$entity->getDo();
+                if($do!=""){
+                    $dictionary["Do"]=$do;
+                }
+                $geminaSymptom=$entity->getGeminaSymptom();
+                if($geminaSymptom!=""){
+                    $dictionary["Gemina Symptom"]=$geminaSymptom;
+                }
+                $humanPhenotype=$entity->getHumanPhenotype();
+                if($humanPhenotype!=""){
+                    $dictionary["Human Phenotype"]=$humanPhenotype;
+                }
+                $mpath=$entity->getMpath();
+                if($mpath!=""){
+                    $dictionary["Mpath"]=$mpath;
+                }
+                $meshOmim=$entity->getMESH_OMIM();
+                if($meshOmim!=""){
+                    $dictionary["MESH OMIM"]=$meshOmim;
+                }
+                $polysearch=$entity->getPolysearch();
+                if($polysearch!=""){
+                    $dictionary["Polysearch"]=$polysearch;
+                }
+                $etox=$entity->getEtox();
+                if($etox!=""){
+                    $dictionary["eTOX"]=$etox;
+                }
+
+            }
+
+        }
+
+        foreach($dictionary as $key => $value){
+            if ($value!=""){
+                $stringOutput=$stringOutput."<strong>$key:</strong> $value<br/>";
+            }
+        }
+        return ($stringOutput);
+    }
+
     public function countCompound2Document($compoundName)
     {
         $message="inside countCompound2Document";

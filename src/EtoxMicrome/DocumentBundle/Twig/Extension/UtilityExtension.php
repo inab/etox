@@ -198,11 +198,11 @@ class UtilityExtension extends \Twig_Extension
                         array_push($arrayHighlighted, $place);
                         $text=$arrayText[$place];
                         $text = str_ireplace($entityBackup, '<mark class="termSearched">'.$entityBackup.'</mark>', $text);
-                        if($entityType=="keyword"){
+                        if($entityType=="HepKeywordTermVariant"){
                             $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermVariant");
-                        }elseif($entityType=="keyword"){
+                        }elseif($entityType=="HepKeywordTermNorm"){
                             $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermNorm");
-                        }elseif($entityType=="keyword"){
+                        }elseif($entityType=="HepatotoxKeyword"){
                             $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepatotoxKeyword");
                         }
                         $link=$this->generator->generate('elasticSearch_keyword', array('whatToSearch' => $whatToSearch, 'source' => $source, 'keyword' => $entityBackup,));
@@ -628,7 +628,6 @@ class UtilityExtension extends \Twig_Extension
                         break;
                     case 'CompoundDict':
                         $alert="entra en CompoundDict";
-
                         $numberWords=str_word_count($entityName, 0, '0..9()=-');
                         //ld($numberWords);
                         if($numberWords==1){
@@ -703,7 +702,7 @@ class UtilityExtension extends \Twig_Extension
                         break;
                 }
             }else{
-                //We haven't changed color for entityBackup case insensitive search of entities. We change it now.
+                //$message="We haven't changed color for entityBackup case insensitive search of entities. We change it now.";
                 //$text = str_ireplace($entityBackup, '<mark class="termSearched">'.$entityBackup.'</mark>', $text);
                 $numberWords=str_word_count($entityName, 0, '0..9()=-');
                 //ld($numberWords);
