@@ -108,15 +108,17 @@ class CytochromeRepository extends EntityRepository
         return $entity;
     }
 
-    public function searchEntityGivenACanonical($canonical)
+    public function searchEntityGivenACanonical($canonical, $taxId)
     {
         $message="Inside searchEntityGivenACanonical at CytochromeRepository";
         $query = $this->_em->createQuery("
             SELECT c
             FROM EtoxMicromeEntityBundle:Cytochrome c
             where c.canonical= :canonical
+            and c.tax= :taxId
         ");
         $query->setParameter('canonical', $canonical);
+        $query->setParameter('taxId', $taxId);
         $compound=$query->getResult();
         if(count($compound)==0){
             $errorMessage="There is no entity with that canonical ($canonical)";

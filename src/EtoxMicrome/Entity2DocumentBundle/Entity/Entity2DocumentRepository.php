@@ -802,16 +802,7 @@ class Entity2DocumentRepository extends EntityRepository
                 //We already have the document info and the cytochrome info.
                 $documentId=$cytochrome2Document->getDocument()->getId();
                 //ld($documentId);
-                //1.- We select CYPs mentioning sentence
-                $cytochromeName=$cytochrome2Document->getCypsMention();
-                //ld($cytochromeName);
-                $cytochrome=$em->getRepository('EtoxMicromeEntityBundle:Cytochrome')->findOneByName($cytochromeName);
-                //ld($cytochrome);
-                if($cytochrome==null){
-                    //Doesn't exist a cytochrome with that name... we should look for a cytochrome by canonical??
-                    $cytochrome=$em->getRepository('EtoxMicromeEntityBundle:Cytochrome')->searchEntityGivenACanonical($cytochrome2Document->getCypsCanonical());
-                    //ld($cytochrome);
-                }
+
                 //2.- We select the species for the same sentence
                 $specie2documentArray=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Specie2Document')->findByDocument($documentId);
                     //We also create an array with the species co-mentioned that we will be usefull later.
@@ -819,9 +810,23 @@ class Entity2DocumentRepository extends EntityRepository
                 foreach($specie2documentArray as $specie2Document){
                     $arraySpecies[]=$specie2Document->getSpecie();
                 }
+                if(count($arraySpecies)>0){
+                    $taxId=$arraySpecies[0]->getNcbiTaxId();
+                    //$nameSpecie=$arraySpecies[0]->getName();
+                    //ld($nameSpecie);
+                }
+                //1.- We select CYPs mentioning sentence
+                $cytochromeName=$cytochrome2Document->getCypsMention();
+                $cytochrome=$em->getRepository('EtoxMicromeEntityBundle:Cytochrome')->findOneByName($cytochromeName);
+                if($cytochrome==null){
+                    //Doesn't exist a cytochrome with that name... we should look for a cytochrome by canonical??////WARNING!! TO SEARCH BY CANONICAL WE SHOULD KNOW THE TAXID!!!
+                    $cytochrome=$em->getRepository('EtoxMicromeEntityBundle:Cytochrome')->searchEntityGivenACanonical($cytochrome2Document->getCypsCanonical(), $taxId);
+                    //ld($cytochrome);
+                }
 
                 //3.- We search if there are co-ocurrence of CYPs-mention taxId with the species tax
                 $cytochromeTaxId=$cytochrome->getTax();
+
                 $numberCoocurrences=0;
                 foreach($specie2documentArray as $specie2Document){
                     $specieDocumentTaxId=$specie2Document->getSpecie()->getNcbiTaxId();

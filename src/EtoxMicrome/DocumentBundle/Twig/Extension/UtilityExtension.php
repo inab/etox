@@ -129,7 +129,6 @@ class UtilityExtension extends \Twig_Extension
         */
         $arrayText=str_word_count($text, 1, '0..9()=-');
         $arrayHighlighted=array();
-
         //With arrayHepKeywordTermVariant2Document we can highlight Hepatotoxicity Terms
         $arrayHepKeywordTermVariant2Document = $em->getRepository('EtoxMicromeEntity2DocumentBundle:HepKeywordTermVariant2Document')->findHepKeywordTermVariant2Document($document);
         foreach ($arrayHepKeywordTermVariant2Document as $term2Document){
@@ -256,6 +255,7 @@ class UtilityExtension extends \Twig_Extension
         //ld($arrayCytochrome2Document);
         foreach ($arrayCytochrome2Document as $cytochrome2Document){
             $entityName=$cytochrome2Document->getCypsMention();
+            //ld($entityName);
             $cytochrome2DocumentId=$cytochrome2Document->getId();
             //ld($entityBackup);
             //If the name==entityBackup, we don't do anything, we'll change it at the end
@@ -645,7 +645,7 @@ class UtilityExtension extends \Twig_Extension
                                     array(
                                         'field' => $field,
                                         'whatToSearch' => $whatToSearch,
-                                        'entityType' => "compoundDict",
+                                        'entityType' => $entityType,
                                         'source' => $source,
                                         'entityName' => $entityNameUrlEncoded,
                                     )
@@ -670,7 +670,7 @@ class UtilityExtension extends \Twig_Extension
                                     array(
                                         'field' => $field,
                                         'whatToSearch' => $whatToSearch,
-                                        'entityType' => "compoundDict",
+                                        'entityType' => $entityType,
                                         'source' => $source,
                                         'entityName' => $entityNameUrlEncoded,
                                     )

@@ -325,14 +325,13 @@
                                     </td>
 
                                 {% endif %}
-
                                 {% set text=entity2Document.document.getText %}
                                 {% if firstRelation is defined %}
                                     {% if firstRelation=="HepatotoxKeyword"%}
                                         {% set arrayText= text | highlightEntitiesDocuments (entity2Document.document,entityBackup,field,whatToSearch, source, "HepatotoxKeyword", tooltipCounter) %}
                                     {% endif %}
                                     {% if firstRelation=="CompoundDict"%}
-                                        {% set arrayText= text | highlightEntitiesDocuments (entity2Document.document,entityBackup,field,whatToSearch, source, "CompoundDict", tooltipCounter) %}
+                                        {% set arrayText= text | highlightEntitiesDocuments (entity2Document.document,entityBackup,field,whatToSearch, source, entityType, tooltipCounter) %}
                                     {% endif %}
                                 {% else %}
                                     {% set arrayText= text | highlightEntitiesDocuments (entity2Document.document,entityBackup,field,whatToSearch, source, entityType, tooltipCounter) %}
