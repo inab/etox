@@ -528,46 +528,10 @@ class Entity2DocumentRepository extends EntityRepository
         return $query;
     }
 
-    public function updateEntity2DocumentCuration($entity2DocumentId, $action)
-    {
-        $message="updateEntity2DocumentCuration";
-        /*Here we get the entity2Document and the action to take for the curation value.
-        $action can be check or cross.
-        If $action==check, then we have to add one to the curation field of the Entity2Document register
-        If $action==cross, then we have to substract one to the curation field of the Entity2Document register
-
-        After that, taking into account the curation value, we have to generate the html to render inside the curation
-        */
-
-        //ld($entity2DocumentId);
-        //ldd($action);
-
-        $em = $this->getEntityManager();
-        $entity2Document=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->findOneById($entity2DocumentId);
-        if (!$entity2Document) {
-            throw $this->createNotFoundException(
-                "Cannot curate this Entity2Document $entity2DocumentId"
-            );
-        }
-        else{
-            $curation=$entity2Document->getCuration();
-            if ($action=="check"){
-                $entity2Document->setCuration($curation + 1);
-            }elseif($action=="cross"){
-                $entity2Document->setCuration($curation - 1);
-            }
-            $em->flush();
-            $curationReturn=$entity2Document->getCuration();
-            return($curationReturn);
-        }
-        return ($curationReturn);
-    }
-
     public function getEntitySummary($entity2DocumentId, $qualifier){
         $em = $this->getEntityManager();
         $dictionary=array();
         $stringOutput="";
-
         if ($qualifier=="CompoundDict"){
             $entity2Document=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->findOneById($entity2DocumentId);
             $nameEntity=$entity2Document->getName();
@@ -794,14 +758,12 @@ class Entity2DocumentRepository extends EntityRepository
             $warning=false;
             $message="getEntitySummary for cytochrome";
             $cytochrome2Document=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Cytochrome2Document')->findOneById($entity2DocumentId);
-            //ld($cytochrome2Document);
             if ($cytochrome2Document!=null){
                 //////////////////////////////////////////////////////////////////////
                 ////////////////////////CYP NORMALIZATION PROTOCOL////////////////////
                 //////////////////////////////////////////////////////////////////////
                 //We already have the document info and the cytochrome info.
                 $documentId=$cytochrome2Document->getDocument()->getId();
-                //ld($documentId);
 
                 //2.- We select the species for the same sentence
                 $specie2documentArray=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Specie2Document')->findByDocument($documentId);
@@ -814,6 +776,9 @@ class Entity2DocumentRepository extends EntityRepository
                     $taxId=$arraySpecies[0]->getNcbiTaxId();
                     //$nameSpecie=$arraySpecies[0]->getName();
                     //ld($nameSpecie);
+                }
+                else{
+                    $taxId="9606";
                 }
                 //1.- We select CYPs mentioning sentence
                 $cytochromeName=$cytochrome2Document->getCypsMention();
@@ -1203,5 +1168,43 @@ class Entity2DocumentRepository extends EntityRepository
 
         return $count;
 
+    }
+
+    public function updateEntity2DocumentCuration($entity2DocumentId, $action)
+    {
+        $message="updateEntity2DocumentCuration";
+        /*Here we get the entity2Document and the action to take for the curation value.
+        $action can be check or cross.
+        If $action==check, then we have to add one to the curation field of the Entity2Document register
+        If $action==cross, then we have to substract one to the curation field of the Entity2Document register
+
+        After that, taking into account the curation value, we have to generate the html to render inside the curation
+        */
+
+        //ld($entity2DocumentId);
+        //ldd($action);
+
+        $em = $this->getEntityManager();
+        $entity2Document=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->findOneById($entity2DocumentId);
+        ldd($entity2Document);
+        if (!$entity2Document) {
+            throw $this->createNotFoundException(
+                "Cannot curate this Entity2Document $entity2DocumentId"
+            );
+        }
+        else{
+            $curation=$entity2Document->getCuration();
+            if ($action=="check"){
+                $entity2Document->setCuration($curation + 1);
+            }elseif($action=="cross"){
+                $entity2Document->setCuration($curation - 1);
+            }
+            $em->persist($entity2Document);
+            $em->flush();
+            ldd($entity2Document->getCuration());
+            $curationReturn=$entity2Document->getCuration();
+            return($curationReturn);
+        }
+        return ($curationReturn);
     }
 }

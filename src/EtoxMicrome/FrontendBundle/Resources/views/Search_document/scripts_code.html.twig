@@ -8,6 +8,11 @@
           e.preventDefault();
           $("#mouseoverSummary").toggle(300);
         });
+        $(".toggleDownload").click(function(e){
+          e.preventDefault();
+          $("#downloadOptions").toggle(300);
+        });
+
 
         $(".bigSearch").click(function() {
             //We setup the url to search for. We need field(hepatotoxicity, other), WhatToSearch(name, id, structure, canonical...), entityType (Compound, Cyp, Marker...etc) and entityName

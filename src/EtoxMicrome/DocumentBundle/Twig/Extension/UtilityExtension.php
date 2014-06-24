@@ -93,6 +93,7 @@ class UtilityExtension extends \Twig_Extension
 
     public function highlightEntitiesDocumentsKeywords($text,$sentenceId,$entityBackup, $field, $whatToSearch, $source, $entityType, $tooltipCounter)
     {
+        $message="Inside of highlightEntitiesDocumentsKeywords";
         $em=$this->doctrine->getManager();
         $document=$em->getRepository('EtoxMicromeDocumentBundle:Document')->getDocumentFromSentenceId($sentenceId);
         $arrayReturn=$this->highlightEntitiesDocuments($text,$document,$entityBackup, $field, $whatToSearch, $source, $entityType, $tooltipCounter);
@@ -252,7 +253,6 @@ class UtilityExtension extends \Twig_Extension
         }
         //With arrayCytochrome2Document we can highlight Cytochromes
         $arrayCytochrome2Document = $em->getRepository('EtoxMicromeEntity2DocumentBundle:Cytochrome2Document')->findCytochrome2DocumentFromDocument($document);
-        //ld($arrayCytochrome2Document);
         foreach ($arrayCytochrome2Document as $cytochrome2Document){
             $entityName=$cytochrome2Document->getCypsMention();
             //ld($entityName);
@@ -495,11 +495,11 @@ class UtilityExtension extends \Twig_Extension
             $entityName=$entity2Document->getName();
             $entityNameUrlEncoded=urlencode($entityName);
             $qualifier=$entity2Document->getQualifier();
-            //ld($qualifier);
             $entity2DocumentId=$entity2Document->getId();
             //If the name==entityBackup, we don't do anything, we'll change it at the end
             if (strcasecmp($entityName, $entityBackup) != 0) {
                 //sustituimos en el text
+                $message="EntityName==entityBackup";
                 //ld($entityName);
                 switch ($qualifier) {
                     case 'Marker':
@@ -629,7 +629,6 @@ class UtilityExtension extends \Twig_Extension
                     case 'CompoundDict':
                         $alert="entra en CompoundDict";
                         $numberWords=str_word_count($entityName, 0, '0..9()=-');
-                        //ld($numberWords);
                         if($numberWords==1){
                             //We search a possible place/s for the highlight iterating over the arrayText taking into account the arrayHighlighted positions already highlighted
                             $arrayPlaces=$this->findPlaceSingleWord($entityName,$arrayText,$arrayHighlighted);
@@ -705,7 +704,6 @@ class UtilityExtension extends \Twig_Extension
                 //$message="We haven't changed color for entityBackup case insensitive search of entities. We change it now.";
                 //$text = str_ireplace($entityBackup, '<mark class="termSearched">'.$entityBackup.'</mark>', $text);
                 $numberWords=str_word_count($entityName, 0, '0..9()=-');
-                //ld($numberWords);
                 //ld($arrayText);
                 if($numberWords==1){
                     $arrayPlaces=$this->findPlaceSingleWord($entityName,$arrayText,$arrayHighlighted);
@@ -748,7 +746,7 @@ class UtilityExtension extends \Twig_Extension
                             $arrayEntityName=str_word_count($entityName, 1, '0..9()=-');
                             //We mark the first
                             $text=$arrayText[$place];
-                            if($entityType=="CompoundDict"){
+                            if($entityType=="CompoundDict" or $entityType=="keyword"){
                                 $text = str_ireplace($arrayEntityName[0], '<mark class="termSearched">'.$arrayEntityName[0], $text);
                                 $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($entity2DocumentId,"CompoundDict");
                             }elseif($entityType=="Marker"){

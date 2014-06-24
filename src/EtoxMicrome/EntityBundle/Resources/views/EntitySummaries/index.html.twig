@@ -2,6 +2,13 @@
 {% block title %}Compound List Summary {% endblock %}
 {% block article %}
         <h1>Compounds list summary</h1>
+        <script>
+            function jsmeOnLoad() {
+                jsmeApplet = new JSApplet.JSME("jsme_container", "380px", "340px");
+           }
+        </script>
+        <div id="jsme_container"></div>
+        <button type="button" onclick="alert(jsmeApplet.smiles())">Show SMILES</button>
         <!-- Show compounds with: <a href="{{ path('compound_list_summaries',{'id':'drugBank'}) }}">DrugBank id</a>, <a href="{{ path('compound_list_summaries',{'id':'chebi'}) }}">ChEBI id</a>, <a href="{{ path('compound_list_summaries',{'id':'pubChemCompound'}) }}">PubChem compound</a><br/> -->
         <div class="alphabet">
                     <a class="first" href="{{ path('compound_list_summaries',{'id':id, 'initial':'a'}) }}">A</a>
@@ -34,52 +41,51 @@
                     <a class="last" href="{{ path('compound_list_summaries',{'id':id, 'initial':'-'}) }}" /-/')">+-</a></div>
 
         <div id="compounds">
+
             <table id="compounds-table">
                 <thead>
                     <tr>
-                        <th>Compound Name</th>
+                        <th><a href="{{ path('compound_list_summaries',{'id': id, 'initial': initial, 'orderBy': 'drugbankname'}) }}">Compound Name</a></th>
                         <th>Aliases</th>
-                        <th>DrugBank id</th>
-                        <th>Approval</th>
+                        <th><a href="{{ path('compound_list_summaries',{'id': id, 'initial': initial, 'orderBy': 'drugbankid'}) }}">DrugBank id</a></th>
+                        <th><a href="{{ path('compound_list_summaries',{'id': id, 'initial': initial, 'orderBy': 'approval'}) }}">Approval</a></th>
                         <th>Category</th>
                         <th>Target Rel.</th>
-                        <th>Terms Rel.</th>
-                        <th>CYPs Rel.</th>
-                        <th>Markers Rel.</th>
-                        <th>SVMs</th>
-                        <th>Conf.</th>
-                        <th>Pattern</th>
-                        <th>Term</th>
-                        <th>Rule</th>
-                        <th>Total Mentions</th>
+                        <th><a href="{{ path('compound_list_summaries',{'id': id, 'initial': initial, 'orderBy': 'term_counter'}) }}">Terms Rel.</a></th>
+                        <th><a href="{{ path('compound_list_summaries',{'id': id, 'initial': initial, 'orderBy': 'cyp_counter'}) }}">CYPs Rel.</a></th>
+                        <th><a href="{{ path('compound_list_summaries',{'id': id, 'initial': initial, 'orderBy': 'marker_counter'}) }}">Markers Rel..</a></th>
+                        <th><a href="{{ path('compound_list_summaries',{'id': id, 'initial': initial, 'orderBy': 'hepval_counter'}) }}">SVM</a></th>
+                        <th><a href="{{ path('compound_list_summaries',{'id': id, 'initial': initial, 'orderBy': 'svm_confidence_counter'}) }}">Conf.</a></th>
+                        <th><a href="{{ path('compound_list_summaries',{'id': id, 'initial': initial, 'orderBy': 'pattern_counter'}) }}">Pattern</a></th>
+                        <th><a href="{{ path('compound_list_summaries',{'id': id, 'initial': initial, 'orderBy': 'term_counter'}) }}">Term</a></th>
+                        <th><a href="{{ path('compound_list_summaries',{'id': id, 'initial': initial, 'orderBy': 'rule_counter'}) }}">Rule</a></th>
+                        <th><a href="{{ path('compound_list_summaries',{'id': id, 'initial': initial, 'orderBy': 'total_mentions'}) }}">Total Mentions</a></th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for drugbank in drugBanks %}
-                    {% set drugbankid = drugbank.getDrugbankid %}
-                    {% set arrayAliases = dictionaryAliases[drugbankid] %}
+                    {% set drugbankid = drugbank['drugbankid'] %}
+                    {% set stringAliases = drugbank['alias'] %}
                     <tr>
-                        <td>{{ drugbank.getDrugbankname }}</td>
+                        <td>{{ drugbank['drugbankname'] }}</td>
                         <td>
                             <small>
-                                {% for alias in arrayAliases %}
-                                    {{alias}},&nbsp;
-                                {% endfor %}
+                                {{ stringAliases | replace({ ("|"): ", " }) }}
                             </small>
                         </td>
-                        <td>{{ drugbankid }}</td>
+                        <td>{{ drugbank['drugbankid'] }}</td>
                         <td>
-                            {% set approval = drugbank.getApproval %}
+                            {% set approval = drugbank["approval"] %}
                             {{ approval | replace({("|"): ", "}) }}
 
                         </td>
                         <td>
-                            {% set category = drugbank.getCategory %}
+                            {% set category = drugbank["category"] %}
                             {{ category | replace({("|"): ", "}) }}
                         </td>
                         <td>
                             <small>
-                                {% set stringTarget=drugbank.getTargetRelation %}
+                                {% set stringTarget=drugbank["target_relation"] %}
                                 {% set arrayTargets= stringTarget | split("|") %}
                                 {% for target in arrayTargets %}
                                     {{ target }}<br>
@@ -87,37 +93,31 @@
                             </small>
                         </td>
                         <td>
-                            {% if dictionaryCountTermRelations[drugbankid] != 0 %}
-                            {{ dictionaryCountTermRelations[drugbankid] }}
-                            {% endif %}
+                            {{ drugbank["term_relations"] }}
                         </td>
                         <td>
-                            {% if dictionaryCountCypRelations[drugbankid] != 0 %}
-                            {{ dictionaryCountCypRelations[drugbankid] }}
-                            {% endif %}
+                            {{ drugbank["cyp_relations"] }}
                         </td>
                         <td>
-                            {% if dictionaryCountMarkerRelations[drugbankid] != 0 %}
-                            {{ dictionaryCountMarkerRelations[drugbankid] }}
-                            {% endif %}
+                            {{ drugbank["marker_relations"] }}
                         </td>
                         <td>
-                            {{ drugbank.getHepvalCounter }}
+                            {{ drugbank["hepval_counter"] }}
                         </td>
                         <td>
-                            {{ drugbank.getSvmConfidenceCounter }}
+                            {{ drugbank["svm_confidence_counter"] }}
                         </td>
                         <td>
-                            {{ drugbank.getPatternCounter }}
+                            {{ drugbank["pattern_counter"] }}
                         </td>
                         <td>
-                            {{ drugbank.getTermCounter }}
+                            {{ drugbank["term_counter"] }}
                         </td>
                         <td>
-                            {{ drugbank.getRuleCounter }}
+                            {{ drugbank["rule_counter"] }}
                         </td>
                         <td>
-                            {{ drugbank.getTotalMentions }}
+                            {{ drugbank["total_mentions"] }}
                         </td>
                     </tr>
                     {% endfor %}
@@ -127,7 +127,7 @@
                 {{ simple_paginator_render(
                     'compound_list_summaries', 'drugbanks',
                         {
-                            'routeParams' : {'id' : id},
+                            'routeParams' : {'id' : id, 'initial' : initial},
                             'container_class' : 'pagination'
                         }
                     )

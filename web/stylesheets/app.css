@@ -120,6 +120,18 @@ ul{
     overflow: auto;
 
 }
+ul.download-list li{
+    display: inline;
+    list-style-type: none;
+    padding-right: 15px;
+    padding-left: 10px;
+}
+ul.download-list{
+    margin-top: 20px;
+}
+a.download-link{
+    text-decoration: underline !important;
+}
 /* -----------------------------------------
    Header
 ----------------------------------------- */

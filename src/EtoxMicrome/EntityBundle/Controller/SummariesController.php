@@ -13,11 +13,46 @@ class SummariesController extends Controller
      * @Route("/hello/{name}")
      * @Template()
      */
-    public function showSummaryAction($id, $initial)
+    public function showSummaryAction($id, $initial, $orderBy)
     {
         $message="Here!";
         $em = $this->getDoctrine()->getManager();
+        /*
+            $conn = $this->container->get('database_connection');
+            $sql = 'SELECT res.id, COUNT(*)...';
+            $rows = $conn->query($sql);
+        */
 
+        //This if_elseif statement is for getting direction for sorting ( numerical values need DESC sorting while string values need ASC)
+        if($orderBy=="drugbankname" or $orderBy=="drugbankid" or $orderBy=="approval"){
+            $direction="ASC";
+        }elseif($orderBy=="term_counter" or $orderBy=="cyp_counter" or $orderBy=="marker_counter" or $orderBy=="hepval_counter" or $orderBy=="svm_confidence_counter" or $orderBy=="pattern_counter" or $orderBy=="term_counter" or $orderBy=="rule_counter" or $orderBy=="total_mentions"){
+            $direction="DESC";
+        }
+
+
+        $capitalInitial=strtoupper($initial);
+        $sql = "SELECT * from compoundlistsummary where drugbankname like :initial or  drugbankname like :capitalInitial order by \"$orderBy\" $direction ";
+        $db = $em->getConnection();
+        $stmt = $db->prepare($sql);
+        $params = array('initial' => $initial."%", 'capitalInitial' => $capitalInitial."%");
+        $stmt->execute($params);
+        $arrayDrugbanks = $stmt->fetchAll();
+
+        $paginator = $this->get('ideup.simple_paginator');
+        $drugBanks = $paginator
+            ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), 'drugbanks')
+            ->setItemsPerPage($this->container->getParameter('etoxMicrome.summaries_per_page'), 'drugbanks')
+            ->paginate($arrayDrugbanks,'drugbanks')
+            ->getResult()
+        ;
+        return $this->render('EtoxMicromeEntityBundle:EntitySummaries:index.html.twig', array(
+            'drugBanks' => $drugBanks,
+            'initial' => $initial,
+            'id' => $id,
+        ));
+
+        /*
         if(($id=="drugBank")or($id=="drugbank")){
             $arrayDrugbanks=$em->getRepository('EtoxMicromeEntityBundle:Drugbank')->getDrugbanks($initial);
             //ld($arrayDrugbanks);
@@ -47,17 +82,6 @@ class SummariesController extends Controller
                     $dictionaryAliases[$drugBankId]=$arrayNames;
                 }
             }
-
-            /*
-            foreach($arrayDrugbanks as $drugBank){
-                $drugBankId=$drugBank->getDrugbankid();
-                $drugBankName=$drugBank->getDrugbankname();
-                ld($drugBankName);
-                $stringAliases=$em->getRepository('EtoxMicromeEntityBundle:Alias')->getAliasFromName($drugBankName);
-                $arrayAliases=explode("|", $stringAliases);
-                $dictionaryAliases[$drugBankId]=$arrayAliases;
-            }
-            */
             //Second we create the $dictionaryAliases
             foreach($arrayCompounds as $compound){
                 $nameCompound=$compound->getName();
@@ -121,6 +145,7 @@ class SummariesController extends Controller
 
             ));
         }
+        */
     }
 
     public function GInitialAction($id, $initial)

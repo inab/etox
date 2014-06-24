@@ -43,7 +43,7 @@ class Entity2Document
      * @ORM\JoinColumn(name="document_id", referencedColumnName="id")
      */
 
-    private $document;
+    protected $document;
 
     /**
      * @var string

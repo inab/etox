@@ -54,30 +54,38 @@ class SearchController extends Controller
         switch ($valToSearch) {
             case "hepval":
                 if($className=="Entity2Abstract"){
-                    $score=$entity2Abstract->getAbstracts()->getHepval();
+                    $score=$entity2Whatever->getAbstracts()->getHepval();
                 }elseif($className=="Entity2Document"){
-                    $score=$entity2Document->getDocument()->getHepval();
+                    $score=$entity2Whatever->getDocument()->getHepval();
+                }elseif($className=="Cytochrome2Document"){
+                    $score=$entity2Whatever->getDocument()->getHepval();
                 }
                 break;
             case "cardval":
                 if($className=="Entity2Abstract"){
-                    $score=$entity2Abstract->getAbstracts()->getCardval();
+                    $score=$entity2Whatever->getAbstracts()->getCardval();
                 }elseif($className=="Entity2Document"){
-                    $score=$entity2Document->getDocument()->getCardval();
+                    $score=$entity2Whatever->getDocument()->getCardval();
+                }elseif($className=="Cytochrome2Document"){
+                    $score=$entity2Whatever->getDocument()->getCardval();
                 }
                 break;
             case "nephval":
                 if($className=="Entity2Abstract"){
-                    $score=$entity2Abstract->getAbstracts()->getNephval();
+                    $score=$entity2Whatever->getAbstracts()->getNephval();
                 }elseif($className=="Entity2Document"){
-                    $score=$entity2Document->getDocument()->getNephval();
+                    $score=$entity2Whatever->getDocument()->getNephval();
+                }elseif($className=="Cytochrome2Document"){
+                    $score=$entity2Whatever->getDocument()->getNephval();
                 }
                 break;
             case "phosval":
                 if($className=="Entity2Abstract"){
-                    $score=$entity2Abstract->getAbstracts()->getPhosval();
+                    $score=$entity2Whatever->getAbstracts()->getPhosval();
                 }elseif($className=="Entity2Document"){
-                    $score=$entity2Document->getDocument()->getPhosval();
+                    $score=$entity2Whatever->getDocument()->getPhosval();
+                }elseif($className=="Cytochrome2Document"){
+                    $score=$entity2Whatever->getDocument()->getPhosval();
                 }
                 break;
         }
@@ -674,6 +682,9 @@ class SearchController extends Controller
     public function writeFileWithArrayAbstractDocument($arrayEntity2Abstract, $arrayEntity2Document, $field, $whatToSearch, $entityType, $entityName)
     {
         $message="inside writeFileWithArrayAbstractDocument";
+        if($entityType=="CompoundDict"){
+            $entityType="Compound";
+        }
         //ld(count($arrayEntity2Abstract));
         //ld(count($arrayEntity2Document));
         $zip = new \ZipArchive();
@@ -687,6 +698,7 @@ class SearchController extends Controller
             exit("cannot open <$pathToZip>\n");
         }
         $fp = fopen($pathToFile, 'w');
+
         $count=0;
         $line="Searching parameters:\n
 \tToxicity type:\t $field\n
@@ -694,17 +706,19 @@ class SearchController extends Controller
 \tType of entity:\t $entityType\n
 \tTerm:\t $entityName\n
 ***********************************************************************************************\n
-Evidences found in Abstracts:(Output fields:\t\"#registry\"\t\"Abstract text\"\t\"Pubmed link\"\t\"Score\")\n
+Evidences found in Sentences:\n
+#registry\"\t\"SVM\"\t\"Confidence\"\t\"Pattern Count\"\t\"Term Score\"\t\"Rule Score\"\t\"Sentence Text\")\n
 ***********************************************************************************************\n";
         fwrite($fp, $line);
-        foreach($arrayEntity2Abstract as $entity2Abstract){
-            $line="$count\t".$entity2Abstract->getAbstracts()->getText()."\t";
-            $pubmedLink="http://www.ncbi.nlm.nih.gov/pubmed/".$entity2Abstract->getAbstracts()->getPmid();
-            $line=$line.$pubmedLink."\t";
+        foreach($arrayEntity2Document as $entity2Document){
             $valToSearch=$this->getValToSearch($field);
-            $score=$this->getPropertyScore($entity2Abstract, $valToSearch);
-            $line=$line.$score."\t";
-            $line=$line."\n";
+            $score=$this->getPropertyScore($entity2Document, $valToSearch);
+            $svmConfidence=$entity2Document->getSvmConfidence();
+            $patternCount=$entity2Document->getPatternCount();
+            $term=$entity2Document->getHepTermVarScore();
+            $rule=$entity2Document->getRuleScore();
+            $text=$entity2Document->getDocument()->getText();
+            $line="$count\t$score\t$svmConfidence\t$patternCount\t$term\t$rule\t$text\n";
             if($score>0){
                 fwrite($fp, $line);
             }
@@ -723,13 +737,16 @@ Evidences found in Abstracts:(Output fields:\t\"#registry\"\t\"Abstract text\"\t
 \tType of entity:\t $entityType\n
 \tTerm:\t $entityName\n
 ***********************************************************************************************\n
-Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t\"Score\")\n
+Evidences found in Abstracts:(Output fields:\t\"#registry\"\t\"Abstract text\"\t\"Pubmed link\"\t\"Score\")\n
 ***********************************************************************************************\n";
         fwrite($fp, $line);
-        foreach($arrayEntity2Document as $entity2Document){
-            $line="$count\t".$entity2Document->getDocument()->getText()."\t";
+        foreach($arrayEntity2Abstract as $entity2Abstract){
+            $line="$count\t".$entity2Abstract->getAbstracts()->getText()."\t";
+            $pubmedLink="http://www.ncbi.nlm.nih.gov/pubmed/".$entity2Abstract->getAbstracts()->getPmid();
+            $line=$line.$pubmedLink."\t";
             $valToSearch=$this->getValToSearch($field);
-            $score=$this->getPropertyScore($entity2Document, $valToSearch);
+            ldd($message);
+            $score=$this->getPropertyScore($entity2Abstract, $valToSearch);
             $line=$line.$score."\t";
             $line=$line."\n";
             if($score>0){
@@ -775,13 +792,25 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
 \tType of entity:\t $entityType\n
 \tTerm:\t $entityName\n
 ***********************************************************************************************\n
-Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t\"Score\")\n
+Evidences found in Sentences:\n
+#registry\"\t\"SVM\"\t\"Confidence\"\t\"Pattern Count\"\t\"Term\"\t\"Rule score\"\t\"Sentence\")\n
 ***********************************************************************************************\n";
         fwrite($fp, $line);
         foreach($arrayEntity2Document as $entity2Document){
+            if ($entityType=="Cytochrome"){
+                $valToSearch=$this->getValToSearch($field);
+                $score=$this->getPropertyScore($entity2Document, $valToSearch);
+                $text=$entity2Document->getDocument()->getText();
+                $svmConfidence=$entity2Document->getSvmConfidence();
+                $patternCount=$entity2Document->getPatternCount();
+                $term=$entity2Document->getHepTermVarScore();
+                $rule=$entity2Document->getRuleScore();
+                $text=$entity2Document->getDocument()->getText();
+                $line="$count\t$score\t$svmConfidence\t$patternCount\t$term\t$rule\t$text\n";
+            }
             $line="$count\t".$entity2Document->getDocument()->getText()."\t";
-            $valToSearch=$this->getValToSearch($field);
-            $score=$this->getPropertyScore($entity2Document, $valToSearch);
+
+
             $line=$line.$score."\t";
             $line=$line."\n";
             if($score>0){
@@ -804,7 +833,7 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
         return ($filename.".zip");
     }
 
-    public function exportFunction($field, $whatToSearch, $entityType, $entityName){
+    public function exportFunction($field, $whatToSearch, $entityType, $entityName, $source, $orderBy){
         $message="exportFunction";
         $messageCompound="llega a compound";
         $messageCytochrome="llega a cytochrome";
@@ -847,9 +876,7 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
 
         }
         $arrayEntityId=array_unique($arrayEntityId);//We get rid of the duplicates
-
         if($entityType=="Cytochrome"){
-            ldd($messageCytochrome);
             //We create an array of cytochromes from an array with their enityId
             $arrayEntities=array();
             $arrayNames=array();
@@ -864,7 +891,7 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
             $arrayNames=array_unique($arrayNames);//We get rid of the duplicates
             $arrayCanonicals=array_unique($arrayCanonicals);//We get rid of the duplicates
 
-            $arrayEntity2Document = $em->getRepository('EtoxMicromeEntity2DocumentBundle:Cytochrome2Document')->getCytochrome2DocumentFromField($field, $entityType, $arrayNames, $arrayCanonicals);
+            $arrayEntity2Document = $em->getRepository('EtoxMicromeEntity2DocumentBundle:Cytochrome2Document')->getCytochrome2DocumentFromField($field, $entityType, $arrayNames, $arrayCanonicals, $source, $orderBy);
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //////////////////////////////save inside file///////////////////////////////////////////////////////////////////////
             $filename=$this->writeFileWithArrayDocument($arrayEntity2Document, $field, $whatToSearch, $entityType, $entityName);
@@ -882,11 +909,9 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
             }
             $arrayEntityName=array_unique($arrayEntityName);//We get rid of the duplicates
             if($entityType=="CompoundDict" or $entityType=="CompoundMesh"){
-
                 //We search into Abstracts only if we are looking for Compounds
-                $arrayEntity2Abstract = $em->getRepository('EtoxMicromeEntity2AbstractBundle:Entity2Abstract')->getEntity2AbstractFromField($field, "CompoundMesh", $arrayEntityName);
-                $arrayEntity2Document = $em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntity2DocumentFromField($field, $entityType, $arrayEntityName);
-
+                $arrayEntity2Document = $em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntity2DocumentFromField($field, $entityType, $arrayEntityName, $source, $orderBy);
+                $arrayEntity2Abstract = $em->getRepository('EtoxMicromeEntity2AbstractBundle:Entity2Abstract')->getEntity2AbstractFromField($field, "CompoundMesh", $arrayEntityName, $orderBy);
 
                 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 ////////////////////////////////////////save inside file///////////////////////////////////////////////////////////////////////////////////////////
@@ -1186,8 +1211,9 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
         $download=$request->query->get('download');
         $arraySourcesDocuments=array("all","pubmed","fulltext", "epar","nda");
         $arraySourcesAbstracts=array("abstract");
-        if ($download==true){
-            $filename=$this->exportFunction($field, $whatToSearch, $entityType, $entityName);
+        $arrayFormats=array("csv","pdf","xls");
+        if (in_array($download, $arrayFormats)){
+            $filename=$this->exportFunction($field, $whatToSearch, $entityType, $entityName, $source, $orderBy);
             return $this->render('FrontendBundle:Default:download_file.html.twig', array(
             'field' => $field,
             'whatToSearch' => $whatToSearch,
@@ -1195,6 +1221,7 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
             'entity' => $entityName,
             'filename' => $filename,
             'orderBy' => $orderBy,
+            'format' => $download,
             ));
         exit();
         }
@@ -1986,6 +2013,17 @@ Evidences found in Sentences:(Output fields:\t\"#registry\"\t\"Sentence text\"\t
                 */
                 if (in_array($source, $arraySourcesDocuments)){
                     $compound2Documents=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntity2DocumentFromFieldDQL($field, $entityType, $arrayEntityName, $source, $orderBy)->getResult();
+                    /*$entity2documentTest=$compound2Documents[0];
+                    ld($entity2documentTest);
+                    $curation=$entity2documentTest->getCuration();
+                    ld($curation);
+                    $curation++;
+                    ld($curation);
+                    $entity2documentTest->setCuration($curation);
+                    $em->persist($entity2documentTest);
+                    $em->flush();
+                    ldd($message);
+                    */
                     ///Temporary function to get rid of the duplicated entries. Duplicates should be removed from the entity2document table itself
                     //$compound2Documents=$this->getRidOfDuplicatedEntries($compound2Documents);
 

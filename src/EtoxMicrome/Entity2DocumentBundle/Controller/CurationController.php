@@ -18,9 +18,7 @@ class CurationController extends Controller
         $message="addCurationEntity2DocumentAction";
         $em = $this->getDoctrine()->getManager();
         $curation=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->updateEntity2DocumentCuration($entity2Document, $action);
-        ldd($curation);
         //Now, taking $curation into account, we generate the html code to return as json
-
         $url_check = $this->generateUrl(
             'ajax_entity2document_curation',
             array(
