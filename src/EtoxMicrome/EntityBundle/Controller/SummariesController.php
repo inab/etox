@@ -22,11 +22,10 @@ class SummariesController extends Controller
             $sql = 'SELECT res.id, COUNT(*)...';
             $rows = $conn->query($sql);
         */
-
         //This if_elseif statement is for getting direction for sorting ( numerical values need DESC sorting while string values need ASC)
-        if($orderBy=="drugbankname" or $orderBy=="drugbankid" or $orderBy=="approval"){
+        if($orderBy=="drugbankname" or $orderBy=="drugbankid" or $orderBy=="approval" or $orderBy=="compoundName"){
             $direction="ASC";
-        }elseif($orderBy=="term_counter" or $orderBy=="cyp_counter" or $orderBy=="marker_counter" or $orderBy=="hepval_counter" or $orderBy=="svm_confidence_counter" or $orderBy=="pattern_counter" or $orderBy=="term_counter" or $orderBy=="rule_counter" or $orderBy=="total_mentions"){
+        }elseif($orderBy=="term_counter" or $orderBy=="cyp_relations" or $orderBy=="marker_relations" or $orderBy=="hepval_counter" or $orderBy=="svm_confidence_counter" or $orderBy=="pattern_counter" or $orderBy=="term_counter" or $orderBy=="rule_counter" or $orderBy=="total_mentions"){
             $direction="DESC";
         }
 

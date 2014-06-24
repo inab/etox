@@ -2,13 +2,6 @@
 {% block title %}Compound List Summary {% endblock %}
 {% block article %}
         <h1>Compounds list summary</h1>
-        <script>
-            function jsmeOnLoad() {
-                jsmeApplet = new JSApplet.JSME("jsme_container", "380px", "340px");
-           }
-        </script>
-        <div id="jsme_container"></div>
-        <button type="button" onclick="alert(jsmeApplet.smiles())">Show SMILES</button>
         <!-- Show compounds with: <a href="{{ path('compound_list_summaries',{'id':'drugBank'}) }}">DrugBank id</a>, <a href="{{ path('compound_list_summaries',{'id':'chebi'}) }}">ChEBI id</a>, <a href="{{ path('compound_list_summaries',{'id':'pubChemCompound'}) }}">PubChem compound</a><br/> -->
         <div class="alphabet">
                     <a class="first" href="{{ path('compound_list_summaries',{'id':id, 'initial':'a'}) }}">A</a>
@@ -52,8 +45,8 @@
                         <th>Category</th>
                         <th>Target Rel.</th>
                         <th><a href="{{ path('compound_list_summaries',{'id': id, 'initial': initial, 'orderBy': 'term_counter'}) }}">Terms Rel.</a></th>
-                        <th><a href="{{ path('compound_list_summaries',{'id': id, 'initial': initial, 'orderBy': 'cyp_counter'}) }}">CYPs Rel.</a></th>
-                        <th><a href="{{ path('compound_list_summaries',{'id': id, 'initial': initial, 'orderBy': 'marker_counter'}) }}">Markers Rel..</a></th>
+                        <th><a href="{{ path('compound_list_summaries',{'id': id, 'initial': initial, 'orderBy': 'cyp_relations'}) }}">CYPs Rel.</a></th>
+                        <th><a href="{{ path('compound_list_summaries',{'id': id, 'initial': initial, 'orderBy': 'marker_relations'}) }}">Markers Rel..</a></th>
                         <th><a href="{{ path('compound_list_summaries',{'id': id, 'initial': initial, 'orderBy': 'hepval_counter'}) }}">SVM</a></th>
                         <th><a href="{{ path('compound_list_summaries',{'id': id, 'initial': initial, 'orderBy': 'svm_confidence_counter'}) }}">Conf.</a></th>
                         <th><a href="{{ path('compound_list_summaries',{'id': id, 'initial': initial, 'orderBy': 'pattern_counter'}) }}">Pattern</a></th>

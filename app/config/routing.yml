@@ -168,11 +168,18 @@ ajax_marker2document_curation:
 
 compound_list_summaries:
     pattern: /compound_list_summary/{id}/{initial}/orderBy/{orderBy}/
-    defaults: { _controller: EtoxMicromeEntityBundle:Summaries:showSummary, initial: "a", orderBy: "compoundName"}
+    defaults: { _controller: EtoxMicromeEntityBundle:Summaries:showSummary, initial: "a", orderBy: "drugbankname"}
     requirements:
         initial: \S
 
 compound_list_summaries_reroute:
+    pattern: /compound_list_summary/{id}/
+    defaults:
+        _controller: FrameworkBundle:Redirect:redirect
+        route: compound_list_summaries
+        permanent: true
+
+compound_list_summaries_reroute_2:
     pattern: /compound_list_summary/{id}/{initial}/
     defaults:
         _controller: FrameworkBundle:Redirect:redirect
