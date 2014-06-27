@@ -924,7 +924,6 @@ class Entity2DocumentRepository extends EntityRepository
         $em = $this->getEntityManager();
         $dictionary=array();
         $stringOutput="";
-
         if ($qualifier=="CompoundDict"){
             $entity=$em->getRepository("EtoxMicromeEntityBundle:CompoundDict")->findOneByName($name);
             if ($entity!=null){

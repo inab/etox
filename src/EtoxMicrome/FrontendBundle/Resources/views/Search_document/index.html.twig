@@ -33,7 +33,6 @@
                                 <span data-tooltip="stickyDownload">
                                     <a href="#"><strong>Download results</strong></a>
                                 </span>
-                                {{ orderBy }}
                                 {%
                                     set tooltip =  "<div id='stickyDownload' class='atip'>
                                                         <ul class='download-list'>
@@ -68,6 +67,7 @@
                         {% endif %}
                     </table>
                     <div id="mouseoverSummary">
+                        {% set idImage = entity.getImage.getCompound%}
                         <table>
                             <tr>
                                 <td colspan="5">
@@ -84,6 +84,12 @@
                                 </td>
                             </tr>
                             {% endif %}
+                            <tr>
+                                <td colspan="5">
+                                        {% set imageCompound = "images/imagesCompound/"~idImage~".png" %}
+                                        <img src="{{ asset(imageCompound) }}" border="0" />
+                                </td>
+                            </tr>
                         </table>
                     </div>
                 </div>

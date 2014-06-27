@@ -149,6 +149,11 @@ class CompoundDict
      */
     private $updated;
 
+    /**
+     * @ORM\OneToOne(targetEntity="EtoxMicrome\DocumentBundle\Entity\Image")
+     * @ORM\JoinColumn(name="image_id", referencedColumnName="id")
+     */
+    private $image;
 
     /**
      * Get id
@@ -547,5 +552,25 @@ class CompoundDict
     public function getUpdated()
     {
         return $this->updated;
+    }
+
+    /**
+     * Set image
+     *
+     */
+    public function setImage(\EtoxMicrome\DocumentBundle\Entity\Image $image)
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    /**
+     * Get image
+     *
+     */
+    public function getImage()
+    {
+        return $this->image;
     }
 }

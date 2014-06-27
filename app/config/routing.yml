@@ -202,3 +202,7 @@ help:
 tutorial:
     pattern: /help/tutorial/
     defaults: { _controller: FrontendBundle:Help:showTutorial}
+
+retrieve_image:
+    pattern: /myimage/{image_id}/
+    defaults: { _controller: EtoxMicromeEntityBundle:Image:retrieveImage }
