@@ -1939,7 +1939,6 @@ Evidences found in Sentences:\n
             ));
         }
         $arrayEntityId=array_unique($arrayEntityId);//We get rid of the duplicates
-        //ld($arrayEntityId);
         if($entityType=="Cytochrome"){
             //We create an array of cytochromes from an array with their enityId
             $arrayEntities=array();

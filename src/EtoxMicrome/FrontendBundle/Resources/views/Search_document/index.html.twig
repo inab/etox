@@ -63,7 +63,6 @@
                                 <td colspan="5">
                                     <a href="#" class="toggleSummaryInfo"><strong>{{ entityBackup }} information</strong></a>
                                     <div id="mouseoverSummary">
-                                        {% set idImage = entity.getImage.getCompound%}
                                         <table>
                                             <tr>
                                                 <td colspan="5">
@@ -80,12 +79,16 @@
                                                 </td>
                                             </tr>
                                             {% endif %}
+                                            {% set existImage = entity.getImage %}
+                                            {% if existImage is not null %}
+                                                {% set idImage = entity.getImage.getCompound%}
                                             <tr>
                                                 <td colspan="5">
                                                         {% set imageCompound = "images/imagesCompound/"~idImage~".png" %}
                                                         <img src="{{ asset(imageCompound) }}" border="0" />
                                                 </td>
                                             </tr>
+                                            {% endif %}
                                         </table>
                                     </div>
                                 </td>
