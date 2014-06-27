@@ -62,36 +62,36 @@
                             <tr>
                                 <td colspan="5">
                                     <a href="#" class="toggleSummaryInfo"><strong>{{ entityBackup }} information</strong></a>
+                                    <div id="mouseoverSummary">
+                                        {% set idImage = entity.getImage.getCompound%}
+                                        <table>
+                                            <tr>
+                                                <td colspan="5">
+                                                        {{ mouseoverSummary | raw }}
+                                                </td>
+                                            </tr>
+                                            {% if entityType=="CompoundDict" and whatToSearch=="name" %}
+                                            <tr>
+                                                <td>
+                                                    <strong>Alliases</strong>
+                                                </td>
+                                                <td colspan="4">
+                                                    {{ allias | replace({("|"): ", "}) }}
+                                                </td>
+                                            </tr>
+                                            {% endif %}
+                                            <tr>
+                                                <td colspan="5">
+                                                        {% set imageCompound = "images/imagesCompound/"~idImage~".png" %}
+                                                        <img src="{{ asset(imageCompound) }}" border="0" />
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
                                 </td>
                             </tr>
                         {% endif %}
                     </table>
-                    <div id="mouseoverSummary">
-                        {% set idImage = entity.getImage.getCompound%}
-                        <table>
-                            <tr>
-                                <td colspan="5">
-                                        {{ mouseoverSummary | raw }}
-                                </td>
-                            </tr>
-                            {% if entityType=="CompoundDict" and whatToSearch=="name" %}
-                            <tr>
-                                <td>
-                                    <strong>Alliases</strong>
-                                </td>
-                                <td colspan="4">
-                                    {{ allias | replace({("|"): ", "}) }}
-                                </td>
-                            </tr>
-                            {% endif %}
-                            <tr>
-                                <td colspan="5">
-                                        {% set imageCompound = "images/imagesCompound/"~idImage~".png" %}
-                                        <img src="{{ asset(imageCompound) }}" border="0" />
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
                 </div>
             <div class="clear-both"></div>
             <div id="documentsResults">
