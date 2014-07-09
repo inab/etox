@@ -1,0 +1,10 @@
+services:
+    my_logger:
+        class: Symfony\Bridge\Monolog\Logger
+        arguments: [@doctrine]
+        calls:
+            - [pushHandler, [@my_handler]]
+    my_handler:
+        class: Monolog\Handler\StreamHandler
+        # 200 = INFO, see Monolog::Logger for the values of log levels
+        arguments: [%kernel.root_dir%/%kernel.environment%.doctrine.log, 200]
