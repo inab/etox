@@ -127,14 +127,6 @@ class CompoundDict
     private $name2struct;
 
     /**
-     * @var text
-     *
-     * @ORM\Column(name="structure", type="text", nullable=true)
-     */
-
-    private $structure;
-
-    /**
      * @var \DateTime
      *
      * @ORM\Column(name="created", type="datetime")
@@ -154,6 +146,11 @@ class CompoundDict
      * @ORM\JoinColumn(name="image_id", referencedColumnName="id")
      */
     private $image;
+
+    /**
+     * @ORM\OneToOne(targetEntity="EtoxMicrome\EntityBundle\Entity\Structure", mappedBy="compound")
+     */
+    private $structure;
 
     /**
      * Get id
