@@ -554,6 +554,11 @@ class Entity2DocumentRepository extends EntityRepository
                 if($chebi!=""){
                     $dictionary["chebi"]="<a href='http://www.ebi.ac.uk/chebi/searchId.do?chebiId=$chebi' target='_blank'>$chebi</a>";;
                 }
+                $casRegistryNumber=$entity->getCasRegistryNumber();
+                if($casRegistryNumber!=""){
+                    $dictionary["cas Registry Number"]="<a href='http://chem.sis.nlm.nih.gov/chemidplus/rn/$casRegistryNumber' target='_blank'>$casRegistryNumber</a>";
+                }
+
                 $inChi=$entity->getInChi();
                 if($inChi!=""){
                     $dictionary["inChi"]="<a href='http://www.chemspider.com/Search.aspx?q=$inChi' target='_blank'>$inChi</a>";;
@@ -942,11 +947,15 @@ class Entity2DocumentRepository extends EntityRepository
                 }
                 $chebi=$entity->getChebi();
                 if($chebi!=""){
-                    $dictionary["chebi"]="<a href='http://www.ebi.ac.uk/chebi/searchId.do?chebiId=$chebi' target='_blank'>$chebi</a>";;
+                    $dictionary["chebi"]="<a href='http://www.ebi.ac.uk/chebi/searchId.do?chebiId=$chebi' target='_blank'>$chebi</a>";
+                }
+                $casRegistryNumber=$entity->getCasRegistryNumber();
+                if($casRegistryNumber!=""){
+                    $dictionary["cas Registry Number"]="<a href='http://chem.sis.nlm.nih.gov/chemidplus/rn/$casRegistryNumber' target='_blank'>$casRegistryNumber</a>";
                 }
                 $inChi=$entity->getInChi();
                 if($inChi!=""){
-                    $dictionary["inChi"]="<a href='http://www.chemspider.com/Search.aspx?q=$inChi' target='_blank'>$inChi</a>";;
+                    $dictionary["inChi"]="<a href='http://www.chemspider.com/Search.aspx?q=$inChi' target='_blank'>$inChi</a>";
                 }
                 $drugBank=$entity->getDrugBank();
                 if($drugBank!=""){

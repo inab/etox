@@ -2037,10 +2037,15 @@ Evidences found in Sentences:\n
                         ->paginate($em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntity2DocumentFromFieldDQL($field, $entityType, $arrayEntityName, $source, $orderBy), 'documents')
                         ->getResult()
                     ;
+
                     if($whatToSearch=="name"){
                         $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummaryFromName($entityName,"CompoundDict");
                         $allias=$em->getRepository('EtoxMicromeEntityBundle:Alias')->getAliasFromName($entityName);
-                    }else{
+                    }elseif($whatToSearch=="id"){
+                        $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummaryFromName($entity->getName(),"CompoundDict");
+                        $allias=$em->getRepository('EtoxMicromeEntityBundle:Alias')->getAliasFromName($entity->getName());
+                    }
+                    else{
                         $mouseoverSummary="";
                         $allias=array();
                     }
