@@ -3,6 +3,8 @@
 namespace EtoxMicrome\Entity2DocumentBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
 /**
  * Entity2DocumentRepository
  *
@@ -56,6 +58,8 @@ class Entity2DocumentRepository extends EntityRepository
 
     public function getEntity2DocumentFromFieldDQL($field, $entityType, $arrayEntityName, $source, $orderBy)
     {//("hepatotoxicity","pubmed","CompoundDict",arrayEntityId)
+        $log = new Logger('my_logger');
+        $log->addWarning('Foo!!!!!!');
         $valToSearch=$this->getValToSearch($field);//"i.e hepval, embval... etc"
         //We have to create a query that searchs all over the entityIds inside the $arrayEntityId
         $orderBy=$this->getOrderBy($orderBy, $valToSearch);

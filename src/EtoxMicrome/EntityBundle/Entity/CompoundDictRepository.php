@@ -121,7 +121,6 @@ class CompoundDictRepository extends EntityRepository
     public function searchEntityGivenAnId($entityId)
     {
         $message="Inside searchEntityGivenAnId at CompoundDictRepository";
-        //ldd($message);
         $query = $this->_em->createQuery("
             SELECT c
             FROM EtoxMicromeEntityBundle:CompoundDict c
@@ -151,7 +150,7 @@ class CompoundDictRepository extends EntityRepository
             //ld($errorMessage);
         }
         //We return only one entity. Later on we will make the query expansion so we will collect all of them
-        return $entity;
+        return $compound[0];
     }
 
     public function searchEntityGivenAnStructureText($structureText)

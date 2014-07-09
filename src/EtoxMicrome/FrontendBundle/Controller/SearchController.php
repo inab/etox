@@ -2154,13 +2154,11 @@ Evidences found in Sentences:\n
 
     public function searchKeywordOrderByAction($whatToSearch, $source, $keyword, $orderBy)
     {
-        $message="llega aqui";
         if (isset($_GET['page'])) {
             $page=$_GET['page'];
         }else {
             $page=null;
         }
-        $message="llega aqui";
         if (isset($_GET['page'])) {
             $page=$_GET['page'];
         }else {
@@ -2237,7 +2235,6 @@ Evidences found in Sentences:\n
                         $contador++;
                     }
                 }
-                ldd($message);
                 */
                 $meanScore=$this->getMmmrScore($resultSetDocuments, $orderBy, 'mean');
                 $medianScore=$this->getMmmrScore($resultSetDocuments, $orderBy, 'median');
