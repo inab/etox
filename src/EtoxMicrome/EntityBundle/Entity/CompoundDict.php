@@ -148,11 +148,6 @@ class CompoundDict
     private $image;
 
     /**
-     * @ORM\OneToOne(targetEntity="EtoxMicrome\EntityBundle\Entity\Structure", mappedBy="compound")
-     */
-    private $structure;
-
-    /**
      * Get id
      *
      * @return integer

@@ -22,9 +22,9 @@ class Structure
     private $id;
 
     /**
+     * @var integer
      *
-     * @ORM\OneToOne(targetEntity="EtoxMicrome\EntityBundle\Entity\Compounddict", inversedBy="structure")
-     * @ORM\JoinColumn(name="compound_id", referencedColumnName="id")
+     * @ORM\Column(name="compound", type="integer", nullable=true)
      */
     private $compound;
 
