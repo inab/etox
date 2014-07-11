@@ -377,7 +377,7 @@ monolog:
     handlers:
         info:
             type: stream
-            path: /var/log/symfony.log
+            path: /var/log/symfony/symfony.log
             level: error
         main:
             type: fingers_crossed
