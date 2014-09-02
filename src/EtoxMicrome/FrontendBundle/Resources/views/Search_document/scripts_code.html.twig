@@ -12,6 +12,10 @@
           e.preventDefault();
           $("#downloadOptions").toggle(300);
         });
+        $('a.tanimoto').click(function(e)
+        {
+            e.preventDefault();
+        });
 
 
         $(".bigSearch").click(function() {
@@ -355,5 +359,45 @@
             }
             );
         }
+
+        function calculateTanimoto(sfAction)
+        {
+            idTrigger="tanimoto-result";
+            $tanimotoCompound1=$("input[id$='tanimoto-compound-1']").val();
+            $tanimotoCompound2=$("input[id$='tanimoto-compound-2']").val();
+            if($tanimotoCompound1=='' | $tanimotoCompound2=='' | $tanimotoCompound1==$tanimotoCompound2){
+                alert("In order to calculate the Tanimoto Coefficient you have to type two different compounds. Try again");
+                return false;
+            }
+            sfAction="{{ path('calculate_tanimoto') }}";
+             $.ajax(
+                  {
+                    url: sfAction,
+                    data: ({compoundName1: $tanimotoCompound1, compoundName2: $tanimotoCompound2}),
+                    dataType: "json",
+                    beforeSend: function()
+                    {
+                        $('.calculating_tanimoto').remove();
+                        $("#tanimoto-result").html("");
+                        newText=$("<span class='calculating_tanimoto'> Calculating tanimoto coefficient...</span>");
+                        $("#"+idTrigger).append(newText);
+                    },
+                    complete: function()
+                    {
+                        newText.remove();
+                    },
+                    success: function (data, status)
+                    {
+                        //Create a string with tanimoto coefficient
+                        $("#tanimoto-result").html(data);
+                    },
+                    error: function (data, status, e)
+                    {
+                        alert('Something happened loading requested data:.\n'+data.error);
+                    }
+                }
+            );
+        }
+
     </script>
 {% endblock %}

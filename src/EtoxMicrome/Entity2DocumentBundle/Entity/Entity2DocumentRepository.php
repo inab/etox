@@ -58,8 +58,8 @@ class Entity2DocumentRepository extends EntityRepository
 
     public function getEntity2DocumentFromFieldDQL($field, $entityType, $arrayEntityName, $source, $orderBy)
     {//("hepatotoxicity","pubmed","CompoundDict",arrayEntityId)
-        $log = new Logger('my_logger');
-        $log->addWarning('Foo!!!!!!');
+        #$log = new Logger('my_logger');
+        #$log->addWarning('Foo!!!!!!');
         $valToSearch=$this->getValToSearch($field);//"i.e hepval, embval... etc"
         //We have to create a query that searchs all over the entityIds inside the $arrayEntityId
         $orderBy=$this->getOrderBy($orderBy, $valToSearch);
@@ -137,12 +137,12 @@ class Entity2DocumentRepository extends EntityRepository
 
     }
 
-    public function getCompound2TermRelations($field, $typeOfEntity, $arrayEntityName, $source, $orderBy)
+    public function getCompound2TermRelations($field, $typeOfEntity, $arrayEntityName, $source, $orderBy, $curated)
     {
-        return $this->getCompound2TermRelationsDQL($field, $typeOfEntity, $arrayEntityName, $source, $orderBy)->getResult();
+        return $this->getCompound2TermRelationsDQL($field, $typeOfEntity, $arrayEntityName, $source, $orderBy, $curated)->getResult();
     }
 
-    public function getCompound2TermRelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy)
+    public function getCompound2TermRelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy, $curated)
     {//("hepatotoxicity","pubmed","CompoundDict",arrayEntityId)
         $valToSearch=$this->getValToSearch($field);//"i.e hepval, embval... etc"
         //We have to create a query that searchs all over the entityIds inside the $arrayEntityId
@@ -161,21 +161,43 @@ class Entity2DocumentRepository extends EntityRepository
             $orderBy="curation desc";
         }
         if($source=="all"){
-            $sql="SELECT c2t2d
-            FROM EtoxMicromeEntity2DocumentBundle:Compound2Term2Document c2t2d
-            WHERE c2t2d.compoundName IN (:arrayEntityName)
-            ORDER BY c2t2d.$orderBy, c2t2d.hepval desc
-            ";
+            if ($curated=="yes"){
+                $sql="SELECT c2t2d
+                FROM EtoxMicromeEntity2DocumentBundle:Compound2Term2Document c2t2d
+                WHERE c2t2d.compoundName IN (:arrayEntityName)
+                AND c2t2d.curation IS not NULL
+                ORDER BY c2t2d.$orderBy, c2t2d.hepval desc
+                ";
+            }
+            else{
+                $sql="SELECT c2t2d
+                FROM EtoxMicromeEntity2DocumentBundle:Compound2Term2Document c2t2d
+                WHERE c2t2d.compoundName IN (:arrayEntityName)
+                ORDER BY c2t2d.$orderBy, c2t2d.hepval desc
+                ";
+            }
+
             $query = $this->_em->createQuery($sql);
             $query->setParameter("arrayEntityName", $arrayEntityName);
             $query->setMaxResults(10000);
         }else{
-            $sql="SELECT c2t2d, d
-                FROM EtoxMicromeEntity2DocumentBundle:Compound2Term2Document c2t2d
-                JOIN c2t2d.document d
-                WHERE c2t2d.compoundName IN (:arrayEntityName) AND d.kind = :source
-                ORDER BY c2t2d.$orderBy , c2t2d.hepval desc
-            ";
+            if ($curated=="yes"){
+                $sql="SELECT c2t2d, d
+                    FROM EtoxMicromeEntity2DocumentBundle:Compound2Term2Document c2t2d
+                    JOIN c2t2d.document d
+                    WHERE c2t2d.compoundName IN (:arrayEntityName) AND d.kind = :source
+                    AND c2t2d.curation is not null
+                    ORDER BY c2t2d.$orderBy , c2t2d.hepval desc
+                ";
+            }else{
+                $sql="SELECT c2t2d, d
+                    FROM EtoxMicromeEntity2DocumentBundle:Compound2Term2Document c2t2d
+                    JOIN c2t2d.document d
+                    WHERE c2t2d.compoundName IN (:arrayEntityName) AND d.kind = :source
+                    ORDER BY c2t2d.$orderBy , c2t2d.hepval desc
+                ";
+            }
+
             $query = $this->_em->createQuery($sql);
             $query->setParameter("arrayEntityName", $arrayEntityName);
             $query->setParameter("source", $source);
@@ -185,12 +207,12 @@ class Entity2DocumentRepository extends EntityRepository
 
     }
 
-    public function getTerm2CompoundRelations($field, $typeOfEntity, $arrayEntityName, $source, $orderBy)
+    public function getTerm2CompoundRelations($field, $typeOfEntity, $arrayEntityName, $source, $orderBy, $curated)
     {
-        return $this->getTerm2CompoundRelationsDQL($field, $typeOfEntity, $arrayEntityName, $source, $orderBy)->getResult();
+        return $this->getTerm2CompoundRelationsDQL($field, $typeOfEntity, $arrayEntityName, $source, $orderBy, $curated)->getResult();
     }
 
-    public function getTerm2CompoundRelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy)
+    public function getTerm2CompoundRelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy, $curated)
     {//("hepatotoxicity","pubmed","CompoundDict",arrayEntityId)
         //Same method as getCompound2TermRelationsDQL but we are searching for terms instead of compounds!!  REFACTOR IT!!!!!
         $valToSearch=$this->getValToSearch($field);//"i.e hepval, embval... etc"
@@ -210,21 +232,43 @@ class Entity2DocumentRepository extends EntityRepository
             $orderBy="curation desc";
         }
         if($source=="all"){
-            $sql="SELECT c2t2d
-            FROM EtoxMicromeEntity2DocumentBundle:Compound2Term2Document c2t2d
-            WHERE c2t2d.term IN (:arrayEntityName)
-            ORDER BY c2t2d.$orderBy, c2t2d.hepval desc
-            ";
+            if ($curated=="yes"){
+                $sql="SELECT c2t2d
+                FROM EtoxMicromeEntity2DocumentBundle:Compound2Term2Document c2t2d
+                WHERE c2t2d.term IN (:arrayEntityName)
+                AND c2t2d.curation is not null
+                ORDER BY c2t2d.$orderBy, c2t2d.hepval desc
+                ";
+            }
+            else{
+                $sql="SELECT c2t2d
+                FROM EtoxMicromeEntity2DocumentBundle:Compound2Term2Document c2t2d
+                WHERE c2t2d.term IN (:arrayEntityName)
+                ORDER BY c2t2d.$orderBy, c2t2d.hepval desc
+                ";
+            }
             $query = $this->_em->createQuery($sql);
             $query->setParameter("arrayEntityName", $arrayEntityName);
             $query->setMaxResults(10000);
         }else{
-            $sql="SELECT c2t2d, d
-                FROM EtoxMicromeEntity2DocumentBundle:Compound2Term2Document c2t2d
-                JOIN c2t2d.document d
-                WHERE c2t2d.term IN (:arrayEntityName) AND d.kind = :source
-                ORDER BY c2t2d.$orderBy, c2t2d.hepval desc
-            ";
+            if($curated=="yes"){
+                $sql="SELECT c2t2d, d
+                    FROM EtoxMicromeEntity2DocumentBundle:Compound2Term2Document c2t2d
+                    JOIN c2t2d.document d
+                    WHERE c2t2d.term IN (:arrayEntityName) AND d.kind = :source
+                    AND c2t2d.curation is not null
+                    ORDER BY c2t2d.$orderBy, c2t2d.hepval desc
+                ";
+            }
+            else{
+                $sql="SELECT c2t2d, d
+                    FROM EtoxMicromeEntity2DocumentBundle:Compound2Term2Document c2t2d
+                    JOIN c2t2d.document d
+                    WHERE c2t2d.term IN (:arrayEntityName) AND d.kind = :source
+                    ORDER BY c2t2d.$orderBy, c2t2d.hepval desc
+                ";
+            }
+
             $query = $this->_em->createQuery($sql);
             $query->setParameter("arrayEntityName", $arrayEntityName);
             $query->setParameter("source", $source);
@@ -259,12 +303,12 @@ class Entity2DocumentRepository extends EntityRepository
 
     }
 
-    public function getCompound2Cytochrome2Relations($field, $typeOfEntity, $arrayEntityName, $source, $orderBy)
+    public function getCompound2Cytochrome2Relations($field, $typeOfEntity, $arrayEntityName, $source, $orderBy, $curated)
     {
-        return $this->getCompound2Cytochrome2RelationsDQL($field, $typeOfEntity, $arrayEntityName, $source, $orderBy)->getResult();
+        return $this->getCompound2Cytochrome2RelationsDQL($field, $typeOfEntity, $arrayEntityName, $source, $orderBy, $curated)->getResult();
     }
 
-    public function getCompound2Cytochrome2RelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy)
+    public function getCompound2Cytochrome2RelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy, $curated)
     {//("hepatotoxicity","pubmed","CompoundDict",arrayEntityId)
         $valToSearch=$this->getValToSearch($field);//"i.e hepval, embval... etc"
         //We have to create a query that searchs all over the entityIds inside the $arrayEntityId
@@ -292,21 +336,43 @@ class Entity2DocumentRepository extends EntityRepository
             $secondOrderBy="svmInduction";
         }
         if($source=="all"){
-            $sql="SELECT c2c2d
-            FROM EtoxMicromeEntity2DocumentBundle:Compound2Cyp2Document c2c2d
-            WHERE c2c2d.cypsMention IN (:arrayEntityName)
-            ORDER BY c2c2d.$orderBy, c2c2d.$secondOrderBy desc
-            ";
+            if($curated=="yes"){
+                $sql="SELECT c2c2d
+                FROM EtoxMicromeEntity2DocumentBundle:Compound2Cyp2Document c2c2d
+                WHERE c2c2d.cypsMention IN (:arrayEntityName)
+                AND c2c2d.curation is not null
+                ORDER BY c2c2d.$orderBy, c2c2d.$secondOrderBy desc
+                ";
+            }
+            else{
+                $sql="SELECT c2c2d
+                FROM EtoxMicromeEntity2DocumentBundle:Compound2Cyp2Document c2c2d
+                WHERE c2c2d.cypsMention IN (:arrayEntityName)
+                ORDER BY c2c2d.$orderBy, c2c2d.$secondOrderBy desc
+                ";
+            }
+
             $query = $this->_em->createQuery($sql);
             $query->setParameter("arrayEntityName", $arrayEntityName);
             $query->setMaxResults(10000);
         }else{
-            $sql="SELECT c2c2d, d
-            FROM EtoxMicromeEntity2DocumentBundle:Compound2Cyp2Document c2c2d
-            JOIN c2c2d.document d
-            WHERE c2c2d.cypsMention IN (:arrayEntityName) AND d.kind= :source
-            ORDER BY c2c2d.$orderBy, c2c2d.$secondOrderBy desc
-            ";
+            if ($curated=="yes"){
+                $sql="SELECT c2c2d, d
+                FROM EtoxMicromeEntity2DocumentBundle:Compound2Cyp2Document c2c2d
+                JOIN c2c2d.document d
+                WHERE c2c2d.cypsMention IN (:arrayEntityName) AND d.kind= :source
+                AND c2c2d.curation is not null
+                ORDER BY c2c2d.$orderBy, c2c2d.$secondOrderBy desc
+                ";
+            }
+            else{
+                $sql="SELECT c2c2d, d
+                FROM EtoxMicromeEntity2DocumentBundle:Compound2Cyp2Document c2c2d
+                JOIN c2c2d.document d
+                WHERE c2c2d.cypsMention IN (:arrayEntityName) AND d.kind= :source
+                ORDER BY c2c2d.$orderBy, c2c2d.$secondOrderBy desc
+                ";
+            }
             $query = $this->_em->createQuery($sql);
             $query->setParameter("arrayEntityName", $arrayEntityName);
             $query->setParameter("source", $source);
@@ -318,13 +384,13 @@ class Entity2DocumentRepository extends EntityRepository
 
     }
 
-    public function getCytochrome2CompoundRelations($field, $typeOfEntity, $arrayEntityName, $source, $orderBy)
+    public function getCytochrome2CompoundRelations($field, $typeOfEntity, $arrayEntityName, $source, $orderBy, $curated)
     {
         //Same method to getCompound2CytochromeRelations but called when no cytochrome is found in order to search for Compounds... Refactor it!!!!
-        return $this->getCytochrome2CompoundRelationsDQL($field, $typeOfEntity, $arrayEntityName, $source, $orderBy)->getResult();
+        return $this->getCytochrome2CompoundRelationsDQL($field, $typeOfEntity, $arrayEntityName, $source, $orderBy, $curated)->getResult();
     }
 
-    public function getCytochrome2CompoundRelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy)
+    public function getCytochrome2CompoundRelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy, $curated)
     {//("hepatotoxicity","pubmed","CompoundDict",arrayEntityId)
        $valToSearch=$this->getValToSearch($field);//"i.e hepval, embval... etc"
         //We have to create a query that searchs all over the entityIds inside the $arrayEntityId
@@ -353,21 +419,41 @@ class Entity2DocumentRepository extends EntityRepository
         }
 
         if($source=="all"){
-            $sql="SELECT c2c2d
-            FROM EtoxMicromeEntity2DocumentBundle:Compound2Cyp2Document c2c2d
-            WHERE c2c2d.compoundName IN (:arrayEntityName)
-            ORDER BY c2c2d.$orderBy, c2c2d.$secondOrderBy desc
-            ";
+            if ($curated=="yes"){
+                $sql="SELECT c2c2d
+                FROM EtoxMicromeEntity2DocumentBundle:Compound2Cyp2Document c2c2d
+                WHERE c2c2d.compoundName IN (:arrayEntityName)
+                and c2c2d.curation is not null
+                ORDER BY c2c2d.$orderBy, c2c2d.$secondOrderBy desc
+                ";
+            }else{
+                $sql="SELECT c2c2d
+                FROM EtoxMicromeEntity2DocumentBundle:Compound2Cyp2Document c2c2d
+                WHERE c2c2d.compoundName IN (:arrayEntityName)
+                ORDER BY c2c2d.$orderBy, c2c2d.$secondOrderBy desc
+                ";
+            }
             $query = $this->_em->createQuery($sql);
             $query->setParameter("arrayEntityName", $arrayEntityName);
             $query->setMaxResults(10000);
         }else{
-            $sql="SELECT c2c2d, d
-            FROM EtoxMicromeEntity2DocumentBundle:Compound2Cyp2Document c2c2d
-            JOIN c2c2d.document d
-            WHERE c2c2d.compoundName IN (:arrayEntityName) AND d.kind= :source
-            ORDER BY c2c2d.$orderBy, c2c2d.$secondOrderBy desc
-            ";
+            if($curated=="yes"){
+                $sql="SELECT c2c2d, d
+                FROM EtoxMicromeEntity2DocumentBundle:Compound2Cyp2Document c2c2d
+                JOIN c2c2d.document d
+                WHERE c2c2d.compoundName IN (:arrayEntityName) AND d.kind= :source
+                and c2c2d.curation is not null
+                ORDER BY c2c2d.$orderBy, c2c2d.$secondOrderBy desc
+                ";
+            }else{
+                $sql="SELECT c2c2d, d
+                FROM EtoxMicromeEntity2DocumentBundle:Compound2Cyp2Document c2c2d
+                JOIN c2c2d.document d
+                WHERE c2c2d.compoundName IN (:arrayEntityName) AND d.kind= :source
+                ORDER BY c2c2d.$orderBy, c2c2d.$secondOrderBy desc
+                ";
+            }
+
             $query = $this->_em->createQuery($sql);
             $query->setParameter("arrayEntityName", $arrayEntityName);
             $query->setParameter("source", $source);
@@ -447,14 +533,14 @@ class Entity2DocumentRepository extends EntityRepository
         return $query;
     }
 
-    public function getMarker2CompoundRelations($field, $typeOfEntity, $arrayEntityName, $source, $orderBy)
+    public function getMarker2CompoundRelations($field, $typeOfEntity, $arrayEntityName, $source, $orderBy, $curated)
     {
         //Same method to getCompound2MarkerRelations but called when no marker is found in order to search for Compounds... Refactor it!!!!
-        return $this->getMarker2CompoundRelationsDQL($field, $typeOfEntity, $arrayEntityName, $source, $orderBy)->getResult();
+        return $this->getMarker2CompoundRelationsDQL($field, $typeOfEntity, $arrayEntityName, $source, $orderBy, $curated)->getResult();
     }
 
 
-    public function getMarker2CompoundRelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy)
+    public function getMarker2CompoundRelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy, $curated)
     {//("hepatotoxicity","pubmed","CompoundDict",arrayEntityId)
         $valToSearch=$this->getValToSearch($field);//"i.e hepval, embval... etc"
         //We have to create a query that searchs all over the entityIds inside the $arrayEntityId
@@ -471,21 +557,40 @@ class Entity2DocumentRepository extends EntityRepository
             $orderBy="curation desc";
         }
         if($source=="all"){
-            $sql="SELECT c2m2d
-            FROM EtoxMicromeEntity2DocumentBundle:Compound2Marker2Document c2m2d
-            WHERE c2m2d.compoundName IN (:arrayEntityName)
-            ORDER BY c2m2d.$orderBy
-            ";
+            if($curated=="yes"){
+                $sql="SELECT c2m2d
+                FROM EtoxMicromeEntity2DocumentBundle:Compound2Marker2Document c2m2d
+                WHERE c2m2d.compoundName IN (:arrayEntityName)
+                AND c2m2d.curation is not null
+                ORDER BY c2m2d.$orderBy
+                ";
+            }else{
+                $sql="SELECT c2m2d
+                FROM EtoxMicromeEntity2DocumentBundle:Compound2Marker2Document c2m2d
+                WHERE c2m2d.compoundName IN (:arrayEntityName)
+                ORDER BY c2m2d.$orderBy
+                ";
+            }
             $query = $this->_em->createQuery($sql);
             $query->setParameter("arrayEntityName", $arrayEntityName);
             $query->setMaxResults(10000);
         }else{
-            $sql="SELECT c2m2d, d
-            FROM EtoxMicromeEntity2DocumentBundle:Compound2Marker2Document c2m2d
-            JOIN c2m2d.document d
-            WHERE c2m2d.compoundName IN (:arrayEntityName) and d.kind=:source
-            ORDER BY c2m2d.$orderBy
-            ";
+            if ($curated=="yes"){
+                $sql="SELECT c2m2d, d
+                FROM EtoxMicromeEntity2DocumentBundle:Compound2Marker2Document c2m2d
+                JOIN c2m2d.document d
+                WHERE c2m2d.compoundName IN (:arrayEntityName) and d.kind=:source
+                AND c2m2d.curation is not null
+                ORDER BY c2m2d.$orderBy
+                ";
+            }else{
+                $sql="SELECT c2m2d, d
+                FROM EtoxMicromeEntity2DocumentBundle:Compound2Marker2Document c2m2d
+                JOIN c2m2d.document d
+                WHERE c2m2d.compoundName IN (:arrayEntityName) and d.kind=:source
+                ORDER BY c2m2d.$orderBy
+                ";
+            }
             $query = $this->_em->createQuery($sql);
             $query->setParameter("arrayEntityName", $arrayEntityName);
             $query->setParameter("source", $source);

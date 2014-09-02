@@ -378,6 +378,10 @@ class SearchController extends Controller
             if($smile!=""){
                 $dictionaryIds['smile']=$smile;
             }
+            $casRegistryNumber=$entity->getCasRegistryNumber();
+            if($casRegistryNumber!=""){
+                $dictionaryIds['casRegistryNumber']=$casRegistryNumber;
+            }
             #ld($dictionaryIds);
             $arrayTmp=array();
             foreach ($dictionaryIds as $key => $value) {
@@ -1584,6 +1588,7 @@ Evidences found in Sentences:\n
                 'medianScore' => $medianScore,
                 ));
         }elseif($whatToSearch=="compoundsTermsRelations"){
+            $curated=$request->query->get('curated');
             if($entityType=="CompoundDict"){
                 $entity=$em->getRepository('EtoxMicromeEntityBundle:'.$entityType)->getEntityFromName($entityName);
                 if(count($entity)==0){//If there's no results searching with the name, we search with the term....
@@ -1600,7 +1605,7 @@ Evidences found in Sentences:\n
                             }
                         }
                         $arrayEntityName=array_unique($arrayEntityName);
-                        $compound2Term2Documents=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getTerm2CompoundRelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy)->getResult();
+                        $compound2Term2Documents=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getTerm2CompoundRelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy, $curated)->getResult();
                         //When dealing with withRelations arrays, we only have this array to get the needed values that we retreive in interface using resultSetArrays... Which are: totalHits, Max. Score, Min. Score
                         //So we implement a function to get all this info inside an arrayTotalMaxMin. Being arrayTotalMaxMin[0]=totalHits, arrayTotalMaxMin[1]=Max.score, arrayTotalMaxMin[2]=Min.score
                         $arrayTotalMaxMin=$this->getTotalMaxMinArrayForRelations($compound2Term2Documents, $orderBy, $field);
@@ -1610,7 +1615,7 @@ Evidences found in Sentences:\n
                         $arrayEntity2Document = $paginator
                                 ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "documents")
                                 ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "documents")
-                                ->paginate($em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getTerm2CompoundRelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy), 'documents')
+                                ->paginate($em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getTerm2CompoundRelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy, $curated), 'documents')
                                 ->getResult()
                         ;
                         $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummaryFromName($entityName,"Term");
@@ -1679,10 +1684,11 @@ Evidences found in Sentences:\n
                         'arrayEntity2Document' => $arrayEntity2Abstract,
                         'entityName' => $entityName,
                         'orderBy' => $orderBy,
+                        'curated' => $curated,
                     ));
                 }
                 else{
-                    $compound2Term2Documents=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getCompound2TermRelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy)->getResult();
+                    $compound2Term2Documents=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getCompound2TermRelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy, $curated)->getResult();
                     //When dealing with withRelations arrays, we only have this array to get the needed values that we retreive in interface using resultSetArrays... Which are: totalHits, Max. Score, Min. Score
                     //So we implement a function to get all this info inside an arrayTotalMaxMin. Being arrayTotalMaxMin[0]=totalHits, arrayTotalMaxMin[1]=Max.score, arrayTotalMaxMin[2]=Min.score
                     $arrayTotalMaxMin=$this->getTotalMaxMinArrayForRelations($compound2Term2Documents, $orderBy, $field);
@@ -1691,7 +1697,7 @@ Evidences found in Sentences:\n
                     $arrayEntity2Document = $paginator
                         ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "documents")
                         ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "documents")
-                        ->paginate($em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getCompound2TermRelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy), 'documents')
+                        ->paginate($em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getCompound2TermRelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy, $curated), 'documents')
                         ->getResult()
                     ;
                     $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummaryFromName($entityName,"CompoundDict");
@@ -1711,10 +1717,12 @@ Evidences found in Sentences:\n
                     'medianScore' => $medianScore,
                     'mouseoverSummary' => $mouseoverSummary,
                     'allias' => $allias,
+                    'curated' => $curated,
                 ));
                 }
             }
         }elseif($whatToSearch=="compoundsCytochromesRelations"){
+            $curated=$request->query->get('curated');
             if($entityType=="Cytochrome"){
                 $entity=$em->getRepository('EtoxMicromeEntityBundle:'.$entityType)->getEntityFromName($entityName);
                 if(count($entity)==0){//If there's no results searching with the cytochrome, we search with the compoundName!!....
@@ -1728,7 +1736,7 @@ Evidences found in Sentences:\n
                         }
                         $arrayEntityName=array_unique($arrayEntityName);
 
-                        $compound2Cytochrome2Documents=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getCytochrome2CompoundRelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy)->getResult();
+                        $compound2Cytochrome2Documents=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getCytochrome2CompoundRelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy, $curated)->getResult();
                         //ld($compound2Cytochrome2Documents);
                             //When dealing with withRelations arrays, we only have this array to get the needed values that we retreive in interface using resultSetArrays... Which are: totalHits, Max. Score, Min. Score
                             //So we implement a function to get all this info inside an arrayTotalMaxMin. Being arrayTotalMaxMin[0]=totalHits, arrayTotalMaxMin[1]=Max.score, arrayTotalMaxMin[2]=Min.score
@@ -1739,7 +1747,7 @@ Evidences found in Sentences:\n
                         $arrayEntity2Document = $paginator
                                 ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "documents")
                                 ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "documents")
-                                ->paginate($em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getCytochrome2CompoundRelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy), 'documents')
+                                ->paginate($em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getCytochrome2CompoundRelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy, $curated), 'documents')
                                 ->getResult()
                         ;
                         $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummaryFromName($entityName,"CompoundDict");
@@ -1760,6 +1768,7 @@ Evidences found in Sentences:\n
                             'firstRelation' => 'CompoundDict',
                             'mouseoverSummary' => $mouseoverSummary,
                             'allias' => $allias,
+                            'curated' => $curated,
                         ));
                     }
                 }
@@ -1782,7 +1791,7 @@ Evidences found in Sentences:\n
                         'entityName' => $entityName,
                     ));
                 }
-                $compound2Cytochrome2Documents=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getCompound2Cytochrome2RelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy)->getResult();
+                $compound2Cytochrome2Documents=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getCompound2Cytochrome2RelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy, $curated)->getResult();
                     //When dealing with withRelations arrays, we only have this array to get the needed values that we retreive in interface using resultSetArrays... Which are: totalHits, Max. Score, Min. Score
                     //So we implement a function to get all this info inside an arrayTotalMaxMin. Being arrayTotalMaxMin[0]=totalHits, arrayTotalMaxMin[1]=Max.score, arrayTotalMaxMin[2]=Min.score
                 $arrayTotalMaxMin=$this->getTotalMaxMinArrayForRelations($compound2Cytochrome2Documents, $orderBy, $field);
@@ -1791,7 +1800,7 @@ Evidences found in Sentences:\n
                 $arrayEntity2Document = $paginator
                     ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "documents")
                     ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "documents")
-                    ->paginate($em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getCompound2Cytochrome2RelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy), 'documents')
+                    ->paginate($em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getCompound2Cytochrome2RelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy, $curated), 'documents')
                     ->getResult()
                 ;
                 $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummaryFromName($entityName,"Cytochrome");
@@ -1811,9 +1820,11 @@ Evidences found in Sentences:\n
                     'medianScore' => $medianScore,
                     'mouseoverSummary' => $mouseoverSummary,
                     'allias' => $allias,
+                    'curated' => $curated,
                 ));
             }
         }elseif($whatToSearch=="compoundsMarkersRelations"){
+            $curated=$request->query->get('curated');
             if($entityType=="Marker"){
                 $entity=$em->getRepository('EtoxMicromeEntityBundle:'.$entityType)->getEntityFromName($entityName);
                 if(count($entity)==0){//If there's no results searching with the Marker, we search with the compoundName!!....
@@ -1826,7 +1837,7 @@ Evidences found in Sentences:\n
                             $arrayEntityName[]=($entidad->getName());
                         }
                         $arrayEntityName=array_unique($arrayEntityName);
-                        $compound2Marker2Documents=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getMarker2CompoundRelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy)->getResult();
+                        $compound2Marker2Documents=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getMarker2CompoundRelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy, $curated)->getResult();
                         //When dealing with withRelations arrays, we only have this array to get the needed values that we retreive in interface using resultSetArrays... Which are: totalHits, Max. Score, Min. Score
                         //So we implement a function to get all this info inside an arrayTotalMaxMin. Being arrayTotalMaxMin[0]=totalHits, arrayTotalMaxMin[1]=Max.score, arrayTotalMaxMin[2]=Min.score
                         $arrayTotalMaxMin=$this->getTotalMaxMinArrayForRelations($compound2Marker2Documents, $orderBy, $field);
@@ -1835,7 +1846,7 @@ Evidences found in Sentences:\n
                         $arrayEntity2Document = $paginator
                                 ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "documents")
                                 ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "documents")
-                                ->paginate($em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getMarker2CompoundRelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy), 'documents')
+                                ->paginate($em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getMarker2CompoundRelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy, $curated), 'documents')
                                 ->getResult()
                         ;
                         $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummaryFromName($entityName,"CompoundDict");
@@ -1856,6 +1867,7 @@ Evidences found in Sentences:\n
                             'firstRelation' => 'CompoundDict',
                             'mouseoverSummary' => $mouseoverSummary,
                             'allias' => $allias,
+                            'curated' => $curated,
                         ));
                     }
                 }
@@ -1878,7 +1890,7 @@ Evidences found in Sentences:\n
                         'entityName' => $entityName,
                     ));
                 }
-                $compound2Marker2Documents=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getCompound2MarkerRelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy)->getResult();
+                $compound2Marker2Documents=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getCompound2MarkerRelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy, $curated)->getResult();
                 //When dealing with withRelations arrays, we only have this array to get the needed values that we retreive in interface using resultSetArrays... Which are: totalHits, Max. Score, Min. Score
                 //So we implement a function to get all this info inside an arrayTotalMaxMin. Being arrayTotalMaxMin[0]=totalHits, arrayTotalMaxMin[1]=Max.score, arrayTotalMaxMin[2]=Min.score
                 $arrayTotalMaxMin=$this->getTotalMaxMinArrayForRelations($compound2Marker2Documents, $orderBy, $field);
@@ -1889,7 +1901,7 @@ Evidences found in Sentences:\n
                 $arrayEntity2Document = $paginator
                     ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "documents")
                     ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "documents")
-                    ->paginate($em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getCompound2MarkerRelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy), 'documents')
+                    ->paginate($em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getCompound2MarkerRelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy, $curated), 'documents')
                     ->getResult()
                 ;
                 return $this->render('FrontendBundle:Search_document:indexRelations.html.twig', array(
@@ -1907,6 +1919,7 @@ Evidences found in Sentences:\n
                     'medianScore' => $medianScore,
                     'mouseoverSummary' => $mouseoverSummary,
                     'allias' => $allias,
+                    'curated' => $curated,
                 ));
             }
         }

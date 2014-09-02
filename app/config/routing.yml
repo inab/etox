@@ -206,3 +206,7 @@ tutorial:
 retrieve_image:
     pattern: /myimage/{image_id}/
     defaults: { _controller: EtoxMicromeEntityBundle:Image:retrieveImage }
+
+calculate_tanimoto:
+    pattern: /calculate_tanimoto/
+    defaults: { _controller: EtoxMicromeEntityBundle:CompoundDict:calculateTanimoto}

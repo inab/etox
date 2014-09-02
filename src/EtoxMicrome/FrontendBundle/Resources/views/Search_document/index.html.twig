@@ -61,7 +61,12 @@
                         {% if (entityType=="CompoundDict" and whatToSearch=="name") or (entityType=="CompoundDict" and whatToSearch=="id") or (entityType=="Cytochrome" and whatToSearch=="name") or (entityType=="Marker" and whatToSearch=="name") %}
                             <tr>
                                 <td colspan="5">
-                                    <a href="#" class="toggleSummaryInfo"><strong>{{ entityBackup }} information</strong></a>
+                                    {% if entityType=="CompoundDict" %}
+                                        {% set typeOfEntity = "Compound" %}
+                                    {% else %}
+                                        {% set typeOfEntity = entityType %}
+                                    {% endif %}
+                                    <a href="#" class="toggleSummaryInfo"><strong>See {{typeOfEntity}} info: {{ entityBackup }}</strong></a>
                                     <div id="mouseoverSummary">
                                         <table>
                                             <tr>
@@ -79,15 +84,33 @@
                                                 </td>
                                             </tr>
                                             {% endif %}
-                                            {% set existImage = entity.getImage %}
-                                            {% if existImage is not null %}
-                                                {% set idImage = entity.getImage.getCompound%}
-                                            <tr>
-                                                <td colspan="5">
-                                                        {% set imageCompound = "images/imagesCompound/"~idImage~".png" %}
-                                                        <img src="{{ asset(imageCompound) }}" border="0" />
-                                                </td>
-                                            </tr>
+                                            {% if entityType=="CompoundDict" %}
+                                                {% set existImage = entity.getImage %}
+                                                {% if existImage is not null %}
+                                                    {% set idImage = entity.getImage.getCompound%}
+                                                    <tr>
+                                                    <td colspan="5">
+                                                            {% set imageCompound = "images/imagesCompound/"~idImage~".png" %}
+                                                            <img src="{{ asset(imageCompound) }}" border="0" />
+                                                    </td>
+                                                </tr>
+                                                {% endif %}
+                                                <tr>
+                                                    <td>
+                                                        <input id="tanimoto-compound-1" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true" placeholder="Compound 1" onclick="this.value=''" class="tanimoto" id="compoundName2" name="compoundName2" value="{{ entityBackup }}">
+                                                    </td>
+                                                    <td>
+                                                        <input id="tanimoto-compound-2" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true" placeholder="Compound 2" onclick="this.value=''" class="tanimoto" id="compoundName2" name="compoundName2">
+                                                        <a href="#" onclick="calculateTanimoto('/calculate_tanimoto/')" id="calculate-tanimoto" class="tanimoto">Calculate Tanimoto Coef.</a>
+                                                    </td>
+                                                    <td>
+                                                        <div id="tanimoto-result"></div>
+                                                    </td>
+                                                    <td>
+                                                    </td>
+                                                    <td>
+                                                    </td>
+                                                </tr>
                                             {% endif %}
                                         </table>
                                     </div>

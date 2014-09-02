@@ -43,6 +43,13 @@ class Structure
     private $mol;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="pathtosdf", type="text", nullable=true)
+     */
+    private $pathtosdf;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="created", type="datetime")
@@ -134,6 +141,29 @@ class Structure
     public function getMol()
     {
         return $this->mol;
+    }
+
+    /**
+     * Set pathtosdf
+     *
+     * @param string $pathtosdf
+     * @return Structure
+     */
+    public function setPathtosdf($pathtosdf)
+    {
+        $this->pathtosdf = $pathtosdf;
+
+        return $this;
+    }
+
+    /**
+     * Get pathtosdf
+     *
+     * @return string
+     */
+    public function getPathtosdf()
+    {
+        return $this->pathtosdf;
     }
 
     /**

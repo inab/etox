@@ -37,11 +37,20 @@
                         {% if (entityType=="CompoundDict") or (entityType=="Cytochrome") or (entityType=="Marker") %}
                             <tr>
                                 <td colspan="5">
-                                    <a href="#" class="toggleSummaryInfo"><strong>{{ entityBackup }} information</strong></a>
+                                    {% if entityType=="CompoundDict" %}
+                                        {% set typeOfEntity = "Compound" %}
+                                    {% else %}
+                                        {% set typeOfEntity = entityType %}
+                                    {% endif %}
+                                    <a href="#" class="toggleSummaryInfo"><strong>See {{typeOfEntity}} info: {{ entityBackup }}</strong></a>
                                 </td>
                             </tr>
                         {% endif %}
-
+                        <tr>
+                            <td colspan="5">
+                                <a href="?curated=yes"><strong>See only curated elements</strong></a>
+                            </td>
+                        </tr>
                     </table>
                     <div id="mouseoverSummary">
                         <table>
@@ -56,9 +65,37 @@
                                     <strong>Alliases</strong>
                                 </td>
                                 <td colspan="4">
-
+                                    {{ allias | replace({("|"): ", "}) }}
                                 </td>
                             </tr>
+                            {% endif %}
+                            {% if entityType=="CompoundDict" %}
+                                {% set existImage = entity.getImage %}
+                                {% if existImage is not null %}
+                                    {% set idImage = entity.getImage.getCompound%}
+                                    <tr>
+                                    <td colspan="5">
+                                            {% set imageCompound = "images/imagesCompound/"~idImage~".png" %}
+                                            <img src="{{ asset(imageCompound) }}" border="0" />
+                                    </td>
+                                </tr>
+                                {% endif %}
+                                <tr>
+                                    <td>
+                                        <input id="tanimoto-compound-1" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true" placeholder="Compound 1" onclick="this.value=''" class="tanimoto" id="compoundName2" name="compoundName2" value="{{ entityBackup }}">
+                                    </td>
+                                    <td>
+                                        <input id="tanimoto-compound-2" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true" placeholder="Compound 2" onclick="this.value=''" class="tanimoto" id="compoundName2" name="compoundName2">
+                                        <a href="#" onclick="calculateTanimoto('/calculate_tanimoto/')" id="calculate-tanimoto" class="tanimoto">Calculate Tanimoto Coef.</a>
+                                    </td>
+                                    <td>
+                                        <div id="tanimoto-result"></div>
+                                    </td>
+                                    <td>
+                                    </td>
+                                    <td>
+                                    </td>
+                                </tr>
                             {% endif %}
                         </table>
                     </div>
@@ -372,7 +409,7 @@
                     {{ simple_paginator_render(
                         'search_interface_search_field_whatToSearch_entityType_source_entity_orderby', 'documents',
                             {
-                                'routeParams' : {'field' : field, 'whatToSearch' : whatToSearch, 'entityType' : entityType, 'source' : source, 'entityName' : entityBackup, 'orderBy' : orderBy},
+                                'routeParams' : {'field' : field, 'whatToSearch' : whatToSearch, 'entityType' : entityType, 'source' : source, 'entityName' : entityBackup, 'orderBy' : orderBy, 'curated': curated},
                                 'container_class' : 'pagination'
                             }
                         )

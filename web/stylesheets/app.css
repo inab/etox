@@ -355,7 +355,9 @@ mark.compound a{
 table.summary a{
     text-decoration: underline !important;
 }
-
+#tanimoto-result{
+    float: left
+}
 /* -----------------------------------------
     Compounds
 ----------------------------------------- */
