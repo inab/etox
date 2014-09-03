@@ -5,12 +5,12 @@ namespace EtoxMicrome\EntityBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * CompoundDict
+ * Compounddict
  *
  * @ORM\Table(indexes={@ORM\Index(name="compoundDict_new_name_index", columns={"name"}), @ORM\Index(name="compoundDict_new_chemIdPlus_index", columns={"""chemIdPlus"""}), @ORM\Index(name="compoundDict_new_chebi_index", columns={"chebi"}), @ORM\Index(name="compoundDict_new_inchi_index", columns={"""inChi"""}), @ORM\Index(name="compoundDict_new_casRegistryNumber_index", columns={"""casRegistryNumber"""}), @ORM\Index(name="compoundDict_new_pubChemCompound_index", columns={"""pubChemCompound"""}), @ORM\Index(name="compoundDict_new_pubChemSubstance_index", columns={"""pubChemSubstance"""}), @ORM\Index(name="compoundDict_new_drugBank_index", columns={"""drugBank"""}), @ORM\Index(name="compoundDict_new_humanMetabolome_index", columns={"""humanMetabolome"""}), @ORM\Index(name="compoundDict_new_keggCompound_index", columns={"""keggCompound"""}), @ORM\Index(name="compoundDict_new_keggDrug_index", columns={"""keggDrug"""}), @ORM\Index(name="compoundDict_new_mesh_index", columns={"mesh"}) } )
  * @ORM\Entity(repositoryClass="EtoxMicrome\EntityBundle\Entity\CompoundDictRepository")
  */
-class CompoundDict
+class Compounddict
 {
     /**
      * @var integer
