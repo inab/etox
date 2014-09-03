@@ -131,8 +131,12 @@ export_csv_orderby:
     defaults:   { _controller: FrontendBundle:Search:searchFieldWhatToSearchEntityTypeSourceEntity}
 
 download_route:
-    pattern:  /download/{filename}
+    pattern:  /download/{filename}/
     defaults: { _controller: FrontendBundle:Download:download }
+
+download_sdf:
+    pattern:  /download-sdf/{filename}/
+    defaults: { _controller: FrontendBundle:Download:downloadsdf }
 
 curate_evidences_abstract:
     pattern: /curate/abstract/{pmid}/

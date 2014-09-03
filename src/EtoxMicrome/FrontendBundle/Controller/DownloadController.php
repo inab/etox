@@ -30,4 +30,28 @@ class DownloadController extends Controller
         $response->setContent($content);
         return $response;
     }
+    public function downloadsdfAction($filename)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $arrayFilename=explode(".", $filename);
+        $idCompound=$arrayFilename[0];
+        $entity=$em->getRepository('EtoxMicromeEntityBundle:Compounddict')->getEntityFromId($idCompound);
+        $compoundName=$entity->getName();
+        $message="Downloading file ";
+        //ld($filename);
+        $request = $this->get('request');
+        $path = $this->get('kernel')->getRootDir(). "/../web/files/sdf/";
+        $filepath=$path.$filename;
+        #ldd($filepath);
+        $content = file_get_contents($filepath);
+
+        $response = new Response();
+
+        //set headers
+        $response->headers->set('Content-Type', 'application/octet-stream');
+        $response->headers->set('Content-Disposition', 'attachment;filename="'.$compoundName.'.mol');
+
+        $response->setContent($content);
+        return $response;
+    }
 }

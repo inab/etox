@@ -66,7 +66,12 @@
                                     {% else %}
                                         {% set typeOfEntity = entityType %}
                                     {% endif %}
+
                                     <a href="#" class="toggleSummaryInfo"><strong>See {{typeOfEntity}} info: {{ entityBackup }}</strong></a>
+                                    {% set structure = entity.getStructure %}
+                                    {% if structure is not null %}
+                                        (<a href="{{ path('download_sdf', {'filename': structure.pathtosdf}) }}">Download mol file</a>)
+                                    {% endif %}
                                     <div id="mouseoverSummary">
                                         <table>
                                             <tr>

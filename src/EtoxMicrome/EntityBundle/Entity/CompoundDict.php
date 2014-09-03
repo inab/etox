@@ -571,4 +571,24 @@ class CompoundDict
     {
         return $this->image;
     }
+
+    /**
+     * Set structure
+     *
+     */
+    public function setStructure(\EtoxMicrome\EntityBundle\Entity\Structure $structure)
+    {
+        $this->structure = $structure;
+
+        return $this;
+    }
+
+    /**
+     * Get structure
+     *
+     */
+    public function getStructure()
+    {
+        return $this->structure;
+    }
 }

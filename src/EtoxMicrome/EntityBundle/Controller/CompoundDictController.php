@@ -39,7 +39,7 @@ class CompoundDictController extends Controller
             $inchi1=$entity->getInChi();
             $smile1=$entity->getSmile();
             if ($inchi1=="" and $smile1==""){
-                $tanimotoString="Sorry. We have InChi/Smile for $compoundName1 compound.";
+                $tanimotoString="Sorry. We have neither InChi nor Smile for $compoundName1 compound.";
                 $jsonString = json_encode($tanimotoString);
                 $response = new Response($jsonString);
                 $response->headers->set('Content-Type', 'application/json');
