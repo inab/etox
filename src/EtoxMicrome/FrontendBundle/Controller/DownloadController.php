@@ -35,7 +35,7 @@ class DownloadController extends Controller
         $em = $this->getDoctrine()->getManager();
         $arrayFilename=explode(".", $filename);
         $idCompound=$arrayFilename[0];
-        $entity=$em->getRepository('EtoxMicromeEntityBundle:Compounddict')->getEntityFromId($idCompound);
+        $entity=$em->getRepository('EtoxMicromeEntityBundle:CompoundDict')->getEntityFromId($idCompound);
         $compoundName=$entity->getName();
         $message="Downloading file ";
         //ld($filename);
