@@ -749,7 +749,6 @@ Evidences found in Abstracts:(Output fields:\t\"#registry\"\t\"Abstract text\"\t
             $pubmedLink="http://www.ncbi.nlm.nih.gov/pubmed/".$entity2Abstract->getAbstracts()->getPmid();
             $line=$line.$pubmedLink."\t";
             $valToSearch=$this->getValToSearch($field);
-            ldd($message);
             $score=$this->getPropertyScore($entity2Abstract, $valToSearch);
             $line=$line.$score."\t";
             $line=$line."\n";
