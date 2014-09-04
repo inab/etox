@@ -68,9 +68,11 @@
                                     {% endif %}
 
                                     <a href="#" class="toggleSummaryInfo"><strong>See {{typeOfEntity}} info: {{ entityBackup }}</strong></a>
-                                    {% set structure = entity.getStructure %}
-                                    {% if structure is not null %}
-                                        (<a href="{{ path('download_sdf', {'filename': structure.pathtosdf}) }}">Download mol file</a>)
+                                    {% if entityType=="CompoundDict" %}
+                                        {% set structure = entity.getStructure %}
+                                        {% if structure is not null %}
+                                            (<a href="{{ path('download_sdf', {'filename': structure.pathtosdf}) }}">Download mol file</a>)
+                                        {% endif %}
                                     {% endif %}
                                     <div id="mouseoverSummary">
                                         <table>

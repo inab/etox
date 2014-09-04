@@ -488,7 +488,6 @@ class UtilityExtension extends \Twig_Extension
             //We also add a link around the Term in order to search co-mentioned terms
         }
 
-
         //With arrayEntity2Document we can highlight CompoundDict, Marker and Specie
         $arrayEntity2Document = $em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->findEntity2DocumentFromDocument($document);
         foreach ($arrayEntity2Document as $entity2Document){
@@ -784,6 +783,53 @@ class UtilityExtension extends \Twig_Extension
                 }
             }
         }
+
+        //Now we search for species to highlight directly from specie2document using the document_id";
+        //With arraySpecie2Document we can highlight Species inside the text
+        $arraySpecie2Document = $em->getRepository('EtoxMicromeEntity2DocumentBundle:Specie2Document')->findSpecie2DocumentFromDocument($document);
+        foreach($arraySpecie2Document as $specie2document){
+            $specieName=$specie2document->getSpecie()->getName();
+            $numberWords=str_word_count($specieName, 0, '0..9()=-');
+            if($numberWords==1){
+                $arrayPlaces=$this->findPlaceSingleWord($specieName,$arrayText,$arrayHighlighted);
+                foreach($arrayPlaces as $place){
+                    array_push($arrayHighlighted, $place);
+                    $text=$arrayText[$place];
+                    $text = str_ireplace($specieName, '<mark class="specie">'.$specieName.'</mark>', $text);
+                    $text = str_ireplace($specieName, "<span data-tooltip=\"sticky$tooltipCounter\">".$specieName."</span>", $text);
+                    $arrayText[$place]=$text;
+                    $mouseoverSummary="Add mouseoversummary at utilityExtension:802";
+                    $mouseoverDivs=$mouseoverDivs."<div id=\"sticky$tooltipCounter\" class=\"atip\">$mouseoverSummary</div>";
+                    $tooltipCounter=$tooltipCounter+1;
+                }
+            }else{
+                $place=$this->findPlaceSeveralWords($specieName,$arrayText,$arrayHighlighted);
+                if($place!=-1){
+                    //There is a place to make the highlight, starting at $place and finishing at $numberEntityName=str_word_count($entityName, 0);
+                    $numberSpecieName=str_word_count($specieName, 0, '0..9()=-');
+                    if($place+$numberSpecieName<=count($arrayText)){//Only in this case is possible to find the entityName inside the text, otherwise it will fall outside the array with undefined offset error_get_last()
+                        $arraySpecieName=str_word_count($specieName, 1, '0..9()=-');
+                        //We mark the first
+                        $text=$arrayText[$place];
+                        $text = str_ireplace($arraySpecieName[0], '<mark class="specie">'.$arraySpecieName[0], $text);
+                        $mouseoverSummary="Add mouseoversummary at utilityExtension:815";
+                        $text = str_ireplace($arraySpecieName[0], "<span data-tooltip=\"sticky$tooltipCounter\">".$arrayEntityName[0], $text);
+                        $arrayText[$place]=$text;
+                        $mouseoverDivs=$mouseoverDivs."<div id=\"sticky$tooltipCounter\" class=\"atip\">$mouseoverSummary</div>";
+                        $tooltipCounter=$tooltipCounter+1;
+                        //Mark the last
+                        $text=$arrayText[$place+$numberSpecieName-1];
+                        $text = str_ireplace($arraySpecieName[$numberSpecieName-1], $arraySpecieName[$numberSpecieName-1]."</span></mark>", $text);
+                        $arrayText[$place+$numberSpecieName-1]=$text;
+                        //Add all range to arrayHighlighted
+                        foreach(range($place,$place+$numberSpecieName-1) as $i){
+                            array_push($arrayHighlighted, $i);
+                        }
+                    }
+                }
+            }
+        }
+
         //ld($entityBackup);
         $text=implode(" ", $arrayText);
         //$text=str_ireplace($entityBackup, '<mark class="termSearched">'.$entityBackup.'</mark>' , $text);

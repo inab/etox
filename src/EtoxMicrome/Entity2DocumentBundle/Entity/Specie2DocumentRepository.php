@@ -38,4 +38,17 @@ class Specie2DocumentRepository extends EntityRepository
         return $arraycytochromes;
     }
 
+    public function findSpecie2DocumentFromDocument($document)
+    {
+        //Function to search all the entities involved in a particular sentence in order to highlight them
+        $documentId=$document->getId();
+        $em = $this->getEntityManager();
+        $consulta = $em->createQuery('
+            SELECT s2d
+            FROM EtoxMicromeEntity2DocumentBundle:Specie2Document s2d
+            WHERE s2d.document = :documentId
+        ');
+        $consulta->setParameter('documentId', $documentId);
+        return $consulta->execute();
+    }
 }
