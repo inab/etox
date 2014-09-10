@@ -638,11 +638,6 @@ class Entity2DocumentRepository extends EntityRepository
     }
 
     public function getEntitySummary($entity2DocumentId, $qualifier){
-        $message="****";
-        ld($message);
-        ld($entity2DocumentId);
-        ld($qualifier);
-        ld($message);
 
         $em = $this->getEntityManager();
         $dictionary=array();
