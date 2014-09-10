@@ -174,7 +174,11 @@
                             ><span data-tooltip class="has-tip" title="{{ mouseover_rule}}">Rule</span></a>
                         </th>
                         <th>Sentence</th>
-                        <th><span data-tooltip class="has-tip" title="{{ mouseover_curation}}">Curation</span></th>
+                        <th>
+                            <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'curation'}) }}" {% if orderBy == "curation"%} class="active"{% endif %}
+                            ><span data-tooltip class="has-tip" title="{{ mouseover_relation_curation}}">Curation
+                            </a>
+                        </th>
                     </thead>
                     <tbody>
                         {% set contador = 1 %}
