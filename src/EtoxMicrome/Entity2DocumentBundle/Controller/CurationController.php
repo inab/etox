@@ -80,7 +80,7 @@ class CurationController extends Controller
     public function addCurationMarker2DocumentAction($marker2Document,$action)
     {
         $em = $this->getDoctrine()->getManager();
-        $curation=$em->getRepository('EtoxMicromeEntity2DocumentBundle:HepKeywordTermVariant2Document')->updateHepKeywordTermVariant2DocumentCuration($marker2Document, $action);
+        $curation=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->updateEntity2DocumentCuration($marker2Document, $action);
         //Now, taking $curation into account, we generate the html code to return as json
 
         $url_check = $this->generateUrl(

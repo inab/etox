@@ -187,7 +187,7 @@ fos_elastica:
                             ignore_missing: true
                 entity2document:
                     mappings:
-                        document_id: { type: integer }
+                        document: { type: integer }
                         kind: { type: string }
                         name: { boost: 3, type: string }
                         qualifier: { boost: 3, type: string }

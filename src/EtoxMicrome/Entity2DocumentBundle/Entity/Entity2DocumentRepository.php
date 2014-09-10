@@ -1298,7 +1298,6 @@ class Entity2DocumentRepository extends EntityRepository
 
         $em = $this->getEntityManager();
         $entity2Document=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->findOneById($entity2DocumentId);
-        ldd($entity2Document);
         if (!$entity2Document) {
             throw $this->createNotFoundException(
                 "Cannot curate this Entity2Document $entity2DocumentId"
@@ -1313,7 +1312,7 @@ class Entity2DocumentRepository extends EntityRepository
             }
             $em->persist($entity2Document);
             $em->flush();
-            ldd($entity2Document->getCuration());
+            //ld($entity2Document->getCuration());
             $curationReturn=$entity2Document->getCuration();
             return($curationReturn);
         }
