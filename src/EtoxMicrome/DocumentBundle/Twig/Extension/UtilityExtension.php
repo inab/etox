@@ -103,7 +103,7 @@ class UtilityExtension extends \Twig_Extension
     public function highlightEntitiesDocuments($text,$document,$entityBackup, $field, $whatToSearch, $source, $entityType, $tooltipCounter)
     {
         //This function should return an array with both, $array[0] = the text highlighted, $array[1] = the html for the divs containing the sticky tooltips and $array[2] = the tooltipCounter number
-        //the parameters $field, $whatToSearch, $entityType are used to create the url to link the entities to a search of theirshelves
+        //the parameters $field, $whatToSearch, $entityType are used to create the url to link the entities for searching themselves
         $message="highlightEntitiesDocuments!!!";
         $em=$this->doctrine->getManager();
         //We need all the entities involved in the same document
