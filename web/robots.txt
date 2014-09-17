@@ -2,3 +2,9 @@
 # www.google.com/support/webmasters/bin/answer.py?hl=en&answer=156449
 
 User-agent: *
+Disallow: /search/*$
+Disallow: /export/*$
+Disallow: /curate/*$
+Disallow: /app.php/search/*$
+Disallow: /app.php/export/*$
+Disallow: /app.php/curate/*$
