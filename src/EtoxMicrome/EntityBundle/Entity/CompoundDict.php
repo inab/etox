@@ -154,6 +154,24 @@ class CompoundDict
     private $structure;
 
     /**
+     * @ORM\OneToMany(targetEntity="EtoxMicrome\EntityBundle\Entity\TanimotoValues", mappedBy="compound1")
+     **/
+    private $tanimoto2compound1;
+    
+    /**
+     * @ORM\OneToMany(targetEntity="EtoxMicrome\EntityBundle\Entity\TanimotoValues", mappedBy="compound2")
+     **/
+    private $tanimoto2compound2;
+    
+    
+    /**
+    * Constructor de la clase
+    **/
+    public function __construct() {
+        $this->tanimoto2compound1 = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->tanimoto2compound2 = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+    /**
      * Get id
      *
      * @return integer
@@ -590,5 +608,47 @@ class CompoundDict
     public function getStructure()
     {
         return $this->structure;
+    }
+    
+    /**
+     * Set tanimoto2compound1
+     *
+     * @return integer
+     */
+    public function setTanimoto2compound1($tanimoto2compound1)
+    {
+        $this->tanimoto2compound1 =$tanimoto2compound1;
+        return $this;
+    }
+
+    /**
+     * Get tanimoto2compound1
+     *
+     * @return integer
+     */
+    public function getTanimoto2compound1()
+    {
+        return $this->tanimoto2compound1;
+    }
+    
+    /**
+     * Set tanimoto2compound2
+     *
+     * @return integer
+     */
+    public function setTanimoto2compound2($tanimoto2compound2)
+    {
+        $this->tanimoto2compound2 =$tanimoto2compound2;
+        return $this;
+    }
+
+    /**
+     * Get tanimoto2compound2
+     *
+     * @return integer
+     */
+    public function getTanimoto2compound2()
+    {
+        return $this->tanimoto2compound2;
     }
 }
