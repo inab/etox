@@ -118,6 +118,23 @@
                                                     <td>
                                                     </td>
                                                 </tr>
+                                                	{% if arrayTanimotos | length > 0 %}
+                                                <tr>
+                                                	<td colspan="2">
+                                                		<strong>List of compounds with a Tanimoto coeff. > 0.5:</strong>
+                                                		<ul class='tanimotolist'>
+                                                		{%for tanimotoValue in arrayTanimotos%}
+                                                			{% set compound1 = tanimotoValue.getCompound2.getName %}
+                                                			{% set compound2 = tanimotoValue.getCompound1.getName %}
+                                                			{% if entityBackup==compound1 %}
+                                                				{% set compound1=compound2 %}
+                                                			{% endif %}
+                                                			<li class='tanimotolist'><strong>{{ compound1 }} </strong>: {{tanimotoValue.tanimoto}}</li>
+                                                		{% endfor %}
+                                                		</ul>
+													</td>
+                                                </tr>
+                                                	{% endif %}
                                             {% endif %}
                                         </table>
                                     </div>
