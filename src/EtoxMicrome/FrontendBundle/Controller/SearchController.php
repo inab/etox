@@ -735,7 +735,7 @@ Evidences found in Sentences:\n
         }
 
         $count=0;
-        /* $line="Searching parameters:\n
+        $line="Searching parameters:\n
 \tToxicity type:\t $field\n
 \tWhat to search:\t $whatToSearch\n
 \tType of entity:\t $entityType\n
@@ -757,7 +757,7 @@ Evidences found in Abstracts:(Output fields:\t\"#registry\"\t\"Abstract text\"\t
             }
             $count=$count+1;
         }
-        */
+        
         fclose($fp);
 
 
