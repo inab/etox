@@ -1,5 +1,7 @@
 web/images/imagesCompound
 web/files/*
+web/app_dev.php
+web/app.php
 # -- Symfony2 -----------------------------------------
 app/bootstrap.php.cache
 app/bootstrap_cache.php.cache

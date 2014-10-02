@@ -69,12 +69,13 @@ class CompoundDictController extends Controller
         //Here we have data for calculate the tanimoto coeff with a python script...
         $tanimotoScriptPath=$this->get('kernel')->getRootDir(). "/../web/scripts/returnTanimotoDistance.py '$inchi1' '$inchi2' '$smile1' '$smile2' ";
         #$command="PYTHONPATH='".getenv('PYTHONPATH')."' RDBASE='".getenv('RDBASE')."' python ".$tanimotoScriptPath;
-        //To execute pythonscript from here we need to pass the environment variables PythonPath and rdbase, set as global parameters from the dependency container in config.yml
-        $rdbase= $this->container->getParameter('etoxMicrome.rdbase');
-        $pythonpath= $this->container->getParameter('etoxMicrome.pythonpath');
-        $dyld_library_path=$this->container->getParameter('etoxMicrome.dyld_library_path');
+       //To execute pythonscript from here we need to pass the environment variables PythonPath and rdbase, set as global parameters from the dependency container in config.yml
+       $rdbase= $this->container->getParameter('etoxMicrome.rdbase');
+       $pythonpath= $this->container->getParameter('etoxMicrome.pythonpath');
+       $dyld_library_path=$this->container->getParameter('etoxMicrome.dyld_library_path');
+       $ld_library_path=$this->container->getParameter('etoxMicrome.ld_library_path');
 
-        $command="PYTHONPATH='".$pythonpath."' RDBASE='".$rdbase."' DYLD_LIBRARY_PATH='".$dyld_library_path."'  python ".$tanimotoScriptPath;
+       $command="PYTHONPATH='".$pythonpath."' RDBASE='".$rdbase."' DYLD_LIBRARY_PATH='".$dyld_library_path."' LD_LIBRARY_PATH='".$ld_library_path."'  python ".$tanimotoScriptPath;
         $process = new Process($command);
         $process->run();
         // executes after the command finishes

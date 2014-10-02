@@ -1318,4 +1318,45 @@ class Entity2DocumentRepository extends EntityRepository
         }
         return ($curationReturn);
     }
+    
+    public function getCuratedEntity2Document($qualifier)
+    {
+        return $this->getCuratedEntity2DocumentDQL($qualifier)->getResult();
+    }
+    
+    public function getCuratedEntity2DocumentDQL($qualifier)
+    {
+        $message="getCuratedEntity2Document";
+        $sql="SELECT e2d
+                FROM EtoxMicromeEntity2DocumentBundle:Entity2Document e2d
+                WHERE e2d.curation is not null
+                AND e2d.qualifier = :qualifier
+                ORDER BY e2d.curation desc
+            ";
+        $query = $this->_em->createQuery($sql);
+        $query->setParameter("qualifier", $qualifier);
+        return ($query);
+    }
+    
+    public function getCuratedEntity2DocumentName($qualifier, $entityName)
+    {
+        return $this->getCuratedEntity2DocumentNameDQL($qualifier, $entityName)->getResult();
+    }
+    
+    public function getCuratedEntity2DocumentNameDQL($qualifier, $entityName)
+    {
+        $message="getCuratedEntity2Document";
+        $sql="SELECT e2d
+                FROM EtoxMicromeEntity2DocumentBundle:Entity2Document e2d
+                WHERE e2d.curation is not null
+                AND e2d.name= :entityName
+                AND e2d.qualifier = :qualifier
+                ORDER BY e2d.curation desc
+            ";
+        $query = $this->_em->createQuery($sql);
+        $query->setParameter("qualifier", $qualifier);
+        $query->setParameter("entityName", $entityName);
+        
+        return ($query);
+    }
 }

@@ -113,6 +113,14 @@ search_interface_search_field_whatToSearch_entityType_source_entity_orderby:
     pattern: /search/{field}/{whatToSearch}/{entityType}/{source}/{entityName}/orderBy/{orderBy}/
     defaults: { _controller: FrontendBundle:Search:searchFieldWhatToSearchEntityTypeSourceEntity}
 
+view_only_curated_compounds:
+    pattern: /curated/compounds/
+    defaults: { _controller: FrontendBundle:OnlyCurated:viewCuratedEntities}
+
+view_only_curated_compounds_compoundName:
+    pattern: /curated/compounds/{entityName}/
+    defaults: { _controller: FrontendBundle:OnlyCurated:viewCuratedEntitiesName}
+
 
 autocomplete:
     pattern:    /scripts/autocomplete/
