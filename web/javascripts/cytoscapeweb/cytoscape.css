@@ -1,0 +1,7 @@
+.cytoscape_tool:after{
+    content:""
+}
+
+.cytoscape_tool .window{
+    clear:both;height:700px;padding:0;border:1px solid #000;border-top:none
+}

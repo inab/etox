@@ -833,3 +833,7 @@ ol.tutorial li{
     margin: 40px 0px 10px 0px;
     font-size: 25px;
 }
+
+.cytoscape_tool{
+    border-top: 1px solid #000;
+}
