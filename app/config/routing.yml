@@ -222,3 +222,7 @@ retrieve_image:
 calculate_tanimoto:
     pattern: /calculate_tanimoto/
     defaults: { _controller: EtoxMicromeEntityBundle:CompoundDict:calculateTanimoto}
+
+cytoscape:
+    pattern: /cytoscape/
+    defaults: { _controller: FrontendBundle:Cytoscape:showCytoscape}

@@ -1923,6 +1923,7 @@ Evidences found in Sentences:\n
         if(count($entity)!=0){
             #We have the entityId. We need to do a QUERY EXPANSION depending on the typeOfEntity we have
             $arrayEntityId=$this->queryExpansion($entity, $entityType, $whatToSearch);
+            //ld($arrayEntityId);
             //$arrayEntityId=array();
             //array_push($arrayEntityId, $entity);
             //WARNING!! If the query expansion with a CompoundDict doesn't return any entity, we do the expansion with CompoundMesh!!
@@ -1991,6 +1992,7 @@ Evidences found in Sentences:\n
 
             }
             $arrayEntityName=array_unique($arrayEntityName);//We get rid of the duplicates
+            //ld($arrayEntityName);
             if($entityType=="CompoundDict" or $entityType=="CompoundMesh"){
                 //We search into Abstracts only if we are looking for Compounds
 
@@ -2019,6 +2021,7 @@ Evidences found in Sentences:\n
                 */
                 if (in_array($source, $arraySourcesDocuments)){
                     $compound2Documents=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntity2DocumentFromFieldDQL($field, $entityType, $arrayEntityName, $source, $orderBy)->getResult();
+                    //ld(count($compound2Documents));
                     /*$entity2documentTest=$compound2Documents[0];
                     ld($entity2documentTest);
                     $curation=$entity2documentTest->getCuration();
@@ -2044,7 +2047,7 @@ Evidences found in Sentences:\n
                         ->paginate($em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntity2DocumentFromFieldDQL($field, $entityType, $arrayEntityName, $source, $orderBy), 'documents')
                         ->getResult()
                     ;
-
+                    //ld(count($arrayEntity2Document));
                     if($whatToSearch=="name"){
                         $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummaryFromName($entityName,"CompoundDict");
                         $allias=$em->getRepository('EtoxMicromeEntityBundle:Alias')->getAliasFromName($entityName);

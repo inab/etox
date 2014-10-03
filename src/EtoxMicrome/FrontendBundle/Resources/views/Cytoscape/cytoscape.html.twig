@@ -1,0 +1,45 @@
+{% extends '::frontend.html.twig' %}
+    {% block stylesheets %}
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+        <script src="{{ asset('javascripts/jquery-ui-1.9.js') }}"></script>
+        <script src="{{ asset('javascripts/cytoscapeweb/js/src/AC_OETags.js') }}"></script>
+        <script src="{{ asset('javascripts/cytoscapeweb/js/src/cytoscapeweb.js') }}"></script>
+        <script src="{{ asset('javascripts/cytoscapeweb/cytoscape.js') }}"></script>
+        <script src="{{ asset('javascripts/cytoscapeweb/context_menu.js') }}"></script>
+        <link rel="stylesheet" href="{{ asset('javascripts/cytoscapeweb/cytoscape.css') }}">
+    {% endblock %}
+    {% block article %}
+        <div class="clear-both"></div> 
+          <div class='cytoscape_tool' id='rand197'>
+            <div class='window' id='rand197_window'></div>
+            <script>
+                var cytoscape_id = '#rand197';
+              
+            
+                var tool = $(cytoscape_id).cytoscape_tool({
+                  knowledge_base: 'user',
+                  namespace: 'Hsa/feb2014',
+                  swfPath: '{{ asset('javascripts/cytoscapeweb/swf/CytoscapeWeb') }}',
+        
+                  entities: {},
+        
+                  aesthetics: {
+                    "nodes":{"shape":[{"type":"mapper","feature":"entity_type","map":{"Gene":"CIRCLE","Sample":"HEXAGON"}}],"borderColor":[{"type":"mapper","feature":"entity_type","map":{"Sample":"#D33682","Gene":"#B58900"}}]},
+                    "edges":{"directed":[{"type":"mapper","feature":"database","map":{"tfacts@genomics":true}}],"color":[{"type":"mapper","feature":"database","map":{"pina@genomics":"#0000FF","tfacts@genomics":"#00FFFF","undefined":"#FF00FF","/sample_genes/":"#00FFFF"}},{"type":"mapper","feature":"Effect","map":{"direct":"#FF0000","inverse":"#00FF00"}}]}
+                  },
+        
+                  network: {
+                    "dataSchema":{"nodes":[{"name":"entity_type","type":"string"},{"name":"label","type":"string"},{"name":"url","type":"string"},{"name":"opacity","type":"number"},{"name":"borderWidth","type":"number"},{"name":"borderColor","type":"string"},{"name":"size","type":"number"},{"name":"selected","type":"boolean","defValue":false},{"name":"color","type":"string"},{"name":"shape","type":"string"},{"name":"info","type":"object"}],"edges":[{"name":"database","type":"string"},{"name":"info","type":"object"},{"name":"opacity","type":"number"},{"name":"color","type":"string"},{"name":"width","type":"number"},{"name":"weight","type":"number"}]},
+                    "data":{
+                         "nodes":[{"label":"MDM2","id":"MDM2"},{"label":"TP53","id":"TP53"}],
+                         "edges":[{"source":"MDM2","target":"TP53","database":"undefined"}]
+                    }
+                  }
+                });
+              
+                tool.cytoscape_tool('draw');
+            </script>
+          </div>  
+        <div class="clear-both"></div>  
+    {% endblock %}
+
