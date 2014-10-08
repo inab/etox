@@ -224,5 +224,5 @@ calculate_tanimoto:
     defaults: { _controller: EtoxMicromeEntityBundle:CompoundDict:calculateTanimoto}
 
 cytoscape:
-    pattern: /cytoscape/
+    pattern: /cytoscape/{entityType}/{entityName}/
     defaults: { _controller: FrontendBundle:Cytoscape:showCytoscape}
