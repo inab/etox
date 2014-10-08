@@ -24,7 +24,6 @@ class TanimotoValuesRepository extends EntityRepository
         return $arrayTanimotos;	
     }
     public function sortArrayByTanimoto($arrayTanimotos){
-    	$message="Llega aqui";
     	$arrayTmp=array();
     	//First of all we generate an array with id=idTanimotoValue, tanimoto=tanimotoValue. So we can sort it with array_multisort
     	foreach($arrayTanimotos as $tanimotoValues){
@@ -48,5 +47,77 @@ class TanimotoValuesRepository extends EntityRepository
     	//We return just the first 10 elements of the array
         return array_slice($arrayDef, 0, 10);	
     }
-    
+    public function generateStringsForCytoscape($entityName, $entityType, $dictionaryRelations){
+        $message="generateStringsForCytoscape";
+        $stringNodes="";
+        $stringEdges="";
+        /*"dataSchema":
+                        {"nodes":[
+                            {"name":"entity_type","type":"string"},
+                            {"name":"label","type":"string"},
+                            {"name":"url","type":"string"},
+                            {"name":"opacity","type":"number"},
+                            {"name":"borderWidth","type":"number"},
+                            {"name":"borderColor","type":"string"},
+                            {"name":"size","type":"number"},
+                            {"name":"selected","type":"boolean","defValue":false},
+                            {"name":"color","type":"string"},
+                            {"name":"shape","type":"string"},
+                            {"name":"info","type":"object"}
+                        ],
+                        "edges":[
+                            {"name":"database","type":"string"},
+                            {"name":"info","type":"object"},
+                            {"name":"opacity","type":"number"},
+                            {"name":"color","type":"string"},
+                            {"name":"width","type":"number"},
+                            {"name":"weight","type":"number"}
+                        ]},
+        */
+        /* nodes string example
+        {"label":"MDM2","id":"MDM2"},
+        {"label":"TP53","id":"TP53"},
+        */
+        /* edges string example
+        {"source":"MDM2","target":"TP53","database":"undefined"},
+        */
+        
+        //First of all we generate the string for the main node.
+        $stringNodes="{\"label\":\"$entityName\",\"id\":\"$entityName\",\"entity_type\":\"$entityType\",\"color\":\"#f0f6a6\"},\n";
+        //Then we generate the rest of the nodes as well as the edges linking the new nodes with the main one
+        foreach($dictionaryRelations as $key => $value){
+            if($key=="terms"){
+                $dictionaryTerms=$dictionaryRelations["terms"];
+                foreach($dictionaryTerms as $term => $weightTerm){
+                    $stringNodes.="{\"label\":\"$term\",\"id\":\"$term\",\"entity_type\":\"Term\",\"color\":\"#d597fb\"},\n";
+                    $stringEdges.="{\"source\":\"$entityName\",\"target\":\"$term\",\"database\":\"compound2term2document_new\",\"weight\":$weightTerm,\"color\":\"#000\"},\n";
+                }
+            }
+            if($key=="cyps"){
+                $dictionaryCyps=$dictionaryRelations["cyps"];
+                foreach($dictionaryCyps as $cyp => $weightCyp){
+                    $stringNodes.="{\"label\":\"$cyp\",\"id\":\"$cyp\",\"entity_type\":\"Cytochrome\",\"color\":\"#ffcfcf\"},\n";
+                    $stringEdges.="{\"source\":\"$entityName\",\"target\":\"$cyp\",\"database\":\"compound2cyp2document_new\",\"weight\":$weightCyp,\"color\":\"#000\"},\n";
+                }
+            }
+            if($key=="markers"){
+                $dictionaryMarkers=$dictionaryRelations["markers"];
+                foreach($dictionaryMarkers as $marker => $weightMarker){
+                    $stringNodes.="{\"label\":\"$marker\",\"id\":\"$marker\",\"entity_type\":\"Marker\",\"color\":\"#dffcff\"},\n";
+                    $stringEdges.="{\"source\":\"$entityName\",\"target\":\"$marker\",\"database\":\"compound2marker2document_new\",\"weight\":$weightMarker,\"color\":\"#000\"},\n";
+                }
+            }
+            if($key=="compounds"){
+                $dictionaryCompounds=$dictionaryRelations["compounds"];
+                foreach($dictionaryCompounds as $compound => $weightCompound){
+                    $stringNodes.="{\"label\":\"$compound\",\"id\":\"$compound\",\"entity_type\":\"CompoundDict\",\"color\":\"#f0f6a6\"},\n";
+                    $stringEdges.="{\"source\":\"$entityName\",\"target\":\"$compound\",\"database\":\"tanimotovalues\",\"weight\":$weightCompound,\"color\":\"#000\"},\n";
+                }
+            }
+        }
+        $arrayStrings=array();
+        $arrayStrings["stringNodes"]=$stringNodes;
+        $arrayStrings["stringEdges"]=$stringEdges;
+        return $arrayStrings;
+    }
 }

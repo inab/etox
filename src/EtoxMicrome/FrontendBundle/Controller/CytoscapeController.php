@@ -12,9 +12,21 @@ class CytoscapeController extends Controller
      * @Route("/hello/{name}")
      * @Template()
      */
-    public function showCytoscapeAction()
+    public function showCytoscapeAction($entityType, $entityName)
     {
-        $respuesta = $this->render('FrontendBundle:Cytoscape:cytoscape.html.twig');
-        return $respuesta;
+        ld($entityType);
+        ld($entityName);
+        $orderBy="hepval";
+        //We retrieve all the relations that have this entityName (Terms, Cytochromes, Markers, Compounds structurally related). With this information we load a dictionary and use it as an argument to generate strings that will render the plugin at cytoscape.html.twig
+        $em = $this->getDoctrine()->getManager();
+        $dictionaryRelations=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->createDictionaryRelationsCytoscape($entityName,$entityType);
+        //Now we generate the strings that will be used for rendering the cytoscape plugin ($stringNodes, $stringEdges)
+        $arrayStrings=$em->getRepository('EtoxMicromeEntityBundle:TanimotoValues')->generateStringsForCytoscape($entityName, $entityType, $dictionaryRelations);
+        $stringNodes=$arrayStrings["stringNodes"];
+        $stringEdges=$arrayStrings["stringEdges"];
+        return $this->render('FrontendBundle:Cytoscape:cytoscape.html.twig', array(
+            'stringNodes' => $stringNodes,
+            'stringEdges' => $stringEdges,
+        ));
     }
 }
