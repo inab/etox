@@ -14,8 +14,6 @@ class CytoscapeController extends Controller
      */
     public function showCytoscapeAction($entityType, $entityName)
     {
-        ld($entityType);
-        ld($entityName);
         $orderBy="hepval";
         //We retrieve all the relations that have this entityName (Terms, Cytochromes, Markers, Compounds structurally related). With this information we load a dictionary and use it as an argument to generate strings that will render the plugin at cytoscape.html.twig
         $em = $this->getDoctrine()->getManager();
