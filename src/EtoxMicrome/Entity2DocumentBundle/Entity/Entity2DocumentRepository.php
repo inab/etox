@@ -1055,6 +1055,7 @@ class Entity2DocumentRepository extends EntityRepository
                 $inChi=$entity->getInChi();
                 if($inChi!=""){
                     $dictionary["inChi"]="<a href='http://www.chemspider.com/Search.aspx?q=$inChi' target='_blank'>$inChi</a>";
+                    $dictionary["Unichem"]=0;
                 }
                 $drugBank=$entity->getDrugBank();
                 if($drugBank!=""){
@@ -1317,12 +1318,12 @@ class Entity2DocumentRepository extends EntityRepository
         }
         return ($curationReturn);
     }
-    
+
     public function getCuratedEntity2Document($qualifier)
     {
         return $this->getCuratedEntity2DocumentDQL($qualifier)->getResult();
     }
-    
+
     public function getCuratedEntity2DocumentDQL($qualifier)
     {
         $message="getCuratedEntity2Document";
@@ -1336,12 +1337,12 @@ class Entity2DocumentRepository extends EntityRepository
         $query->setParameter("qualifier", $qualifier);
         return ($query);
     }
-    
+
     public function getCuratedEntity2DocumentName($qualifier, $entityName)
     {
         return $this->getCuratedEntity2DocumentNameDQL($qualifier, $entityName)->getResult();
     }
-    
+
     public function getCuratedEntity2DocumentNameDQL($qualifier, $entityName)
     {
         $message="getCuratedEntity2Document";
@@ -1355,10 +1356,10 @@ class Entity2DocumentRepository extends EntityRepository
         $query = $this->_em->createQuery($sql);
         $query->setParameter("qualifier", $qualifier);
         $query->setParameter("entityName", $entityName);
-        
+
         return ($query);
     }
-    
+
     public function getDocumentsFromName($entityName, $orderBy){
         $message="inside getDocumentsFromName";
         $sql="SELECT e2d
@@ -1369,10 +1370,10 @@ class Entity2DocumentRepository extends EntityRepository
 
         $query = $this->_em->createQuery($sql);
         $query->setParameter("entityName", $entityName);
-        $arrayEntity2Documents= $query->getResult();  
+        $arrayEntity2Documents= $query->getResult();
         return($arrayEntity2Documents);
     }
-    
+
     public function createDictionaryRelationsCytoscape($entityName,$entityType){
         $message="inside createDictionaryDocumentsCytoscape";
         $diccionarioTerms=array();
@@ -1380,7 +1381,7 @@ class Entity2DocumentRepository extends EntityRepository
         $diccionarioCytochromes=array();
         $diccionarioCompounds=array();
         $diccionarioRelations=array();
-        
+
         //We start loading the terms relations
         $sql="SELECT c2t2d
             FROM EtoxMicromeEntity2DocumentBundle:Compound2Term2Document c2t2d
@@ -1391,7 +1392,7 @@ class Entity2DocumentRepository extends EntityRepository
         $query = $this->_em->createQuery($sql);
         $query->setParameter("entityName", $entityName);
         $query->setMaxResults(15);
-        $arrayCompound2Term2Document= $query->getResult();  
+        $arrayCompound2Term2Document= $query->getResult();
         foreach($arrayCompound2Term2Document as $compound2Term2Document){
             $term=$compound2Term2Document->getTerm();
             //we search for the term inside diccionarioTerms
@@ -1404,7 +1405,7 @@ class Entity2DocumentRepository extends EntityRepository
             }
         }
         $diccionarioRelations["terms"]=$diccionarioTerms;
-        
+
         //We load now the cytochromes relations
         $sql="SELECT c2c2d
             FROM EtoxMicromeEntity2DocumentBundle:Compound2Cyp2Document c2c2d
@@ -1415,7 +1416,7 @@ class Entity2DocumentRepository extends EntityRepository
         $query = $this->_em->createQuery($sql);
         $query->setParameter("entityName", $entityName);
         $query->setMaxResults(15);
-        $arrayCompound2Cyp2Document= $query->getResult();  
+        $arrayCompound2Cyp2Document= $query->getResult();
         foreach($arrayCompound2Cyp2Document as $compound2Cyp2Document){
             $cyp=$compound2Cyp2Document->getCypsMention();
             //we search for the cyp inside diccionarioCytochromes
@@ -1428,7 +1429,7 @@ class Entity2DocumentRepository extends EntityRepository
             }
         }
         $diccionarioRelations["cyps"]=$diccionarioCytochromes;
-        
+
         //We do the equivalent for the Markers
         $sql="SELECT c2m2d
             FROM EtoxMicromeEntity2DocumentBundle:Compound2Marker2Document c2m2d
@@ -1439,7 +1440,7 @@ class Entity2DocumentRepository extends EntityRepository
         $query = $this->_em->createQuery($sql);
         $query->setParameter("entityName", $entityName);
         $query->setMaxResults(15);
-        $arrayCompound2Marker2Document= $query->getResult();  
+        $arrayCompound2Marker2Document= $query->getResult();
         foreach($arrayCompound2Marker2Document as $compound2Marker2Document){
             $marker=$compound2Marker2Document->getLiverMarkerName();
             if (array_key_exists($marker, $diccionarioMarkers)){
@@ -1464,7 +1465,7 @@ class Entity2DocumentRepository extends EntityRepository
         $query = $this->_em->createQuery($sql);
         $query->setParameter("idCompound", $idCompound);
         $query->setMaxResults(15);
-        $arrayTanimotoValues= $query->getResult();  
+        $arrayTanimotoValues= $query->getResult();
         foreach($arrayTanimotoValues as $tanimotoValue){
             $compoundName1=$tanimotoValue->getCompound1()->getName();
             $compoundName2=$tanimotoValue->getCompound2()->getName();
@@ -1476,10 +1477,10 @@ class Entity2DocumentRepository extends EntityRepository
                 $compoundName = $compoundName1;
             }
             $diccionarioCompounds[$compoundName]=$tanimotoCoeff;
-            
-        }   
+
+        }
         $diccionarioRelations["compounds"]=$diccionarioCompounds;
-        
+
         return ($diccionarioRelations);
     }
 }

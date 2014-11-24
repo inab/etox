@@ -226,3 +226,7 @@ calculate_tanimoto:
 cytoscape:
     pattern: /cytoscape/{entityType}/{entityName}/
     defaults: { _controller: FrontendBundle:Cytoscape:showCytoscape}
+
+compound2cas:
+    pattern: /compound_name2cas
+    defaults: { _controller: FrontendBundle:Default:compoundName2Cas}
