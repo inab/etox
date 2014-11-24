@@ -1055,6 +1055,8 @@ class Entity2DocumentRepository extends EntityRepository
                 $inChi=$entity->getInChi();
                 if($inChi!=""){
                     $dictionary["inChi"]="<a href='http://www.chemspider.com/Search.aspx?q=$inChi' target='_blank'>$inChi</a>";
+                    ldd($inChi);
+                    $dictionary["Unichem"]=0;
                 }
                 $drugBank=$entity->getDrugBank();
                 if($drugBank!=""){
