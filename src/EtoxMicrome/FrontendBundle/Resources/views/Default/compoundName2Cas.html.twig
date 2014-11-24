@@ -1,0 +1,18 @@
+{% extends '::frontend.html.twig' %}
+
+{% block article %}
+    {% include 'FrontendBundle:Search_document:tags_code.html.twig' %}
+    <section class="row display" role="main">
+        <article class="twelve columns">
+            <h6>CompoundName-CAS information</h6>
+            <ul>
+                {% for key,value in arrayCompoundsCas %}
+                    <li>
+                         <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity',{'field':'hepatotoxicity', 'whatToSearch': 'id', 'entityType':'compoundDict', 'source': 'all', 'entityName':key}) }}">key</a>: {{ value }}
+                    </li>
+                {% endfor %}
+            </ul>
+        </article>
+    </section>
+                {% include 'FrontendBundle:Search_document:scripts_code.html.twig' %}
+{% endblock %}
