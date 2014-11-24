@@ -6,10 +6,13 @@
         <article class="twelve columns">
             <h6>CompoundName-CAS information</h6>
             <ul>
+                {% set counter=1 %}
+
                 {% for key,value in arrayCompoundsCas %}
                     <li>
-                         <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity',{'field':'hepatotoxicity', 'whatToSearch': 'id', 'entityType':'compoundDict', 'source': 'all', 'entityName':key}) }}">key</a>: {{ value }}
+                         {{counter}}: <a target="_blank" href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity',{'field':'hepatotoxicity', 'whatToSearch': 'id', 'entityType':'compoundDict', 'source': 'all', 'entityName':key}) }}">{{ key }}</a>: <a target="_blank" href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity',{'field':'hepatotoxicity', 'whatToSearch': 'name', 'entityType':'compoundDict', 'source': 'all', 'entityName':value}) }}">{{ value }}</a>
                     </li>
+                    {% set counter=counter+1 %}
                 {% endfor %}
             </ul>
         </article>
