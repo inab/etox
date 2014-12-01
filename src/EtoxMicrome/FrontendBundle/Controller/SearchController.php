@@ -757,7 +757,7 @@ Evidences found in Abstracts:(Output fields:\t\"#registry\"\t\"Abstract text\"\t
             }
             $count=$count+1;
         }
-        
+
         fclose($fp);
 
 
@@ -1947,6 +1947,7 @@ Evidences found in Sentences:\n
             ));
         }
         $arrayEntityId=array_unique($arrayEntityId);//We get rid of the duplicates
+        //ld($arrayEntityId);
         if($entityType=="Cytochrome"){
             //We create an array of cytochromes from an array with their enityId
             $arrayEntities=array();
@@ -2059,11 +2060,14 @@ Evidences found in Sentences:\n
                         $mouseoverSummary="";
                         $allias=array();
                     }
+
                     $arrayTanimotos=array();
+                    /*
                     if ($entityType=="CompoundDict"){
 	                	$arrayTanimotos=$em->getRepository('EtoxMicromeEntityBundle:TanimotoValues')->getCompoundsWithTanimotos($entity->getId());
-	                    $arrayTanimotos=$em->getRepository('EtoxMicromeEntityBundle:TanimotoValues')->sortArrayByTanimoto($arrayTanimotos);  
+	                    $arrayTanimotos=$em->getRepository('EtoxMicromeEntityBundle:TanimotoValues')->sortArrayByTanimoto($arrayTanimotos);
                     }
+                    */
                     return $this->render('FrontendBundle:Search_document:index.html.twig', array(
                         'field' => $field,
                         'whatToSearch' => $whatToSearch,
@@ -2080,7 +2084,7 @@ Evidences found in Sentences:\n
                         'mouseoverSummary' => $mouseoverSummary,
                         'allias' => $allias,
                         'arrayTanimotos' => $arrayTanimotos,
-                        
+
                     ));
                 }
                 if (in_array($source, $arraySourcesAbstracts)){
