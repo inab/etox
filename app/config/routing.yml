@@ -108,6 +108,8 @@ search_interface_search_field_whatToSearch_entityType_source:
 search_interface_search_field_whatToSearch_entityType_source_entity:
     pattern: /search/{field}/{whatToSearch}/{entityType}/{source}/{entityName}/
     defaults: { _controller: FrontendBundle:Search:searchFieldWhatToSearchEntityTypeSourceEntity, orderBy: "hepval"}
+    requirements:
+        entityName: .+
 
 search_interface_search_field_whatToSearch_entityType_source_entity_orderby:
     pattern: /search/{field}/{whatToSearch}/{entityType}/{source}/{entityName}/orderBy/{orderBy}/
