@@ -54,10 +54,24 @@ class DefaultController extends Controller
     public function compoundName2t2d2CasAction()
     {
         $arrayCompoundsCas=array();
+        $arrayCompoundsCasDone=array();
         //We read the file with the pairs  compoundName-CASregistry_number and save it into an arrayt
         $request = $this->get('request');
         $path = $this->get('kernel')->getRootDir(). "/../web/files/";
         $filepath=$path."compoundName2t2d2CAS.tsv";
+
+        $filepathDone=$path."compoundName2CAS_already_done.tsv";
+        $arrayContentDone = file($filepathDone);
+        foreach($arrayContentDone as $line)
+        {
+            #ld($line);
+            //get row data
+            $arrayLine = explode("\t", $line);
+            $compoundName=$arrayLine[0];
+            $cas=$arrayLine[1];
+            $cas=trim($cas);
+            $arrayCompoundsCasDone[$cas]=$compoundName;
+        }
         //ld($filepath);
         $arrayContent = file($filepath);
         foreach($arrayContent as $line)
@@ -66,11 +80,12 @@ class DefaultController extends Controller
             //get row data
             $arrayLine = explode("\t", $line);
             $compoundName=$arrayLine[0];
-            $cas=$arrayLine[1];
-            $cas=trim($cas);
-            $arrayCompoundsCas[$cas]=$compoundName;
+            if (! array_key_exists($compoundName, $arrayCompoundsCasDone)){
+                $cas=$arrayLine[1];
+                $cas=trim($cas);
+                $arrayCompoundsCas[$cas]=$compoundName;
+            }
         }
-
 
         $respuesta = $this->render('FrontendBundle:Default:compoundName2Cas.html.twig', array(
             'arrayCompoundsCas'      => $arrayCompoundsCas,
