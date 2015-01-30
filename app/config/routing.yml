@@ -228,5 +228,9 @@ cytoscape:
     defaults: { _controller: FrontendBundle:Cytoscape:showCytoscape}
 
 compound2cas:
-    pattern: /compound_name2cas
+    pattern: /compound_name2cas/
     defaults: { _controller: FrontendBundle:Default:compoundName2Cas}
+
+compound2term2document2cas:
+    pattern: /compound_name_relations2cas/
+    defaults: { _controller: FrontendBundle:Default:compoundName2t2d2Cas}
