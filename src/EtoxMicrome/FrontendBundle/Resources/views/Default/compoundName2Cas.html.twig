@@ -18,7 +18,7 @@
                         <td>{{counter}}</td>
                         <td><a target="_blank" href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity',{'field':'hepatotoxicity', 'whatToSearch': 'id', 'entityType':'compoundDict', 'source': 'all', 'entityName':key}) }}">{{ key }}</a>
                         </td>
-                        <td><a target="_blank" href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity',{'field':'hepatotoxicity', 'whatToSearch': 'name', 'entityType':'compoundDict', 'source': 'all', 'entityName':value}) }}">{{ value }}</a>
+                        <td><a target="_blank" href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity',{'field':'hepatotoxicity', 'whatToSearch': 'compoundsTermsRelations', 'entityType':'compoundDict', 'source': 'all', 'entityName':value}) }}">{{ value }}</a>
                         </td>
                     </tr>
                     {% set counter=counter+1 %}
