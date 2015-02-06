@@ -146,6 +146,10 @@ download_sdf:
     pattern:  /download-sdf/{filename}/
     defaults: { _controller: FrontendBundle:Download:downloadsdf }
 
+download_curated_termrelations:
+    pattern:  /curated_term_relations/
+    defaults: { _controller: FrontendBundle:Search:downloadCuratedTermRelations }
+
 curate_evidences_abstract:
     pattern: /curate/abstract/{pmid}/
     defaults: { _controller: FrontendBundle:Curate:showAbstract}
@@ -234,3 +238,4 @@ compound2cas:
 compound2term2document2cas:
     pattern: /compound_name_relations2cas/
     defaults: { _controller: FrontendBundle:Default:compoundName2t2d2Cas}
+
