@@ -71,4 +71,17 @@ class Compound2Term2DocumentRepository extends EntityRepository
         return $count;
 
     }
+
+    public function getCuratedTermRelations()
+    {
+        $message="inside getCuratedTermRelations";
+        $sql="SELECT c2t2d
+            FROM EtoxMicromeEntity2DocumentBundle:Compound2Term2Document c2t2d
+            WHERE c2t2d.curation > 0
+            ORDER BY c2t2d.compoundName DESC, c2t2d.curation DESC
+            ";
+        $query = $this->_em->createQuery($sql);
+        $arrayCuratedTermRelations=$query->getResult();
+        return $arrayCuratedTermRelations;
+    }
 }

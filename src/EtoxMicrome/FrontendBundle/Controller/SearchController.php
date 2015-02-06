@@ -766,7 +766,6 @@ Evidences found in Abstracts:(Output fields:\t\"#registry\"\t\"Abstract text\"\t
 
         return ($filename.".zip");
     }
-
     public function writeFileWithArrayDocument($arrayEntity2Document, $field, $whatToSearch, $entityType, $entityName)
     {
         $message="inside writeFileWithArrayDocument";
@@ -830,6 +829,58 @@ Evidences found in Sentences:\n
 
         return ($filename.".zip");
     }
+
+    public function writeFileWithArrayCuratedTermRelations($arrayCuratedTermRelations)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $message="inside writeFileWithArrayCuratedTermRelations";
+        //ld(count($arrayEntity2Abstract));
+        //ld(count($arrayEntity2Document));
+        $zip = new \ZipArchive();
+
+        $path = $this->get('kernel')->getRootDir(). "/../web/files/curated_reports";
+        $date=date("Y-m-d_H:i:s");
+        $filename = "compound2termRelations-".$date;
+        $pathToFile="$path/$filename";
+        $pathToZip="$pathToFile.zip";
+        if ($zip->open($pathToZip, \ZIPARCHIVE::CREATE | \ZIPARCHIVE::CREATE)!==TRUE) {
+            exit("cannot open <$pathToZip>\n");
+        }
+        $fp = fopen($pathToFile, 'w');
+        $count=0;
+        $line="line number\"\t\"CAS-RN\"\t\"compoundName\"\t\"term\"\t\"sentence\"\t\"Curation\"\t\"pmid\"\n";
+        fwrite($fp, $line);
+        foreach($arrayCuratedTermRelations as $curated2term2document){
+
+            $compoundName=$curated2term2document->getCompoundName();
+            $term=$curated2term2document->getTerm();
+            $sentence=$curated2term2document->getSentence();
+            $curation=$curated2term2document->getCuration();
+            $pmid=$curated2term2document->getDocument()->getUid();
+            $compoundEntity=$em->getRepository('EtoxMicromeEntityBundle:CompoundDict')->getEntityFromName($compoundName);
+            $casRegistryNumber=$compoundEntity->getCasRegistryNumber();
+
+
+
+            $line="$count\t$casRegistryNumber\t$compoundName\t$term\t$sentence\t$curation\t$pmid\n";
+            fwrite($fp, $line);
+            $count=$count+1;
+            /*
+            if ($count==5){
+                ldd($message);
+            }
+            */
+        }
+
+        fclose($fp);
+
+
+        $zip->addFile($pathToFile);
+        $zip->close();
+
+        return ($filename.".zip");
+    }
+
 
     public function exportFunction($field, $whatToSearch, $entityType, $entityName, $source, $orderBy){
         $message="exportFunction";
@@ -935,6 +986,35 @@ Evidences found in Sentences:\n
 
 
     }
+
+    public function downloadCuratedTermRelationsAction(){
+        $em = $this->getDoctrine()->getManager();
+        //////////////////////////////////////////////////////////////
+        //First of all we generate the file that will be downloaded.//
+        //////////////////////////////////////////////////////////////
+        $arrayCuratedTermRelations=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Compound2Term2Document')->getCuratedTermRelations();
+        $filename=$this->writeFileWithArrayCuratedTermRelations($arrayCuratedTermRelations);
+        //ld($filename);
+        $request = $this->get('request');
+        $path = $this->get('kernel')->getRootDir(). "/../web/files/curated_reports/";
+        $filepath=$path.$filename;
+        #ldd($filepath);
+        $content = file_get_contents($filepath);
+
+        $response = new Response();
+
+        //set headers
+        $response->headers->set('Content-Type', 'application/octet-stream');
+        $response->headers->set('Content-Disposition', 'attachment;filename="'.$filename);
+
+        $response->setContent($content);
+        return $response;
+
+
+
+
+    }
+
     public function mmmr($array, $output = 'mean'){
         //Function to get mean(default), median, mode and range of $array input
         if(!is_array($array)){
@@ -2397,4 +2477,9 @@ Evidences found in Sentences:\n
             ));
     }
 
+    public function download_curated_termrelationsAction()
+    {
+        $filename=$this->exportCuratedTermRelations();
+
+    }
 }
