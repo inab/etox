@@ -22,6 +22,8 @@
             //We setup the url to search for. We need field(hepatotoxicity, other), WhatToSearch(name, id, structure, canonical...), entityType (Compound, Cyp, Marker...etc) and entityName
             //Getting field:
             var field = ($('#searchby').find(":selected").text()).toLowerCase();
+
+
             if (field==""){
                 alert("Please select what is the field of your search in the \"Search by\" select box");
                 return false;
