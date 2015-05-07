@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Document
  *
- * @ORM\Table(indexes={ @ORM\Index(name="documentnew_uid_index", columns={"uid"}), @ORM\Index(name="documentnew_kind_index", columns={"kind"}), @ORM\Index(name="documentnew_sentenceId_index", columns={"""sentenceId"""}), @ORM\Index(name="documentnew_hepval_index", columns={"hepval"}), @ORM\Index(name="documentnew_cardval_index", columns={"cardval"}), @ORM\Index(name="documentnew_nephval_index", columns={"nephval"}), @ORM\Index(name="documentnew_phosval_index", columns={"phosval"}), @ORM\Index(name="documentnew_patterncount_index", columns={"""patternCount"""}), @ORM\Index(name="documentnew_rulescore_index", columns={"""ruleScore"""}), @ORM\Index(name="documentnew_heptermvar_index", columns={"""hepTermVarScore"""}), @ORM\Index(name="documentnew_heptermnorm_index", columns={"""hepTermNormScore"""}), @ORM\Index(name="documentnew_svm_confidence_index", columns={"""svmConfidence"""}) } , name="documentold")
+ * @ORM\Table(indexes={ @ORM\Index(name="documentold_uid_index", columns={"uid"}), @ORM\Index(name="documentold_kind_index", columns={"kind"}), @ORM\Index(name="documentold_sentenceId_index", columns={"""sentenceId"""}), @ORM\Index(name="documentold_hepval_index", columns={"hepval"}), @ORM\Index(name="documentold_cardval_index", columns={"cardval"}), @ORM\Index(name="documentold_nephval_index", columns={"nephval"}), @ORM\Index(name="documentold_phosval_index", columns={"phosval"}), @ORM\Index(name="documentold_patterncount_index", columns={"""patternCount"""}), @ORM\Index(name="documentold_rulescore_index", columns={"""ruleScore"""}), @ORM\Index(name="documentold_nephroval_index", columns={"nephroval"}), @ORM\Index(name="documentold_cardioval_index", columns={"cardioval"}), @ORM\Index(name="documentold_tyroval_index", columns={"tyroval"}), @ORM\Index(name="documentold_heptermvar_index", columns={"""hepTermVarScore"""}), @ORM\Index(name="documentold_heptermnorm_index", columns={"""hepTermNormScore"""}), @ORM\Index(name="documentold_svm_confidence_index", columns={"""svmConfidence"""}) } , name="documentold_nephro_cardio")
  * @ORM\Entity(repositoryClass="EtoxMicrome\DocumentBundle\Entity\DocumentRepository")
  */
 class Document
@@ -75,6 +75,27 @@ class Document
      * @ORM\Column(name="phosval", type="float", nullable=true)
      */
     private $phosval;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="nephroval", type="float", nullable=true)
+     */
+    private $nephroval;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="cardioval", type="float", nullable=true)
+     */
+    private $cardioval;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="tyroval", type="float", nullable=true)
+     */
+    private $tyroval;
 
     /**
      * @var float
@@ -371,6 +392,75 @@ class Document
     public function getPhosval()
     {
         return $this->phosval;
+    }
+
+    /**
+     * Get nephroval
+     *
+     * @return float
+     */
+    public function getNephroval()
+    {
+        return $this->nephroval;
+    }
+
+    /**
+     * Set nephroval
+     *
+     * @param float $nephroval
+     * @return Document
+     */
+    public function setNephroval($nephroval)
+    {
+        $this->nephroval = $nephroval;
+
+        return $this;
+    }
+
+    /**
+     * Get carioval
+     *
+     * @return float
+     */
+    public function getCardioval()
+    {
+        return $this->cardioval;
+    }
+
+    /**
+     * Set cardioval
+     *
+     * @param float $cardioval
+     * @return Document
+     */
+    public function setCardioval($cardioval)
+    {
+        $this->cardioval = $cardioval;
+
+        return $this;
+    }
+
+    /**
+     * Get tyroval
+     *
+     * @return float
+     */
+    public function getTyroval()
+    {
+        return $this->tyroval;
+    }
+
+    /**
+     * Set tyroval
+     *
+     * @param float $tyroval
+     * @return Document
+     */
+    public function setTyroval($tyroval)
+    {
+        $this->tyroval = $tyroval;
+
+        return $this;
     }
 
     /**
