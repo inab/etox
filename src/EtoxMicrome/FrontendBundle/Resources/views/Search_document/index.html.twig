@@ -219,6 +219,12 @@
                                 {% set ruleScore = entity2Document.document.getRuleScore %}
                                 {% set ruleScore = ruleScore|number_format(2) %}
                                 {% set ruleScore = ruleScore|colorCodingScore %}
+                                {% set nephroval = entity2Document.document.getNephroval %}
+                                {% set nephroval = nephroval|number_format(2) %}
+                                {% set nephroval = nephroval|colorCodingScore %}
+                                {% set cardioval = entity2Document.document.getCardioval %}
+                                {% set cardioval = cardioval|number_format(2) %}
+                                {% set cardioval = cardioval|colorCodingScore %}
                                 {% set termScore = entity2Document.document.getHepTermVarScore %}
                                 {% set termScore = termScore|colorCodingScore %}
                                 {% set svmConfidence = entity2Document.document.getSvmConfidence %}
@@ -289,6 +295,12 @@
                                 </td>
                                 <td class="center">
                                     {{ ruleScore |raw }}
+                                </td>
+                                <td class="center">
+                                    {{ nephroval |raw }}
+                                </td>
+                                <td class="center">
+                                    {{ cardioval |raw }}
                                 </td>
                                 {% set text=entity2Document.document.getText %}
                                 {% set arrayText= text | highlightEntitiesDocuments (entity2Document.document,entityBackup,field,whatToSearch, source, entityType, tooltipCounter) %}
