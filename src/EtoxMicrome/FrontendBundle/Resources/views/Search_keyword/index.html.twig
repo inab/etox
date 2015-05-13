@@ -51,8 +51,10 @@
                         <th><a href="{{ path('elasticSearch_keyword_orderby',{'whatToSearch': whatToSearch, 'source': source, 'keyword': keyword, 'orderBy': 'pattern'}) }}" {% if orderBy == "pattern"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_pattern}}">Pattern</span></a></th>
                         <th><a href="{{ path('elasticSearch_keyword_orderby',{'whatToSearch': whatToSearch, 'source': source, 'keyword': keyword, 'orderBy': 'term'}) }}" {% if orderBy == "term"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_term}}">Term</span></a></th>
                         <th><a href="{{ path('elasticSearch_keyword_orderby',{'whatToSearch': whatToSearch, 'source': source, 'keyword': keyword, 'orderBy': 'rule'}) }}" {% if orderBy == "rule"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_rule}}">Rule</span></a></th>
-                        <th><a href="{{ path('elasticSearch_keyword_orderby',{'whatToSearch': whatToSearch, 'source': source, 'keyword': keyword, 'orderBy': 'nephroval'}) }}" {% if orderBy == "nephroval"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_nephro}}">Nephro</span></a></th>
-                        <th><a href="{{ path('elasticSearch_keyword_orderby',{'whatToSearch': whatToSearch, 'source': source, 'keyword': keyword, 'orderBy': 'cardioval'}) }}" {% if orderBy == "cardioval"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_cardio}}">Cardio</span></a></th>
+                        {% if className == 'documents' %}
+                            <th><a href="{{ path('elasticSearch_keyword_orderby',{'whatToSearch': whatToSearch, 'source': source, 'keyword': keyword, 'orderBy': 'nephroval'}) }}" {% if orderBy == "nephroval"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_nephro}}">Nephro</span></a></th>
+                            <th><a href="{{ path('elasticSearch_keyword_orderby',{'whatToSearch': whatToSearch, 'source': source, 'keyword': keyword, 'orderBy': 'cardioval'}) }}" {% if orderBy == "cardioval"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_cardio}}">Cardio</span></a></th>
+                        {% endif %}
 
                     {% elseif currentPath=="search_interface_search_field_whatToSearch_entityType_source_entity" or currentPath=="search_interface_search_field_whatToSearch_entityType_source_entity_orderby"%}
 
@@ -61,9 +63,10 @@
                         <th><a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field': field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'pattern'}) }}" {% if orderBy == "pattern"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_pattern}}">Pattern</span></a></th>
                         <th><a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field': field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'term'}) }}" {% if orderBy == "term"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_term}}">Term</span></a></th>
                         <th><a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field': field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'rule'}) }}" {% if orderBy == "rule"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_rule}}">Rule</span></a></th>
-                        <th><a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field': field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'nephroval'}) }}" {% if orderBy == "nephroval"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_nephro}}">Nephro</span></a></th>
-                        <th><a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field': field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'cardioval'}) }}" {% if orderBy == "cardioval"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_cardio}}">Cardio</span></a></th>
-
+                        {% if className == 'documents' %}
+                            <th><a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field': field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'nephroval'}) }}" {% if orderBy == "nephroval"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_nephro}}">Nephro</span></a></th>
+                            <th><a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field': field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'cardioval'}) }}" {% if orderBy == "cardioval"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_cardio}}">Cardio</span></a></th>
+                        {% endif %}
 
                     {% endif %}
                     <th>Sentence</th>
@@ -82,12 +85,6 @@
                             {% set ruleScore = result.getSource['ruleScore'] %}
                             {% set ruleScore = ruleScore | number_format(2)%}
                             {% set ruleScore = ruleScore|colorCodingScore %}
-                            {% set nephroval = result.getSource['nephroval'] %}
-                            {% set nephroval = nephroval | number_format(2)%}
-                            {% set nephroval = nephroval|colorCodingScore %}
-                            {% set cardioval = result.getSource['cardioval'] %}
-                            {% set cardioval = cardioval | number_format(2)%}
-                            {% set cardioval = cardioval|colorCodingScore %}
                             {% set termScore = result.getSource['hepTermVarScore'] %}
                             {% set termScore = termScore|colorCodingScore %}
                             {% set svmConfidence = result.getSource['svmConfidence'] %}
@@ -100,6 +97,14 @@
                                 {% set imageRoute = 'images/pubmed.png' %}
                                 {% set score = result.getSource['hepval'] | number_format(2)%}
                             {% elseif className == 'documents' or className == 'documentswithcompounds' or className == 'documentswithcytochromes' or className == 'documentswithmarkers'%}
+                                {% if className == 'documents' %}
+                                    {% set nephroval = result.getSource['nephroval'] %}
+                                    {% set nephroval = nephroval | number_format(2)%}
+                                    {% set nephroval = nephroval|colorCodingScore %}
+                                    {% set cardioval = result.getSource['cardioval'] %}
+                                    {% set cardioval = cardioval | number_format(2)%}
+                                    {% set cardioval = cardioval|colorCodingScore %}
+                                {% endif %}
                                 {% set kind = result.getSource['kind'] %}
                                 {% if kind == "pubmed" %}
                                     {% set pmid=result.getSource['uid'] %}
@@ -174,12 +179,14 @@
                             <td class="center">
                                 {{ ruleScore  | raw}}
                             </td>
-                             <td class="center">
-                                {{ nephroval  | raw}}
-                            </td>
-                             <td class="center">
-                                {{ cardioval  | raw}}
-                            </td>
+                            {% if className == 'documents' %}
+                                <td class="center">
+                                    {{ nephroval  | raw}}
+                                </td>
+                                 <td class="center">
+                                    {{ cardioval  | raw}}
+                                </td>
+                            {% endif %}
                             <td>
                                 {{ text | raw }}
                             </td>
