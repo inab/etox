@@ -171,6 +171,8 @@ fos_elastica:
                         cardval: { type: float }
                         nephval: { type: float }
                         phosval: { type: float }
+                        nephroval: { type: float }
+                        cardioval: { type: float }
                         patternCount: { type: float }
                         ruleScore: { type: float }
                         hepTermNormScore: { type: float }

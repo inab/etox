@@ -2296,6 +2296,10 @@ Evidences found in Sentences:\n
             $elasticaQuery->setSort(array('patternCount' => array('order' => 'desc')));
         }elseif($orderBy=="ruleScore"){
             $elasticaQuery->setSort(array('ruleScore' => array('order' => 'desc')));
+        }elseif($orderBy=="nephroval"){
+            $elasticaQuery->setSort(array('nephroval' => array('order' => 'desc')));
+        }elseif($orderBy=="cardioval"){
+            $elasticaQuery->setSort(array('cardioval' => array('order' => 'desc')));
         }elseif($orderBy=="hepTermNormScore"){
             $elasticaQuery->setSort(array('hepTermNormScore' => array('order' => 'desc')));
         }elseif($orderBy=="hepTermVarScore"){
