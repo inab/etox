@@ -1,7 +1,7 @@
 {% set arrayReports=['epar','emea','nda','fulltext'] %}
 {% set arrayCompounds=['CompoundDict','CompoundMesh','CompoundNer'] %}
 <dl class="tabs">
-  {% if entityType in ["keyword", "Keyword"] %}
+  {% if entityType in ["keyword", "Keyword"] and whatToSearch != "endpoints" %}
     <dd class="active"><a href="#keywords" name="keyword"><span data-tooltip class="has-tip" title="Free text search">Keywords</span></a></dd>
   {% else %}
     <dd><a href="#keywords" name="keyword"><span data-tooltip class="has-tip" title="Free text search">Keywords</span></a></dd>
@@ -23,12 +23,17 @@
   {% else %}
     <dd class="hide-for-small"><a href="#markers" name="marker"><span data-tooltip class="has-tip" title="Liver toxicity marker search">Markers</span></a></dd>
   {% endif %}
+  {% if whatToSearch=="endpoints" %}
+    <dd class="active"><a href="#toxicEndpoints" name="toxicEndpoints"><span data-tooltip class="has-tip" title="Search different toxic endpoints: Hepatotoxicity, Nephrotoxicity, Cardiotoxicity, Thyroid toxicity, Phopholipidosis">Tox. Endpoints</span></a></dd>
+  {% else %}
+    <dd><a href="#toxicEndpoints" name="toxicEndpoints"><span data-tooltip class="has-tip" title="Search different toxic endpoints: Hepatotoxicity, Nephrotoxicity, Cardiotoxicity, Thyroid toxicity, Phopholipidosis">Tox. Endpoints</span></a></dd>
+  {% endif %}
 
 
 </dl>
 
 <ul class="tabs-content">
-    {% if entityType=="keyword" %}
+    {% if entityType=="keyword" and whatToSearch != "endpoints"%}
         <li class="active" id="keywordsTab">
     {% else %}
         <li id="keywordsTab">
@@ -49,7 +54,7 @@
             <form class="custom">
                 <fieldset>
                     <legend>What are you searching?</legend>
-                    {% if whatToSearch=="any" %}
+                    {% if whatToSearch=="any" or whatToSearch  == "endpoints" %}
                         <span data-tooltip class="has-tip" title="Search all documents"><label for="radioWhatToSearch"><input name="keywordWhatToSearch" type="radio" id="radioKeywordWhatToSearch" style="display:none;" CHECKED value="any"><span class="custom radio"></span> Any</label></span>
                     {% else %}
                         <span data-tooltip class="has-tip" title="Search all documents"><label for="radioWhatToSearch"><input name="keywordWhatToSearch" type="radio" id="radioKeywordWhatToSearch" style="display:none;" value="any"><span class="custom radio"></span> Any</label></span>
@@ -478,5 +483,60 @@
         </div>
     </div>
   </li>
+  {% if entityType == "keyword" and whatToSearch == "endpoints" %}
+        <li class="active" id="toxicEndpointsTab">
+    {% else %}
+        <li id="toxicEndpointsTab">
+    {% endif %}
+    <div class="ui-widget">
+        <div class="vis-break cntrtxt">
+            {% if entityName is defined %}
+                <input id="tags-cytochromes" class="ui-autocomplete-input text tags" onclick="this.value=''" placeholder="e.g. {{ default_cytochromeName }}" aria-haspopup="true" aria-autocomplete="list" role="textbox" autocomplete="off" value="{{ entityName }}">
+            {% else %}
+                <input id="tags-cytochromes" class="ui-autocomplete-input text tags" onclick="this.value=''" placeholder="e.g. {{ default_cytochromeName }}" aria-haspopup="true" aria-autocomplete="list" role="textbox" autocomplete="off" value="{{ default_cytochromeName }}">
+            {% endif %}
+            <a class="button orange bigSearch" >Search</a>
+
+        </div>
+    </div>
+    <div class="advanceSearch">
+        <div class="large-4 columns">
+            <form class="custom">
+                <fieldset>
+                    <legend>Select toxicity endpoint:</legend>
+                        {% if source not in ["hepatotoxicity","nephrotoxicity","cardiotoxicity","thyrotoxicity","phospholipidosis"] %}
+                            {% set source = default_endpoint %}
+                        {% endif %}
+                    {% if source=="hepatotoxicity" %}
+                        <span data-tooltip class="has-tip" title="Search keywords of hepatotoxicity endpoint"><label for="radioSource"><input name="endpoint" type="radio" id="radioEndpoint" style="display:none;" CHECKED value="hepatotoxicity"><span class="custom radio"></span> Hepatotoxicity</label></span>
+                    {% else %}
+                        <span data-tooltip class="has-tip" title="Search keywords of hepatotoxicity endpoint"><label for="radioSource"><input name="endpoint" type="radio" id="radioEndpoint" style="display:none;" value="hepatotoxicity"><span class="custom radio"></span> Hepatotoxicity</label></span>
+                    {% endif %}
+                    {% if source=="nephrotoxicity" %}
+                        <span data-tooltip class="has-tip" title="Search keywords of nephrotoxicity endpoint"><label for="radioSource"><input name="endpoint" type="radio" id="radioEndpoint" style="display:none;" CHECKED value="nephrotoxicity"><span class="custom radio"></span> Nephrotoxicity</label></span>
+                    {% else %}
+                        <span data-tooltip class="has-tip" title="Search keywords of nephrotoxicity endpoint"><label for="radioSource"><input name="endpoint" type="radio" id="radioEndpoint" style="display:none;" value="nephrotoxicity"><span class="custom radio"></span> Nephrotoxicity</label></span>
+                    {% endif %}
+                    {% if source=="cardiotoxicity" %}
+                        <span data-tooltip class="has-tip" title="Search keywords of cardiotoxicity endpoint"><label for="radioSource"><input name="endpoint" type="radio" id="radioEndpoint" style="display:none;" CHECKED value="cardiotoxicity"><span class="custom radio"></span> Cardiotoxicity</label></span>
+                    {% else %}
+                        <span data-tooltip class="has-tip" title="Search keywords of cardiotoxicity endpoint"><label for="radioSource"><input name="endpoint" type="radio" id="radioEndpoint" style="display:none;" value="cardiotoxicity"><span class="custom radio"></span> Cardiotoxicity</label></span>
+                    {% endif %}
+                    {% if source=="thyrotoxicity" %}
+                        <span data-tooltip class="has-tip" title="Search keywords of thyrotoxicity endpoint"><label for="radioSource"><input name="endpoint" type="radio" id="radioEndpoint" style="display:none;" CHECKED value="thyrotoxicity"><span class="custom radio"></span> Thyrotoxicity</label></span>
+                    {% else %}
+                        <span data-tooltip class="has-tip" title="Search keywords of thyrotoxicity endpoint"><label for="radioSource"><input name="endpoint" type="radio" id="radioEndpoint" style="display:none;" value="thyrotoxicity"><span class="custom radio"></span> Thyrotoxicity</label></span>
+                    {% endif %}
+                    {% if source=="phospholipidosis" %}
+                        <span data-tooltip class="has-tip" title="Search keywords of phospholipidosis endpoint"><label for="radioSource"><input name="endpoint" type="radio" id="radioEndpoint" style="display:none;" CHECKED value="phospholipidosis"><span class="custom radio"></span> Phospholipidosis</label></span>
+                    {% else %}
+                        <span data-tooltip class="has-tip" title="Search keywords of phospholipidosis endpoint"><label for="radioSource"><input name="endpoint" type="radio" id="radioEndpoint" style="display:none;" value="phospholipidosis"><span class="custom radio"></span> Phospholipidosis</label></span>
+                    {% endif %}
+                </fieldset>
+            </form>
+        </div>
+        <div class="large-4 columns">
+        </div>
+    </div>
 </ul>
 <div class="clear-both"></div>

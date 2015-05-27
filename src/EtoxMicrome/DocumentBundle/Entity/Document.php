@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Document
  *
- * @ORM\Table(indexes={ @ORM\Index(name="documentold_uid_index", columns={"uid"}), @ORM\Index(name="documentold_kind_index", columns={"kind"}), @ORM\Index(name="documentold_sentenceId_index", columns={"""sentenceId"""}), @ORM\Index(name="documentold_hepval_index", columns={"hepval"}), @ORM\Index(name="documentold_cardval_index", columns={"cardval"}), @ORM\Index(name="documentold_nephval_index", columns={"nephval"}), @ORM\Index(name="documentold_phosval_index", columns={"phosval"}), @ORM\Index(name="documentold_patterncount_index", columns={"""patternCount"""}), @ORM\Index(name="documentold_rulescore_index", columns={"""ruleScore"""}), @ORM\Index(name="documentold_nephroval_index", columns={"nephroval"}), @ORM\Index(name="documentold_cardioval_index", columns={"cardioval"}), @ORM\Index(name="documentold_tyroval_index", columns={"tyroval"}), @ORM\Index(name="documentold_heptermvar_index", columns={"""hepTermVarScore"""}), @ORM\Index(name="documentold_heptermnorm_index", columns={"""hepTermNormScore"""}), @ORM\Index(name="documentold_svm_confidence_index", columns={"""svmConfidence"""}) } , name="documentold_nephro_cardio")
+ * @ORM\Table(indexes={ @ORM\Index(name="documentold_uid_index", columns={"uid"}), @ORM\Index(name="documentold_kind_index", columns={"kind"}), @ORM\Index(name="documentold_sentenceId_index", columns={"""sentenceId"""}), @ORM\Index(name="documentold_hepval_index", columns={"hepval"}), @ORM\Index(name="documentold_cardval_index", columns={"cardval"}), @ORM\Index(name="documentold_nephval_index", columns={"nephval"}), @ORM\Index(name="documentold_phosval_index", columns={"phosval"}), @ORM\Index(name="documentold_patterncount_index", columns={"""patternCount"""}), @ORM\Index(name="documentold_rulescore_index", columns={"""ruleScore"""}), @ORM\Index(name="documentold_nephroval_index", columns={"nephroval"}), @ORM\Index(name="documentold_cardioval_index", columns={"cardioval"}), @ORM\Index(name="documentold_tyroval_index", columns={"thyroval"}), @ORM\Index(name="documentold_phosphoval_index", columns={"phosphoval"}), @ORM\Index(name="documentold_heptermvar_index", columns={"""hepTermVarScore"""}), @ORM\Index(name="documentold_heptermnorm_index", columns={"""hepTermNormScore"""}), @ORM\Index(name="documentold_svm_confidence_index", columns={"""svmConfidence"""}) } , name="documentold_nephro_cardio")
  * @ORM\Entity(repositoryClass="EtoxMicrome\DocumentBundle\Entity\DocumentRepository")
  */
 class Document
@@ -93,9 +93,16 @@ class Document
     /**
      * @var float
      *
-     * @ORM\Column(name="tyroval", type="float", nullable=true)
+     * @ORM\Column(name="thyroval", type="float", nullable=true)
      */
-    private $tyroval;
+    private $thyroval;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="phosphoval", type="float", nullable=true)
+     */
+    private $phosphoval;
 
     /**
      * @var float
@@ -441,24 +448,47 @@ class Document
     }
 
     /**
-     * Get tyroval
+     * Get thyroval
      *
      * @return float
      */
-    public function getTyroval()
+    public function getThyroval()
     {
-        return $this->tyroval;
+        return $this->thyroval;
     }
 
     /**
-     * Set tyroval
+     * Set thyroval
      *
-     * @param float $tyroval
+     * @param float $thyroval
      * @return Document
      */
-    public function setTyroval($tyroval)
+    public function setThyroval($thyroval)
     {
-        $this->tyroval = $tyroval;
+        $this->thyroval = $thyroval;
+
+        return $this;
+    }
+
+    /**
+     * Get phosphoval
+     *
+     * @return float
+     */
+    public function getPhosphoval()
+    {
+        return $this->phosphoval;
+    }
+
+    /**
+     * Set phosphoval
+     *
+     * @param float $phosphoval
+     * @return Document
+     */
+    public function setPhosphoval($phosphoval)
+    {
+        $this->phosphoval = $phosphoval;
 
         return $this;
     }

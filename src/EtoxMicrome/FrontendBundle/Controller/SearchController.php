@@ -25,6 +25,18 @@ class SearchController extends Controller
             case "term":
                 $orderBy="hepTermVarScore";
                 break;
+            case "neprhoval":
+                $orderBy="nephroval";
+                break;
+            case "cardioval":
+                $orderBy="cardioval";
+                break;
+            case "thyroval":
+                $orderBy="thyroval";
+                break;
+            case "phosphoval":
+                $orderBy="phosphoval";
+                break;
         }
         return $orderBy;
     }
@@ -36,14 +48,18 @@ class SearchController extends Controller
                 $valToSearch="hepval";
                 break;
             case "cardiotoxicity":
-                $valToSearch="cardval";
+                $valToSearch="cardioval";
                 break;
             case "nephrotoxicity":
-                $valToSearch="nephval";
+                $valToSearch="nephroval";
+                break;
+            case "thyrotoxicity":
+                $valToSearch="thyroval";
                 break;
             case "phospholipidosis":
-                $valToSearch="phosval";
+                $valToSearch="phosphoval";
                 break;
+
         }
         return $valToSearch;
     }
@@ -2254,7 +2270,11 @@ Evidences found in Sentences:\n
 
     public function searchKeywordAction($whatToSearch, $source, $keyword)
     {
-        $orderBy = $this->container->getParameter('etoxMicrome.default_orderby'); //{"score","patternCount","ruleScore","termScore"}
+        if($whatToSearch != "endpoints"){
+            $orderBy = $this->container->getParameter('etoxMicrome.default_orderby'); //{"score","patternCount","ruleScore","termScore"}
+        }else{
+            $orderBy=$this->getValToSearch($source);
+        }
         return($this->searchKeywordOrderByAction($whatToSearch, $source, $keyword, $orderBy));
     }
 
@@ -2271,7 +2291,12 @@ Evidences found in Sentences:\n
             $page=null;
         }
         $paginator = $this->get('ideup.simple_paginator');
-        $field = $this->container->getParameter('etoxMicrome.default_field');//{"hepatotoxicity","embryotoxicity", etc...}
+        if($whatToSearch != "endpoints"){
+            $field = $this->container->getParameter('etoxMicrome.default_field');//{"hepatotoxicity","embryotoxicity", etc...}
+        }else{
+            $field = $source;
+        }
+
         $valToSearch=$this->getValToSearch($field);//"i.e hepval, embval... etc"
         $orderBy=$this->getOrderBy($orderBy, $valToSearch);
         $entityType= "keyword";//{"specie","compound","enzyme","protein","cyp","mutation","goterm","keyword","marker"}
@@ -2283,7 +2308,7 @@ Evidences found in Sentences:\n
 
         // Create the actual search object with some data.
         $elasticaQuery  = new \Elastica\Query();
-        if($source!="all" and $source!="abstract"){
+        if($source!="all" and $source!="abstract" and $whatToSearch!="endpoints"){
             $elasticaFilterBool = new \Elastica\Filter\Bool();
             $filter1 = new \Elastica\Filter\Term();
             $filter1->setTerm('kind', $source);
@@ -2300,6 +2325,10 @@ Evidences found in Sentences:\n
             $elasticaQuery->setSort(array('nephroval' => array('order' => 'desc')));
         }elseif($orderBy=="cardioval"){
             $elasticaQuery->setSort(array('cardioval' => array('order' => 'desc')));
+        }elseif($orderBy=="thyroval"){
+            $elasticaQuery->setSort(array('thyroval' => array('order' => 'desc')));
+        }elseif($orderBy=="phosphoval"){
+            $elasticaQuery->setSort(array('phosphoval' => array('order' => 'asc')));
         }elseif($orderBy=="hepTermNormScore"){
             $elasticaQuery->setSort(array('hepTermNormScore' => array('order' => 'desc')));
         }elseif($orderBy=="hepTermVarScore"){
@@ -2308,13 +2337,12 @@ Evidences found in Sentences:\n
             $elasticaQuery->setSort(array('svmConfidence' => array('order' => 'desc')));
         }
 
-
         $elasticaQuery->setQuery($elasticaQueryString);
         //Search on the index.
         $elasticaQuery->setSize($this->container->getParameter('etoxMicrome.total_documents_elasticsearch_retrieval'));
-
         if($whatToSearch=="any"){
             //Depending on the source, we will search into documents or abstracts...
+            $message="entra en any";
             if ($source=="abstract"){
                 $abstractsInfo = $this->container->get('fos_elastica.index.etoxindex2.abstracts');/** To get resultSet to get values for summary**/
                 $resultSetAbstracts = $abstractsInfo->search($elasticaQuery);
@@ -2450,6 +2478,55 @@ Evidences found in Sentences:\n
             $meanScore=$this->getMmmrScore($resultSetDocuments, $orderBy, 'mean');
             $medianScore=$this->getMmmrScore($resultSetDocuments, $orderBy, 'median');
             $rangeScore=$this->getMmmrScore($resultSetDocuments, $orderBy, 'range');
+
+        }if($whatToSearch=="endpoints"){
+            //We only search inside documents
+            $finder = false;
+            $resultSetAbstracts = array();//There is no abstractsWithCytochromes nor abstractsWithMarkers information in the database
+            $arrayResultsAbs=array();
+            $documentsInfo = $this->container->get('fos_elastica.index.etoxindex2.documents');/** To get resultSet to get values for summary**/
+            $resultSetDocuments = $documentsInfo->search($elasticaQuery);
+            $arrayResults=$resultSetDocuments->getResults();
+            /*
+            $contador=1;
+            foreach ($arrayResults as $result){
+                if ($contador<11){
+                    ld($result);
+                    $contador++;
+                }
+            }
+            */
+            $meanScore=$this->getMmmrScore($resultSetDocuments, $orderBy, 'mean');
+            $medianScore=$this->getMmmrScore($resultSetDocuments, $orderBy, 'median');
+            $rangeScore=$this->getMmmrScore($resultSetDocuments, $orderBy, 'range');
+            $arrayDocuments=$resultSetDocuments->getResults();//$results has an array of results objects, data can be obtained by the getSource method
+            $hitsShowed=count($arrayDocuments);
+            $arrayResultsDoc = $paginator
+                ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), 'documents')
+                ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), 'documents')
+                ->paginate($arrayDocuments,'documents')
+                ->getResult()
+            ;
+
+            $entityName=$keyword;
+            return $this->render('FrontendBundle:Search_keyword:index_endpoints.html.twig', array(
+                'field' => $field,
+                'entityType' => $entityType,
+                'source' => $source,
+                'keyword' => $keyword,
+                'arrayResultsAbs' => $arrayResultsAbs,
+                'arrayResultsDoc' => $arrayResultsDoc,
+                'resultSetAbstracts' => $resultSetAbstracts,
+                'resultSetDocuments' => $resultSetDocuments,
+                'whatToSearch' => $whatToSearch,
+                'entityName' => $entityName,
+                'orderBy' => $orderBy,
+                'hitsShowed' => $hitsShowed,
+                'meanScore' => $meanScore,
+                'medianScore' => $medianScore,
+                'rangeScore' => $rangeScore,
+                ));
+
 
         }
 
