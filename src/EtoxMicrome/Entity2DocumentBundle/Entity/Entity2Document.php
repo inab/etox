@@ -8,23 +8,27 @@ use Doctrine\ORM\Mapping as ORM;
  * Entity2Document
  *
  * @ORM\Table(indexes={
-        @ORM\Index(name="entity2Document_document_id_new", columns={"document_id"}),
-        @ORM\Index(name="entity2Document_name_index_new", columns={"name"}),
-        @ORM\Index(name="entity2Document_curation_new", columns={"curation"}),
-        @ORM\Index(name="entity2document_hepval_new", columns={"hepval"}),
-        @ORM\Index(name="entity2document_cardval_new", columns={"cardval"}),
-        @ORM\Index(name="entity2document_nephval_new", columns={"nephval"}),
-        @ORM\Index(name="entity2document_phosval_new", columns={"phosval"}),
-        @ORM\Index(name="entity2document_patterncount_new", columns={"""patternCount"""}),
-        @ORM\Index(name="entity2document_rulescore_new", columns={"""ruleScore"""}),
-        @ORM\Index(name="entity2document_qualifier_name_new", columns={"qualifier", "name"}),
-        @ORM\Index(name="entity2document_qualifier_kind_name_new", columns={"qualifier", "kind", "name"}),
-        @ORM\Index(name="entity2document_qualifier_new", columns={"qualifier"}),
-        @ORM\Index(name="entity2document_svm_confidence_index_new", columns={"""svmConfidence"""}),
-        @ORM\Index(name="entity2document_heptermnormscore_new", columns={"""hepTermNormScore"""}),
-        @ORM\Index(name="entity2document_heptermvarscore_new", columns={"""hepTermVarScore"""}),
-        @ORM\Index(name="entity2document_kind_new", columns={"kind"})
-    }, name="entity2document_new")
+        @ORM\Index(name="entity2Document_nephro_cardio_document_id_new", columns={"document_id"}),
+        @ORM\Index(name="entity2Document_nephro_cardio_name_index_new", columns={"name"}),
+        @ORM\Index(name="entity2Document_nephro_cardio_curation_new", columns={"curation"}),
+        @ORM\Index(name="entity2document_nephro_cardio_hepval_new", columns={"hepval"}),
+        @ORM\Index(name="entity2document_nephro_cardio_cardval_new", columns={"cardval"}),
+        @ORM\Index(name="entity2document_nephro_cardio_nephval_new", columns={"nephval"}),
+        @ORM\Index(name="entity2document_nephro_cardio_phosval_new", columns={"phosval"}),
+        @ORM\Index(name="entity2document_nephro_cardio_nephroval_index", columns={"nephroval"}),
+        @ORM\Index(name="entity2document_nephro_cardio_cardioval_index", columns={"cardioval"}),
+        @ORM\Index(name="entity2document_nephro_cardio_thyroval_index", columns={"thyroval"}),
+        @ORM\Index(name="entity2document_nephro_cardio_phosphoval_index", columns={"phosphoval"}),
+        @ORM\Index(name="entity2document_nephro_cardio_patterncount_new", columns={"""patternCount"""}),
+        @ORM\Index(name="entity2document_nephro_cardio_rulescore_new", columns={"""ruleScore"""}),
+        @ORM\Index(name="entity2document_nephro_cardio_qualifier_name_new", columns={"qualifier", "name"}),
+        @ORM\Index(name="entity2document_nephro_cardio_qualifier_kind_name_new", columns={"qualifier", "kind", "name"}),
+        @ORM\Index(name="entity2document_nephro_cardio_qualifier_new", columns={"qualifier"}),
+        @ORM\Index(name="entity2document_nephro_cardio_svm_confidence_index_new", columns={"""svmConfidence"""}),
+        @ORM\Index(name="entity2document_nephro_cardio_heptermnormscore_new", columns={"""hepTermNormScore"""}),
+        @ORM\Index(name="entity2document_nephro_cardio_heptermvarscore_new", columns={"""hepTermVarScore"""}),
+        @ORM\Index(name="entity2document_nephro_cardio_kind_new", columns={"kind"})
+    }, name="entity2document_nephro_cardio")
  * @ORM\Entity(repositoryClass="EtoxMicrome\Entity2DocumentBundle\Entity\Entity2DocumentRepository")
  */
 class Entity2Document
@@ -99,6 +103,34 @@ class Entity2Document
      * @ORM\Column(name="phosval", type="float", nullable=true)
      */
     private $phosval;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="nephroval", type="float", nullable=true)
+     */
+    private $nephroval;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="cardioval", type="float", nullable=true)
+     */
+    private $cardioval;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="thyroval", type="float", nullable=true)
+     */
+    private $thyroval;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="phosphoval", type="float", nullable=true)
+     */
+    private $phosphoval;
 
     /**
      * @var float
@@ -366,6 +398,101 @@ class Entity2Document
     public function getPhosval()
     {
         return $this->phosval;
+    }
+
+    /**
+     * Get nephroval
+     *
+     * @return float
+     */
+    public function getNephroval()
+    {
+        return $this->nephroval;
+    }
+
+    /**
+     * Set nephroval
+     *
+     * @param float $nephroval
+     * @return Entity2Document
+     */
+    public function setNephroval($nephroval)
+    {
+        $this->nephroval = $nephroval;
+
+        return $this;
+    }
+
+    /**
+     * Get carioval
+     *
+     * @return float
+     */
+    public function getCardioval()
+    {
+        return $this->cardioval;
+    }
+
+    /**
+     * Set cardioval
+     *
+     * @param float $cardioval
+     * @return Entity2Document
+     */
+    public function setCardioval($cardioval)
+    {
+        $this->cardioval = $cardioval;
+
+        return $this;
+    }
+
+    /**
+     * Get thyroval
+     *
+     * @return float
+     */
+    public function getThyroval()
+    {
+        return $this->thyroval;
+    }
+
+    /**
+     * Set thyroval
+     *
+     * @param float $thyroval
+     * @return Entity2Document
+     */
+    public function setThyroval($thyroval)
+    {
+        $this->thyroval = $thyroval;
+
+        return $this;
+    }
+
+    /**
+     * Set patternCount
+     *
+     * @param float $patternCount
+     * @return Entity2Document
+     */
+    public function getPhosphoval($phosphoval)
+    {
+        $this->phosphoval = $phosphoval;
+
+        return $this;
+    }
+
+    /**
+     * Set phosphoval
+     *
+     * @param float $phosphoval
+     * @return Entity2Document
+     */
+    public function setPhosphoval($phosphoval)
+    {
+        $this->phosphoval = $phosphoval;
+
+        return $this;
     }
 
     /**
