@@ -32,6 +32,7 @@
             }
             var entityType=$('.tabs dd.active a').attr('name');
             //Getting whatToSearch and entityName depends on entityType:
+            alert(entityType);
             switch(entityType){
                 case "keyword":
                     whatToSearch = $('input[name=keywordWhatToSearch]:checked').val();
@@ -151,7 +152,7 @@
                         alert("You have mark \"Select toxicity endpoint\" option");
                         return false;
                     }
-                    entityName = $('#tags-markers').val();
+                    entityName = $('#tags-endpoints').val();
                     entityName = entityName.trim();
                     link="{{ path('search_interface_search') }}"+'keyword/endpoints/'+whatToSearch+'/'+entityName+'/';
                     $('.bigSearch').attr('href', link);
