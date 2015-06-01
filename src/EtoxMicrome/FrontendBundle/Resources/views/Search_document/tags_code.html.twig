@@ -532,9 +532,9 @@
     <div class="ui-widget">
         <div class="vis-break cntrtxt">
             {% if entityName is defined %}
-                <input id="tags-cytochromes" class="ui-autocomplete-input text tags" onclick="this.value=''" placeholder="e.g. {{ default_cytochromeName }}" aria-haspopup="true" aria-autocomplete="list" role="textbox" autocomplete="off" value="{{ entityName }}">
+                <input id="tags-endpoints" class="ui-autocomplete-input text tags" onclick="this.value=''" placeholder="e.g. {{ default_endpoint }}" aria-haspopup="true" aria-autocomplete="list" role="textbox" autocomplete="off" value="{{ entityName }}">
             {% else %}
-                <input id="tags-cytochromes" class="ui-autocomplete-input text tags" onclick="this.value=''" placeholder="e.g. {{ default_cytochromeName }}" aria-haspopup="true" aria-autocomplete="list" role="textbox" autocomplete="off" value="{{ default_cytochromeName }}">
+                <input id="tags-endpoints" class="ui-autocomplete-input text tags" onclick="this.value=''" placeholder="e.g. {{ default_endpoint }}" aria-haspopup="true" aria-autocomplete="list" role="textbox" autocomplete="off" value="{{ default_endpoint }}">
             {% endif %}
             <a class="button orange bigSearch" >Search</a>
 
