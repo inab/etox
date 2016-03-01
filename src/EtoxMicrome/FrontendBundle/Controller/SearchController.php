@@ -2158,12 +2158,11 @@ Evidences found in Sentences:\n
                     }
 
                     $arrayTanimotos=array();
-                    /*
+                    
                     if ($entityType=="CompoundDict"){
 	                	$arrayTanimotos=$em->getRepository('EtoxMicromeEntityBundle:TanimotoValues')->getCompoundsWithTanimotos($entity->getId());
-	                    $arrayTanimotos=$em->getRepository('EtoxMicromeEntityBundle:TanimotoValues')->sortArrayByTanimoto($arrayTanimotos);
+	                    //$arrayTanimotos=$em->getRepository('EtoxMicromeEntityBundle:TanimotoValues')->sortArrayByTanimoto($arrayTanimotos);
                     }
-                    */
                     return $this->render('FrontendBundle:Search_document:index.html.twig', array(
                         'field' => $field,
                         'whatToSearch' => $whatToSearch,

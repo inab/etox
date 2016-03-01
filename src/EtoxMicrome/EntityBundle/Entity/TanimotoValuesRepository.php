@@ -13,15 +13,18 @@ use Doctrine\ORM\EntityRepository;
 class TanimotoValuesRepository extends EntityRepository
 {
 	public function getCompoundsWithTanimotos($idCompound){
+    	//ld($idCompound);
 		$query = $this->_em->createQuery("
             SELECT tv
             FROM EtoxMicromeEntityBundle:TanimotoValues tv
             WHERE tv.compound1= :idCompound
             OR tv.compound2= :idCompound
+            AND tv.tanimoto >= 0.8
+            ORDER BY tv.tanimoto DESC
         ");
         $query->setParameter('idCompound', $idCompound);
         $arrayTanimotos=$query->getResult();
-        return $arrayTanimotos;	
+        return $arrayTanimotos;
     }
     public function sortArrayByTanimoto($arrayTanimotos){
     	$arrayTmp=array();
@@ -45,7 +48,7 @@ class TanimotoValuesRepository extends EntityRepository
     		array_push($arrayDef,$tanimotoValue[0]);
     	}
     	//We return just the first 10 elements of the array
-        return array_slice($arrayDef, 0, 10);	
+        return array_slice($arrayDef, 0, 10);
     }
     public function generateStringsForCytoscape($entityName, $entityType, $dictionaryRelations){
         $message="generateStringsForCytoscape";
@@ -81,7 +84,7 @@ class TanimotoValuesRepository extends EntityRepository
         /* edges string example
         {"source":"MDM2","target":"TP53","database":"undefined"},
         */
-        
+
         //First of all we generate the string for the main node.
         $stringNodes="{\"label\":\"$entityName\",\"id\":\"$entityName\",\"entity_type\":\"$entityType\",\"color\":\"#f0f6a6\"},\n";
         //Then we generate the rest of the nodes as well as the edges linking the new nodes with the main one

@@ -21,8 +21,6 @@ use Doctrine\ORM\Mapping as ORM;
         @ORM\Index(name="entity2document_nephro_cardio_phosphoval_index", columns={"phosphoval"}),
         @ORM\Index(name="entity2document_nephro_cardio_patterncount_new", columns={"""patternCount"""}),
         @ORM\Index(name="entity2document_nephro_cardio_rulescore_new", columns={"""ruleScore"""}),
-        @ORM\Index(name="entity2document_nephro_cardio_qualifier_name_new", columns={"qualifier", "name"}),
-        @ORM\Index(name="entity2document_nephro_cardio_qualifier_kind_name_new", columns={"qualifier", "kind", "name"}),
         @ORM\Index(name="entity2document_nephro_cardio_qualifier_new", columns={"qualifier"}),
         @ORM\Index(name="entity2document_nephro_cardio_svm_confidence_index_new", columns={"""svmConfidence"""}),
         @ORM\Index(name="entity2document_nephro_cardio_heptermnormscore_new", columns={"""hepTermNormScore"""}),
