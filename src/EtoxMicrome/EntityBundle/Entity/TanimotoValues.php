@@ -7,8 +7,8 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * TanimotoValues
  *
- * @ORM\Table(indexes={@ORM\Index(name="tanimotovalues_idcompound1_index", columns={"idcompound1"}),@ORM\Index(name="tanimotovalues_idcompound2_index", columns={"idcompound2"})
-  } )
+ * @ORM\Table(indexes={@ORM\Index(name="tanimotovalues_idcompound1_index", columns={"idcompound1"}),@ORM\Index(name="tanimotovalues_idcompound2_index", columns={"idcompound2"}),@ORM\Index(name="tanimotovalues_tanimoto_index", columns={"tanimoto"})
+  }, name="tanimotovalues_new")
  * @ORM\Entity(repositoryClass="EtoxMicrome\EntityBundle\Entity\TanimotoValuesRepository")
  */
 class TanimotoValues
@@ -87,7 +87,7 @@ class TanimotoValues
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -102,14 +102,14 @@ class TanimotoValues
     public function setCompound1(\EtoxMicrome\EntityBundle\Entity\Compounddict $compound1)
     {
         $this->compound1 = $compound1;
-    
+
         return $this;
     }
 
     /**
      * Get compound1
      *
-     * @return integer 
+     * @return integer
      */
     public function getCompound1()
     {
@@ -124,14 +124,14 @@ class TanimotoValues
     public function setCompound2(\EtoxMicrome\EntityBundle\Entity\Compounddict $compound2)
     {
         $this->compound2 = $compound2;
-    
+
         return $this;
     }
 
     /**
      * Get idcompound2
      *
-     * @return integer 
+     * @return integer
      */
     public function getCompound2()
     {
@@ -147,14 +147,14 @@ class TanimotoValues
     public function setSmile1($smile1)
     {
         $this->smile1 = $smile1;
-    
+
         return $this;
     }
 
     /**
      * Get smile1
      *
-     * @return string 
+     * @return string
      */
     public function getSmile1()
     {
@@ -170,14 +170,14 @@ class TanimotoValues
     public function setSmile2($smile2)
     {
         $this->smile2 = $smile2;
-    
+
         return $this;
     }
 
     /**
      * Get smile2
      *
-     * @return string 
+     * @return string
      */
     public function getSmile2()
     {
@@ -193,14 +193,14 @@ class TanimotoValues
     public function setInChi1($inChi1)
     {
         $this->inChi1 = $inChi1;
-    
+
         return $this;
     }
 
     /**
      * Get inChi1
      *
-     * @return string 
+     * @return string
      */
     public function getInChi1()
     {
@@ -216,14 +216,14 @@ class TanimotoValues
     public function setInChi2($inChi2)
     {
         $this->inChi2 = $inChi2;
-    
+
         return $this;
     }
 
     /**
      * Get inChi2
      *
-     * @return string 
+     * @return string
      */
     public function getInChi2()
     {
@@ -239,14 +239,14 @@ class TanimotoValues
     public function setTanimoto($tanimoto)
     {
         $this->tanimoto = $tanimoto;
-    
+
         return $this;
     }
 
     /**
      * Get tanimoto
      *
-     * @return float 
+     * @return float
      */
     public function getTanimoto()
     {
@@ -262,14 +262,14 @@ class TanimotoValues
     public function setCreated($created)
     {
         $this->created = $created;
-    
+
         return $this;
     }
 
     /**
      * Get created
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreated()
     {
@@ -285,14 +285,14 @@ class TanimotoValues
     public function setUpdated($updated)
     {
         $this->updated = $updated;
-    
+
         return $this;
     }
 
     /**
      * Get updated
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getUpdated()
     {

@@ -85,6 +85,20 @@ class Abstracts
     private $svmConfidence;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="""toxicology""", type="integer", nullable=true)
+     */
+    private $toxicology;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="""biomarker""", type="integer", nullable=true)
+     */
+    private $biomarker;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="created", type="datetime")
@@ -103,12 +117,18 @@ class Abstracts
      **/
     private $entity2abstract;
 
+     /**
+     * @ORM\OneToMany(targetEntity="EtoxMicrome\Entity2AbstractBundle\Entity\Gene2Abstract", mappedBy="abstracts")
+     **/
+    private $gene2abstract;
+
 
     /**
     * Constructor de la clase
     **/
     public function __construct() {
         $this->entity2abstract = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->gene2abstract = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -352,6 +372,52 @@ class Abstracts
     }
 
     /**
+     * Set toxicology
+     *
+     * @param integer $toxicology
+     * @return Abstracts
+     */
+    public function setToxicology($toxicology)
+    {
+        $this->toxicology = $toxicology;
+
+        return $this;
+    }
+
+    /**
+     * Get toxicology
+     *
+     * @return integer
+     */
+    public function getToxicology()
+    {
+        return $this->toxicology;
+    }
+
+    /**
+     * Set biomarker
+     *
+     * @param integer $biomarker
+     * @return Abstracts
+     */
+    public function setBiomarker($biomarker)
+    {
+        $this->biomarker = $biomarker;
+
+        return $this;
+    }
+
+    /**
+     * Get biomarker
+     *
+     * @return integer
+     */
+    public function getBiomarker()
+    {
+        return $this->biomarker;
+    }
+
+    /**
      * Set created
      *
      * @param \DateTime $created
@@ -416,6 +482,27 @@ class Abstracts
     public function getEntity2Abstract()
     {
         return $this->entity2abstract;
+    }
+
+    /**
+     * Set entity2abstract
+     *
+     * @return integer
+     */
+    public function setGene2Abstract($gene2abstract)
+    {
+        $this->gene2abstract=$gene2abstract;
+        return $this;
+    }
+
+    /**
+     * Get Gene2Abstract
+     *
+     * @return integer
+     */
+    public function getGene2Abstract()
+    {
+        return $this->gene2abstract;
     }
 
 

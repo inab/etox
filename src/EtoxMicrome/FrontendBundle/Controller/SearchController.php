@@ -1294,6 +1294,104 @@ Evidences found in Sentences:\n
 
     }
 
+    public function searchGeneAction($whatToSearch, $source, $entityName)
+    {
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //////In this lines we check if the user wants to download the results of the searching process. If so, the exportFunction is called//////
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //$source="geneName" or "geneId";
+        //$whatToSearch="any","withCompounds"...etc
+        $orderBy = $this->container->getParameter('etoxMicrome.default_orderby'); //
+        return($this->searchGeneOrderbyAction($whatToSearch, $source, $entityName, $orderBy));
+
+    }
+
+    public function searchGeneOrderByAction($whatToSearch, $source, $entityName, $orderBy)
+    {
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //////In this lines we check if the user wants to download the results of the searching process. If so, the exportFunction is called//////
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        $field="hepatotoxicity";
+        $entityType="gene";
+        //$source="geneName" or "geneId";
+        //$whatToSearch="any","withCompounds"...etc
+
+        $message="inside searchGeneAction";
+        $entityBackup=$entityName;
+        $em = $this->getDoctrine()->getManager();
+        //We add the paginator
+        $paginator = $this->get('ideup.simple_paginator');
+        //The search will be performed using the gene_id. If gene_name is used, then we get its gene_id from the genedictionary table
+        $arrayGeneIds=[];
+        $arrayAbstracts=[];
+        if ($source=="geneName"){
+            $arrayGenes=$em->getRepository('EtoxMicromeEntityBundle:genedictionary')->findByGeneName($entityName);
+            //We generate an array of geneIds that will be used as the result of the query expansion
+            foreach($arrayGenes as $gene){
+                array_push($arrayGeneIds, $gene->getGeneId());
+            }
+        }elseif($source=="geneId"){
+            array_push($arrayGeneIds, $entityName);
+        }
+        //Searching for genes can only be performed against either abstracts(any) or abstractswithcompounds(withCompounds)
+
+
+        //For the $whatToSearch == "any" part, we search against abstracts table using each gene_id in $arrayGeneIds
+
+        //foreach($arrayGeneIds as $geneId){
+
+        //    $arrayGene2Abstract=$em->getRepository('EtoxMicromeEntity2AbstractBundle:Gene2Abstract')->findByGeneId($geneId);
+        //    $arrayAbstracts=array_merge($arrayGene2Abstract,$arrayAbstracts);
+        //}
+
+
+
+        //$gene2Abstracts=$em->getRepository('EtoxMicromeEntity2AbstractBundle:Gene2Abstract')->getGene2AbstractFromGeneIDsDQL($arrayGeneIds, $orderBy)->getResult();
+        //ld(count($gene2Abstracts));
+        //$arrayTotalMaxMin=$this->getTotalMaxMinArrayForEntities($compound2Abstracts, $orderBy, $field);
+        //$meanScore=$this->getMmmrScoreFromEntities($compound2Abstracts, $orderBy, 'mean');
+        //$medianScore=$this->getMmmrScoreFromEntities($compound2Abstracts, $orderBy, 'median');
+        $arrayGene2Abstract = $paginator
+            ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "abstracts")
+            ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "abstracts")
+            ->paginate($em->getRepository('EtoxMicromeEntity2AbstractBundle:Gene2Abstract')->getGene2AbstractsFromGeneIDsDQL($arrayGeneIds, $orderBy), 'abstracts')
+            ->getResult()
+        ;
+
+
+        if($whatToSearch=="withCompounds"){
+            //We just have to filter the previous result against the abstractWithCompounds table. If the abstract exists in abstractsWithCompounds table, then we keep it. Otherwise we don't
+            foreach($arrayAbstracts as $gene2abstract){
+                //We have to test if each abstract is in abstractWithCompounds table
+                $abstractWithCompound=$em->getRepository('EtoxMicromeDocumentBundle:AbstractWithCompound')->findByPmid($gene2abstract->getPmid());
+                ld($abstractWithCompound);
+                ldd($gene2abstract);
+            }
+        }
+
+        #ld($arrayGene2Abstract[0]);
+        #ldd($arrayGene2Abstract);
+        #ld($field);
+        #ld($source);
+        #ld($entityName);
+        #ld($whatToSearch);
+        return $this->render('FrontendBundle:Search_gene2abstract:index.html.twig', array(
+            'field' => $field,
+            'entityType' => $entityType,
+            'keyword' => $entityName,
+            'arrayGene2Abstract' => $arrayGene2Abstract,
+            'whatToSearch' => $whatToSearch,
+            'source' => $source,
+            'entityName' => $entityName,
+            'entityBackup' => $entityBackup,
+            'orderBy' => $orderBy,
+            //'hitsShowed' => $hitsShowed,
+            //'meanScore' => $meanScore,
+            //'medianScore' => $medianScore,
+        ));
+    }
+
+
     public function searchFieldWhatToSearchEntityTypeSourceEntityAction($field, $whatToSearch, $entityType, $source, $entityName, $orderBy)
     {
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2158,12 +2256,11 @@ Evidences found in Sentences:\n
                     }
 
                     $arrayTanimotos=array();
-                    /*
+
                     if ($entityType=="CompoundDict"){
 	                	$arrayTanimotos=$em->getRepository('EtoxMicromeEntityBundle:TanimotoValues')->getCompoundsWithTanimotos($entity->getId());
-	                    $arrayTanimotos=$em->getRepository('EtoxMicromeEntityBundle:TanimotoValues')->sortArrayByTanimoto($arrayTanimotos);
+	                    //$arrayTanimotos=$em->getRepository('EtoxMicromeEntityBundle:TanimotoValues')->sortArrayByTanimoto($arrayTanimotos);
                     }
-                    */
                     return $this->render('FrontendBundle:Search_document:index.html.twig', array(
                         'field' => $field,
                         'whatToSearch' => $whatToSearch,

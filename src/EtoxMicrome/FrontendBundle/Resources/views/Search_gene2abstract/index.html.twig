@@ -1,0 +1,171 @@
+{% extends '::frontend.html.twig' %}
+{% block title %}Listing Evidences {% endblock %}
+{% block article %}
+    {% include 'FrontendBundle:Search_document:tags_code.html.twig' %}
+    <div id="evidences">
+        {# <a href="{{ path('export_abstracts',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'entityName': entityName, 'download': true}) }}">(Generate a file with results)</a> #}
+        {% set tooltipCounter=1 %}
+        {% set stringStickyTooltip = "" %}
+        {% set foundFor=entityType %}
+        {% if foundFor=="CompoundDict" %}
+            {% set foundFor="Compound" %}
+        {% endif %}
+
+        <div id="documentsResults">
+            <a name="documents"></a>
+            <h3>Ranked sentences in Abstracts for {{foundFor}}: {{ entityBackup }}</h3>
+            <div class="btmspc-dbl">
+                <small>
+                    <em>
+                        Entity mentions are highlighted as follows:
+                        <mark class="termSearched">What you searched</mark>, <mark class="compound">Compounds</mark>, <mark class="cytochrome">Cytochromes</mark>, <mark class="marker">Markers</mark>, <mark class="term">Terms</mark>, <mark class="specie">Species</mark>
+                    </em>
+                    . Curated evidences are indicated by:
+                    <a class="curated" href="#"> </a>
+                </small>
+            </div>
+            <table id="tableResults" class="tablesorter">
+                <thead>
+                    <th>Source</th>
+                    <th><!-- <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'score'}) }}">Score</a> --> Score</th>
+
+                    <th><!-- <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'pattern'}) }}">SVM Confidence</a> --> SVM Confidence</th>
+
+                    <th><!-- <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'rule'}) }}">Toxicology</a> --> Toxicology</th>
+                    <th><!-- <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'term'}) }}">Biomarker</a> --> Biomarker</th>
+                    <th>Sentence</th>
+                </thead>
+                <tbody>
+                    {% set contador = 1 %}
+                    {% for gene2Abstract in arrayGene2Abstract %}
+                        <tr class="document {{ cycle(['odd', 'even'], contador) }}">
+                            {% set contador = contador + 1 %}
+                            {# {% set kind = entity2Document.document.getKind %} #}
+                            {% set score = gene2Abstract.getAbstracts.getHepval %}
+                            {% set score = score|number_format(2) %}
+                            {% set score = score|colorCodingScore %}
+                            {% set svmConfidence = gene2Abstract.getAbstracts.getSvmConfidence %}
+                            {% set svmConfidence = svmConfidence|number_format(2) %}
+                            {% set svmConfidence = svmConfidence|colorCodingScore %}
+                            {% set toxicology = gene2Abstract.getAbstracts.getToxicology %}
+                            {% set toxicology = toxicology|number_format(2) %}
+                            {% set toxicology = toxicology|colorCodingScore %}
+                            {% set biomarker = gene2Abstract.getAbstracts.getBiomarker %}
+                            {% set biomarker = biomarker|number_format(2) %}
+                            {% set biomarker = biomarker|colorCodingScore %}
+                            <td>
+                            {# {% if kind == "pubmed" %} #}
+
+                            {% set pmid=gene2Abstract.getAbstracts.getPmid %}
+                            {% set link="http://www.ncbi.nlm.nih.gov/pubmed/" ~ pmid %}
+                            {% set imageRoute = 'images/pubmed.png' %}
+                            {# {% set sid=entity2Document.document.getSentenceId %} #}
+                            <span data-tooltip='sticky{{ tooltipCounter }}'>
+                                    <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/></a>
+                                </span>
+                            {% set tooltip =  "<div id='sticky"~tooltipCounter~"' class='atip' >Pubmed link: <a href='"~link ~"'>"~link~"</a><br>Pubmed Id: "~ pmid ~"<br/></div>" %}
+                            {% set tooltipCounter = tooltipCounter + 1 %}
+                            {% set stringStickyTooltip = stringStickyTooltip ~ tooltip  %}
+
+                            {# {% endif %} #}
+                            </td>
+                            <td class="center">
+                                {{ score |raw }}
+                            </td>
+                            <td class="center">
+                                {{ svmConfidence | raw }}
+                            </td>
+                            <td class="center">
+                                {{ toxicology |raw }}
+                            </td>
+                            <td class="center">
+                                {{ biomarker|raw }}
+                            </td>
+                            {% set text=gene2Abstract.getAbstracts.getText %}
+                            {# set arrayText= text | highlightEntitiesAbstracts (gene2Abstract.abstracts,entityBackup,field,whatToSearch, source, entityType, tooltipCounter)
+                            {% set text = arrayText[0] | raw %}
+                            {% set stringStickyTooltip = stringStickyTooltip ~ arrayText[1] %}
+                            {% set tooltipCounter = arrayText[2] %}
+                            #}
+                            <td>
+                                    {{ text | raw }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <!-- here pagination block for Documents -->
+
+           <div class="pagination">
+                {{ simple_paginator_render(
+                    'search_interface_search_genes', 'abstracts',
+                        {
+                            'routeParams' : {'whatToSearch' : whatToSearch, 'source' : source, 'entityName' : entityBackup, 'orderBy' : orderBy},
+                            'container_class' : 'pagination'
+                        }
+                    )
+                }}
+            </div>
+        </div>
+        {% if arrayEntity2Abstract is defined %}
+            <div id="abstractsResults">
+                <a name="abstracts"></a>
+                <div class="jumpToDocuments">
+                    <a href="#documents" id="jumpToDocuments">(View sentences)</a>
+                </div>
+                <h3>Ranked Abstracts for {{foundFor}}: {{ entityBackup }}</h3>
+                <div class="btmspc-dbl">
+                    <small>
+                        <em>
+                            Entity mentions are highlighted as follows:
+                            <mark class="termSearched">What you searched</mark>, <mark class="compound">Compounds</mark>, <mark class="cytochrome">CYPs</mark>, <mark class="marker">Markers</mark>, <mark class="keyword">Keywords</mark>, <mark class="specie">Species</mark>
+                        </em>
+                        . Curated evidences are indicated by:
+                        <a class="curated" href="#"> </a>
+                    </small>
+                </div>
+
+                {% set contador = 1 %}
+                {% for entity2Abstract in arrayEntity2Abstract %}
+                    <div class="abstract {{ cycle(['odd', 'even'], contador) }}">
+                        {% set contador = contador + 1 %}
+                        <p>
+                            {% set score = entity2Abstract.abstracts.getHepval %}
+                            {% set score = score|number_format(2) %}
+                            {% set score = score|colorCodingScore %}
+                            {% set imageRoute = 'images/pubmed.png' %}
+                            {% set pmid = entity2Abstract.abstracts.getPmid %}
+                            <a href="http://www.ncbi.nlm.nih.gov/pubmed/{{ pmid }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo" /></a>
+                            {{ score |raw }}.
+                            {% set text = entity2Abstract.abstracts.getText %}
+                            {% set arrayText= text | highlightEntitiesAbstracts (entity2Abstract.abstracts,entityBackup,field,whatToSearch, source, entityType, tooltipCounter) %}
+                            {% set text = arrayText[0] | raw %}
+                            {% set stringStickyTooltip = stringStickyTooltip ~ arrayText[1] %}
+                            {% set tooltipCounter = arrayText[2] %}
+                            {{ text| raw }}
+                             <small>
+                                {% set curation=entity2Abstract.getCuration %}
+                                {% if curation is empty %}
+                                    {% set curation=0 %}
+                                {% endif %}
+                                {% set curationHtml= curation | setCurationHtml(entity2Abstract.getId(), entityType, "abstract") %}
+                                <div id="free-curation-{{ entity2Abstract.getId }}">
+                                    {{ curationHtml | raw }}
+                                </div>
+                        </small>
+                        </p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {# Here we rebuild the stringStickyTooltip inside its container divs #}
+        <div id="mystickytooltip" class="stickytooltip">
+            <div style="padding:5px">
+                {{ stringStickyTooltip | raw }}
+            </div>
+            <div class="stickystatus"></div>
+        </div>
+
+    {% include 'FrontendBundle:Search_document:scripts_code.html.twig' %}
+{% endblock %}

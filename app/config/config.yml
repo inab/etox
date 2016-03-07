@@ -29,6 +29,7 @@ twig:
         default_searchInto:  "document"
         default_whatToSearch:  "name"
         default_whatToSearch_keyword:  "any"
+        default_whatToSearch_gene:  "any"
         default_kind:  "pubmed"
         default_entityType: "CompoundDict"
         default_entityName:  "Troglitazone"
@@ -43,6 +44,8 @@ twig:
         default_source:   "all"
         default_toxicEndpoints: "Troglitazone"
         default_endpoint: "hepatotoxicity"
+        default_gene: "p10"
+        default_geneSearch: "p10"
         mouseover_source: "Document source used (PubMed abstracts/sentences, full text articles, NDAs or EPARs)"
         mouseover_svm: "Sort by SVM score. Binary linear kernel SVM classifier score result (SVMLight).Features: word unigram, stop word filter, balanced training set. The higher the more related to the topic. If the output of the scoring function is positive then the text was classified as relevant for adverse hepatobiliary events, while if it has a negative score it was classified as non-relevant. See: http://svmlight.joachims.org"
         mouseover_conf: "Sort by SVM confidence score. Binary linear kernel SVM classifier confidence scores (scikit-learn).Features: word 1-4grams, stop word filter, tf-idf weights, balanced training set. The higher the more related to the topic. If the output of the scoring function is positive then the text was classified as relevant for adverse hepatobiliary events, while if it has a negative score it was classified as non-relevant. (See: http://scikit-learn.org and decision_function)"
@@ -139,7 +142,7 @@ fos_user:
 #Elasticsearch configuration
 fos_elastica:
     clients:
-        default: { host: limtox.cnio.es, port: 9200 }
+        default: { host: limtox.cnio.es, port: 9204 }
     indexes:
         etoxindex2:
             client: default
@@ -343,6 +346,7 @@ parameters:
     etoxMicrome.default_kind:  "pubmed"
     etoxMicrome.default_whatToSearch:  "name"
     etoxMicrome.default_whatToSearch_keyword: "any"
+    etoxMicrome.default_whatToSearch_gene: "any"
     etoxMicrome.default_entityType: "CompoundDict"
     etoxMicrome.default_entityName:  "Troglitazone"
     etoxMicrome.default_keywordSearch:  "bile salt"
