@@ -40,7 +40,7 @@
                 case "keyword":
                     whatToSearch = $('input[name=keywordWhatToSearch]:checked').val();
                     if(whatToSearch==null){
-                        alert("You have mark \"What are you searching?\" option");
+                        alert("You have to mark \"What are you searching?\" option");
                         return false;
                     }
                     entityName = $('#tags-keywords').val();
@@ -132,7 +132,7 @@
                 case "marker":
                     whatToSearch=$('input[name=markerWhatToSearch]:checked').val();
                     if(whatToSearch==null){
-                        alert("You have mark \"What are you searching?\" option");
+                        alert("You have to mark \"What are you searching?\" option");
                         return false;
                     }
                     entityName = $('#tags-markers').val();
@@ -152,13 +152,37 @@
                 case "toxicEndpoints":
                     whatToSearch=$('input[name=endpoint]:checked').val();
                     if(whatToSearch==null){
-                        alert("You have mark \"Select toxicity endpoint\" option");
+                        alert("You have to mark \"Select toxicity endpoint\" option");
                         return false;
                     }
                     entityName = $('#tags-endpoints').val();
                     entityName = entityName.trim();
                     link="{{ path('search_interface_search') }}"+'keyword/endpoints/'+whatToSearch+'/'+entityName+'/';
                     $('.bigSearch').attr('href', link);
+                    break;
+
+                case "gene":
+                    whatToSearch = $('input[name=geneWhatToSearch]:checked').val();
+                    if(whatToSearch==null){
+                        alert("You have to mark \"What are you searching?\" option");
+                        return false;
+                    }
+                    entityName = $('#tags-genes').val();
+                    entityName = entityName.trim();
+                    source=$('input[name=geneSource]:checked').val();
+
+                    if(source==""){
+                        alert("You have to check a source to continue");
+                        return false;
+                    }
+                    if (entityName==""){
+                        alert("Please type the entity to search for");
+                        return false;
+                    }
+                    else{
+                        link="{{ path('search_interface_search') }}"+"gene"+"/"+whatToSearch+"/"+source+"/"+entityName+"/";
+                        $('.bigSearch').attr('href',link);
+                    }
                     break;
             }
 
