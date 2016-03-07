@@ -516,3 +516,39 @@
   </li>
 </ul>
 <div class="clear-both"></div>
+<div class="advanceSearch">
+        <div class="large-4 columns">
+            <form class="custom">
+                <fieldset>
+                    <legend>What are you searching?</legend>
+                    {% set whatToSearch_gene = default_whatToSearch_gene %}
+                    {% if whatToSearch_gene=="any" %}
+                        <span data-tooltip class="has-tip" title="Search all documents"><label for="radioWhatToSearch"><input name="geneWhatToSearch" type="radio" id="radioGeneWhatToSearch" style="display:none;" CHECKED value="any"><span class="custom radio"></span>  Any</label></span>
+                    {% else %}
+                        <span data-tooltip class="has-tip" title="Search all documents"><label for="radioWhatToSearch"><input name="geneWhatToSearch" type="radio" id="radioGeneWhatToSearch" style="display:none;" value="any"><span class="custom radio"></span> Any</label></span>
+                    {% endif %}
+
+                    {% if whatToSearch_gene=="withCompound" %}
+                        <span data-tooltip class="has-tip" title="Search in text where compounds are comentioned"> <label for="radioWhatToSearch"><input name="geneWhatToSearch" type="radio" id="radioGeneWhatToSearch" style="display:none;" CHECKED value="withCompounds" disabled><span class="custom radio checked"></span> With Compounds</label></span>
+                    {% else %}
+                        <span data-tooltip class="has-tip" title="Search in text where compounds are comentioned"><label for="radioWhatToSearch"><input name="geneWhatToSearch" type="radio" id="radioGeneWhatToSearch" style="display:none;" value="withCompounds" disabled><span class="custom radio"></span> With Compounds</label></span>
+                    {% endif %}
+                </fieldset>
+            </form>
+        </div>
+        <div class="large-4 columns">
+            <form class="custom">
+                <fieldset>
+                    <legend>Search:</legend>
+                        <span data-tooltip class="has-tip" title="Search in PubMed abstracts by gene name"><label for="radioSource"><input name="geneSource" type="radio" id="radioGeneSource" style="display:none;" CHECKED value="geneName"><span class="custom radio"></span>Gene Name</label></span>
+                        <span data-tooltip class="has-tip" title="Search in PubMed abstracts by Entrez Gene ID"><label for="radioSource"><input name="geneSource" type="radio" id="radioGeneSource" style="display:none;" value="geneId"><span class="custom radio"></span>Entrez Gene ID</label></span>
+
+                </fieldset>
+            </form>
+        </div>
+        <div class="large-4 columns">
+        </div>
+    </div>
+  </li>
+</ul>
+<div class="clear-both"></div>
