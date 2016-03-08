@@ -1434,6 +1434,40 @@ Evidences found in Sentences:\n
         }elseif($whatToSearch=="id"){
             //We get the entity from the entityId
             $entity=$em->getRepository('EtoxMicromeEntityBundle:'.$entityType)->searchEntityGivenAnId($entityName);
+            if($entityType=="Cytochrome"){
+                /*
+                 $elasticaQueryString  = new \Elastica\Query\QueryString();
+                //'And' or 'Or' default : 'Or'
+                $elasticaQueryString->setDefaultOperator('AND');
+                $elasticaQueryString->setQuery($entityName);
+                // Create the actual search object with some data.
+                $elasticaQuery  = new \Elastica\Query();
+                $elasticaQuery->setSize(1500);
+                $finder = false;
+                $finderDocWithCytochromes = $this->container->get('fos_elastica.index.etoxindex2.documentswithcytochromes');
+                $resultSetDocWithCytochromes = $finderDocWithCytochromes->search($elasticaQuery);
+                $arrayDocumentsWithCytochromes=$resultSetDocWithCytochromes->getResults();//$results has an array of results objects, data can be obtained by the getSource method
+                $arrayResultsDoc = $paginator
+                    ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), 'documents')
+                    ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), 'documents')
+                    ->paginate($arrayDocumentsWithCytochromes,'documents')
+                    ->getResult()
+                ;
+
+                $hitsShowed=count($arrayDocumentsWithCytochromes);
+                $meanScore=$hitsShowed;
+                $medianScore=$hitsShowed;
+
+                //$meanScore=$this->getMmmrScoreFromEntities($arrayDocumentsWithCytochromes, $orderBy, 'mean');
+                //$medianScore=$this->getMmmrScoreFromEntities($arrayDocumentsWithCytochromes, $orderBy, 'median');
+
+                //We restore size to its default value
+                $elasticaQuery->setSize($this->container->getParameter('etoxMicrome.total_documents_elasticsearch_retrieval'));
+                //When dealing with withIntersection arrays, we only have this array to get the needed values that we retreive in interface using resultSetArrays... Which are: totalHits, Max. Score, Min. Score
+                //So we implement a function to get all this info inside an arrayTotalMaxMin. Being arrayTotalMaxMin[0]=totalHits, arrayTotalMaxMin[1]=Max.score, arrayTotalMaxMin[2]=Min.score
+                $arrayTotalMaxMin=$this->getTotalMaxMinArray($arrayDocumentsWithCytochromes, $orderBy, $field);
+                */
+            }
         }elseif($whatToSearch=="structure"){
             //We get the entity from the structure
             $entity=$em->getRepository('EtoxMicromeEntityBundle:'.$entityType)->searchEntityGivenAnStructureText($entityName);
@@ -2141,7 +2175,6 @@ Evidences found in Sentences:\n
             ));
         }
         $arrayEntityId=array_unique($arrayEntityId);//We get rid of the duplicates
-        //ld($arrayEntityId);
         if($entityType=="Cytochrome"){
             //We create an array of cytochromes from an array with their enityId
             $arrayEntities=array();
@@ -2156,7 +2189,6 @@ Evidences found in Sentences:\n
 
             $arrayNames=array_unique($arrayNames);//We get rid of the duplicates
             $arrayCanonicals=array_unique($arrayCanonicals);//We get rid of the duplicates
-
             $cytochrome2Documents=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Cytochrome2Document')->getCytochrome2DocumentFromFieldDQL($field, $entityType, $arrayNames, $arrayCanonicals, $source, $orderBy)->getResult();
             //When dealing with withRelations arrays, we only have this array to get the needed values that we retreive in interface using resultSetArrays... Which are: totalHits, Max. Score, Min. Score
             //So we implement a function to get all this info inside an arrayTotalMaxMin. Being arrayTotalMaxMin[0]=totalHits, arrayTotalMaxMin[1]=Max.score, arrayTotalMaxMin[2]=Min.score
