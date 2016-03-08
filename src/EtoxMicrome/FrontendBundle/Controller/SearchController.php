@@ -1325,7 +1325,7 @@ Evidences found in Sentences:\n
         $arrayGeneIds=[];
         $arrayAbstracts=[];
         if ($source=="geneName"){
-            $arrayGenes=$em->getRepository('EtoxMicromeEntityBundle:genedictionary')->findByGeneName($entityName);
+            $arrayGenes=$em->getRepository('EtoxMicromeEntityBundle:GeneDictionary')->findByGeneName($entityName);
             //We generate an array of geneIds that will be used as the result of the query expansion
             foreach($arrayGenes as $gene){
                 array_push($arrayGeneIds, $gene->getGeneId());
