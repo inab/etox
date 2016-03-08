@@ -23,13 +23,13 @@ class TanimotoValues
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="EtoxMicrome\EntityBundle\Entity\Compounddict", inversedBy="tanimoto2compound1")
+     * @ORM\ManyToOne(targetEntity="EtoxMicrome\EntityBundle\Entity\CompoundDict", inversedBy="tanimoto2compound1")
      * @ORM\JoinColumn(name="idcompound1", referencedColumnName="id", nullable=true)
      */
     private $compound1;
 
     /**
-     * @ORM\ManyToOne(targetEntity="EtoxMicrome\EntityBundle\Entity\Compounddict", inversedBy="tanimoto2compound2")
+     * @ORM\ManyToOne(targetEntity="EtoxMicrome\EntityBundle\Entity\CompoundDict", inversedBy="tanimoto2compound2")
      * @ORM\JoinColumn(name="idcompound2", referencedColumnName="id", nullable=true)
      */
     private $compound2;
