@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Gene2Abstract
  *
- * @ORM\Table (indexes={@ORM\Index(name="gene2Abstract_genename", columns={"gene_name"}), @ORM\Index(name="gene2Abstract_geneid_index", columns={"gene_id"}) } )
+ * @ORM\Table (indexes={@ORM\Index(name="gene2Abstract_genename", columns={"gene_name"}), @ORM\Index(name="gene2Abstract_geneid_index", columns={"gene_id"}), @ORM\Index(name="gene2abstract_hepval_index", columns={"hepval"}) } )
  * @ORM\Entity(repositoryClass="EtoxMicrome\Entity2AbstractBundle\Entity\Gene2AbstractRepository")
  */
 class Gene2Abstract
@@ -56,6 +56,13 @@ class Gene2Abstract
      * @ORM\Column(name="tax_id_validated", type="integer")
      */
     private $taxIdValidated;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="hepval", type="float", nullable=true)
+     */
+    private $hepval;
 
     /**
      * @var \DateTime
@@ -212,6 +219,29 @@ class Gene2Abstract
     public function getTaxIdValidated()
     {
         return $this->taxIdValidated;
+    }
+
+     /**
+     * Set hepval
+     *
+     * @param float $hepval
+     * @return Gene2Abstract
+     */
+    public function setHepval($hepval)
+    {
+        $this->hepval = $hepval;
+
+        return $this;
+    }
+
+    /**
+     * Get hepval
+     *
+     * @return float
+     */
+    public function getHepval()
+    {
+        return $this->hepval;
     }
 
     /**
