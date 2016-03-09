@@ -27,12 +27,15 @@
             <table id="tableResults" class="tablesorter">
                 <thead>
                     <th>Source</th>
-                    <th><!-- <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'score'}) }}">Score</a> --> Score</th>
+                    <th><a href="{{ path('search_interface_search_genes_orderby',{'whatToSearch':whatToSearch, 'source': source, 'entityName': entityName, 'orderBy': 'score'}) }}">Score</a></th>
 
-                    <th><!-- <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'pattern'}) }}">SVM Confidence</a> --> SVM Confidence</th>
+                    <th><a href="{{ path('search_interface_search_genes_orderby',{'whatToSearch':whatToSearch, 'source': source, 'entityName': entityName, 'orderBy': 'patternCount'}) }}">Pattern</a></th>
 
-                    <th><!-- <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'rule'}) }}">Toxicology</a> --> Toxicology</th>
-                    <th><!-- <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'term'}) }}">Biomarker</a> --> Biomarker</th>
+                    <th><a href="{{ path('search_interface_search_genes_orderby',{'whatToSearch':whatToSearch, 'source': source, 'entityName': entityName, 'orderBy': 'svmConfidence'}) }}">SVM Confidence</a></th>
+
+                    <th><a href="{{ path('search_interface_search_genes_orderby',{'whatToSearch':whatToSearch, 'source': source, 'entityName': entityName, 'orderBy': 'toxicology'}) }}">Toxicology</a></th>
+
+                    <th><a href="{{ path('search_interface_search_genes_orderby',{'whatToSearch':whatToSearch, 'source': source, 'entityName': entityName, 'orderBy': 'biomarker'}) }}">Biomarker</a></th>
                     <th>Sentence</th>
                 </thead>
                 <tbody>
@@ -82,11 +85,11 @@
                                 {{ biomarker|raw }}
                             </td>
                             {% set text=gene2Abstract.getAbstracts.getText %}
-                            {# set arrayText= text | highlightEntitiesAbstracts (gene2Abstract.abstracts,entityBackup,field,whatToSearch, source, entityType, tooltipCounter)
+                            { set arrayText= text | highlightEntitiesAbstracts (gene2Abstract.abstracts,entityBackup,field,whatToSearch, source, entityType, tooltipCounter)
                             {% set text = arrayText[0] | raw %}
                             {% set stringStickyTooltip = stringStickyTooltip ~ arrayText[1] %}
                             {% set tooltipCounter = arrayText[2] %}
-                            #}
+                            }
                             <td>
                                     {{ text | raw }}
                             </td>
@@ -99,7 +102,7 @@
 
            <div class="pagination">
                 {{ simple_paginator_render(
-                    'search_interface_search_genes', 'abstracts',
+                    'search_interface_search_genes_orderby', 'abstracts',
                         {
                             'routeParams' : {'whatToSearch' : whatToSearch, 'source' : source, 'entityName' : entityBackup, 'orderBy' : orderBy},
                             'container_class' : 'pagination'
