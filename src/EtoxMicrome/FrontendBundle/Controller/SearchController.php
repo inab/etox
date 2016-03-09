@@ -1296,6 +1296,7 @@ Evidences found in Sentences:\n
 
     public function searchGeneAction($whatToSearch, $source, $entityName)
     {
+        $message="inside searchGeneOrderByAction";
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //////In this lines we check if the user wants to download the results of the searching process. If so, the exportFunction is called//////
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1316,7 +1317,7 @@ Evidences found in Sentences:\n
         //$source="geneName" or "geneId";
         //$whatToSearch="any","withCompounds"...etc
 
-        $message="inside searchGeneAction";
+        $message="inside searchGeneOrderByAction";
         $entityBackup=$entityName;
         $em = $this->getDoctrine()->getManager();
         //We add the paginator
@@ -1359,7 +1360,6 @@ Evidences found in Sentences:\n
             ->paginate($em->getRepository('EtoxMicromeEntity2AbstractBundle:Gene2Abstract')->getGene2AbstractsFromGeneIDsDQL($arrayGeneIds, $orderBy), 'abstracts')
             ->getResult()
         ;
-
 
         if($whatToSearch=="withCompounds"){
             //We just have to filter the previous result against the abstractWithCompounds table. If the abstract exists in abstractsWithCompounds table, then we keep it. Otherwise we don't
