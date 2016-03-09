@@ -50,7 +50,7 @@
                             {% set pattern = gene2Abstract.getPatternCount %}
                             {% set pattern = pattern|number_format(2) %}
                             {% set pattern = pattern|colorCodingScore %}
-                            {% set svmConfidence = gene2Abstract.getSvmConfidence %}
+                            {% set svmConfidence = gene2Abstract.getAbstracts.getSvmConfidence %}
                             {% set svmConfidence = svmConfidence|number_format(2) %}
                             {% set svmConfidence = svmConfidence|colorCodingScore %}
                             {% set toxicology = gene2Abstract.getAbstracts.getToxicology %}
