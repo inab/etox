@@ -29,13 +29,13 @@
                     <th>Source</th>
                     <th><a href="{{ path('search_interface_search_genes_orderby',{'whatToSearch':whatToSearch, 'source': source, 'entityName': entityName, 'orderBy': 'score'}) }}">Score</a></th>
 
-                    <th><a href="{{ path('search_interface_search_genes_orderby',{'whatToSearch':whatToSearch, 'source': source, 'entityName': entityName, 'orderBy': 'patternCount'}) }}">Pattern</a></th>
+                    <th><!-- <a href="{{ path('search_interface_search_genes_orderby',{'whatToSearch':whatToSearch, 'source': source, 'entityName': entityName, 'orderBy': 'patternCount'}) }}">Pattern</a> --> Pattern</th>
 
-                    <th><a href="{{ path('search_interface_search_genes_orderby',{'whatToSearch':whatToSearch, 'source': source, 'entityName': entityName, 'orderBy': 'svmConfidence'}) }}">SVM Confidence</a></th>
+                    <th><!-- <a href="{{ path('search_interface_search_genes_orderby',{'whatToSearch':whatToSearch, 'source': source, 'entityName': entityName, 'orderBy': 'svmConfidence'}) }}">SVM Confidence</a> --> SVM Confidence</th>
 
-                    <th><a href="{{ path('search_interface_search_genes_orderby',{'whatToSearch':whatToSearch, 'source': source, 'entityName': entityName, 'orderBy': 'toxicology'}) }}">Toxicology</a></th>
+                    <th><!-- <a href="{{ path('search_interface_search_genes_orderby',{'whatToSearch':whatToSearch, 'source': source, 'entityName': entityName, 'orderBy': 'toxicology'}) }}">Toxicology</a> --> Toxicology</th>
 
-                    <th><a href="{{ path('search_interface_search_genes_orderby',{'whatToSearch':whatToSearch, 'source': source, 'entityName': entityName, 'orderBy': 'biomarker'}) }}">Biomarker</a></th>
+                    <th><!-- <a href="{{ path('search_interface_search_genes_orderby',{'whatToSearch':whatToSearch, 'source': source, 'entityName': entityName, 'orderBy': 'biomarker'}) }}">Biomarker</a> --> Biomarker</th>
                     <th>Sentence</th>
                 </thead>
                 <tbody>
@@ -44,10 +44,13 @@
                         <tr class="document {{ cycle(['odd', 'even'], contador) }}">
                             {% set contador = contador + 1 %}
                             {# {% set kind = entity2Document.document.getKind %} #}
-                            {% set score = gene2Abstract.getAbstracts.getHepval %}
+                            {% set score = gene2Abstract.getHepval %}
                             {% set score = score|number_format(2) %}
                             {% set score = score|colorCodingScore %}
-                            {% set svmConfidence = gene2Abstract.getAbstracts.getSvmConfidence %}
+                            {% set pattern = gene2Abstract.getPatternCount %}
+                            {% set pattern = pattern|number_format(2) %}
+                            {% set pattern = pattern|colorCodingScore %}
+                            {% set svmConfidence = gene2Abstract.getSvmConfidence %}
                             {% set svmConfidence = svmConfidence|number_format(2) %}
                             {% set svmConfidence = svmConfidence|colorCodingScore %}
                             {% set toxicology = gene2Abstract.getAbstracts.getToxicology %}
@@ -76,6 +79,9 @@
                                 {{ score |raw }}
                             </td>
                             <td class="center">
+                                {{ pattern |raw }}
+                            </td>
+                            <td class="center">
                                 {{ svmConfidence | raw }}
                             </td>
                             <td class="center">
@@ -85,11 +91,10 @@
                                 {{ biomarker|raw }}
                             </td>
                             {% set text=gene2Abstract.getAbstracts.getText %}
-                            { set arrayText= text | highlightEntitiesAbstracts (gene2Abstract.abstracts,entityBackup,field,whatToSearch, source, entityType, tooltipCounter)
+                            {% set arrayText= text | highlightEntitiesAbstracts (gene2Abstract.abstracts,entityBackup,"hepatotoxicity",whatToSearch, source, "gene", tooltipCounter) %}
                             {% set text = arrayText[0] | raw %}
                             {% set stringStickyTooltip = stringStickyTooltip ~ arrayText[1] %}
                             {% set tooltipCounter = arrayText[2] %}
-                            }
                             <td>
                                     {{ text | raw }}
                             </td>
