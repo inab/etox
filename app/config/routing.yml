@@ -106,7 +106,7 @@ search_interface_search_genes:
     defaults: { _controller: FrontendBundle:Search:searchGene}
 
 search_interface_search_genes_orderby:
-    pattern: /search/gene/{whatToSearch}/{source}/{entityName}/orderby/{orderby}/
+    pattern: /search/gene/{whatToSearch}/{source}/{entityName}/orderby/{orderBy}/
     defaults: { _controller: FrontendBundle:Search:searchGeneOrderBy}
 
 search_interface_search_field_whatToSearch_entityType_source:

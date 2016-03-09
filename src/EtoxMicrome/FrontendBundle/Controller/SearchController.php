@@ -1333,6 +1333,8 @@ Evidences found in Sentences:\n
         }elseif($source=="geneId"){
             array_push($arrayGeneIds, $entityName);
         }
+
+        $arrayGeneIds=array_unique($arrayGeneIds);
         //Searching for genes can only be performed against either abstracts(any) or abstractswithcompounds(withCompounds)
 
 

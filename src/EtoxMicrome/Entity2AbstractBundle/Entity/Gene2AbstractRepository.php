@@ -69,6 +69,7 @@ class Gene2AbstractRepository extends EntityRepository
         $sql="SELECT g2a
                 FROM EtoxMicromeEntity2AbstractBundle:Gene2Abstract g2a
                 WHERE g2a.geneId IN (:arrayGeneIds)
+                ORDER BY g2a.$orderBy
                 ";
 
         $query = $this->_em->createQuery($sql);

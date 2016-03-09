@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Gene2Abstract
  *
- * @ORM\Table (indexes={@ORM\Index(name="gene2Abstract_genename", columns={"gene_name"}), @ORM\Index(name="gene2Abstract_geneid_index", columns={"gene_id"}), @ORM\Index(name="gene2abstract_hepval_index", columns={"hepval"}) } )
+ * @ORM\Table (indexes={@ORM\Index(name="gene2Abstract_genename", columns={"gene_name"}), @ORM\Index(name="gene2Abstract_geneid_index", columns={"gene_id"}), @ORM\Index(name="gene2abstract_hepval_index", columns={"hepval"}), @ORM\Index(name="gene2abstract_patterncount_index", columns={"patternCount"}), @ORM\Index(name="gene2abstract_rulescore_index", columns={"ruleScore"}), @ORM\Index(name="gene2abstract_heptermnormscore_index", columns={"hepTermNormScore"}), @ORM\Index(name="gene2abstract_heptermvarscore_index", columns={"hepTermVarScore"}), @ORM\Index(name="gene2abstract_svmconfidence_index", columns={"svmConfidence"}), @ORM\Index(name="gene2abstract_toxicology_index", columns={"toxicology"}), @ORM\Index(name="gene2abstract_biomarker_index", columns={"biomarker"}) } )
  * @ORM\Entity(repositoryClass="EtoxMicrome\Entity2AbstractBundle\Entity\Gene2AbstractRepository")
  */
 class Gene2Abstract
@@ -63,6 +63,62 @@ class Gene2Abstract
      * @ORM\Column(name="hepval", type="float", nullable=true)
      */
     private $hepval;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="""patternCount""", type="float", nullable=true)
+     */
+    private $patternCount;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="""ruleScore""", type="float", nullable=true)
+     */
+    private $ruleScore;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="""hepTermNormScore""", type="float", nullable=true)
+     */
+    private $hepTermNormScore;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="""hepTermVarScore""", type="float", nullable=true)
+     */
+    private $hepTermVarScore;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="""svmConfidence""", type="float", nullable=true)
+     */
+    private $svmConfidence;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="""toxicology""", type="integer", nullable=true)
+     */
+    //private $toxicology;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="""biomarker""", type="integer", nullable=true)
+     */
+    //private $biomarker;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="""curation""", type="integer", nullable=true)
+     */
+    //private $curation;
 
     /**
      * @var \DateTime
@@ -243,6 +299,191 @@ class Gene2Abstract
     {
         return $this->hepval;
     }
+
+
+    /**
+     * Set patternCount
+     *
+     * @param float $patternCount
+     * @return Gene2Abstract
+     */
+    public function setPatternCount($patternCount)
+    {
+        $this->patternCount = $patternCount;
+
+        return $this;
+    }
+
+    /**
+     * Get patternCount
+     *
+     * @return float
+     */
+    public function getPatternCount()
+    {
+        return $this->patternCount;
+    }
+
+    /**
+     * Set ruleScore
+     *
+     * @param float $ruleScore
+     * @return Gene2Abstract
+     */
+    public function setRuleScore($ruleScore)
+    {
+        $this->ruleScore = $ruleScore;
+
+        return $this;
+    }
+
+    /**
+     * Get ruleScore
+     *
+     * @return float
+     */
+    public function getRuleScore()
+    {
+        return $this->ruleScore;
+    }
+
+    /**
+     * Set hepTermNormScore
+     *
+     * @param float $hepTermNormScore
+     * @return Gene2Abstract
+     */
+    public function setHepTermNormScore($hepTermNormScore)
+    {
+        $this->hepTermNormScore = $hepTermNormScore;
+
+        return $this;
+    }
+
+    /**
+     * Get hepTermNormScore
+     *
+     * @return float
+     */
+    public function getHepTermNormScore()
+    {
+        return $this->hepTermNormScore;
+    }
+
+    /**
+     * Set hepTermVarScore
+     *
+     * @param float $hepTermVarScore
+     * @return Gene2Abstract
+     */
+    public function setHepTermVarScore($hepTermVarScore)
+    {
+        $this->hepTermVarScore = $hepTermVarScore;
+
+        return $this;
+    }
+
+    /**
+     * Get hepTermVarScore
+     *
+     * @return float
+     */
+    public function getHepTermVarScore()
+    {
+        return $this->hepTermVarScore;
+    }
+
+    /**
+     * Set svmConfidence
+     *
+     * @param float $svmConfidence
+     * @return Gene2Abstract
+     */
+    public function setSvmConfidence($svmConfidence)
+    {
+        $this->svmConfidence = $svmConfidence;
+
+        return $this;
+    }
+
+    /**
+     * Get svmConfidence
+     *
+     * @return float
+     */
+    public function getSvmConfidence()
+    {
+        return $this->svmConfidence;
+    }
+
+    /**
+     * Set toxicology
+     *
+     * @param integer $toxicology
+     * @return Gene2Abstract
+     */
+    //public function setToxicology($toxicology)
+    //{
+    //    $this->toxicology = $toxicology;
+
+    //    return $this;
+    //}
+
+    /**
+     * Get toxicology
+     *
+     * @return integer
+     */
+    //public function getToxicology()
+    //{
+    //    return $this->toxicology;
+    //}
+
+    /**
+     * Set biomarker
+     *
+     * @param integer $biomarker
+     * @return Gene2Abstract
+     */
+    //public function setBiomarker($biomarker)
+    //{
+    //    $this->biomarker = $biomarker;
+
+    //    return $this;
+    //}
+
+    /**
+     * Get biomarker
+     *
+     * @return integer
+     */
+    //public function getBiomarker()
+    //{
+    //    return $this->biomarker;
+    //}
+
+    /**
+     * Set curation
+     *
+     * @param integer $curation
+     * @return Gene2Abstract
+     */
+    //public function setCuration($curation)
+    //{
+    //    $this->curation = $curation;
+
+    //    return $this;
+    //}
+
+    /**
+     * Get curation
+     *
+     * @return integer
+     */
+    //public function getCuration()
+    //{
+    //    return $this->curation;
+    //}
 
     /**
      * Set created
