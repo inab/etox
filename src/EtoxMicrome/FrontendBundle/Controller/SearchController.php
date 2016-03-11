@@ -1364,7 +1364,6 @@ Evidences found in Sentences:\n
             ));
 
         }else{
-            ldd($message);
             $arrayGene2Abstract = $paginator
                 ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "abstracts")
                 ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "abstracts")
