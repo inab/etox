@@ -1334,7 +1334,6 @@ Evidences found in Sentences:\n
         }elseif($source=="geneId"){
             array_push($arrayGeneIds, $entityName);
         }
-
         $arrayGeneIds=array_unique($arrayGeneIds);
         //Searching for genes can only be performed against either abstracts(any) or abstractswithcompounds(withCompounds)
 
@@ -1354,12 +1353,26 @@ Evidences found in Sentences:\n
         //$arrayTotalMaxMin=$this->getTotalMaxMinArrayForEntities($compound2Abstracts, $orderBy, $field);
         //$meanScore=$this->getMmmrScoreFromEntities($compound2Abstracts, $orderBy, 'mean');
         //$medianScore=$this->getMmmrScoreFromEntities($compound2Abstracts, $orderBy, 'median');
-        $arrayGene2Abstract = $paginator
-            ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "abstracts")
-            ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "abstracts")
-            ->paginate($em->getRepository('EtoxMicromeEntity2AbstractBundle:Gene2Abstract')->getGene2AbstractsFromGeneIDsDQL($arrayGeneIds, $orderBy), 'abstracts')
-            ->getResult()
-        ;
+
+        if (count($arrayGeneIds) == 0){
+            return $this->render('FrontendBundle:Default:no_results.html.twig', array(
+                'field' => $field,
+                'whatToSearch' => $whatToSearch,
+                'entityType' => $entityType,
+                'entity' => $entityBackup,
+                'entityName' => $entityName,
+            ));
+
+        }else{
+            ldd($message);
+            $arrayGene2Abstract = $paginator
+                ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "abstracts")
+                ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "abstracts")
+                ->paginate($em->getRepository('EtoxMicromeEntity2AbstractBundle:Gene2Abstract')->getGene2AbstractsFromGeneIDsDQL($arrayGeneIds, $orderBy), 'abstracts')
+                ->getResult()
+            ;
+        }
+
 
         if($whatToSearch=="withCompounds"){
             //We just have to filter the previous result against the abstractWithCompounds table. If the abstract exists in abstractsWithCompounds table, then we keep it. Otherwise we don't
