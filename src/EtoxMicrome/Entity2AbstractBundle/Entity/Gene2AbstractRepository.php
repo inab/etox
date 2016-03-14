@@ -66,6 +66,7 @@ class Gene2AbstractRepository extends EntityRepository
             ORDER BY a.$valToSearch desc
             ";
         */
+
         $sql="SELECT g2a
                 FROM EtoxMicromeEntity2AbstractBundle:Gene2Abstract g2a
                 WHERE g2a.geneId IN (:arrayGeneIds)
