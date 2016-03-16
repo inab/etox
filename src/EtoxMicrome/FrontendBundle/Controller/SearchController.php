@@ -749,7 +749,6 @@ Evidences found in Sentences:\n
             }
             */
         }
-
         $count=0;
         $line="Searching parameters:\n
 \tToxicity type:\t $field\n
@@ -773,11 +772,10 @@ Evidences found in Abstracts:(Output fields:\t\"#registry\"\t\"Abstract text\"\t
             }
             $count=$count+1;
         }
-
         fclose($fp);
 
 
-        $zip->addFile($pathToFile);
+        $zip->addFile($pathToFile, basename($pathToFile));
         $zip->close();
 
         return ($filename.".zip");
@@ -840,7 +838,7 @@ Evidences found in Sentences:\n
         fclose($fp);
 
 
-        $zip->addFile($pathToFile);
+        $zip->addFile($pathToFile, basename($pathToFile));
         $zip->close();
 
         return ($filename.".zip");
@@ -891,7 +889,7 @@ Evidences found in Sentences:\n
         fclose($fp);
 
 
-        $zip->addFile($pathToFile);
+        $zip->addFile($pathToFile, basename($pathToFile));
         $zip->close();
 
         return ($filename.".zip");
@@ -910,6 +908,13 @@ Evidences found in Sentences:\n
 
         //We get first of all the evidences found in Abstracts
         $entityBackup=$entityName;
+        /*ld($field);
+        ld($whatToSearch);
+        ld ($entityType);
+        ld($entityName);
+        ld($source);
+        ld($orderBy);*/
+
         if($whatToSearch=="name"){
             //We get the entity from the entity
             $entity=$em->getRepository('EtoxMicromeEntityBundle:'.$entityType)->getEntityFromName($entityName);
@@ -926,20 +931,32 @@ Evidences found in Sentences:\n
         if(count($entity)!=0){
             #We have the entityId. We need to do a QUERY EXPANSION depending on the typeOfEntity we have
             $arrayEntityId=$this->queryExpansion($entity, $entityType, $whatToSearch);
+            //WARNING!!!! DELETE THIS SLICE AFTER QUERY EXPANSION GETS PRACTICABLE
+            $arrayEntityId=array_slice($arrayEntityId, 0, 10);
+
+            //$arrayEntityId=array();
+            //array_push($arrayEntityId, $entity);
             //WARNING!! If the query expansion with a CompoundDict doesn't return any entity, we do the expansion with CompoundMesh!!
+            //ld($arrayEntityId);
             if (($entityType=="CompoundDict") and (count($arrayEntityId)==1)){
-                $arrayEntityId=$this->queryExpansion($entity, "CompoundMesh", $whatToSearch);
+                //In the case of CompoundMesh queryExpansion should return an array of names to translate to an array of ids, trying to avoid mixing CompoundDict ids with CompoundMesh ids inside same arrayEntityId!!!!
+                $arrayEntityName=$this->queryExpansion($entity, "CompoundMesh", $whatToSearch);
+                //Now we translate arrayEntityName to arrayEntityId
+                foreach($arrayEntityName as $entityName){
+                    $entityId=$em->getRepository('EtoxMicromeEntityBundle:CompoundDict')->getEntityFromName($entityName)->getId();
+                    $arrayEntityId[]=$entityId;
+                }
             }
-        }else{
-            //We don't have entities. We render the template with No results
+        }else{//We don't have entities. We render the template with No results
             return $this->render('FrontendBundle:Default:no_results.html.twig', array(
                 'field' => $field,
                 'whatToSearch' => $whatToSearch,
                 'entityType' => $entityType,
                 'entity' => $entityBackup,
+                'entityName' => $entityName,
             ));
-
         }
+
         $arrayEntityId=array_unique($arrayEntityId);//We get rid of the duplicates
         if($entityType=="Cytochrome"){
             //We create an array of cytochromes from an array with their enityId
@@ -977,7 +994,6 @@ Evidences found in Sentences:\n
                 //We search into Abstracts only if we are looking for Compounds
                 $arrayEntity2Document = $em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntity2DocumentFromField($field, $entityType, $arrayEntityName, $source, $orderBy);
                 $arrayEntity2Abstract = $em->getRepository('EtoxMicromeEntity2AbstractBundle:Entity2Abstract')->getEntity2AbstractFromField($field, "CompoundMesh", $arrayEntityName, $orderBy);
-
                 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 ////////////////////////////////////////save inside file///////////////////////////////////////////////////////////////////////////////////////////
                 $filename=$this->writeFileWithArrayAbstractDocument($arrayEntity2Abstract, $arrayEntity2Document, $field, $whatToSearch, $entityType, $entityName);
@@ -1354,6 +1370,7 @@ Evidences found in Sentences:\n
         //$meanScore=$this->getMmmrScoreFromEntities($compound2Abstracts, $orderBy, 'mean');
         //$medianScore=$this->getMmmrScoreFromEntities($compound2Abstracts, $orderBy, 'median');
 
+
         if (count($arrayGeneIds) == 0){
             return $this->render('FrontendBundle:Default:no_results.html.twig', array(
                 'field' => $field,
@@ -1418,6 +1435,7 @@ Evidences found in Sentences:\n
         $arraySourcesDocuments=array("all","pubmed","fulltext", "epar","nda");
         $arraySourcesAbstracts=array("abstract");
         $arrayFormats=array("csv","pdf","xls");
+
         if (in_array($download, $arrayFormats)){
             $filename=$this->exportFunction($field, $whatToSearch, $entityType, $entityName, $source, $orderBy);
             return $this->render('FrontendBundle:Default:download_file.html.twig', array(
@@ -1428,6 +1446,7 @@ Evidences found in Sentences:\n
             'filename' => $filename,
             'orderBy' => $orderBy,
             'format' => $download,
+            'source' => $source,
             ));
         exit();
         }
@@ -2128,7 +2147,6 @@ Evidences found in Sentences:\n
         ////////////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////////
-        //ld($entity);
         if(count($entity)!=0){
             #We have the entityId. We need to do a QUERY EXPANSION depending on the typeOfEntity we have
             $arrayEntityId=$this->queryExpansion($entity, $entityType, $whatToSearch);
@@ -2164,6 +2182,7 @@ Evidences found in Sentences:\n
             ));
         }
         $arrayEntityId=array_unique($arrayEntityId);//We get rid of the duplicates
+
         if($entityType=="Cytochrome"){
             //We create an array of cytochromes from an array with their enityId
             $arrayEntities=array();
@@ -2207,7 +2226,6 @@ Evidences found in Sentences:\n
 
             }
             $arrayEntityName=array_unique($arrayEntityName);//We get rid of the duplicates
-            //ld($arrayEntityName);
             if($entityType=="CompoundDict" or $entityType=="CompoundMesh"){
                 //We search into Abstracts only if we are looking for Compounds
 
@@ -2262,7 +2280,6 @@ Evidences found in Sentences:\n
                         ->paginate($em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntity2DocumentFromFieldDQL($field, $entityType, $arrayEntityName, $source, $orderBy), 'documents')
                         ->getResult()
                     ;
-                    //ld(count($arrayEntity2Document));
                     if($whatToSearch=="name"){
                         $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummaryFromName($entityName,"CompoundDict");
                         $allias=$em->getRepository('EtoxMicromeEntityBundle:Alias')->getAliasFromName($entityName);
