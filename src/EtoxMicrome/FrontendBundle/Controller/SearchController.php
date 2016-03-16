@@ -1370,7 +1370,6 @@ Evidences found in Sentences:\n
         //$meanScore=$this->getMmmrScoreFromEntities($compound2Abstracts, $orderBy, 'mean');
         //$medianScore=$this->getMmmrScoreFromEntities($compound2Abstracts, $orderBy, 'median');
 
-
         if (count($arrayGeneIds) == 0){
             return $this->render('FrontendBundle:Default:no_results.html.twig', array(
                 'field' => $field,
@@ -1381,10 +1380,14 @@ Evidences found in Sentences:\n
             ));
 
         }else{
-            $arrayGene2Abstract = $paginator
+            //We have an arrayGeneIds and we want a list of abstracts that have those geneIds. So we generate it using getAbstractsFromGeneIds method.
+            $arrayAbstracts = $em->getRepository('EtoxMicromeEntity2AbstractBundle:Gene2Abstract')->getAbstractsFromGeneIDs($arrayGeneIds, $orderBy);
+
+
+            $arrayPaginatedAbstracts = $paginator
                 ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "abstracts")
                 ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "abstracts")
-                ->paginate($em->getRepository('EtoxMicromeEntity2AbstractBundle:Gene2Abstract')->getGene2AbstractsFromGeneIDsDQL($arrayGeneIds, $orderBy), 'abstracts')
+                ->paginate($arrayAbstracts, 'abstracts')
                 ->getResult()
             ;
         }
@@ -1410,7 +1413,7 @@ Evidences found in Sentences:\n
             'field' => $field,
             'entityType' => $entityType,
             'keyword' => $entityName,
-            'arrayGene2Abstract' => $arrayGene2Abstract,
+            'arrayPaginatedAbstracts' => $arrayPaginatedAbstracts,
             'whatToSearch' => $whatToSearch,
             'source' => $source,
             'entityName' => $entityName,

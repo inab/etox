@@ -81,4 +81,49 @@ class Gene2AbstractRepository extends EntityRepository
 
     }
 
+     public function getAbstractsFromGeneIDs($arrayGeneIds, $orderBy)
+    {//("hepatotoxicity","CompoundDict",arrayEntityId)
+        $message="inside getAbstractsFromGeneIDs";
+        $field="hepatotoxicity";
+        $valToSearch=$this->getValToSearch($field);//"i.e hepval, embval... etc"
+        $orderBy_backup=$orderBy;
+        if ($orderBy=="hepval" or $orderBy=="score"){
+            $orderBy="hepval desc";
+        }elseif($orderBy=="svmConfidence"){
+            $orderBy="svmConfidence desc";
+        }elseif($orderBy=="pattern"){
+            $orderBy="patternCount asc";
+        }elseif($orderBy=="term"){
+            $orderBy="hepTermVarScore asc";
+        }elseif($orderBy=="rule"){
+            $orderBy="ruleScore asc";
+        }elseif($orderBy=="curation"){
+            $orderBy="curation desc";
+        }
+        $sql="SELECT g2a
+                FROM EtoxMicromeEntity2AbstractBundle:Gene2Abstract g2a
+                WHERE g2a.geneId IN (:arrayGeneIds)
+                ORDER BY g2a.$orderBy
+                ";
+
+        $query = $this->_em->createQuery($sql);
+        $query->setParameter("arrayGeneIds", $arrayGeneIds);
+
+        $query->setMaxResults(10000);
+        $arrayGene2DuplicatedAbstracts=$query->getResult();
+
+        //We have to gather abstracts (unique)
+        $arrayAbstracts=[];
+        $arrayAbstractsIDs=[];
+        foreach($arrayGene2DuplicatedAbstracts as $gene2Abstract){
+            $abstract_id=$gene2Abstract->getAbstracts()->getId();
+            if  (!in_array($abstract_id, $arrayAbstractsIDs)){
+                array_push($arrayAbstractsIDs, $abstract_id);
+                array_push($arrayAbstracts, $gene2Abstract->getAbstracts());
+            }
+        }
+        //We return an array of abstracts without duplicates that contain genes
+        return $arrayAbstracts;
+    }
+
 }

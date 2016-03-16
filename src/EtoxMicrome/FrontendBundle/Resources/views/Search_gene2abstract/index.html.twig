@@ -40,29 +40,29 @@
                 </thead>
                 <tbody>
                     {% set contador = 1 %}
-                    {% for gene2Abstract in arrayGene2Abstract %}
+                    {% for abstract in arrayPaginatedAbstracts %}
                         <tr class="document {{ cycle(['odd', 'even'], contador) }}">
                             {% set contador = contador + 1 %}
                             {# {% set kind = entity2Document.document.getKind %} #}
-                            {% set score = gene2Abstract.getHepval %}
+                            {% set score = abstract.getHepval %}
                             {% set score = score|number_format(2) %}
                             {% set score = score|colorCodingScore %}
-                            {% set pattern = gene2Abstract.getPatternCount %}
+                            {% set pattern = abstract.getPatternCount %}
                             {% set pattern = pattern|number_format(2) %}
                             {% set pattern = pattern|colorCodingScore %}
-                            {% set svmConfidence = gene2Abstract.getAbstracts.getSvmConfidence %}
+                            {% set svmConfidence = abstract.getSvmConfidence %}
                             {% set svmConfidence = svmConfidence|number_format(2) %}
                             {% set svmConfidence = svmConfidence|colorCodingScore %}
-                            {% set toxicology = gene2Abstract.getAbstracts.getToxicology %}
+                            {% set toxicology = abstract.getToxicology %}
                             {% set toxicology = toxicology|number_format(2) %}
                             {% set toxicology = toxicology|colorCodingScore %}
-                            {% set biomarker = gene2Abstract.getAbstracts.getBiomarker %}
+                            {% set biomarker = abstract.getBiomarker %}
                             {% set biomarker = biomarker|number_format(2) %}
                             {% set biomarker = biomarker|colorCodingScore %}
                             <td>
                             {# {% if kind == "pubmed" %} #}
 
-                            {% set pmid=gene2Abstract.getAbstracts.getPmid %}
+                            {% set pmid=abstract.getPmid %}
                             {% set link="http://www.ncbi.nlm.nih.gov/pubmed/" ~ pmid %}
                             {% set imageRoute = 'images/pubmed.png' %}
                             {# {% set sid=entity2Document.document.getSentenceId %} #}
@@ -90,8 +90,8 @@
                             <td class="center">
                                 {{ biomarker|raw }}
                             </td>
-                            {% set text=gene2Abstract.getAbstracts.getText %}
-                            {% set arrayText= text | highlightEntitiesAbstracts (gene2Abstract.abstracts,entityBackup,"hepatotoxicity",whatToSearch, source, "gene", tooltipCounter) %}
+                            {% set text=abstract.getText %}
+                            {% set arrayText= text | highlightEntitiesAbstracts (abstract,entityBackup,"hepatotoxicity",whatToSearch, source, "gene", tooltipCounter) %}
                             {% set text = arrayText[0] | raw %}
                             {% set stringStickyTooltip = stringStickyTooltip ~ arrayText[1] %}
                             {% set tooltipCounter = arrayText[2] %}
@@ -116,57 +116,6 @@
                 }}
             </div>
         </div>
-        {% if arrayEntity2Abstract is defined %}
-            <div id="abstractsResults">
-                <a name="abstracts"></a>
-                <div class="jumpToDocuments">
-                    <a href="#documents" id="jumpToDocuments">(View sentences)</a>
-                </div>
-                <h3>Ranked Abstracts for {{foundFor}}: {{ entityBackup }}</h3>
-                <div class="btmspc-dbl">
-                    <small>
-                        <em>
-                            Entity mentions are highlighted as follows:
-                            <mark class="termSearched">What you searched</mark>, <mark class="compound">Compounds</mark>, <mark class="cytochrome">CYPs</mark>, <mark class="marker">Markers</mark>, <mark class="keyword">Keywords</mark>, <mark class="specie">Species</mark>
-                        </em>
-                        . Curated evidences are indicated by:
-                        <a class="curated" href="#"> </a>
-                    </small>
-                </div>
-
-                {% set contador = 1 %}
-                {% for entity2Abstract in arrayEntity2Abstract %}
-                    <div class="abstract {{ cycle(['odd', 'even'], contador) }}">
-                        {% set contador = contador + 1 %}
-                        <p>
-                            {% set score = entity2Abstract.abstracts.getHepval %}
-                            {% set score = score|number_format(2) %}
-                            {% set score = score|colorCodingScore %}
-                            {% set imageRoute = 'images/pubmed.png' %}
-                            {% set pmid = entity2Abstract.abstracts.getPmid %}
-                            <a href="http://www.ncbi.nlm.nih.gov/pubmed/{{ pmid }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo" /></a>
-                            {{ score |raw }}.
-                            {% set text = entity2Abstract.abstracts.getText %}
-                            {% set arrayText= text | highlightEntitiesAbstracts (entity2Abstract.abstracts,entityBackup,field,whatToSearch, source, entityType, tooltipCounter) %}
-                            {% set text = arrayText[0] | raw %}
-                            {% set stringStickyTooltip = stringStickyTooltip ~ arrayText[1] %}
-                            {% set tooltipCounter = arrayText[2] %}
-                            {{ text| raw }}
-                             <small>
-                                {% set curation=entity2Abstract.getCuration %}
-                                {% if curation is empty %}
-                                    {% set curation=0 %}
-                                {% endif %}
-                                {% set curationHtml= curation | setCurationHtml(entity2Abstract.getId(), entityType, "abstract") %}
-                                <div id="free-curation-{{ entity2Abstract.getId }}">
-                                    {{ curationHtml | raw }}
-                                </div>
-                        </small>
-                        </p>
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
         {# Here we rebuild the stringStickyTooltip inside its container divs #}
         <div id="mystickytooltip" class="stickytooltip">
             <div style="padding:5px">
