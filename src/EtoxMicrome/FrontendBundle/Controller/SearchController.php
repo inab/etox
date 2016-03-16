@@ -1370,6 +1370,7 @@ Evidences found in Sentences:\n
         //$meanScore=$this->getMmmrScoreFromEntities($compound2Abstracts, $orderBy, 'mean');
         //$medianScore=$this->getMmmrScoreFromEntities($compound2Abstracts, $orderBy, 'median');
 
+
         if (count($arrayGeneIds) == 0){
             return $this->render('FrontendBundle:Default:no_results.html.twig', array(
                 'field' => $field,
@@ -2225,7 +2226,6 @@ Evidences found in Sentences:\n
 
             }
             $arrayEntityName=array_unique($arrayEntityName);//We get rid of the duplicates
-            ld($arrayEntityName);
             if($entityType=="CompoundDict" or $entityType=="CompoundMesh"){
                 //We search into Abstracts only if we are looking for Compounds
 
@@ -2280,7 +2280,6 @@ Evidences found in Sentences:\n
                         ->paginate($em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntity2DocumentFromFieldDQL($field, $entityType, $arrayEntityName, $source, $orderBy), 'documents')
                         ->getResult()
                     ;
-                    ld(count($arrayEntity2Document));
                     if($whatToSearch=="name"){
                         $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummaryFromName($entityName,"CompoundDict");
                         $allias=$em->getRepository('EtoxMicromeEntityBundle:Alias')->getAliasFromName($entityName);
