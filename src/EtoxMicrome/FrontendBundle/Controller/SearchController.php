@@ -1341,6 +1341,7 @@ Evidences found in Sentences:\n
         //The search will be performed using the gene_id. If gene_name is used, then we get its gene_id from the genedictionary table
         $arrayGeneIds=[];
         $arrayAbstracts=[];
+        $arrayNames=[];
         if ($source=="geneName"){
             $arrayGenes=$em->getRepository('EtoxMicromeEntityBundle:GeneDictionary')->findByGeneName($entityName);
             //We generate an array of geneIds that will be used as the result of the query expansion
@@ -1353,16 +1354,7 @@ Evidences found in Sentences:\n
         $arrayGeneIds=array_unique($arrayGeneIds);
         //Searching for genes can only be performed against either abstracts(any) or abstractswithcompounds(withCompounds)
 
-
         //For the $whatToSearch == "any" part, we search against abstracts table using each gene_id in $arrayGeneIds
-
-        //foreach($arrayGeneIds as $geneId){
-
-        //    $arrayGene2Abstract=$em->getRepository('EtoxMicromeEntity2AbstractBundle:Gene2Abstract')->findByGeneId($geneId);
-        //    $arrayAbstracts=array_merge($arrayGene2Abstract,$arrayAbstracts);
-        //}
-
-
 
         //$gene2Abstracts=$em->getRepository('EtoxMicromeEntity2AbstractBundle:Gene2Abstract')->getGene2AbstractFromGeneIDsDQL($arrayGeneIds, $orderBy)->getResult();
         //ld(count($gene2Abstracts));
@@ -1382,8 +1374,7 @@ Evidences found in Sentences:\n
         }else{
             //We have an arrayGeneIds and we want a list of abstracts that have those geneIds. So we generate it using getAbstractsFromGeneIds method.
             $arrayAbstracts = $em->getRepository('EtoxMicromeEntity2AbstractBundle:Gene2Abstract')->getAbstractsFromGeneIDs($arrayGeneIds, $orderBy);
-
-
+            $arrayAliases = $em->getRepository('EtoxMicromeEntity2AbstractBundle:Gene2Abstract')->getAliasesFromGeneIDs($arrayGeneIds, $orderBy);
             $arrayPaginatedAbstracts = $paginator
                 ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "abstracts")
                 ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "abstracts")
@@ -1419,6 +1410,7 @@ Evidences found in Sentences:\n
             'entityName' => $entityName,
             'entityBackup' => $entityBackup,
             'orderBy' => $orderBy,
+            'arrayAliases' => $arrayAliases,
             //'hitsShowed' => $hitsShowed,
             //'meanScore' => $meanScore,
             //'medianScore' => $medianScore,

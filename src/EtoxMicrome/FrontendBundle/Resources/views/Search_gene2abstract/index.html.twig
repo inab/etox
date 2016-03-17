@@ -13,7 +13,14 @@
 
         <div id="documentsResults">
             <a name="documents"></a>
-            <h3>Ranked sentences in Abstracts for {{foundFor}}: {{ entityBackup }}</h3>
+            <h3>Ranked sentences in Abstracts for {{source}}: {{ entityBackup }}</h3>
+                <strong><a href="#" class="toggleGeneAliases">Click to see aliases for {{ entityBackup }}: </a></strong>
+                <div id="geneAliases">
+                    {% for alias in arrayAliases %}
+                        {{ alias }},&nbsp;
+                    {% endfor %}
+                </div>
+
             <div class="btmspc-dbl">
                 <small>
                     <em>

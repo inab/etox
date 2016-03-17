@@ -352,6 +352,11 @@ mark.compound a{
     display:none;
 }
 
+#geneAliases{
+    display:none;
+    border: 1px solid #ddd;
+}
+
 table.summary a{
     text-decoration: underline !important;
 }
