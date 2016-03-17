@@ -2680,12 +2680,6 @@ Evidences found in Sentences:\n
             'rangeScore' => $rangeScore,
             ));
     }
-    public function embryotoxicityAction()
-    {
-        return $this->render('FrontendBundle:Search:hepatotoxicity.html.twig', array(
-            'searchby' => "embryotoxicity"
-            ));
-    }
 
     public function download_curated_termrelationsAction()
     {
