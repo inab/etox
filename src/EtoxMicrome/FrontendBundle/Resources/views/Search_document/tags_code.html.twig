@@ -636,9 +636,14 @@
             <form class="custom">
                 <fieldset>
                     <legend>Search:</legend>
-                        <span data-tooltip class="has-tip" title="Search in PubMed abstracts by gene name"><label for="radioSource"><input name="geneSource" type="radio" id="radioGeneSource" style="display:none;" CHECKED value="geneName"><span class="custom radio"></span>Gene Name</label></span>
-                        <span data-tooltip class="has-tip" title="Search in PubMed abstracts by Entrez Gene ID"><label for="radioSource"><input name="geneSource" type="radio" id="radioGeneSource" style="display:none;" value="geneId"><span class="custom radio"></span>Entrez Gene ID</label></span>
+                        {% if source == "geneName" %}
+                            <span data-tooltip class="has-tip" title="Search in PubMed abstracts by gene name"><label for="radioSource"><input name="geneSource" type="radio" id="radioGeneSource" style="display:none;" CHECKED value="geneName"><span class="custom radio"></span>Gene Name</label></span>
+                            <span data-tooltip class="has-tip" title="Search in PubMed abstracts by Entrez Gene ID"><label for="radioSource"><input name="geneSource" type="radio" id="radioGeneSource" style="display:none;" value="geneId"><span class="custom radio"></span>Entrez Gene ID</label></span>
+                        {% elseif source == "geneId" %}
+                            <span data-tooltip class="has-tip" title="Search in PubMed abstracts by gene name"><label for="radioSource"><input name="geneSource" type="radio" id="radioGeneSource" style="display:none;" value="geneName"><span class="custom radio"></span>Gene Name</label></span>
+                            <span data-tooltip class="has-tip" title="Search in PubMed abstracts by Entrez Gene ID"><label for="radioSource"><input name="geneSource" type="radio" id="radioGeneSource" style="display:none;" CHECKED value="geneId"><span class="custom radio"></span>Entrez Gene ID</label></span>
 
+                        {% endif %}
                 </fieldset>
             </form>
         </div>
