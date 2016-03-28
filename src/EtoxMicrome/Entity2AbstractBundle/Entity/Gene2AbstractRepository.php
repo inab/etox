@@ -99,6 +99,10 @@ class Gene2AbstractRepository extends EntityRepository
             $orderBy="ruleScore asc";
         }elseif($orderBy=="curation"){
             $orderBy="curation desc";
+        }elseif($orderBy=="toxicology"){
+            $orderBy="toxicology desc, g2a.hepval desc";
+        }elseif($orderBy=="biomarker"){
+            $orderBy="biomarker desc, g2a.hepval desc";
         }
         $sql="SELECT g2a
                 FROM EtoxMicromeEntity2AbstractBundle:Gene2Abstract g2a

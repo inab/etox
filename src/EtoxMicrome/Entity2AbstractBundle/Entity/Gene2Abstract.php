@@ -104,14 +104,14 @@ class Gene2Abstract
      *
      * @ORM\Column(name="""toxicology""", type="integer", nullable=true)
      */
-    //private $toxicology;
+    private $toxicology;
 
     /**
      * @var integer
      *
      * @ORM\Column(name="""biomarker""", type="integer", nullable=true)
      */
-    //private $biomarker;
+    private $biomarker;
 
     /**
      * @var integer
@@ -422,22 +422,22 @@ class Gene2Abstract
      * @param integer $toxicology
      * @return Gene2Abstract
      */
-    //public function setToxicology($toxicology)
-    //{
-    //    $this->toxicology = $toxicology;
+    public function setToxicology($toxicology)
+    {
+        $this->toxicology = $toxicology;
 
-    //    return $this;
-    //}
+        return $this;
+    }
 
     /**
      * Get toxicology
      *
      * @return integer
      */
-    //public function getToxicology()
-    //{
-    //    return $this->toxicology;
-    //}
+    public function getToxicology()
+    {
+        return $this->toxicology;
+    }
 
     /**
      * Set biomarker
@@ -445,22 +445,22 @@ class Gene2Abstract
      * @param integer $biomarker
      * @return Gene2Abstract
      */
-    //public function setBiomarker($biomarker)
-    //{
-    //    $this->biomarker = $biomarker;
+    public function setBiomarker($biomarker)
+    {
+        $this->biomarker = $biomarker;
 
-    //    return $this;
-    //}
+        return $this;
+    }
 
     /**
      * Get biomarker
      *
      * @return integer
      */
-    //public function getBiomarker()
-    //{
-    //    return $this->biomarker;
-    //}
+    public function getBiomarker()
+    {
+        return $this->biomarker;
+    }
 
     /**
      * Set curation
