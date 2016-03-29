@@ -28,8 +28,25 @@
                     {% set order =  orderBy | getOrderToSource %}
                     <table class="summary">
                         <tr>
-                            <td>
-                                <strong>Total of mentions displayed:</strong> {{ totalHits }}<br/>
+                            <td><strong>Total of mentions displayed:</strong> {{ totalHits }}<br/></td>
+                            <td><strong>Max. {{scoreToShow}}:</strong> {{ maxScore |number_format(2) }}</td>
+                            <td><strong>Minim. {{scoreToShow}}:</strong> {{ minScore |number_format(2) }}</td>
+                            <td><strong>{{scoreToShow}} mean:</strong> {{ meanScore | number_format(2) }}</td>
+                            <td><strong>{{scoreToShow}} median:</strong> {{ medianScore | number_format(2) }}</td>
+                        </tr>
+                        {% if entityType=="CompoundDict" %}
+                            <tr>
+                                <td colspan="5">
+                                    <span data-tooltip="stickyCytoscape">
+                                        <a href="{{ path('cytoscape', {'entityType': entityType, 'entityName': entityName}) }}" target="_blank"><strong>View Interaction Network</strong></a>
+                                    </span>
+                                    {% set tooltip="Click here to get a graph with all the relations of this entity inside Limtox" %}
+                                    {% set stringStickyTooltip = stringStickyTooltip ~ tooltip  %}
+                                </td>
+                            </tr>
+                        {% endif %}
+                        <tr>
+                            <td colspan="5">
                                 <span data-tooltip="stickyDownload">
                                     <a href="#"><strong>Download results</strong></a>
                                 </span>
@@ -53,10 +70,6 @@
                                 %}
                                 {% set stringStickyTooltip = stringStickyTooltip ~ tooltip  %}
                             </td>
-                            <td><strong>Max. {{scoreToShow}}:</strong> {{ maxScore |number_format(2) }}</td>
-                            <td><strong>Minim. {{scoreToShow}}:</strong> {{ minScore |number_format(2) }}</td>
-                            <td><strong>{{scoreToShow}} mean:</strong> {{ meanScore | number_format(2) }}</td>
-                            <td><strong>{{scoreToShow}} median:</strong> {{ medianScore | number_format(2) }}</td>
                         </tr>
                         {% if (entityType=="CompoundDict" and whatToSearch=="name") or (entityType=="CompoundDict" and whatToSearch=="id") or (entityType=="Cytochrome" and whatToSearch=="name") or (entityType=="Marker" and whatToSearch=="name") %}
                             <tr>

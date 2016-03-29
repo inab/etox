@@ -1375,7 +1375,7 @@ class Entity2DocumentRepository extends EntityRepository
     }
 
     public function createDictionaryRelationsCytoscape($entityName,$entityType){
-        $message="inside createDictionaryDocumentsCytoscape";
+        $message="inside createDictionaryRelationsCytoscape";
         $diccionarioTerms=array();
         $diccionarioMarkers=array();
         $diccionarioCytochromes=array();
