@@ -15,29 +15,48 @@
             <script>
                 var cytoscape_id = '#rand197';
 
-
                 var tool = $(cytoscape_id).cytoscape_tool({
                   knowledge_base: 'user',
                   namespace: 'Hsa/feb2014',
                   swfPath: '{{ asset('javascripts/cytoscapeweb/swf/CytoscapeWeb') }}',
-
                   entities: {},
-
+                  nodeTooltipsEnabled: true,
+                    edgeTooltipsEnabled: true,
+                    edgesMerged: false,
                   aesthetics: {
-                    "nodes":{"shape":[{"type":"mapper","feature":"entity_type","map":{"CompoundDict":"CIRCLE","Term":"HEXAGON", "Cytochrome":"SQUARE", "Marker":"TRIANGLE"}}],"borderColor":[{"type":"mapper","feature":"entity_type","map":{"Sample":"#D33682","Gene":"#B58900"}}]},
-                    "edges":{"directed":[{"type":"mapper","feature":"database","map":{"tfacts@genomics":true}}],"color":[{"type":"mapper","feature":"database","map":{"pina@genomics":"#0000FF","tfacts@genomics":"#00FFFF","undefined":"#FF00FF","/sample_genes/":"#00FFFF"}},{"type":"mapper","feature":"Effect","map":{"direct":"#FF0000","inverse":"#00FF00"}}]}
+                    "nodes":{
+                        "shape":[
+                            {"type":"mapper","feature":"entity_type","map":{"CompoundDict":"CIRCLE","Term":"HEXAGON", "Cytochrome":"SQUARE", "Marker":"TRIANGLE"}}
+                        ],
+                        "borderColor":[
+                            {"type":"mapper","feature":"entity_type","map":{"Sample":"#D33682","Gene":"#B58900"}}
+                        ]
+                    },
+                    "edges":{
+
+                    }
                   },
 
                   node_click: function(evt){
                     var target = evt.target;
                     var label = target.data.label;
                     var entity_type = target.data.entity_type;
-                    if(entity_type=="CompoundDict"){
+                    if((entity_type=="CompoundDict") || (entity_type=="Cytochrome")){
                         var url = '{{ path('cytoscape', {'entityType': 'xxx', 'entityName': 'yyy'}) }}';
                         url = url.replace('xxx',entity_type);
                         url = url.replace('yyy',label);
                         window.location = url;
                     }
+                  },
+
+                  edge_click: function(evt){
+                    var edge = evt.target;
+                    var relations= edge.data.typeOfRelations;
+                    var stringAlert="Weight: " + edge.data.weight ;
+                    if ( relations != null ){
+                        stringAlert=stringAlert + "\nType of Relations: " + "\n\t" + edge.data.typeOfRelations;
+                    }
+                    alert(stringAlert);
                   },
 
                   network: {
@@ -61,7 +80,9 @@
                             {"name":"opacity","type":"number"},
                             {"name":"color","type":"string"},
                             {"name":"width","type":"number"},
-                            {"name":"weight","type":"number"}
+                            {"name":"weight","type":"number"},
+                            {"name":"typeOfRelations","type":"string"},
+                            {"name":"tooltipText","type":"string"}
                         ]},
                     "data":{
                          "nodes":[
@@ -70,7 +91,7 @@
                             {{ stringEdges | raw }}
                         ]
                     }
-                  }
+                  },
                 });
 
                 tool.cytoscape_tool('draw');

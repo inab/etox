@@ -20,8 +20,8 @@ $.widget("rbbt.cytoscape_tool", {
 
         points: undefined,
         init: false,
-        entity_options: { 
-            organism: "Hsa/feb2014" 
+        entity_options: {
+            organism: "Hsa/feb2014"
         },
 
         // Aesthetics
@@ -30,11 +30,11 @@ $.widget("rbbt.cytoscape_tool", {
         visualStyle:{
             nodes:{
 
-                shape:{ 
-                    defaultValue: "RECTANGLE", passthroughMapper: { attrName: 'shape' } 
+                shape:{
+                    defaultValue: "RECTANGLE", passthroughMapper: { attrName: 'shape' }
                 },
 
-                size:{ 
+                size:{
                     defaultValue: 25,
                     continuousMapper: {
                         attrName: 'size',
@@ -43,7 +43,7 @@ $.widget("rbbt.cytoscape_tool", {
                     }
                 },
 
-                opacity:{ 
+                opacity:{
                     defaultValue: 0.7,
                     continuousMapper: {
                         attrName: 'opacity',
@@ -51,7 +51,7 @@ $.widget("rbbt.cytoscape_tool", {
                         maxValue: 1
                     }
                 },
-                borderWidth:{ 
+                borderWidth:{
                     defaultValue: 1,
                     continuousMapper: {
                         attrName: 'borderWidth',
@@ -60,22 +60,22 @@ $.widget("rbbt.cytoscape_tool", {
                     }
                 },
 
-                borderColor: { 
-                    defaultValue: "#555555", passthroughMapper: { attrName: 'borderColor' } 
+                borderColor: {
+                    defaultValue: "#555555", passthroughMapper: { attrName: 'borderColor' }
                 },
 
-                color: { 
-                    defaultValue: "#f5f5f5", passthroughMapper: { attrName: 'color' } 
+                color: {
+                    defaultValue: "#f5f5f5", passthroughMapper: { attrName: 'color' }
                 },
 
             },
             edges:{
 
-                weight:{ 
-                    defaultValue: 3, passthroughMapper: { attrName: 'weight' } 
+                weight:{
+                    defaultValue: 3, passthroughMapper: { attrName: 'weight' }
                 },
 
-                width:{ 
+                width:{
                     defaultValue: 3,
                     continuousMapper: {
                         attrName: 'width',
@@ -83,7 +83,7 @@ $.widget("rbbt.cytoscape_tool", {
                         maxValue: 10
                     }
                 },
-                opacity:{ 
+                opacity:{
                     defaultValue: 0.3,
                     continuousMapper: {
                         attrName: 'opacity',
@@ -91,8 +91,8 @@ $.widget("rbbt.cytoscape_tool", {
                         maxValue: 1
                     }
                 },
-                color: { 
-                    defaultValue: "#999", passthroughMapper: { attrName: 'color' } 
+                color: {
+                    defaultValue: "#999", passthroughMapper: { attrName: 'color' }
                 },
             },
         }
@@ -158,8 +158,8 @@ $.widget("rbbt.cytoscape_tool", {
     _get_network: function(databases, complete){
         var url = '/knowledge_base/network'
         var data = $.extend({}, {
-            knowledge_base: this.options.knowledge_base, 
-            entities: JSON.stringify(this.options.entities), 
+            knowledge_base: this.options.knowledge_base,
+            entities: JSON.stringify(this.options.entities),
             databases: this.options.databases,
             namespace: this.options.namespace,
             _format: 'cytoscape'
@@ -213,11 +213,11 @@ $.widget("rbbt.cytoscape_tool", {
     },
 
     _get_neighbours: function(database, entities, complete){
-        var data = $.extend({ }, 
+        var data = $.extend({ },
                             this.options.entity_options,
                             {
-                                //entities: JSON.stringify(entities), 
-                                collection: JSON.stringify(entities), 
+                                //entities: JSON.stringify(entities),
+                                collection: JSON.stringify(entities),
                                 namespace: this.options.namespace,
                                 _format: 'json'
                             })
@@ -298,15 +298,15 @@ $.widget("rbbt.cytoscape_tool", {
     //{{{ ASCETICS
     _elem_feature: function(elem, feature){
 
-        if(undefined === feature){ 
+        if(undefined === feature){
             return elem.data.id
         }
 
         if(typeof feature == 'string' ){
-            if (undefined !== elem.data[feature]){ 
-                return elem.data[feature]; 
+            if (undefined !== elem.data[feature]){
+                return elem.data[feature];
             }
-            if (null !== elem.data.info && undefined !== elem.data.info && undefined !== elem.data.info[feature]){ 
+            if (null !== elem.data.info && undefined !== elem.data.info && undefined !== elem.data.info[feature]){
                 return elem.data.info[feature];
             }
             return undefined

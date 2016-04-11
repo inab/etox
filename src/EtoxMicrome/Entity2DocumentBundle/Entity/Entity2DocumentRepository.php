@@ -51,6 +51,19 @@ class Entity2DocumentRepository extends EntityRepository
         return $orderBy;
     }
 
+    public function findMarker2DocumentFromDocumentId($documentId)
+    {
+        $em = $this->getEntityManager();
+        $consulta = $em->createQuery('
+            SELECT e2d
+            FROM EtoxMicromeEntity2DocumentBundle:Entity2Document e2d
+            WHERE e2d.document = :documentId
+            AND e2d.qualifier= \'Marker\'
+        ');
+        $consulta->setParameter('documentId', $documentId);
+        return $consulta->execute();
+    }
+
     public function getEntity2DocumentFromField($field, $typeOfEntity, $arrayEntityName, $source, $orderBy)
     {
         return $this->getEntity2DocumentFromFieldDQL($field, $typeOfEntity, $arrayEntityName, $source, $orderBy)->getResult();
@@ -991,7 +1004,7 @@ class Entity2DocumentRepository extends EntityRepository
                         $arrayCytochromesSortedByRanking=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Specie2Document')->getBetterRanked($arrayWithCytochromesCoocurring, "all");
                     }else{//If there are no cytochromes co-ocurring, we add a Warning and check ranking for all of the cytochromes
                         $warning=true;
-                        $arrayCytochromesSortedByRanking=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Specie2Document')->getBetterRanked($arraycytochromes, "all");
+                        $arrayCytochromesSortedByRanking=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Specie2Document')->getBetterRanked($arrayCytochromes, "all");
                     }
                     $firstHitRankingOutput=$arrayCytochromesSortedByRanking[0];
                 }
@@ -1381,106 +1394,200 @@ class Entity2DocumentRepository extends EntityRepository
         $diccionarioCytochromes=array();
         $diccionarioCompounds=array();
         $diccionarioRelations=array();
+        $dictionaryTypeRelations=array();
 
-        //We start loading the terms relations
-        $sql="SELECT c2t2d
-            FROM EtoxMicromeEntity2DocumentBundle:Compound2Term2Document c2t2d
-            WHERE c2t2d.compoundName = (:entityName)
-            ORDER BY c2t2d.relationScore
-            ";
-
-        $query = $this->_em->createQuery($sql);
-        $query->setParameter("entityName", $entityName);
-        $query->setMaxResults(15);
-        $arrayCompound2Term2Document= $query->getResult();
-        foreach($arrayCompound2Term2Document as $compound2Term2Document){
-            $term=$compound2Term2Document->getTerm();
-            //we search for the term inside diccionarioTerms
-            if (array_key_exists($term, $diccionarioTerms)){
-                //If the term already exists in the diccionarioTerms we update the counter of documents supporting the relation
-                $diccionarioTerms[$term]=$diccionarioTerms[$term] + 1;
-            }else{
-                //If that term doesnt exist yet, we create a new entry inside diccionarioTerms
-                $diccionarioTerms[$term]=1;
-            }
-        }
-        $diccionarioRelations["terms"]=$diccionarioTerms;
-
-        //We load now the cytochromes relations
-        $sql="SELECT c2c2d
-            FROM EtoxMicromeEntity2DocumentBundle:Compound2Cyp2Document c2c2d
-            WHERE c2c2d.compoundName = (:entityName)
-            ORDER BY c2c2d.sumScore
-            ";
-
-        $query = $this->_em->createQuery($sql);
-        $query->setParameter("entityName", $entityName);
-        $query->setMaxResults(15);
-        $arrayCompound2Cyp2Document= $query->getResult();
-        foreach($arrayCompound2Cyp2Document as $compound2Cyp2Document){
-            $cyp=$compound2Cyp2Document->getCypsMention();
-            //we search for the cyp inside diccionarioCytochromes
-            if (array_key_exists($cyp, $diccionarioCytochromes)){
-                //If the cyp already exists in the diccionarioCytochromes we update the counter of documents supporting the relation
-                $diccionarioCytochromes[$cyp]=$diccionarioCytochromes[$cyp] + 1;
-            }else{
-                //If that cyp doesnt exist yet, we create a new entry inside diccionarioCytochromes
-                $diccionarioCytochromes[$cyp]=1;
-            }
-        }
-        $diccionarioRelations["cyps"]=$diccionarioCytochromes;
-
-        //We do the equivalent for the Markers
-        $sql="SELECT c2m2d
-            FROM EtoxMicromeEntity2DocumentBundle:Compound2Marker2Document c2m2d
-            WHERE c2m2d.compoundName = (:entityName)
-            ORDER BY c2m2d.relationScore
-            ";
-
-        $query = $this->_em->createQuery($sql);
-        $query->setParameter("entityName", $entityName);
-        $query->setMaxResults(15);
-        $arrayCompound2Marker2Document= $query->getResult();
-        foreach($arrayCompound2Marker2Document as $compound2Marker2Document){
-            $marker=$compound2Marker2Document->getLiverMarkerName();
-            if (array_key_exists($marker, $diccionarioMarkers)){
-                $diccionarioMarkers[$marker]=$diccionarioMarkers[$marker] + 1;
-            }else{
-                $diccionarioMarkers[$marker]=1;
-            }
-        }
-        $diccionarioRelations["markers"]=$diccionarioMarkers;
-
-        //We do the equivalent for the Compounds based in their Tanimoto coefficient for structural similarity
-        //First we need to get the id from the compoundName($entityName)
         $em = $this->getEntityManager();
-        $compound=$em->getRepository('EtoxMicromeEntityBundle:CompoundDict')->findOneByName($entityName);
-        $idCompound=$compound->getId();
-        $sql="SELECT tv
-            FROM EtoxMicromeEntityBundle:TanimotoValues tv
-            WHERE tv.compound1 = :idCompound
-            OR tv.compound2 = :idCompound
-            ORDER BY tv.tanimoto
-            ";
-        $query = $this->_em->createQuery($sql);
-        $query->setParameter("idCompound", $idCompound);
-        $query->setMaxResults(15);
-        $arrayTanimotoValues= $query->getResult();
-        foreach($arrayTanimotoValues as $tanimotoValue){
-            $compoundName1=$tanimotoValue->getCompound1()->getName();
-            $compoundName2=$tanimotoValue->getCompound2()->getName();
-            $tanimotoCoeff=$tanimotoValue->getTanimoto();
-            //We have to choose the compoundName which is not our entityName, that will be the compound structurally related
-            if ($compoundName1 == $entityName){
-                $compoundName = $compoundName2;
-            }else{
-                $compoundName = $compoundName1;
+
+        if($entityType=="Cytochrome"){
+            //We have to see all interactions between this cytochrome and the rest of the entities if possible.
+            //We start loading relations with compounds and keep the documents in which they are present. Then searching for entities inside those documents, we can load the other relations. So we'll use the arrayDocuments to load the document_id
+
+            $arrayDocuments=array();
+            $arrayRelations=array();
+
+            $sql="SELECT c2c2d
+                FROM EtoxMicromeEntity2DocumentBundle:Compound2Cyp2Document c2c2d
+                WHERE c2c2d.cypsMention = (:entityName)
+                ORDER BY c2c2d.sumScore DESC
+                ";
+
+            $query = $this->_em->createQuery($sql);
+            $query->setParameter("entityName", $entityName);
+            $query->setMaxResults(15);
+            $arrayCompound2Cyp2Document= $query->getResult();
+
+            foreach($arrayCompound2Cyp2Document as $compound2Cyp2Document){
+                $compound=$compound2Cyp2Document->getCompoundName();
+                $relationType=$compound2Term2Document->getPatternRelation();
+                //we search for the compound inside diccionarioCytochromes
+                if (array_key_exists($compound, $diccionarioCompounds)){
+                    //If the compound already exists in the diccionarioCompounds we update the counter of documents supporting the relation
+                    $diccionarioCompounds[$compound]=$diccionarioCompounds[$compound] + 1;
+                    //There should be $dictionaryTypeRelationsCyp related we update it
+                    $dictionaryTmp=$dictionaryTypeRelationsCompound[$compound];
+                    if(array_key_exists($relationType, $dictionaryTmp)){
+                        $dictionaryTmp[$relationType]=$dictionaryTmp[$relationType]+1;
+                    }else{
+                        //Create a new one
+                        $dictionaryTmp[$relationType]=1;
+                    }
+                    $dictionaryTypeRelationsCompound[$compound]=$dictionaryTmp;
+                }else{
+                    //If that compound doesnt exist yet, we create a new entry inside diccionarioCytochromes
+                    $diccionarioCompounds[$compound]=1;
+                    //We also save the type of the relation established between the term and the compound:
+                    $dictionaryTypeRelationsCompound[$compound][$relationType]=1;
+                }
+                $documentId=$compound2Cyp2Document->getDocument()->getId();
+                array_push($arrayDocuments, $documentId);
             }
-            $diccionarioCompounds[$compoundName]=$tanimotoCoeff;
+            $diccionarioRelations["compounds"]=$diccionarioCompounds;
+            $dictionaryTypeRelations["compounds"]=$dictionaryTypeRelationsCompound;
 
+        }elseif($entityType=="CompoundDict"){
+            //We start loading the terms relations
+            $sql="SELECT c2t2d
+                FROM EtoxMicromeEntity2DocumentBundle:Compound2Term2Document c2t2d
+                WHERE c2t2d.compoundName = (:entityName)
+                ORDER BY c2t2d.relationScore DESC
+                ";
+
+            $query = $this->_em->createQuery($sql);
+            $query->setParameter("entityName", $entityName);
+            $query->setMaxResults(50);
+            $arrayCompound2Term2Document= $query->getResult();
+
+            foreach($arrayCompound2Term2Document as $compound2Term2Document){
+                $term=$compound2Term2Document->getTerm();
+                $relationType=$compound2Term2Document->getRelationType();
+                //we search for the term inside diccionarioTerms
+                if (array_key_exists($term, $diccionarioTerms)){
+                    //If the term already exists in the diccionarioTerms we update the counter of documents supporting the relation
+                    $diccionarioTerms[$term]=$diccionarioTerms[$term] + 1;
+                    //There should be $dictionaryTypeRelationsCyp related we update it
+                    $dictionaryTmp=$dictionaryTypeRelationsTerm[$term];
+                    if(array_key_exists($relationType, $dictionaryTmp)){
+                        $dictionaryTmp[$relationType]=$dictionaryTmp[$relationType]+1;
+                    }else{
+                        //Create a new one
+                        $dictionaryTmp[$relationType]=1;
+                    }
+                    $dictionaryTypeRelationsTerm[$term]=$dictionaryTmp;
+                }else{
+                    //If that term doesnt exist yet, we create a new entry inside diccionarioTerms
+                    $diccionarioTerms[$term]=1;
+                    //We also save the type of the relation established between the term and the compound:
+                    $dictionaryTypeRelationsTerm[$term][$relationType]=1;
+                }
+            }
+            $diccionarioRelations["terms"]=$diccionarioTerms;
+            $dictionaryTypeRelations["terms"]=$dictionaryTypeRelationsTerm;
+
+            //We load now the cytochromes relations
+            $sql="SELECT c2c2d
+                FROM EtoxMicromeEntity2DocumentBundle:Compound2Cyp2Document c2c2d
+                WHERE c2c2d.compoundName = (:entityName)
+                ORDER BY c2c2d.sumScore DESC
+                ";
+
+            $query = $this->_em->createQuery($sql);
+            $query->setParameter("entityName", $entityName);
+            $query->setMaxResults(50);
+            $arrayCompound2Cyp2Document= $query->getResult();
+            foreach($arrayCompound2Cyp2Document as $compound2Cyp2Document){
+                $cyp=$compound2Cyp2Document->getCypsMention();
+                $relationType=$compound2Cyp2Document->getPatternRelation();
+                //we search for the cyp inside diccionarioCytochromes
+                if (array_key_exists($cyp, $diccionarioCytochromes)){
+                    //If the cyp already exists in the diccionarioCytochromes we update the counter of documents supporting the relation
+                    $diccionarioCytochromes[$cyp]=$diccionarioCytochromes[$cyp] + 1;
+                    //There should be $dictionaryTypeRelationsCyp related we update it
+                    $dictionaryTmp=$dictionaryTypeRelationsCyp[$cyp];
+                    if(array_key_exists($relationType, $dictionaryTmp)){
+                        $dictionaryTmp[$relationType]=$dictionaryTmp[$relationType]+1;
+                    }else{
+                        //Create a new one
+                        $dictionaryTmp[$relationType]=1;
+                    }
+                    $dictionaryTypeRelationsCyp[$cyp]=$dictionaryTmp;
+                }else{
+                    //If that cyp doesnt exist yet, we create a new entry inside diccionarioCytochromes
+                    $diccionarioCytochromes[$cyp]=1;
+                    //We also save the type of the relation established between the cyp and the compound:
+                    $dictionaryTypeRelationsCyp[$cyp][$relationType]=1;
+                }
+            }
+            $diccionarioRelations["cyps"]=$diccionarioCytochromes;
+            $dictionaryTypeRelations["cyps"]=$dictionaryTypeRelationsCyp;
+
+            //We do the equivalent for the Markers
+            $sql="SELECT c2m2d
+                FROM EtoxMicromeEntity2DocumentBundle:Compound2Marker2Document c2m2d
+                WHERE c2m2d.compoundName = (:entityName)
+                ORDER BY c2m2d.relationScore DESC
+                ";
+
+            $query = $this->_em->createQuery($sql);
+            $query->setParameter("entityName", $entityName);
+            $query->setMaxResults(50);
+            $arrayCompound2Marker2Document= $query->getResult();
+            foreach($arrayCompound2Marker2Document as $compound2Marker2Document){
+                $marker=$compound2Marker2Document->getLiverMarkerName();
+                $relationType=$compound2Marker2Document->getRelationType();
+                if (array_key_exists($marker, $diccionarioMarkers)){
+                    $diccionarioMarkers[$marker]=$diccionarioMarkers[$marker] + 1;
+                    //There should be $dictionaryTypeRelationsMarker related we update it
+                    $dictionaryTmp=$dictionaryTypeRelationsMarker[$marker];
+                    if(array_key_exists($relationType, $dictionaryTmp)){
+                        $dictionaryTmp[$relationType]=$dictionaryTmp[$relationType]+1;
+                    }else{
+                        //Create a new one
+                        $dictionaryTmp[$relationType]=1;
+                    }
+                    $dictionaryTypeRelationsMarker[$marker]=$dictionaryTmp;
+                }else{
+                    $diccionarioMarkers[$marker]=1;
+                    //We also save the type of the relation established between the marker and the compound:
+                    $dictionaryTypeRelationsMarker[$marker][$relationType]=1;
+                }
+            }
+            $diccionarioRelations["markers"]=$diccionarioMarkers;
+            $dictionaryTypeRelations["markers"]=$dictionaryTypeRelationsMarker;
+
+            //We do the equivalent for the Compounds based in their Tanimoto coefficient for structural similarity
+            //First we need to get the id from the compoundName($entityName)
+            $compound=$em->getRepository('EtoxMicromeEntityBundle:CompoundDict')->findOneByName($entityName);
+            $idCompound=$compound->getId();
+            $sql="SELECT tv
+                FROM EtoxMicromeEntityBundle:TanimotoValues tv
+                WHERE tv.compound1 = :idCompound
+                OR tv.compound2 = :idCompound
+                ORDER BY tv.tanimoto DESC
+                ";
+            $query = $this->_em->createQuery($sql);
+            $query->setParameter("idCompound", $idCompound);
+            $query->setMaxResults(50);
+            $arrayTanimotoValues= $query->getResult();
+            foreach($arrayTanimotoValues as $tanimotoValue){
+                $compoundName1=$tanimotoValue->getCompound1()->getName();
+                $compoundName2=$tanimotoValue->getCompound2()->getName();
+                $tanimotoCoeff=$tanimotoValue->getTanimoto();
+                //We have to choose the compoundName which is not our entityName, that will be the compound structurally related
+                if ($compoundName1 == $entityName){
+                    $compoundName = $compoundName2;
+                }else{
+                    $compoundName = $compoundName1;
+                }
+                if($compoundName1 != $compoundName2){//To avoid loop in graph. A compound always have best tanimoto with itself!
+                    $diccionarioCompounds[$compoundName]=$tanimotoCoeff;
+                }
+
+
+            }
+            $diccionarioRelations["compounds"]=$diccionarioCompounds;
         }
-        $diccionarioRelations["compounds"]=$diccionarioCompounds;
 
-        return ($diccionarioRelations);
+        $arrayReturn=array($diccionarioRelations,$dictionaryTypeRelations);
+        return ($arrayReturn);
     }
 }

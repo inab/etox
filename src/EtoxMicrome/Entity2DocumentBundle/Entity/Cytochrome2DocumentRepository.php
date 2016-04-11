@@ -117,6 +117,18 @@ class Cytochrome2DocumentRepository extends EntityRepository
         return $consulta->execute();
     }
 
+    public function findCytochrome2DocumentFromDocumentId($documentId)
+    {
+        $em = $this->getEntityManager();
+        $consulta = $em->createQuery('
+            SELECT c2d
+            FROM EtoxMicromeEntity2DocumentBundle:Cytochrome2Document c2d
+            WHERE c2d.document = :documentId
+        ');
+        $consulta->setParameter('documentId', $documentId);
+        return $consulta->execute();
+    }
+
     public function updateCytochrome2DocumentCuration($cytochrome2DocumentId, $action)
     {
         /*Here we get the cytochrome2Document and the action to take for the curation value.

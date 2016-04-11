@@ -71,4 +71,50 @@ class Compound2Cyp2DocumentRepository extends EntityRepository
         return $count;
 
     }
+
+    public function findCompounds2Cyp2DocumentFromCyp($cyp, $dictionaryCompounds)
+    {
+        //Attention! This function returns 2 arrays. First with keys = compoundName and values= number of times (weight) of this relation
+        //Second array have a dictionary with values = compoundName and values = dictionaryRelations
+        //dictionaryRelations is an asociative array with keys = patternRelation and values = number of times that this type of relation has been established between this compoundName and the Marker
+        $em = $this->getEntityManager();
+        $consulta = $em->createQuery('
+            SELECT c2c2d
+            FROM EtoxMicromeEntity2DocumentBundle:Compound2Cyp2Document c2c2d
+            WHERE c2c2d.cypsMention = :cyp
+        ');
+        $consulta->setParameter('cyp', $cyp);
+        $arrayCompounds2Cyp2Documents = $consulta->execute();
+        //We search the arrayCompounds2Cyp2Documents and only return the components that are present in the $dictionaryCompounds argument (compounds that already are part of the interaction network)
+        $tmpArray=array();//Associative array with the keys="compoundName" and the values="number of times present"
+        $tmpArrayTypeRelations=array();//Associative array with the keys="compoundName" and the values=dictionaryRelations
+        foreach($arrayCompounds2Cyp2Documents as $compound2Cyp2Document){
+            $compoundName=$compound2Cyp2Document->getCompoundName();
+            $patternRelation=$compound2Cyp2Document->getPatternRelation();
+            if(array_key_exists($compoundName, $dictionaryCompounds)){
+                if (array_key_exists($compoundName, $tmpArray)){
+                    $tmpArray[$compoundName]=$tmpArray[$compoundName]+1;
+                    //If there is already a tmpArray with this compoundName, there should be already a $tmpArrayTypeRelations that we should update with this new or repeated patternRelation
+                    $dictionaryRelations=$tmpArrayTypeRelations[$compoundName];
+                    if (array_key_exists($patternRelation, $dictionaryRelations)){
+                        //We update the entry
+                        $dictionaryRelations[$patternRelation]=$dictionaryRelations[$patternRelation]+1;
+                        $tmpArrayTypeRelations[$compoundName]=$dictionaryRelations;
+                    }else{
+                        //We create a new entry
+                        $dictionaryRelations=$tmpArrayTypeRelations[$compoundName];
+                        $dictionaryRelations[$patternRelation]=1;
+                        $tmpArrayTypeRelations[$compoundName]=$dictionaryRelations;
+                    }
+                }else{
+                    $dictionaryRelations=array();
+                    $tmpArray[$compoundName]=1;
+                    $dictionaryRelations[$patternRelation]=1;
+                    $tmpArrayTypeRelations[$compoundName]=$dictionaryRelations;
+                }
+            }
+        }
+        $returnArray=array($tmpArray,$tmpArrayTypeRelations);
+        return ($returnArray);
+    }
 }

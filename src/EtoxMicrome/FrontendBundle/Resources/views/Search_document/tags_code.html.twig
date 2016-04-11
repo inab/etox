@@ -46,7 +46,6 @@
     {% if genes is not defined %}
         {% set genes = default_gene %}
     {% endif %}
-
   {% if entityType=="keyword" %}
     <dd class="active"><a href="#keywords" name="keyword"><span data-tooltip class="has-tip" title="Free text search for Hepatotoxicity">Keywords</span></a></dd>
   {% else %}
@@ -394,7 +393,7 @@
                 <fieldset>
                     <legend>Source:</legend>
                     {% if source is defined %}
-                        {% if source not in ["pubmed","fulltext","nda","epar"] %}
+                        {% if source not in ["all","pubmed","fulltext","nda","epar"] %}
                             {% set cytochromeSource = default_source %}
                         {% else %}
                             {% set cytochromeSource = source %}
@@ -493,7 +492,7 @@
                 <fieldset>
                     <legend>Source:</legend>
                     {% if source is defined %}
-                        {% if source not in ["pubmed","fulltext","nda","epar"] %}
+                        {% if source not in ["all","pubmed","fulltext","nda","epar"] %}
                             {% set markerSource = default_source %}
                         {% else %}
                             {% set markerSource = source %}
@@ -639,14 +638,16 @@
                         {% if source is not defined %}
                             {% set source="geneName" %}
                         {% endif %}
-                            {% if source == "geneName" %}
-                                <span data-tooltip class="has-tip" title="Search in PubMed abstracts by gene name"><label for="radioSource"><input name="geneSource" type="radio" id="radioGeneSource" style="display:none;" CHECKED value="geneName"><span class="custom radio"></span>Gene Name</label></span>
-                                <span data-tooltip class="has-tip" title="Search in PubMed abstracts by Entrez Gene ID"><label for="radioSource"><input name="geneSource" type="radio" id="radioGeneSource" style="display:none;" value="geneId"><span class="custom radio"></span>Entrez Gene ID</label></span>
-                            {% elseif source == "geneId" %}
-                                <span data-tooltip class="has-tip" title="Search in PubMed abstracts by gene name"><label for="radioSource"><input name="geneSource" type="radio" id="radioGeneSource" style="display:none;" value="geneName"><span class="custom radio"></span>Gene Name</label></span>
-                                <span data-tooltip class="has-tip" title="Search in PubMed abstracts by Entrez Gene ID"><label for="radioSource"><input name="geneSource" type="radio" id="radioGeneSource" style="display:none;" CHECKED value="geneId"><span class="custom radio"></span>Entrez Gene ID</label></span>
-
-                            {% endif %}
+                        {% if source == "geneName" %}
+                            <span data-tooltip class="has-tip" title="Search in PubMed abstracts by gene name"><label for="radioSource"><input name="geneSource" type="radio" id="radioGeneSource" style="display:none;" CHECKED value="geneName"><span class="custom radio"></span>Gene Name</label></span>
+                            <span data-tooltip class="has-tip" title="Search in PubMed abstracts by Entrez Gene ID"><label for="radioSource"><input name="geneSource" type="radio" id="radioGeneSource" style="display:none;" value="geneId"><span class="custom radio"></span>Entrez Gene ID</label></span>
+                        {% elseif source == "geneId" %}
+                            <span data-tooltip class="has-tip" title="Search in PubMed abstracts by gene name"><label for="radioSource"><input name="geneSource" type="radio" id="radioGeneSource" style="display:none;" value="geneName"><span class="custom radio"></span>Gene Name</label></span>
+                            <span data-tooltip class="has-tip" title="Search in PubMed abstracts by Entrez Gene ID"><label for="radioSource"><input name="geneSource" type="radio" id="radioGeneSource" style="display:none;" CHECKED value="geneId"><span class="custom radio"></span>Entrez Gene ID</label></span>
+                        {% else %}
+                            <span data-tooltip class="has-tip" title="Search in PubMed abstracts by gene name"><label for="radioSource"><input name="geneSource" type="radio" id="radioGeneSource" style="display:none;" CHECKED value="geneName"><span class="custom radio"></span>Gene Name</label></span>
+                            <span data-tooltip class="has-tip" title="Search in PubMed abstracts by Entrez Gene ID"><label for="radioSource"><input name="geneSource" type="radio" id="radioGeneSource" style="display:none;" value="geneId"><span class="custom radio"></span>Entrez Gene ID</label></span>
+                        {% endif %}
                 </fieldset>
             </form>
         </div>

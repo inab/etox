@@ -72,4 +72,50 @@ class Compound2Marker2DocumentRepository extends EntityRepository
         return $count;
 
     }
+
+    public function findCompounds2Marker2DocumentFromMarker($marker, $dictionaryCompounds)
+    {
+        //Attention! This function returns 2 arrays. First with keys = compoundName and values= number of times (weight) of this relation
+        //Second array have a dictionary with values = compoundName and values = dictionaryRelations
+        //dictionaryRelations is an asociative array with keys = typeRelation and values = number of times that this type of relation has been established between this compoundName and the Marker
+        $em = $this->getEntityManager();
+        $consulta = $em->createQuery('
+            SELECT c2m2d
+            FROM EtoxMicromeEntity2DocumentBundle:Compound2Marker2Document c2m2d
+            WHERE c2m2d.liverMarkerName = :marker
+        ');
+        $consulta->setParameter('marker', $marker);
+        $arrayCompounds2Marker2Documents = $consulta->execute();
+        //We search the arrayCompounds2Marker2Documents and only return the components that are present in the $dictionaryCompounds argument (compounds that already are part of the interaction network)
+        $tmpArray=array();//Associative array with the keys="compoundName" and the values="number of times present"
+        $tmpArrayTypeRelations=array();//Associative array with the keys="compoundName" and the values=dictionaryRelations
+        foreach($arrayCompounds2Marker2Documents as $compound2Marker2Document){
+            $compoundName=$compound2Marker2Document->getCompoundName();
+            $relationType=$compound2Marker2Document->getRelationType();
+            if(array_key_exists($compoundName, $dictionaryCompounds)){
+                if (array_key_exists($compoundName, $tmpArray)){
+                    $tmpArray[$compoundName]=$tmpArray[$compoundName]+1;
+                    //If there is already a tmpArray with this compoundName, there should be already a $tmpArrayTypeRelations that we should update with this new or repeated relationType
+                    $dictionaryRelations=$tmpArrayTypeRelations[$compoundName];
+                    if (array_key_exists($relationType, $dictionaryRelations)){
+                        //We update the entry
+                        $dictionaryRelations[$relationType]=$dictionaryRelations[$relationType]+1;
+                        $tmpArrayTypeRelations[$compoundName]=$dictionaryRelations;
+                    }else{
+                        //We create a new entry
+                        $dictionaryRelations=$tmpArrayTypeRelations[$compoundName];
+                        $dictionaryRelations[$relationType]=1;
+                        $tmpArrayTypeRelations[$compoundName]=$dictionaryRelations;
+                    }
+                }else{
+                    $dictionaryRelations=array();
+                    $tmpArray[$compoundName]=1;
+                    $dictionaryRelations[$relationType]=1;
+                    $tmpArrayTypeRelations[$compoundName]=$dictionaryRelations;
+                }
+            }
+        }
+        $returnArray=array($tmpArray,$tmpArrayTypeRelations);
+        return ($returnArray);
+    }
 }
