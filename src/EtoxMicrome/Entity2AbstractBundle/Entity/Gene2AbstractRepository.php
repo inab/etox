@@ -81,6 +81,23 @@ class Gene2AbstractRepository extends EntityRepository
 
     }
 
+    public function findGene2AbstractFromAbstract($abstract)
+    {//("hepatotoxicity","CompoundDict",arrayEntityId)
+        $message="inside getGene2AbstractFromGeneIDsDQL";
+        $abstract_id=$abstract->getId();
+        $sql="SELECT g2a
+                FROM EtoxMicromeEntity2AbstractBundle:Gene2Abstract g2a
+                WHERE g2a.abstracts = :abstract_id
+                ";
+
+        $query = $this->_em->createQuery($sql);
+        $query->setParameter("abstract_id", $abstract_id);
+
+        $query->setMaxResults(10000);
+        return $query->execute();
+
+    }
+
     public function getAbstractsFromGeneIDs($arrayGeneIds, $orderBy)
     {//("hepatotoxicity","CompoundDict",arrayEntityId)
         $message="inside getAbstractsFromGeneIDs";
@@ -170,5 +187,44 @@ class Gene2AbstractRepository extends EntityRepository
         }
         //We return an array of abstracts without duplicates that contain genes
         return $arrayNames;
+    }
+
+    public function getGeneSummary($gene2AbstractId){
+        $message="Inside getGeneSummary";
+        $em = $this->getEntityManager();
+        $dictionary=array();
+        $stringOutput="";
+
+        $gene2Abstract=$em->getRepository('EtoxMicromeEntity2AbstractBundle:gene2Abstract')->findOneById($gene2AbstractId);
+        $nameGene=$gene2Abstract->getGeneName();
+        $entity=$em->getRepository("EtoxMicromeEntityBundle:GeneDictionary")->findOneByGeneName($nameGene);
+        if($entity==null){
+            $stringOutput="";
+            return $stringOutput;
+        }
+        //Once we have the entity itself we have to create a dictionary to save with key=field, value=field_value which can be processed to create the string to the mouseover
+
+        $geneId=$entity->getGeneId();
+        if($geneId!=""){
+            $dictionary["geneId"]="<a href='http://www.ncbi.nlm.nih.gov/gene/$geneId' target='_blank'>$geneId</a> ";
+        }
+
+        $name=$entity->getGeneName();
+        if($name!=""){
+            $dictionary["name"]="<a href='http://www.ncbi.nlm.nih.gov/gene?term=$geneId' target='_blank'>$name</a> ";
+        }
+
+
+        $taxId=$entity->getTaxId();
+        if($taxId!=""){
+            $dictionary["taxId"]="<a href='https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=$taxId' target='_blank'>$taxId</a> ";
+        }
+
+        foreach($dictionary as $key => $value){
+            if ($value!=""){
+                $stringOutput=$stringOutput."$key: $value<br/>";
+            }
+        }
+        return ($stringOutput);
     }
 }

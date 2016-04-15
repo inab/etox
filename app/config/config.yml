@@ -52,6 +52,8 @@ twig:
         mouseover_pattern: "Sort by pattern score. Number of adverse hepatobiliary event text patterns detected."
         mouseover_term: "Sort by term score. Number of adverse hepatobiliary event terms/phrases detected."
         mouseover_rule: "Sort by rule score.  Scores of 0.01 correspond to sentences that only mention a term or phrase related to the hepatobiliary system. Scores > 0.01 correspond to sentences that also contain adverse, toxic or disease events. The rule score is a heuristic score that takes into account: (1) the number of co-occurrences between hepatobiliary terms and adverse effect terms in a sentences, (2) their respective relative order within the sentence and (3) their relative distance measured by the number of word tokens between them."
+        mouseover_toxicology: ""
+        mouseover_biomarker: ""
         mouseover_nephro: "Sort by nephrotoxicity score. Binary linear kernel SVM classifier score result (SVMLight).Features: word unigram, stop word filter, balanced training set. The higher the more related to the topic. If the output of the scoring function is positive then the text was classified as relevant for adverse nephrologic events, while if it has a negative score it was classified as non-relevant. See: http://svmlight.joachims.org"
         mouseover_cardio: "Sort by cardiotoxicity score. Binary linear kernel SVM classifier score result (SVMLight).Features: word unigram, stop word filter, balanced training set. The higher the more related to the topic. If the output of the scoring function is positive then the text was classified as relevant for adverse cardio events, while if it has a negative score it was classified as non-relevant. See: http://svmlight.joachims.org"
         mouseover_thyro: "Sort by thyrotoxicity score. Binary linear kernel SVM classifier score result (SVMLight).Features: word unigram, stop word filter, balanced training set. The higher the more related to the topic. If the output of the scoring function is positive then the text was classified as relevant for adverse thyroid events, while if it has a negative score it was classified as non-relevant. See: http://svmlight.joachims.org"
@@ -159,6 +161,8 @@ fos_elastica:
                         hepTermNormScore: { type: float }
                         hepTermVarScore: { type: float }
                         svmConfidence: { type: float }
+                        toxicology: { type: float }
+                        biomarker: { type: float }
                     persistence:
                         driver: orm
                         model: EtoxMicrome\DocumentBundle\Entity\Abstracts

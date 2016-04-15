@@ -1352,6 +1352,7 @@ Evidences found in Sentences:\n
             array_push($arrayGeneIds, $entityName);
         }
         $arrayGeneIds=array_unique($arrayGeneIds);
+        //ld($arrayGeneIds);
         //Searching for genes can only be performed against either abstracts(any) or abstractswithcompounds(withCompounds)
 
         //For the $whatToSearch == "any" part, we search against abstracts table using each gene_id in $arrayGeneIds
@@ -1370,7 +1371,6 @@ Evidences found in Sentences:\n
                 'entity' => $entityBackup,
                 'entityName' => $entityName,
             ));
-
         }else{
             //We have an arrayGeneIds and we want a list of abstracts that have those geneIds. So we generate it using getAbstractsFromGeneIds method.
             $arrayAbstracts = $em->getRepository('EtoxMicromeEntity2AbstractBundle:Gene2Abstract')->getAbstractsFromGeneIDs($arrayGeneIds, $orderBy);
@@ -2658,7 +2658,6 @@ Evidences found in Sentences:\n
 
 
         }
-
         //$paginator->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'));
         //$paginator->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'));
         $entityName=$keyword;

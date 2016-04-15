@@ -98,7 +98,7 @@
                                 {{ biomarker|raw }}
                             </td>
                             {% set text=abstract.getText %}
-                            {% set arrayText= text | highlightEntitiesAbstracts (abstract,entityBackup,"hepatotoxicity",whatToSearch, source, "gene", tooltipCounter) %}
+                            {% set arrayText= text | highlightGenesAbstracts (abstract,entityBackup,"hepatotoxicity",whatToSearch, source, "gene", tooltipCounter, orderBy) %}
                             {% set text = arrayText[0] | raw %}
                             {% set stringStickyTooltip = stringStickyTooltip ~ arrayText[1] %}
                             {% set tooltipCounter = arrayText[2] %}

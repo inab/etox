@@ -423,6 +423,14 @@
                             <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityBackup, 'orderBy': 'rule'}) }}"  {% if orderBy == "rule"%} class="active"{% endif %}
                             ><span data-tooltip class="has-tip" title="{{ mouseover_rule}}">Rule</span></a>
                         </th>
+                        <th>
+                            <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityBackup, 'orderBy': 'toxicology'}) }}"  {% if orderBy == "toxicology"%} class="active"{% endif %}
+                            ><span data-tooltip class="has-tip" title="{{ mouseover_toxicology}}">Toxicology</span></a>
+                        </th>
+                        <th>
+                            <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityBackup, 'orderBy': 'biomarker'}) }}"  {% if orderBy == "biomarker"%} class="active"{% endif %}
+                            ><span data-tooltip class="has-tip" title="{{ mouseover_biomarker}}">Biomarker</span></a>
+                        </th>
                         <th>Sentence</th>
                         <th><span data-tooltip class="has-tip" title="{{ mouseover_curation}}">Curation</span></th>
                     </thead>
@@ -450,6 +458,12 @@
                                 {% set svmConfidence = entity2Abstract.abstracts.getSvmConfidence %}
                                 {% set svmConfidence = svmConfidence|number_format(3) %}
                                 {% set svmConfidence = svmConfidence|colorCodingScore %}
+                                {% set toxicology = entity2Abstract.abstracts.getToxicology %}
+                                {% set toxicology = toxicology|number_format(3) %}
+                                {% set toxicology = toxicology|colorCodingScore %}
+                                {% set biomarker = entity2Abstract.abstracts.getBiomarker %}
+                                {% set biomarker = biomarker|number_format(3) %}
+                                {% set biomarker = biomarker|colorCodingScore %}
                                 <td>
                                     <span data-tooltip='sticky{{ tooltipCounter }}'>
                                         <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/></a>
@@ -470,6 +484,12 @@
                                 </td>
                                 <td class="center">
                                     {{ ruleScore |raw }}
+                                </td>
+                                <td class="center">
+                                    {{ toxicology |raw }}
+                                </td>
+                                <td class="center">
+                                    {{ biomarker |raw }}
                                 </td>
                                  {% set text = entity2Abstract.abstracts.getText %}
                                  {% set arrayText= text | highlightEntitiesAbstracts (entity2Abstract.abstracts,entityBackup,field,whatToSearch, source, entityType, tooltipCounter) %}

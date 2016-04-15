@@ -325,6 +325,9 @@ mark.go_term{
 mark.term{
     background-color: #d597fb;
 }
+mark.gene{
+    background-color: #CCC;
+}
 mark.marker{
     background-color:#dffcff;
 }
@@ -334,6 +337,7 @@ mark.marker a{
 mark.compound a{
     color: #000;
 }
+
 .btmspc-dbl{
     margin-bottom: 0;
 }
