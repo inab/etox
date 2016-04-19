@@ -2464,6 +2464,10 @@ Evidences found in Sentences:\n
             $elasticaQuery->setSort(array('hepTermVarScore' => array('order' => 'desc')));
         }elseif($orderBy=="svmConfidence"){
             $elasticaQuery->setSort(array('svmConfidence' => array('order' => 'desc')));
+        }elseif($orderBy=="toxicology"){
+            $elasticaQuery->setSort(array('toxicology' => array('order' => 'desc')));
+        }elseif($orderBy=="biomarker"){
+            $elasticaQuery->setSort(array('biomarker' => array('order' => 'desc')));
         }
 
         $elasticaQuery->setQuery($elasticaQueryString);

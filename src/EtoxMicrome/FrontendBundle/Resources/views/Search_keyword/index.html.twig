@@ -51,8 +51,10 @@
                         <th><a href="{{ path('elasticSearch_keyword_orderby',{'whatToSearch': whatToSearch, 'source': source, 'keyword': keyword, 'orderBy': 'pattern'}) }}" {% if orderBy == "pattern"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_pattern}}">Pattern</span></a></th>
                         <th><a href="{{ path('elasticSearch_keyword_orderby',{'whatToSearch': whatToSearch, 'source': source, 'keyword': keyword, 'orderBy': 'term'}) }}" {% if orderBy == "term"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_term}}">Term</span></a></th>
                         <th><a href="{{ path('elasticSearch_keyword_orderby',{'whatToSearch': whatToSearch, 'source': source, 'keyword': keyword, 'orderBy': 'rule'}) }}" {% if orderBy == "rule"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_rule}}">Rule</span></a></th>
-                        <th><a href="{{ path('elasticSearch_keyword_orderby',{'whatToSearch': whatToSearch, 'source': source, 'keyword': keyword, 'orderBy': 'toxicology'}) }}" {% if orderBy == "toxicology"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_toxicology}}">Toxicology</span></a></th>
-                        <th><a href="{{ path('elasticSearch_keyword_orderby',{'whatToSearch': whatToSearch, 'source': source, 'keyword': keyword, 'orderBy': 'biomarker'}) }}" {% if orderBy == "biomarker"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_biomarker}}">Biomarker</span></a></th>
+                        {% if source == "abstract" %}
+                            <th><a href="{{ path('elasticSearch_keyword_orderby',{'whatToSearch': whatToSearch, 'source': source, 'keyword': keyword, 'orderBy': 'toxicology'}) }}" {% if orderBy == "toxicology"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_toxicology}}">Toxicology</span></a></th>
+                            <th><a href="{{ path('elasticSearch_keyword_orderby',{'whatToSearch': whatToSearch, 'source': source, 'keyword': keyword, 'orderBy': 'biomarker'}) }}" {% if orderBy == "biomarker"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_biomarker}}">Biomarker</span></a></th>
+                        {% endif %}
 
                     {% elseif currentPath=="search_interface_search_field_whatToSearch_entityType_source_entity" or currentPath=="search_interface_search_field_whatToSearch_entityType_source_entity_orderby"%}
 

@@ -85,6 +85,20 @@ class AbstractWithCompound
     private $svmConfidence;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="""toxicology""", type="integer", nullable=true)
+     */
+    private $toxicology;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="""biomarker""", type="integer", nullable=true)
+     */
+    private $biomarker;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="created", type="datetime")
@@ -318,6 +332,52 @@ class AbstractWithCompound
     public function getSvmConfidence()
     {
         return $this->svmConfidence;
+    }
+
+    /**
+     * Set toxicology
+     *
+     * @param integer $toxicology
+     * @return AbstractWithCompound
+     */
+    public function setToxicology($toxicology)
+    {
+        $this->toxicology = $toxicology;
+
+        return $this;
+    }
+
+    /**
+     * Get toxicology
+     *
+     * @return integer
+     */
+    public function getToxicology()
+    {
+        return $this->toxicology;
+    }
+
+    /**
+     * Set biomarker
+     *
+     * @param integer $biomarker
+     * @return AbstractWithCompound
+     */
+    public function setBiomarker($biomarker)
+    {
+        $this->biomarker = $biomarker;
+
+        return $this;
+    }
+
+    /**
+     * Get biomarker
+     *
+     * @return integer
+     */
+    public function getBiomarker()
+    {
+        return $this->biomarker;
     }
 
     /**

@@ -239,6 +239,8 @@ fos_elastica:
                         hepTermNormScore: { type: float }
                         hepTermVarScore: { type: float }
                         svmConfidence: { type: float }
+                        toxicology: { type: float }
+                        biomarker: { type: float }
                     persistence:
                         driver: orm
                         model: EtoxMicrome\DocumentBundle\Entity\AbstractWithCompound
