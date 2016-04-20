@@ -1292,7 +1292,6 @@ class UtilityExtension extends \Twig_Extension
                 }
             }
         }
-
         //Once here we should also add the highlights for the rest of the entityTypes
         $arrayEntity2Abstract = $em->getRepository('EtoxMicromeEntity2AbstractBundle:Entity2Abstract')->findEntity2AbstractFromAbstract($abstract);
         //ld($arrayText);

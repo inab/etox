@@ -1393,6 +1393,7 @@ class Entity2DocumentRepository extends EntityRepository
         $diccionarioMarkers=array();
         $diccionarioCytochromes=array();
         $diccionarioCompounds=array();
+        $diccionarioGenes=array();
         $diccionarioRelations=array();
         $dictionaryTypeRelations=array();
 

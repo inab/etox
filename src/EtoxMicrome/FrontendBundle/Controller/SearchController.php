@@ -1352,7 +1352,6 @@ Evidences found in Sentences:\n
             array_push($arrayGeneIds, $entityName);
         }
         $arrayGeneIds=array_unique($arrayGeneIds);
-        //ld($arrayGeneIds);
         //Searching for genes can only be performed against either abstracts(any) or abstractswithcompounds(withCompounds)
 
         //For the $whatToSearch == "any" part, we search against abstracts table using each gene_id in $arrayGeneIds
@@ -1382,18 +1381,24 @@ Evidences found in Sentences:\n
                 ->getResult()
             ;
         }
-
-
         if($whatToSearch=="withCompounds"){
             //We just have to filter the previous result against the abstractWithCompounds table. If the abstract exists in abstractsWithCompounds table, then we keep it. Otherwise we don't
-            foreach($arrayAbstracts as $gene2abstract){
+            $arrayAbstractsWithCompounds=array();
+            foreach($arrayAbstracts as $abstract){
                 //We have to test if each abstract is in abstractWithCompounds table
-                $abstractWithCompound=$em->getRepository('EtoxMicromeDocumentBundle:AbstractWithCompound')->findByPmid($gene2abstract->getPmid());
-                ld($abstractWithCompound);
-                ldd($gene2abstract);
+                $abstractWithCompound=$em->getRepository('EtoxMicromeDocumentBundle:AbstractWithCompound')->findByPmid($abstract->getPmid());
+                if(count($abstractWithCompound)!=0){
+                    array_push($arrayAbstractsWithCompounds, $abstract);
+                }
             }
+            $arrayAbstracts=$arrayAbstractsWithCompounds;
+            $arrayPaginatedAbstracts = $paginator
+                ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "abstracts")
+                ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "abstracts")
+                ->paginate($arrayAbstracts, 'abstracts')
+                ->getResult()
+            ;
         }
-
         #ld($arrayGene2Abstract[0]);
         #ldd($arrayGene2Abstract);
         #ld($field);
