@@ -686,4 +686,9 @@ class Entity2Document
     {
         return ("Entity2Document");
     }
+
+    public function __toString()
+    {
+        return $this->name;
+    }
 }

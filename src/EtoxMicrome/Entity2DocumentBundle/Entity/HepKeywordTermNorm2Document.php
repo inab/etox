@@ -214,4 +214,9 @@ class HepKeywordTermNorm2Document
     {
         return ("HepKeywordTermNorm2Document");
     }
+
+     public function __toString()
+    {
+        return $this->hepKeywordNorm;
+    }
 }

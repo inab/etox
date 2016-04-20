@@ -275,4 +275,10 @@ class HepKeywordTermVariant2Document
     {
         return ("HepKeywordTermVariant2Document");
     }
+
+    public function __toString()
+    {
+        return $this->termVariant;
+    }
+
 }

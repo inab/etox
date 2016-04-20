@@ -38,6 +38,54 @@ class UtilityExtension extends \Twig_Extension
         );
     }
 
+    function name_length_sort($a, $b)
+    {
+        //Callback function to use with uasort to sort descend an array of Gene2Abstracts by its geneName length
+        if ( strlen($a->getGeneName()) < strlen($b->getGeneName()) ) return 1;
+        if ( strlen($a->getGeneName()) > strlen($b->getGeneName()) ) return -1;
+        return 0;
+    }
+
+    function name_length_sort_termVariant($a, $b)
+    {
+        //Callback function to use with uasort to sort descend an array of Gene2Abstracts by its geneName length
+        if ( strlen($a->getTermVariant()) < strlen($b->getTermVariant()) ) return 1;
+        if ( strlen($a->getTermVariant()) > strlen($b->getTermVariant()) ) return -1;
+        return 0;
+    }
+
+    function name_length_sort_cypsMention($a, $b)
+    {
+        //Callback function to use with uasort to sort descend an array of Gene2Abstracts by its geneName length
+        if ( strlen($a->getCypsMention()) < strlen($b->getCypsMention()) ) return 1;
+        if ( strlen($a->getCypsMention()) > strlen($b->getCypsMention()) ) return -1;
+        return 0;
+    }
+
+    function name_length_sort_hepKeywordNorm($a, $b)
+    {
+        //Callback function to use with uasort to sort descend an array of Gene2Abstracts by its geneName length
+        if ( strlen($a->getHepKeywordNorm()) < strlen($b->getHepKeywordNorm()) ) return 1;
+        if ( strlen($a->getHepKeywordNorm()) > strlen($b->getHepKeywordNorm()) ) return -1;
+        return 0;
+    }
+
+    function name_length_sort_name($a, $b)
+    {
+        //Callback function to use with uasort to sort descend an array of Gene2Abstracts by its geneName length
+        if ( strlen($a->getName()) < strlen($b->getName()) ) return 1;
+        if ( strlen($a->getName()) > strlen($b->getName()) ) return -1;
+        return 0;
+    }
+
+    function name_length_sort_specie($a, $b)
+    {
+        //Callback function to use with uasort to sort descend an array of Gene2Abstracts by its geneName length
+        if ( strlen($a->getSpecie()->getName()) < strlen($b->getSpecie()->getName()) ) return 1;
+        if ( strlen($a->getSpecie()->getName()) > strlen($b->getSpecie()->getName()) ) return -1;
+        return 0;
+    }
+
     public function findPlaceSingleWord($entityName,$arrayText,$arrayHighlighted)
     {
         //Returns an array with the valid position/s to make the highlight or a void array if there is no position...
@@ -133,6 +181,10 @@ class UtilityExtension extends \Twig_Extension
         $arrayHighlighted=array();
         //With arrayHepKeywordTermVariant2Document we can highlight Hepatotoxicity Terms
         $arrayHepKeywordTermVariant2Document = $em->getRepository('EtoxMicromeEntity2DocumentBundle:HepKeywordTermVariant2Document')->findHepKeywordTermVariant2Document($document);
+        //Next two lines are done to avoid repeated elements and start highlighting from the longest term to the shortest (to avoid "short-tagging")
+        $arrayHepKeywordTermVariant2Document=array_unique($arrayHepKeywordTermVariant2Document);
+        uasort($arrayHepKeywordTermVariant2Document,array($this, 'name_length_sort_termVariant'));
+
         foreach ($arrayHepKeywordTermVariant2Document as $term2Document){
             $entityName=$term2Document->getTermVariant();
             //If the name==entityBackup, we don't do anything, we'll change it at the end
@@ -254,6 +306,10 @@ class UtilityExtension extends \Twig_Extension
         }
         //With arrayCytochrome2Document we can highlight Cytochromes
         $arrayCytochrome2Document = $em->getRepository('EtoxMicromeEntity2DocumentBundle:Cytochrome2Document')->findCytochrome2DocumentFromDocument($document);
+        //Next two lines are done to avoid repeated elements and start highlighting from the longest term to the shortest (to avoid "short-tagging")
+        $arrayCytochrome2Document=array_unique($arrayCytochrome2Document);
+        uasort($arrayCytochrome2Document,array($this, 'name_length_sort_cypsMention'));
+
         foreach ($arrayCytochrome2Document as $cytochrome2Document){
             $entityName=$cytochrome2Document->getCypsMention();
             //ld($entityName);
@@ -363,6 +419,10 @@ class UtilityExtension extends \Twig_Extension
         }
         //With arrayHepKeywordTermNorm2Document we can highlight Hepatotoxicity Terms
         $arrayHepKeywordTermNorm2Document = $em->getRepository('EtoxMicromeEntity2DocumentBundle:HepKeywordTermNorm2Document')->findHepKeywordTermNorm2Document($document);
+        //Next two lines are done to avoid repeated elements and start highlighting from the longest term to the shortest (to avoid "short-tagging")
+        $arrayHepKeywordTermNorm2Document=array_unique($arrayHepKeywordTermNorm2Document);
+        uasort($arrayHepKeywordTermNorm2Document,array($this, 'name_length_sort_hepKeywordNorm'));
+
         foreach ($arrayHepKeywordTermNorm2Document as $term2Document){
             $entityName=$term2Document->getHepKeywordNorm();
             //ld($entityName);
@@ -491,6 +551,11 @@ class UtilityExtension extends \Twig_Extension
 
         //With arrayEntity2Document we can highlight CompoundDict, Marker and Specie
         $arrayEntity2Document = $em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->findEntity2DocumentFromDocument($document);
+
+        //Next two lines are done to avoid repeated elements and start highlighting from the longest term to the shortest (to avoid "short-tagging")
+        $arrayEntity2Document=array_unique($arrayEntity2Document);
+        uasort($arrayEntity2Document,array($this, 'name_length_sort_name'));
+
         foreach ($arrayEntity2Document as $entity2Document){
             $entityName=$entity2Document->getName();
             $entityNameUrlEncoded=urlencode($entityName);
@@ -788,6 +853,11 @@ class UtilityExtension extends \Twig_Extension
         //Now we search for species to highlight directly from specie2document using the document_id";
         //With arraySpecie2Document we can highlight Species inside the text
         $arraySpecie2Document = $em->getRepository('EtoxMicromeEntity2DocumentBundle:Specie2Document')->findSpecie2DocumentFromDocument($document);
+
+        //Next two lines are done to avoid repeated elements and start highlighting from the longest term to the shortest (to avoid "short-tagging")
+        $arraySpecie2Document=array_unique($arraySpecie2Document);
+        uasort($arraySpecie2Document,array($this, 'name_length_sort_specie'));
+
         foreach($arraySpecie2Document as $specie2document){
             $specieName=$specie2document->getSpecie()->getName();
             $numberWords=str_word_count($specieName, 0, '0..9()=-');
@@ -879,6 +949,10 @@ class UtilityExtension extends \Twig_Extension
         $arrayText=str_word_count($text, 1, '0..9()=-');
         $arrayHighlighted=array();
         $arrayEntity2Abstract = $em->getRepository('EtoxMicromeEntity2AbstractBundle:Entity2Abstract')->findEntity2AbstractFromAbstract($abstract);
+
+        //Next two lines are done to avoid repeated elements and start highlighting from the longest term to the shortest (to avoid "short-tagging")
+        $arrayEntity2Abstract=array_unique($arrayEntity2Abstract);
+        uasort($arrayEntity2Abstract,array($this, 'name_length_sort_name'));
 
         foreach ($arrayEntity2Abstract as $entity2Abstract){
             $entityName=$entity2Abstract->getName();//We get the name
@@ -1180,6 +1254,8 @@ class UtilityExtension extends \Twig_Extension
         $arrayText=str_word_count($text, 1, '0..9()=-');
         $arrayHighlighted=array();
         $arrayGene2Abstract = $em->getRepository('EtoxMicromeEntity2AbstractBundle:Gene2Abstract')->findGene2AbstractFromAbstract($abstract);
+        $arrayGene2Abstract=array_unique($arrayGene2Abstract);
+        uasort($arrayGene2Abstract,array($this, 'name_length_sort'));
         foreach ($arrayGene2Abstract as $gene2Abstract){
             $geneName=$gene2Abstract->getGeneName();//We get the name
             $geneName=trim($geneName);
@@ -1296,6 +1372,10 @@ class UtilityExtension extends \Twig_Extension
         $arrayEntity2Abstract = $em->getRepository('EtoxMicromeEntity2AbstractBundle:Entity2Abstract')->findEntity2AbstractFromAbstract($abstract);
         //ld($arrayText);
         //ld($arrayEntity2Abstract);
+        //Next two lines are done to avoid repeated elements and start highlighting from the longest term to the shortest (to avoid "short-tagging")
+        $arrayEntity2Abstract=array_unique($arrayEntity2Abstract);
+        uasort($arrayEntity2Abstract,array($this, 'name_length_sort_name'));
+
         foreach ($arrayEntity2Abstract as $entity2Abstract){
             $entityName=$entity2Abstract->getName();//We get the name
             $qualifier=$entity2Abstract->getQualifier();

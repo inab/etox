@@ -108,6 +108,10 @@ class SearchController extends Controller
         return $score;
     }
 
+    public function nameSort( $array1, $array2){
+
+    }
+
     public function filter_by_source($arrayResults, $source){
         $message="filter_by_source $source";
         ldd($message);

@@ -515,4 +515,10 @@ class Cytochrome2Document
         $className="Cytochrome2Document";
         return $className;
     }
+
+    public function __toString()
+    {
+        return $this->cypsMention;
+    }
+
 }

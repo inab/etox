@@ -425,4 +425,10 @@ class Entity2Abstract
     {
         return ("Entity2Abstract");
     }
+
+    public function __toString()
+    {
+        return $this->name;
+    }
+
 }

@@ -530,4 +530,9 @@ class Gene2Abstract
     {
         return $this->updated;
     }
+
+    public function __toString()
+    {
+        return $this->geneName;
+    }
 }

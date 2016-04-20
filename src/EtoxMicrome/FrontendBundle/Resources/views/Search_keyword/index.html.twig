@@ -4,6 +4,7 @@
     {% include 'FrontendBundle:Search_keyword:tags_code.html.twig' %}
     {% set tooltipCounter=1 %}
     {% set stringStickyTooltip = "" %}
+    Hello
     <div id="evidences">
         {% if resultSetDocuments | length != 0 %}
             <div id="documentsResults">
@@ -63,9 +64,10 @@
                         <th><a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field': field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'pattern'}) }}" {% if orderBy == "pattern"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_pattern}}">Pattern</span></a></th>
                         <th><a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field': field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'term'}) }}" {% if orderBy == "term"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_term}}">Term</span></a></th>
                         <th><a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field': field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'rule'}) }}" {% if orderBy == "rule"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_rule}}">Rule</span></a></th>
-                        <th><a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field': field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'toxicology'}) }}" {% if orderBy == "toxicology"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_toxicology}}">Toxicology</span></a></th>
-                        <th><a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field': field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'biomarker'}) }}" {% if orderBy == "biomarker"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_biomarker}}">Biomarker</span></a></th>
-
+                         {% if source == "abstract" %}
+                            <th><a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field': field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'toxicology'}) }}" {% if orderBy == "toxicology"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_toxicology}}">Toxicology</span></a></th>
+                            <th><a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field': field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'biomarker'}) }}" {% if orderBy == "biomarker"%} class="active"{% endif %}><span data-tooltip class="has-tip" title="{{ mouseover_biomarker}}">Biomarker</span></a></th>
+                        {% endif %}
 
                     {% endif %}
                     <th>Sentence</th>
