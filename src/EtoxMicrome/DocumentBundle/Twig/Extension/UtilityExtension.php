@@ -1342,7 +1342,7 @@ class UtilityExtension extends \Twig_Extension
                     $place=$this->findPlaceSeveralWords($geneName,$arrayText,$arrayHighlighted);
                     if($place!=-1){
                         //There is a place to make the highlight, starting at $place and finishing at $numberEntityName=str_word_count($entityName, 0);
-                        $numberEntityName=str_word_count($geneName, 0, '0..9()=-');
+                        $numberGeneName=str_word_count($geneName, 0, '0..9()=-');
                         if($place+$numberGeneName<=count($arrayText)){//Only in this case is possible to find the entityName inside the text, otherwise it will fall outside the array with undefined offset error_get_last()
                             $arrayGeneName=str_word_count($geneName, 1, '0..9()=-');
                             //We mark the firstGene
