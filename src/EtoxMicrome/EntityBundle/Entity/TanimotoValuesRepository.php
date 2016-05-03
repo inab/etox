@@ -336,7 +336,7 @@ class TanimotoValuesRepository extends EntityRepository
                 foreach($dictionaryMarkers as $marker => $weightMarker){
                     $stringNodes.="{\"label\":\"$marker\",\"id\":\"$marker\",\"entity_type\":\"Marker\",\"color\":\"#dffcff\"},\n";
                     //$arrayRGB=$this->percentToRGB($dictionaryMarkersNormalizedWeights[$marker]);
-                    if($weightCyp==1){
+                    if($weightMarker==1){
                         $normalizedWeight=0.01;
                     }else{
                         $normalizedWeight=1-1/$weightCyp;

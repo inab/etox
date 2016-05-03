@@ -1395,6 +1395,11 @@ class Entity2DocumentRepository extends EntityRepository
         $diccionarioCompounds=array();
         $diccionarioGenes=array();
         $diccionarioRelations=array();
+
+        $dictionaryTypeRelationsCompound=array();
+        $dictionaryTypeRelationsTerm=array();
+        $dictionaryTypeRelationsCyp=array();
+        $dictionaryTypeRelationsMarker=array();
         $dictionaryTypeRelations=array();
 
         $em = $this->getEntityManager();
@@ -1452,12 +1457,10 @@ class Entity2DocumentRepository extends EntityRepository
                 WHERE c2t2d.compoundName = (:entityName)
                 ORDER BY c2t2d.relationScore DESC
                 ";
-
             $query = $this->_em->createQuery($sql);
             $query->setParameter("entityName", $entityName);
             $query->setMaxResults(50);
             $arrayCompound2Term2Document= $query->getResult();
-
             foreach($arrayCompound2Term2Document as $compound2Term2Document){
                 $term=$compound2Term2Document->getTerm();
                 $relationType=$compound2Term2Document->getRelationType();
@@ -1483,14 +1486,12 @@ class Entity2DocumentRepository extends EntityRepository
             }
             $diccionarioRelations["terms"]=$diccionarioTerms;
             $dictionaryTypeRelations["terms"]=$dictionaryTypeRelationsTerm;
-
             //We load now the cytochromes relations
             $sql="SELECT c2c2d
                 FROM EtoxMicromeEntity2DocumentBundle:Compound2Cyp2Document c2c2d
                 WHERE c2c2d.compoundName = (:entityName)
                 ORDER BY c2c2d.sumScore DESC
                 ";
-
             $query = $this->_em->createQuery($sql);
             $query->setParameter("entityName", $entityName);
             $query->setMaxResults(50);
