@@ -1568,7 +1568,7 @@ class Entity2DocumentRepository extends EntityRepository
                 ";
             $query = $this->_em->createQuery($sql);
             $query->setParameter("idCompound", $idCompound);
-            $query->setMaxResults(50);
+            $query->setMaxResults(15);
             $arrayTanimotoValues= $query->getResult();
             foreach($arrayTanimotoValues as $tanimotoValue){
                 $compoundName1=$tanimotoValue->getCompound1()->getName();

@@ -20,8 +20,11 @@ class CytoscapeController extends Controller
         $arrayReturn=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->createDictionaryRelationsCytoscape($entityName,$entityType);
         $dictionaryRelations=$arrayReturn[0];
         $dictionaryTypeRelations=$arrayReturn[1];
+
+
         //Now we generate the strings that will be used for rendering the cytoscape plugin ($stringNodes, $stringEdges)
         $arrayStrings=$em->getRepository('EtoxMicromeEntityBundle:TanimotoValues')->generateStringsForCytoscape($entityName, $entityType, $dictionaryRelations, $dictionaryTypeRelations);
+
         $stringNodes=$arrayStrings["stringNodes"];
         $stringEdges=$arrayStrings["stringEdges"];
         return $this->render('FrontendBundle:Cytoscape:cytoscape.html.twig', array(

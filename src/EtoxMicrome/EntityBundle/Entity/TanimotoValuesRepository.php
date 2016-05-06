@@ -33,14 +33,13 @@ class TanimotoValuesRepository extends EntityRepository
     	$query = $this->_em->createQuery("
             SELECT tv
             FROM EtoxMicromeEntityBundle:TanimotoValues tv
-            WHERE tv.compound1= :idCompound
-            OR tv.compound2= :idCompound
-            AND tv.tanimoto >= 0.9
+            WHERE tv.tanimoto >= 0.9
+            AND (tv.compound1= :idCompound OR tv.compound2= :idCompound)
             ORDER BY tv.tanimoto DESC
 
         ");
         $query->setParameter('idCompound', $idCompound);
-        $query->setMaxResults(15);
+        $query->setMaxResults(20);
         $arrayTanimotos=$query->getResult();
         //We iterate over arrayTanimotos to search the compounds related
         foreach($arrayTanimotos as $tanimoto){
@@ -196,7 +195,6 @@ class TanimotoValuesRepository extends EntityRepository
         /* edges string example
         {"source":"MDM2","target":"TP53","database":"undefined"},
         */
-
         switch ($entityType) {
             case "CompoundDict":
                 $colorCentralNode="#f0f6a6";
@@ -205,24 +203,13 @@ class TanimotoValuesRepository extends EntityRepository
                 $colorCentralNode="#ffcfcf";
                 break;
         }
-
         //First of all we generate the complete dictionaryRelations. We already have the relations of the compound/cytochrome, but we need to add the relations of the rest of entities with the actual compounds of the interaction network. For that we do:
+        //ld($dictionaryRelations);
         foreach($dictionaryRelations as $key => $value){
-            if(($key=="compounds") and (count($dictionaryRelations["compounds"]) != 0)){
-                $dictionaryCompounds=$dictionaryRelations["compounds"];
-                foreach($dictionaryCompounds as $compoundName => $weightCompound){
-                    $compound=$em->getRepository('EtoxMicromeEntityBundle:CompoundDict')->getEntityFromName($compoundName);
-                    $idCompound=$compound->getId();
-                    $arrayCompoundsFromCompoundId=$this->findCompounds2Compounds2FromCompound($idCompound,$dictionaryRelations["compounds"]); //We pass dictionaryRelations["compounds"] as an argument since we just want interactions with compounds that are already in the interaction network
-                    //If the array has something (term2compounds) we update the $dictionaryRelations
-                    if(count($arrayCompoundsFromCompoundId) != 0){
-                        $dictionaryCompoundRelations[$compound->getName()]=$arrayCompoundsFromCompoundId;
-                    }
-                }
-            }
+            //ld($key);
             if(($key=="terms") and (count($dictionaryRelations["terms"]) != 0)){
                 $dictionaryTerms=$dictionaryRelations["terms"];
-                foreach($dictionaryTerms as $term){
+                foreach($dictionaryTerms as $term=>$count){
                     $arrayCompoundsFromTermReturned=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Compound2Term2Document')->findCompounds2Term2DocumentFromTerm($term,$dictionaryRelations["compounds"]); //We pass dictionaryRelations["compounds"] as an argument since we just want interactions with compounds that are already in the interaction network
                     //If the array has something (term2compounds) we update the $dictionaryRelations
                     $arrayCompoundsFromTerm=$arrayCompoundsFromTermReturned[0];
@@ -233,9 +220,10 @@ class TanimotoValuesRepository extends EntityRepository
                     }
                 }
             }
+
             if(($key=="cyps") and (count($dictionaryRelations["cyps"]) != 0)) {
                 $dictionaryCyps=$dictionaryRelations["cyps"];
-                foreach($dictionaryCyps as $cyp){
+                foreach($dictionaryCyps as $cyp => $value){
                     $arrayCompoundsFromCypReturned=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Compound2Cyp2Document')->findCompounds2Cyp2DocumentFromCyp($cyp,$dictionaryRelations["compounds"]); //We pass dictionaryRelations["compounds"] as an argument since we just want interactions with compounds that are already in the interaction network
                     //If the array has something (cyp2compounds) we load the $dictionaryCypRelations
                     $arrayCompoundsFromCyp=$arrayCompoundsFromCypReturned[0];
@@ -259,7 +247,21 @@ class TanimotoValuesRepository extends EntityRepository
                     }
                 }
             }
-
+            if(($key=="compounds") and (count($dictionaryRelations["compounds"]) != 0)){
+                $dictionaryCompounds=$dictionaryRelations["compounds"];
+                //ld($dictionaryCompounds);
+                foreach($dictionaryCompounds as $compoundName => $weightCompound){
+                    //ld($compoundName);
+                    $compound=$em->getRepository('EtoxMicromeEntityBundle:CompoundDict')->getEntityFromName($compoundName);
+                    //ld($compound);
+                    $idCompound=$compound->getId();
+                    $arrayCompoundsFromCompoundId=$this->findCompounds2Compounds2FromCompound($idCompound,$dictionaryRelations["compounds"]); //We pass dictionaryRelations["compounds"] as an argument since we just want interactions with compounds that are already in the interaction network
+                    //If the array has something (term2compounds) we update the $dictionaryRelations
+                    if(count($arrayCompoundsFromCompoundId) != 0){
+                        $dictionaryCompoundRelations[$compound->getName()]=$arrayCompoundsFromCompoundId;
+                    }
+                }
+            }
         }
         //Here we have dictionaryRelations and rest of arrays with all the entity2entity interactions of the network. We just have to iterate over the arrays to draw the nodes and edges.
         //To draw the nodes we iterate over dictionaryRelations
@@ -365,7 +367,6 @@ class TanimotoValuesRepository extends EntityRepository
             }
 
         }
-
         //Following with Compound2Term relations
         foreach($dictionaryTermRelations as $termStart=>$arrayCompoundsEnd){
             foreach($arrayCompoundsEnd as $compoundEnd=>$weight){
@@ -385,7 +386,7 @@ class TanimotoValuesRepository extends EntityRepository
                 }
             }
             $stringRelations=rtrim($stringRelations, ",");
-            $stringEdges.="{\"source\":\"$termStart\",\"target\":\"$compoundEnd\",\"database\":\"compound2term2document_new\",\"weight\":$weight,\"color\":\"$colorHEX\", \"opacity\":$normalizeWeight, \"typeOfRelations\": \"$stringRelations\"},\n";
+            $stringEdges.="{\"source\":\"$termStart\",\"target\":\"$compoundEnd\",\"database\":\"compound2term2document_new\",\"weight\":$weight,\"color\":\"$colorHEX\", \"opacity\":$normalizedWeight, \"typeOfRelations\": \"$stringRelations\"},\n";
         }
 
         //Following with Compound2Cyp relations

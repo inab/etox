@@ -109,13 +109,14 @@ class Compound2Term2DocumentRepository extends EntityRepository
             WHERE c2t2d.term = :term
         ');
         $consulta->setParameter('term', $term);
+        $consulta->setMaxResults(15);
         $arrayCompounds2Term2Documents = $consulta->execute();
         //We search the arrayCompounds2Term2Documents and only return the components that are present in the $dictionaryCompounds argument (compounds that already are part of the interaction network)
         $tmpArray=array();//Associative array with the keys="compoundName" and the values="number of times present"
         $tmpArrayTypeRelations=array();//Associative array with the keys="compoundName" and the values=dictionaryRelations
         foreach($arrayCompounds2Term2Documents as $compound2Term2Document){
             $compoundName=$compound2Term2Document->getCompoundName();
-            $relationType=$compound2Marker2Document->getRelationType();
+            $relationType=$compound2Term2Document->getRelationType();
             if(array_key_exists($compoundName, $dictionaryCompounds)){
                 if (array_key_exists($compoundName, $tmpArray)){
                     $tmpArray[$compoundName]=$tmpArray[$compoundName]+1;

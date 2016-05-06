@@ -84,6 +84,7 @@ class Compound2Cyp2DocumentRepository extends EntityRepository
             WHERE c2c2d.cypsMention = :cyp
         ');
         $consulta->setParameter('cyp', $cyp);
+        $consulta->setMaxResults(15);
         $arrayCompounds2Cyp2Documents = $consulta->execute();
         //We search the arrayCompounds2Cyp2Documents and only return the components that are present in the $dictionaryCompounds argument (compounds that already are part of the interaction network)
         $tmpArray=array();//Associative array with the keys="compoundName" and the values="number of times present"

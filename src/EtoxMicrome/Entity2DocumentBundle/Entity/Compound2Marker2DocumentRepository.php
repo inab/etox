@@ -85,6 +85,7 @@ class Compound2Marker2DocumentRepository extends EntityRepository
             WHERE c2m2d.liverMarkerName = :marker
         ');
         $consulta->setParameter('marker', $marker);
+        $consulta->setMaxResults(15);
         $arrayCompounds2Marker2Documents = $consulta->execute();
         //We search the arrayCompounds2Marker2Documents and only return the components that are present in the $dictionaryCompounds argument (compounds that already are part of the interaction network)
         $tmpArray=array();//Associative array with the keys="compoundName" and the values="number of times present"
