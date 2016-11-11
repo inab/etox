@@ -2439,6 +2439,7 @@ Evidences found in Sentences:\n
         $orderBy=$this->getOrderBy($orderBy, $valToSearch);
         $entityType= "keyword";//{"specie","compound","enzyme","protein","cyp","mutation","goterm","keyword","marker"}
         //$whatToSearch can be "any", "withCompounds", "withCytochromes" or "withMarkers". We'll search inside differente Type depending on this parameter
+
         $elasticaQueryString  = new \Elastica\Query\QueryString();
         //'And' or 'Or' default : 'Or'
         $elasticaQueryString->setDefaultOperator('AND');
@@ -2505,6 +2506,26 @@ Evidences found in Sentences:\n
 
             }else{ //For "pubmed", "fulltext", "nda", "epar" and "all"
                 $documentsInfo = $this->container->get('fos_elastica.index.etoxindex2.documents');/** To get resultSet to get values for summary**/
+                ////////////////////////////////////////////////////////////////////////////////////////////////
+                /*$elasticaManager = $this->container->get('fos_elastica.index.etoxindex2.documents');
+                $query = new \Elastica\Query\MatchAll();
+                $baseQuery = $query;
+                // then we create filters depending on the chosen criterias
+                //$boolFilter = new \Elastica\Filter\Bool();
+                $elasticaFilterBool = new \Elastica\Filter\Bool();
+                $filter1 = new \Elastica\Filter\Term();
+                $filter1->setTerm('kind', $source);
+                $elasticaFilterBool->addMust($filter1);
+                $filtered = new \Elastica\Query\Filtered($baseQuery, $elasticaFilterBool);
+
+                $query = \Elastica\Query::create($filtered);
+                $results = $elasticaManager->search($query);
+                ldd($message);
+                $arrayResults = $results->getResults();
+
+                ldd($message);
+                ////////////////////////////////////////////////////////////////////////////////////////////////
+                */
                 $resultSetDocuments = $documentsInfo->search($elasticaQuery);
                 $arrayResults=$resultSetDocuments->getResults();
                 /*

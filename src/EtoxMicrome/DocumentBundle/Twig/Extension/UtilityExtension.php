@@ -853,7 +853,6 @@ class UtilityExtension extends \Twig_Extension
         //Now we search for species to highlight directly from specie2document using the document_id";
         //With arraySpecie2Document we can highlight Species inside the text
         $arraySpecie2Document = $em->getRepository('EtoxMicromeEntity2DocumentBundle:Specie2Document')->findSpecie2DocumentFromDocument($document);
-
         //Next two lines are done to avoid repeated elements and start highlighting from the longest term to the shortest (to avoid "short-tagging")
         $arraySpecie2Document=array_unique($arraySpecie2Document);
         uasort($arraySpecie2Document,array($this, 'name_length_sort_specie'));

@@ -399,7 +399,7 @@ class Specie2Document
 
     public function __toString()
     {
-        return $this->specie;
+        return $this->specie->getName();
     }
 
 }
