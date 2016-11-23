@@ -21,6 +21,7 @@ class SpecieRepository extends EntityRepository
             WHERE a.id= :entityId
         ");
         $query->setParameter('entityId', $entityId);
+        $query->setMaxResults(2);
         $specie=$query->getResult();
         if(count($specie)==0){
             $errorMessage="There is no entity with that name ('$entityName')";
@@ -44,6 +45,7 @@ class SpecieRepository extends EntityRepository
             WHERE a.name= :entityName
         ");
         $query->setParameter('entityName', $entityName);
+        $query->setMaxResults(2);
         $specie=$query->getResult();
         if(count($specie)==0){
             $errorMessage="There is no entity with that name ($entityName)";

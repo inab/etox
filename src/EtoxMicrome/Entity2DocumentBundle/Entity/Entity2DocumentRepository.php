@@ -12,8 +12,8 @@ use Monolog\Handler\StreamHandler;
  * repository methods below.
  */
 class Entity2DocumentRepository extends EntityRepository
-{
-   public function getValToSearch($field)
+{    
+    public function getValToSearch($field)
     {
         switch ($field) {
             case "hepatotoxicity":
@@ -77,7 +77,6 @@ class Entity2DocumentRepository extends EntityRepository
         //We have to create a query that searchs all over the entityIds inside the $arrayEntityId
         $orderBy=$this->getOrderBy($orderBy, $valToSearch);
         if ($source=="all"){//Depending on the source we add or not the d.kind=source parameter to the query
-
             /*$sql="SELECT e2d, d
                 FROM EtoxMicromeEntity2DocumentBundle:Entity2Document e2d
                 JOIN e2d.document d
@@ -94,7 +93,7 @@ class Entity2DocumentRepository extends EntityRepository
                     ORDER BY e2d.$orderBy DESC
                 ";
             $query = $this->_em->createQuery($sql);
-            $query->setParameter("arrayEntityName", $arrayEntityName);
+            $query->setParameter('arrayEntityName', $arrayEntityName);
             $query->setParameter('entityType', $entityType);
             $query->setMaxResults(10000);
         }else{

@@ -22,6 +22,7 @@ class CompoundDictRepository extends EntityRepository
             WHERE c.id= :entityId
         ");
         $query->setParameter('entityId', $entityId);
+        $query->setMaxResults(2);
         $compound=$query->getResult();
         if(count($compound)==0){
             $errorMessage="There is no entity with that name ($entityName)";
@@ -49,6 +50,7 @@ class CompoundDictRepository extends EntityRepository
         ");
 
         $query->setParameter('entityName', $entityName);
+        $query->setMaxResults(2);
         $compound=$query->getResult();
         if(count($compound)==0){
             $errorMessage="There is no entity with that name ($entityName)";
@@ -137,6 +139,7 @@ class CompoundDictRepository extends EntityRepository
 
         ");
         $query->setParameter('entityId', $entityId);
+        $query->setMaxResults(2);
         $compound=$query->getResult();
         if(count($compound)==0){
             $errorMessage="There is no entity with that entityId ($entityId)";
@@ -164,6 +167,7 @@ class CompoundDictRepository extends EntityRepository
             OR c.smile = :structureText
         ");
         $query->setParameter('structureText', $structureText);
+        $query->setMaxResults(2);
         $compound=$query->getResult();
         if(count($compound)==0){
             $errorMessage="There is no entity with that structure ($structureText)";

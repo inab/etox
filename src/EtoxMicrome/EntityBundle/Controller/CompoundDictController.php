@@ -19,7 +19,6 @@ class CompoundDictController extends Controller
         $request = $this->get('request');
         $compoundName1=$request->query->get('compoundName1');
         $compoundName2=$request->query->get('compoundName2');
-        $testString="Vamos bien!!!";
         $smile1="";
         $inchi1="";
         $smile2="";

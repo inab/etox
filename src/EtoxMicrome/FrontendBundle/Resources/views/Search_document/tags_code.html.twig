@@ -47,9 +47,9 @@
         {% set genes = default_gene %}
     {% endif %}
   {% if entityType=="keyword" %}
-    <dd class="active"><a href="#keywords" name="keyword"><span data-tooltip class="has-tip" title="Free text search for Hepatotoxicity">Keywords</span></a></dd>
+    <dd class="active"><a href="#keywords" name="keyword"><span data-tooltip class="has-tip" title="Free text search for Hepatotoxicityyy" data-options="hover_delay:5000" >Keywords</span></a></dd>
   {% else %}
-    <dd><a href="#keywords" name="keyword"><span data-tooltip class="has-tip" title="Free text search for Hepatotoxicity">Keywords</span></a></dd>
+    <dd><a href="#keywords" name="keyword"><span data-tooltip class="has-tip" title="Free text search for Hepatotoxicityyy" data-options="hover_delay:5000" >Keywords</span></a></dd>
   {% endif %}
 
   {% if entityType in arrayCompounds %}
@@ -73,7 +73,7 @@
    {% if entityType=="toxicEndpoints" %}
     <dd class="active"><a href="#toxicEndpoints" name="toxicEndpoint"><span data-tooltip class="has-tip" title="Search different toxic endpoints: Hepatotoxicity, Nephrotoxicity, Cardiotoxicity, Thyroid toxicity, Phopholipidosis">Tox. Endpoints</span></a></dd>
   {% else %}
-    <dd><a href="#toxicEndpoints" name="toxicEndpoints"><span data-tooltip class="has-tip" title="Search different toxic endpoints: Hepatotoxicity, Nephrotoxicity, Cardiotoxicity, Thyroid toxicity, Phopholipidosis">Tox. Endpoints</span></a></dd>
+    <dd><a href="#toxicEndpoints" name="toxicEndpoint"><span data-tooltip class="has-tip" title="Search different toxic endpoints: Hepatotoxicity, Nephrotoxicity, Cardiotoxicity, Thyroid toxicity, Phopholipidosis">Tox. Endpoints</span></a></dd>
   {% endif %}
 
   {% if entityType=="gene" %}
@@ -533,7 +533,7 @@
         </div>
     </div>
   </li>
-  {% if entityType=="toxicEndpoints" %}
+  {% if entityType=="toxicEndpoint" %}
         <li class="active" id="toxicEndpointsTab">
     {% else %}
         <li id="toxicEndpointsTab">

@@ -97,31 +97,25 @@
                             <td class="center">
                                 {{ biomarker|raw }}
                             </td>
-                            {% set text=abstract.getText %}
-                            {% set arrayText= text | highlightGenesAbstracts (abstract,entityBackup,"hepatotoxicity",whatToSearch, source, "gene", tooltipCounter, orderBy) %}
-                            {% set text = arrayText[0] | raw %}
-                            {% set stringStickyTooltip = stringStickyTooltip ~ arrayText[1] %}
-                            {% set tooltipCounter = arrayText[2] %}
+                                {% set text=abstract.getText %}
+                                {#
+                                    {% set arrayText= text | highlightGenesAbstracts (abstract,entityBackup,"hepatotoxicity",whatToSearch, source, "gene", tooltipCounter, orderBy) %}
+                                    {% set text = arrayText[0] | raw %}
+                                    {% set stringStickyTooltip = stringStickyTooltip ~ arrayText[1] %}
+                                    {% set tooltipCounter = arrayText[2] %}
+                                #}
                             <td>
-                                    {{ text | raw }}
+                                {{ text | raw }}
                             </td>
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
 
-            <!-- here pagination block for Documents -->
 
-           <div class="pagination">
-                {{ simple_paginator_render(
-                    'search_interface_search_genes_orderby', 'abstracts',
-                        {
-                            'routeParams' : {'whatToSearch' : whatToSearch, 'source' : source, 'entityName' : entityBackup, 'orderBy' : orderBy},
-                            'container_class' : 'pagination'
-                        }
-                    )
-                }}
-            </div>
+
+
+
         </div>
         {# Here we rebuild the stringStickyTooltip inside its container divs #}
         <div id="mystickytooltip" class="stickytooltip">

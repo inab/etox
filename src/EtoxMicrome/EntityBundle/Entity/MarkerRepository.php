@@ -21,13 +21,16 @@ class MarkerRepository extends EntityRepository
             WHERE a.id= :entityId
         ");
         $query->setParameter('entityId', $entityId);
+        $query->setMaxResults(2);
         $marker=$query->getResult();
         if(count($marker)==0){
             $errorMessage="There is no entity with that name ('$entityName')";
-
+            $entity=array();
+            return $entity;
         }
         if(count($marker)!=1){
             $errorMessage="There are more than one entityName for '$entityName'";
+            return $marker[0];
         }
         //We return all the Compounds with the entityName given. By now we supose its only one entity!!!
         $entity=$marker[0];
@@ -43,6 +46,7 @@ class MarkerRepository extends EntityRepository
             WHERE a.name= :entityName
         ");
         $query->setParameter('entityName', $entityName);
+        $query->setMaxResults(2);
         $marker=$query->getResult();
         if(count($marker)==0){
             $errorMessage="There is no entity with that name ($entityName)";
@@ -51,6 +55,7 @@ class MarkerRepository extends EntityRepository
         }
         if(count($marker)!=1){
             $errorMessage="There are more than one entityName for '$entityName'";
+            return $marker[0];
         }
         //We return all the CompoundDict with the entityName given. By now we supose its only one entity!!!
         $entity=$marker[0];
@@ -85,23 +90,24 @@ class MarkerRepository extends EntityRepository
     {
         //Given an entityId, we return the entity associated
         $message="Inside searchEntityGivenAnId at MarkerRepository";
-        ld($message);
         $query = $this->_em->createQuery("
             SELECT m
             FROM EtoxMicromeEntityBundle:Marker m
             WHERE m.entityId = :entityId
         ");
         $query->setParameter('entityId', $entityId);
+        $query->setMaxResults(2);
         $compound=$query->getResult();
         if(count($compound)==0){
             $errorMessage="There is no entity with that entityId ($entityId)";
-            ld($errorMessage);
+            //ld($errorMessage);
             $entity=array();
             return $entity;
         }
         if(count($compound)!=1){
             $errorMessage="There are more than one entityId for '$entityId'";
             //ld($errorMessage);
+            return $compound[0]; 
         }
         //We return only one entity. Later on we will make the query expansion so we will collect all of them
         $entity=$compound[0];

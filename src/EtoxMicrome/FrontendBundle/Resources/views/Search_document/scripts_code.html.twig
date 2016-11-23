@@ -152,7 +152,7 @@
                     $('.bigSearch').attr('href','{{ path('search_interface_search') }}'+field+'/'+whatToSearch+'/'+entityType+'/'+source+'/'+entityName+'/');
                     break;
 
-                case "toxicEndpoints":
+                case "toxicEndpoint":
                     whatToSearch=$('input[name=endpoint]:checked').val();
                     if(whatToSearch==null){
                         alert("You have to mark \"Select toxicity endpoint\" option");

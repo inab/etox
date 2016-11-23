@@ -21,6 +21,7 @@ class CytochromeRepository extends EntityRepository
             WHERE a.id= :entityId
         ");
         $query->setParameter('entityId', $entityId);
+        $query->setMaxResults(2);
         $cytochrome=$query->getResult();
         if(count($cytochrome)==0){
             $errorMessage="There is no entity with that name ('$entityName')";
@@ -28,7 +29,8 @@ class CytochromeRepository extends EntityRepository
         }
         if(count($cytochrome)!=1){
             $errorMessage="There are more than one entityName for '$entityName'";
-            ld($errorMessage);
+            //ld($errorMessage);
+            return $cytochrome[0];
         }
         //We return all the Compounds with the entityName given. By now we supose its only one entity!!!
         $entity=$cytochrome[0];
@@ -44,6 +46,7 @@ class CytochromeRepository extends EntityRepository
             WHERE a.name= :entityName
         ");
         $query->setParameter('entityName', $entityName);
+        $query->setMaxResults(2);
         $cytochrome=$query->getResult();
         if(count($cytochrome)==0){
             $errorMessage="There is no entity with that name ($entityName)";
@@ -53,6 +56,7 @@ class CytochromeRepository extends EntityRepository
         if(count($cytochrome)!=1){
             $errorMessage="There are more than one entityName for '$entityName'";
             //ld($errorMessage);
+            return $cytochrome[0];
         }
         //We return only one entity because we will do a query expansion later on.
         $entity=$cytochrome[0];
@@ -93,6 +97,7 @@ class CytochromeRepository extends EntityRepository
             where c.entityId= :entityId
         ");
         $query->setParameter('entityId', $entityId);
+        $query->setMaxResults(2);
         $compound=$query->getResult();
         if(count($compound)==0){
             $errorMessage="There is no entity with that entityId ($entityId)";
@@ -101,14 +106,15 @@ class CytochromeRepository extends EntityRepository
         }
         if(count($compound)!=1){
             $errorMessage="There are more than one entityId for '$entityId'";
-
+            //ld($errorMessage);
+            return $compound[0];
         }
         //We return only one entity. Later on we will make the query expansion so we will collect all of them
         $entity=$compound[0];
         return $entity;
     }
 
-    public function searchEntityGivenACanonical($canonical, $taxId)
+    public function searchEntityGivenACanonical($canonical, $taxId='9606')
     {
         $message="Inside searchEntityGivenACanonical at CytochromeRepository";
         $query = $this->_em->createQuery("
@@ -119,6 +125,7 @@ class CytochromeRepository extends EntityRepository
         ");
         $query->setParameter('canonical', $canonical);
         $query->setParameter('taxId', $taxId);
+        $query->setMaxResults(2);
         $compound=$query->getResult();
         if(count($compound)==0){
             $errorMessage="There is no entity with that canonical ($canonical)";
@@ -127,7 +134,8 @@ class CytochromeRepository extends EntityRepository
         }
         if(count($compound)!=1){
             $errorMessage="There are more than one canonical for '$canonical'";
-
+            //ld($errorMessage);
+            return $compound[0];
         }
         //We return only one entity. Later on we will make the query expansion so we will collect all of them
         $entity=$compound[0];
@@ -144,16 +152,18 @@ class CytochromeRepository extends EntityRepository
         ");
         $query->setParameter('canonical', $canonical);
         $query->setParameter('ncbiTaxId', $ncbiTaxId);
+        $query->setMaxResults(2);
         $cytochrome=$query->getResult();
         if(count($cytochrome)==0){
             $errorMessage="There is no entity with that canonical ($canonical) and ncbiTaxId ($ncbiTaxId)";
-            ldd($errorMessage);
+            //ld($errorMessage);
             $entity=array();
             return $entity;
         }
         if(count($cytochrome)!=1){
             $errorMessage="There are more than one entity for that canonical ($canonical) and ncbiTaxId ($ncbiTaxId)";
             //We return the first one until change of strategy
+            //ld($errorMessage);
             return $cytochrome[0];
 
         }

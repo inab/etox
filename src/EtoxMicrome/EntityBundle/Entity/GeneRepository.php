@@ -21,6 +21,7 @@ class GeneRepository extends EntityRepository
             WHERE a.id= :entityId
         ");
         $query->setParameter('entityId', $entityId);
+        $query->setMaxResults(2);
         $gene=$query->getResult();
         if(count($gene)==0){
             $errorMessage="There is no entity with that name ('$entityName')";
@@ -45,6 +46,7 @@ class GeneRepository extends EntityRepository
         ");
         $query->setParameter('entityName', $entityName);
         $gene=$query->getResult();
+        $query->setMaxResults(2);
         if(count($gene)==0){
             $errorMessage="There is no entity with that name ($entityName)";
             ldd($errorMessage);

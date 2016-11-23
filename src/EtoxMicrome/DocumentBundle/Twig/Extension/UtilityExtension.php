@@ -1219,6 +1219,7 @@ class UtilityExtension extends \Twig_Extension
     public function highlightGenesAbstracts($text,$abstract,$entityBackup,$field, $whatToSearch, $source, $entityType, $tooltipCounter, $orderBy)
     {
         $message="highlightGenesAbstracts!!!";
+        //ld($abstract);
         $mouseoverDivs="";
         //ld($text);
         //ld($entityBackup);
@@ -1576,6 +1577,7 @@ class UtilityExtension extends \Twig_Extension
         $arrayReturn[0]=$text;
         $arrayReturn[1]=$mouseoverDivs;
         $arrayReturn[2]=$tooltipCounter;
+        ldd($arrayReturn);
         return ($arrayReturn);
     }
 

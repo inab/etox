@@ -12,6 +12,7 @@ web_profiler:
     intercept_redirects: false
 
 monolog:
+    use_microseconds: false
     handlers:
         main:
             type:  stream

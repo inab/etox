@@ -417,6 +417,7 @@ knp_paginator:
         sortable: KnpPaginatorBundle:Pagination:sortable_link.html.twig # sort link template
 
 monolog:
+    use_microseconds: false
     handlers:
         info:
             type: stream

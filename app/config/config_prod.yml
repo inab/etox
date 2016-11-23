@@ -12,6 +12,7 @@ imports:
 #        query_cache_driver: apc
 
 monolog:
+    use_microseconds: false
     handlers:
         main:
             type:         fingers_crossed

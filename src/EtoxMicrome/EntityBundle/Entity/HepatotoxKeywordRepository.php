@@ -21,6 +21,7 @@ class HepatotoxKeywordRepository extends EntityRepository
             WHERE a.id= :entityId
         ");
         $query->setParameter('entityId', $entityId);
+        $query->setMaxResults(2);
         $term=$query->getResult();
         if(count($term)==0){
             $errorMessage="There is no entity with that name ('$entityName')";
@@ -42,6 +43,7 @@ class HepatotoxKeywordRepository extends EntityRepository
             WHERE a.term= :entityName
         ");
         $query->setParameter('entityName', $entityName);
+        $query->setMaxResults(2);
         $term=$query->getResult();
         if(count($term)==0){
             $errorMessage="There is no entity with that name ($entityName)";
@@ -65,6 +67,7 @@ class HepatotoxKeywordRepository extends EntityRepository
             WHERE h.$key= :value
         ");
         $query->setParameter('value', $value);
+        $query->setMaxResults(2);
         $compounds=$query->getResult();
         if(count($compounds)==0){
             return $arrayEntityId;
