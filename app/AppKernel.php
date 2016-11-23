@@ -24,6 +24,7 @@ class AppKernel extends Kernel
             new FOS\UserBundle\FOSUserBundle(),
             new FOS\ElasticaBundle\FOSElasticaBundle(),
             new EtoxMicrome\UserBundle\UserBundle(),
+            new Sentry\SentryBundle\SentryBundle(),
             new EtoxMicrome\DocumentBundle\EtoxMicromeDocumentBundle(),
             new EtoxMicrome\EntityBundle\EtoxMicromeEntityBundle(),
             new EtoxMicrome\Entity2DocumentBundle\EtoxMicromeEntity2DocumentBundle(),

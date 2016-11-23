@@ -46,3 +46,15 @@ Limtox installation
          // http://symfony.com/doc/current/book/installation.html#configuration-and-setup
          // for more information
          umask(0000);//Or you can use umask(0002)
+
+5.- Post-install mandatory actions:
+
+If you want to use Sentry (https://sentry.io/), you have to add a file "app/conf/sentry.yml" with sentry dsn parameter. i.e:
+    sentry:
+        dsn: "https://*******@sentry.io/*****"
+
+If you don't want to use Sentry you have to delete Sentry import line in config.yml.
+
+    //inside app/config/config.yml
+    imports:
+    - { resource: sentry.yml }   //Delete this line!
