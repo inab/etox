@@ -7,6 +7,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Response;
 
+use Symfony\Component\Debug\Debug;
+use Symfony\Component\Debug\ErrorHandler;
+use Symfony\Component\Debug\ExceptionHandler;
 
 class SearchController extends Controller
 {
@@ -1438,7 +1441,10 @@ Evidences found in Sentences:\n
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //////In this lines we check if the user wants to download the results of the searching process. If so, the exportFunction is called//////
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        //Debug::enable();
+        //ErrorHandler::register();//The ErrorHandler class catches PHP errors and converts them to exceptions (of class ErrorException or FatalErrorException for PHP fatal errors):
+        //ExceptionHandler::register();//The ExceptionHandler class catches uncaught PHP exceptions and converts them to a nice PHP response. It is useful in debug mode to replace the default PHP/XDebug output with something prettier and more useful:
+        
         $message="inside searchField..EntityAction";
         $request = $this->get('request');
         $download=$request->query->get('download');
