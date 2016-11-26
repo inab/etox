@@ -14,7 +14,6 @@
 
         <title>{% block title %}Welcome to LimTox{% endblock %}</title>
 
-        {% stylesheets %}
             <!-- Included CSS Files, use foundation.css if you do not want minified code -->
             <link rel="stylesheet" href="{{ asset('stylesheets/base.css') }}">
             <link rel="stylesheet" href="{{ asset('stylesheets/foundation.css') }}">
@@ -24,20 +23,20 @@
             <link rel="stylesheet" href="{{ asset('stylesheets/pagerfantaDefault.css') }}" type="text/css" media="all" />
             <link rel="stylesheet" href="{{ asset('javascripts/tablesorter/themes/blue/style.css') }}" type="text/css" id="" media="print, projection, screen" />
             <link rel="stylesheet" href="{{ asset('stylesheets/stickytooltip.css') }}">
-        {% endstylesheets %}
-        {% javascripts %}
-            <script src="{{ asset('javascripts/foundation/modernizr.foundation.js') }}"></script>
-            <script src="{{ asset('javascripts/foundation/foundation.min.js') }}"></script>
-            <script src="{{ asset('javascripts/jquery-ui-1.9.js') }}"></script>
-            <script src="{{ asset('javascripts/foundation/app.js') }}"></script>
-            <script src="{{ asset('javascripts/foundation/foundation-datepicker.js') }}"></script>
-            <script src="{{ asset('javascripts/tablesorter/jquery-latest.js') }}"></script>
-            <script src="{{ asset('javascripts/tablesorter/jquery.tablesorter.js') }}"></script>
-            <script src="{{ asset('javascripts/stickytooltip.js') }}"></script>
+        {% javascripts 
+            '@FrontendBundle/Resources/public/js/foundation/modernizr.foundation.js'
+            '@FrontendBundle/Resources/public/js/foundation/foundation.min.js'
+            '@FrontendBundle/Resources/public/js/jquery-ui-1.9.js'
+            '@FrontendBundle/Resources/public/js/foundation/app.js'
+            '@FrontendBundle/Resources/public/js/foundation/foundation-datepicker.js'
+            '@FrontendBundle/Resources/public/js/tablesorter/jquery-latest.js'
+            '@FrontendBundle/Resources/public/js/stickytooltip.js'
+        %}
+            <script src="{{ asset_url }}"></script>
         {% endjavascripts %}
 
         {# javascript applet for chemical generator #}
-        <script type="text/javascript" language="javascript" src="{{ asset('javascripts/jsme/jsme.nocache.js') }}"></script>
+        
         {% block stylesheets %}
         {% endblock %}
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />

@@ -40,7 +40,8 @@
                                     <span data-tooltip="stickyCytoscape">
                                         <a href="{{ path('cytoscape', {'entityType': entityType, 'entityName': entityName}) }}" target="_blank"><strong>View Interaction Network</strong></a>
                                     </span>
-                                    {% set tooltip="Click here to get a graph with all the relations of this entity inside Limtox" %}
+                                    {# set tooltip="Click here to get a graph with all the relations of this entity inside Limtox" #}
+                                    {% set tooltip="" %}
                                     {% set stringStickyTooltip = stringStickyTooltip ~ tooltip  %}
                                 </td>
                             </tr>
