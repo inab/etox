@@ -1451,7 +1451,6 @@ Evidences found in Sentences:\n
         //Debug::enable();
         //ErrorHandler::register();//The ErrorHandler class catches PHP errors and converts them to exceptions (of class ErrorException or FatalErrorException for PHP fatal errors):
         //ExceptionHandler::register();//The ExceptionHandler class catches uncaught PHP exceptions and converts them to a nice PHP response. It is useful in debug mode to replace the default PHP/XDebug output with something prettier and more useful:
-        $hola=$adios;
         $message="inside searchField..EntityAction";
         $request = $this->get('request');
         $download=$request->query->get('download');
