@@ -1,0 +1,57 @@
+.pagerfanta {
+}
+
+.pagerfanta a,
+.pagerfanta span {
+    display: inline-block;
+    color: #999;
+    margin-right: .2em;
+    padding: .25em .35em;
+}
+
+.pagerfanta a {
+    text-decoration: none;
+}
+
+.pagerfanta a:hover {
+    background: #E6E6E6;
+}
+
+.pagerfanta .dots {
+    border-width: 0;
+}
+
+.pagerfanta .current {
+    font-weight: bold;
+}
+
+.pagerfanta .disabled {
+    border-color: #ccf;
+    color: #aaa;
+}
+
+/*
+
+.pagerfanta a,
+.pagerfanta span {
+    border-color: blue;
+    color: blue;
+}
+
+.pagerfanta a:hover {
+    background: #ccf;
+}
+
+.pagerfanta .current {
+    background: #ccf;
+}
+
+.pagerfanta .disabled {
+    border-color: #ccf;
+    color: #cf;
+}
+
+*/
+.pagination .pagerfanta a {
+    color: #555;
+}

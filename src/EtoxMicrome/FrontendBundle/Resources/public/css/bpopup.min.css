@@ -1,0 +1,51 @@
+.button.bClose {
+border-radius:7px 7px 7px 7px;
+box-shadow:none;
+font:bold 131% sans-serif;
+position:absolute;
+right:-7px;
+top:-7px;
+padding:0 6px 2px;
+}
+
+#popup,#popup2,.bMulti {
+background-color:#fff;
+border-radius:10px 10px 10px 10px;
+box-shadow:0 0 25px 5px #999;
+color:#111;
+display:none;
+min-width:450px;
+padding:25px;
+}
+
+#popup,.bMulti {
+min-height:250px;
+}
+
+#popup2 iframe {
+background:url(loader.gif) center center no-repeat;
+min-height:240px;
+min-width:450px;
+}
+
+.bMulti p {
+font:500% Petrona,sans-serif;
+text-align:center;
+padding:45px 0 0;
+}
+
+.bMulti a {
+left:175px;
+position:absolute;
+top:175px;
+}
+
+.lt-ie9 .bModal {
+background-color:#000;
+}
+
+::-moz-selection,::selection {
+background-color:#2b91af;
+color:#fff;
+text-shadow:none;
+}

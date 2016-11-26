@@ -14,15 +14,19 @@
 
         <title>{% block title %}Welcome to LimTox{% endblock %}</title>
 
-            <!-- Included CSS Files, use foundation.css if you do not want minified code -->
-            <link rel="stylesheet" href="{{ asset('stylesheets/base.css') }}">
-            <link rel="stylesheet" href="{{ asset('stylesheets/foundation.css') }}">
-            <link rel="stylesheet" href="{{ asset('stylesheets/app.css') }}">
-            <link rel="stylesheet" href="{{ asset('stylesheets/jquery-ui-1.8.21.custom.css') }}">
-            <link rel="stylesheet" href="{{ asset('stylesheets/datepicker.css') }}">
-            <link rel="stylesheet" href="{{ asset('stylesheets/pagerfantaDefault.css') }}" type="text/css" media="all" />
-            <link rel="stylesheet" href="{{ asset('javascripts/tablesorter/themes/blue/style.css') }}" type="text/css" id="" media="print, projection, screen" />
-            <link rel="stylesheet" href="{{ asset('stylesheets/stickytooltip.css') }}">
+        {% stylesheets 
+            'stylesheets/base.css' filter='cssrewrite' 
+            'stylesheets/foundation.css' 
+            'stylesheets/app.css' 
+            'stylesheets/jquery-ui-1.8.21.custom.css' 
+            'stylesheets/datepicker.css' 
+            'stylesheets/pagerfantaDefault.css' 
+            'javascripts/tablesorter/themes/blue/style.css' 
+            'stylesheets/stickytooltip.css'  
+        %}
+            <link rel="stylesheet" href="{{ asset_url }}" />
+        {% endstylesheets %}    
+            
         {% javascripts 
             '@FrontendBundle/Resources/public/js/foundation/modernizr.foundation.js'
             '@FrontendBundle/Resources/public/js/foundation/foundation.min.js'

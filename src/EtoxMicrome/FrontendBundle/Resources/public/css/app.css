@@ -1,0 +1,848 @@
+/* Artfully masterminded by ZURB  */
+
+/* --------------------------------------------------
+   Table of Contents
+-----------------------------------------------------
+:: Shared Styles
+:: Header
+:: Footer
+:: Pagination
+:: Home
+:: Organismos
+
+:: Curation
+
+::Tracking changes
+*/
+
+
+/* -----------------------------------------
+   Shared Styles
+----------------------------------------- */
+body {
+    background: url("../images/background.gif") repeat scroll 0 0 #FFFFFF;
+    color: #000000;
+    font: 14px/24px arial,serif;
+}
+
+#wrapper {
+    margin: 0 auto;
+    min-height: 100%;
+    padding: 0;
+    width: 970px
+}
+#wrapper a {
+    text-decoration: none;
+}
+section.content {
+    margin: 25px auto;
+    padding: 0 10px 180px;
+    text-align: left;
+    width: 940px;
+}
+.tags {
+    background-color: white;
+    font-size: 24px;
+    height: 30px;
+    width: 400px;
+}
+#bigSearch {
+    padding: 11px 20px;
+}
+a.curated:before {
+    color: #FF6600;
+    content: "✔";
+    font-size: 18px;
+    padding-right: 10px;
+}
+a.check:hover {
+    cursor: pointer;
+
+}
+a.check-no:before {
+    color: #666;
+    content: "☑";
+    font-size: 25px;
+}
+
+a.check-no:hover:before {
+    color: #0C0;
+    text-decoration:none;
+}
+a.check-yes:before {
+    color: #0C0;
+    content: "☑";
+    font-size: 25px;
+}
+
+a.cross:hover {
+    cursor: pointer;
+
+}
+a.cross-no:before {
+    color: #666;
+    content: "☒";
+    font-size: 27px;
+}
+a.cross-no:hover:before {
+    color: #F00;
+    text-decoration:none;
+}
+
+a.cross-yes:before {
+    color: #F00;
+    content: "☒";
+    font-size: 27px;
+}
+
+.rgt-arw:after {
+    content: "→";
+    font-size: 18px;
+    padding-left: 5px;
+}
+.small {
+    font-size: 85%;
+}
+.clear-both{
+    clear: both;
+}
+.underline{
+    text-decoration: underline;
+}
+ul{
+    list-style-type: none;
+}
+#mystickytooltip a{
+    color: #FF6600;
+}
+.atip{
+    max-width: 500px;
+    overflow: auto;
+
+}
+ul.download-list li{
+    display: inline;
+    list-style-type: none;
+    padding-right: 15px;
+    padding-left: 10px;
+}
+ul.download-list{
+    margin-top: 20px;
+}
+a.download-link{
+    text-decoration: underline !important;
+}
+/* -----------------------------------------
+   Header
+----------------------------------------- */
+header#top {
+    margin: 0 auto;
+    padding: 40px 10px;
+    width: 900px;
+    min-height: 130px;
+}
+
+#applogo {
+    padding-left: 0;
+}
+#applogo a {
+    color: #5697d6;
+    float: left;
+    font-family: 'Kaushan Script',cursive;
+    font-size: 36px;
+    text-decoration: none;
+}
+header nav#access{
+    float: right;
+}
+header nav#access ul li{
+    display: inline;
+    margin-left: 0.5em;
+}
+header#top nav ul li a {
+    color: #000000;
+    display: inline-block;
+    font-size: 14px;
+    margin: 0 30px 0 0;
+    padding: 8px;
+}
+
+#methods{
+    padding: 20px 20px 0px 0px;
+}
+
+
+
+ul.methods li {
+    display: inline;
+    list-style-type: none;
+    padding-right: 20px;
+}
+
+.slidingDiv {
+    min-height:150px;
+    background: none repeat scroll 0 0 #F1F1F1;
+    padding:20px;
+    margin-top:10px;
+    border: 1px solid #E0DFDF;
+}
+
+.show_hide {
+    background: url("../images/background.gif") repeat scroll 0 0 #FFFFFF;
+    display:none;
+    position: absolute;
+    top: 220px;
+    right: 24px;
+}
+
+#advanceSearch{
+    width: 618px;
+    margin: 0 auto;
+}
+.advanceSearch hr{
+    margin: 8px;
+}
+#searchby {
+    width: auto;
+}
+
+
+/* -----------------------------------------
+    Footer Styles
+----------------------------------------- */
+footer nav ul li{
+    display: inline;
+    margin-left: 0.5em;
+}
+footer#bottom {
+    background: none repeat scroll 0 0 #F1F1F1;
+    border-top: 1px solid #E0DFDF;
+    left: 0;
+    margin: 0;
+    padding: 6px 0;
+    position: absolute;
+    text-align: center;
+    width: 100%;
+    bottom: 20px;
+    height: 120px;
+}
+footer#bottom nav {
+    margin: 0 0 20px;
+}
+#bottom ul {
+    margin-left: 0;
+}
+#bottom li {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+/* -----------------------------------------
+    Pagination
+----------------------------------------- */
+.pagination{
+    margin-bottom: 30px;
+}
+
+.pagination .current {
+    font-weight: bold;
+    text-decoration: underline;
+}
+.pagination a, .pagination .current {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+/* -----------------------------------------
+    Home
+----------------------------------------- */
+section.content {
+    margin: 0 auto;
+    margin-top: 30px;
+    padding: 0 10px 180px;
+    text-align: left;
+    width: 940px;
+}
+section.content a {
+    color: #000 !important;
+}
+.right-column ul {
+    margin: 0;
+    padding: 0;
+    text-align: left;
+}
+.right-column ul li {
+    line-height: 30px;
+    list-style: none outside none;
+    transition-duration: 0.6s;
+    white-space: nowrap;
+}
+.right-column ul li:hover {
+    background: none repeat scroll 0 0 #F8F8F8;
+    padding-left: 10px;
+}
+.right-column ul li:hover:before {
+    color: #000000;
+}
+.right-column ul li:before {
+    color: #F1F1F1;
+    content: "✔";
+    font-size: 18px;
+    padding-right: 10px;
+}
+
+.vis-break {
+    background: none repeat scroll 0 0 #F1F1F1;
+    border: 1px solid #E0DFDF;
+    padding: 10px;
+}
+mark.termSearched{
+    background-color:transparent;
+    text-decoration: underline;
+    font-style: italic;
+}
+
+mark.specie {
+    background-color: #cdf9c4;
+}
+mark.compound {
+    background-color: #f0f6a6;
+}
+mark.enzyme {
+    background-color: #f994ff;
+}
+mark.protein{
+    background-color: #bcf5ff;
+}
+mark.cytochrome{
+    background-color: #ffcfcf;
+}
+mark.mutation{
+    background-color: #E9FEE8;
+}
+mark.go_term{
+    background-color: #F9FDD5;
+}
+mark.term{
+    background-color: #d597fb;
+}
+mark.gene{
+    background-color: #CCC;
+}
+mark.marker{
+    background-color:#dffcff;
+}
+mark.marker a{
+    color:#000;
+}
+mark.compound a{
+    color: #000;
+}
+
+.btmspc-dbl{
+    margin-bottom: 0;
+}
+
+.results-summary{
+    float: left;
+    margin-top: 10px;
+    width: auto;
+}
+
+.results-summary li{
+    font-size: 85%;
+}
+
+#mouseoverSummary{
+    display:none;
+}
+
+#geneAliases{
+    display:none;
+    border: 1px solid #ddd;
+}
+
+table.summary a{
+    text-decoration: underline !important;
+}
+#tanimoto-result{
+    float: left
+}
+/* -----------------------------------------
+    Compounds
+----------------------------------------- */
+.chebi_links{
+    width: 678px;
+    border: 1px solid #F1F1F1;
+    background-color: white;
+    word-wrap: break-word;
+
+}
+
+/* -----------------------------------------
+    Organisms
+----------------------------------------- */
+.taxId_links{
+    width: 678px;
+    border: 1px solid #F1F1F1;
+    background-color: white;
+    word-wrap: break-word;
+
+}
+
+li.taxIdlist {
+    margin-top: 0px !important;
+}
+.chebi_links ul, .taxIdlist, .taxId_links ul {
+    margin-bottom: 0px !important;
+}
+
+/* -----------------------------------------
+    Curation
+----------------------------------------- */
+
+li.specie{
+    background-color: #cdf9c4;
+    padding: 5px;
+}
+
+li.compound{
+    background-color: #f0f6a6;
+    padding: 5px;
+}
+
+li.enzyme{
+    background-color: #f994ff;
+    padding: 5px;
+}
+li.protein{
+    background-color: #bcf5ff;
+    padding: 5px;
+}
+li.cyp{
+    background-color: #ffcfcf;
+    padding: 5px;
+}
+li.mutation{
+    background-color: #E9FEE8;
+    padding: 5px;
+}
+li.go_term{
+    background-color: #F9FDD5;
+    padding: 5px;
+}
+li.keyword{
+    background-color: #ffd0fd;
+    padding: 5px;
+}
+li.marker{
+    background-color: #dffcff;
+    padding: 5px;
+}
+
+.score-green-0{
+    background-color: #008800;
+    padding: 1px 5px 1px 5px;
+}
+.score-green-1{
+    background-color: #009900;
+    padding: 1px 5px 1px 5px;
+}
+.score-green-2{
+    background-color: #00AA00;
+    padding: 1px 5px 1px 5px;
+}
+.score-green-3{
+    background-color: #00CC00;
+    padding: 1px 5px 1px 5px;
+}
+.score-green-4{
+    background-color: #00EE00;
+    padding: 1px 5px 1px 5px;
+}
+.score-green-5{
+    background-color: #00FF00;
+    padding: 1px 5px 1px 5px;
+}
+.score-red-0{
+    background-color: #FF0000;
+    padding: 1px 5px 1px 5px;
+}
+.score-red-1{
+    background-color: #EE0000;
+    padding: 1px 5px 1px 5px;
+}
+.score-red-2{
+    background-color: #CC0000;
+    padding: 1px 5px 1px 5px;
+}
+.score-red-3{
+    background-color: #AA0000;
+    padding: 1px 5px 1px 5px;
+}
+.score-red-4{
+    background-color: #990000;
+    padding: 1px 5px 1px 5px;
+}
+.score-red-5{
+    background-color: #880000;
+    padding: 1px 5px 1px 5px;
+}
+
+
+
+#abstractsResults{
+
+}
+
+
+
+#evidenceText{
+    background-color: #F1F1F1;
+    width: 680px;
+    -webkit-border-radius: 0px 0px 20px 20px;
+    -moz-border-radius: 0px 0px 20px 20px;
+    border-radius: 0px 0px 20px 20px;
+}
+#content{
+}
+.fixed {
+    position: fixed;
+}
+
+td.horizontal-header{
+    font-weight: bold;
+}
+/* -----------------------------------------
+    Listing evidences
+----------------------------------------- */
+#tableResults th{
+    text-align: center;
+}
+#tableResults .active{
+    text-decoration: underline;
+}
+#tableResults td{
+    vertical-align: top;
+}
+#tableResults td.center{
+    text-align: center;
+    vertical-align: top;
+}
+.abstract {
+    border-bottom: 1px dotted #E0DFDF;
+    margin-bottom: 10px;
+}
+.document {
+    border-bottom: 1px dotted #E0DFDF;
+    padding-top: 10px;
+}
+.titleDocument{
+    font-style: italic;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+.jumpToDocuments{
+    float: right;
+}
+.even{
+    background-color: #F1F1F1;
+}
+.odd{
+
+}
+img.outlinkLogo{
+    vertical-align: bottom;
+}
+.atip{
+    max-width: 500px;
+}
+/* -----------------------------------------
+    Content
+----------------------------------------- */
+
+#content{
+    margin: 0 auto;
+    max-width: 940px;
+}
+
+
+/* -----------------------------------------
+    right Content
+----------------------------------------- */
+
+#right-content{
+    float: right;
+    width: 720px;
+    padding: 20px;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    border-radius: 20px;
+    background-color:#F1F1F1;
+    -webkit-box-shadow: #B3B3B3 14px 14px 14px;
+    -moz-box-shadow: #B3B3B3 14px 14px 14px;
+    box-shadow: #B3B3B3 14px 14px 14px;
+}
+ul.evidenciaEntidad-list li{
+    margin-bottom: 40px;
+    margin-top: 10px;
+}
+/* -----------------------------------------
+    Sidebar
+----------------------------------------- */
+#sidebar{
+    background-color: white;
+    float: left;
+    padding-left: 20px;
+    padding-right: 20px;
+    width: 160px;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    border-radius: 20px;
+    background-color:#F1F1F1;
+    -webkit-box-shadow: #B3B3B3 14px 14px 14px;
+    -moz-box-shadow: #B3B3B3 14px 14px 14px;
+    box-shadow: #B3B3B3 14px 14px 14px;
+
+}
+#sidebar ul{
+    line-height: 50px;
+}
+
+
+/* -----------------------------------------
+    Security
+----------------------------------------- */
+
+input[type="password"], input#username, input#fos_user_registration_form_username, input#fos_user_registration_form_email{
+    width: 150px;
+}
+#user-box{
+    float: right;
+}
+
+/* -----------------------------------------
+    Dropdown css from docs.css foundation
+----------------------------------------- */
+@media only screen and (max-width: 767px) {
+  .f-dropdown {
+    max-width: 100%;
+    left: 0; } }
+/* Foundation Dropdowns */
+.f-dropdown {
+  position: absolute;
+  left: -9999px;
+  top: -9999px;
+  list-style: none;
+  width: 100%;
+  max-height: none;
+  height: auto;
+  background: white;
+  border: solid 1px #cccccc;
+  font-size: 16px;
+  z-index: 99;
+  margin-top: 2px;
+  max-width: 200px; }
+  .f-dropdown *:first-child {
+    margin-top: 0; }
+  .f-dropdown *:last-child {
+    margin-bottom: 0; }
+  .f-dropdown:before {
+    content: "";
+    display: block;
+    width: 0;
+    height: 0;
+    border: solid 6px;
+    border-color: transparent transparent white transparent;
+    position: absolute;
+    top: -12px;
+    left: 10px;
+    z-index: 99; }
+  .f-dropdown:after {
+    content: "";
+    display: block;
+    width: 0;
+    height: 0;
+    border: solid 7px;
+    border-color: transparent transparent #cccccc transparent;
+    position: absolute;
+    top: -14px;
+    left: 9px;
+    z-index: 98; }
+  .f-dropdown.right:before {
+    left: auto;
+    right: 10px; }
+  .f-dropdown.right:after {
+    left: auto;
+    right: 9px; }
+  .f-dropdown li {
+    font-size: 0.875em;
+    cursor: pointer;
+    padding: 0.3125em 0.625em;
+    line-height: 1.125em;
+    margin: 0; }
+    .f-dropdown li:hover, .f-dropdown li:focus {
+      background: #eeeeee; }
+    .f-dropdown li a {
+      color: #555555; }
+  .f-dropdown.content {
+    position: absolute;
+    left: -9999px;
+    top: -9999px;
+    list-style: none;
+    padding: 1.25em;
+    width: 100%;
+    height: auto;
+    max-height: none;
+    background: white;
+    border: solid 1px #cccccc;
+    font-size: 16px;
+    z-index: 99;
+    max-width: 200px; }
+    .f-dropdown.content *:first-child {
+      margin-top: 0; }
+    .f-dropdown.content *:last-child {
+      margin-bottom: 0; }
+  .f-dropdown.tiny {
+    max-width: 200px; }
+  .f-dropdown.small {
+    max-width: 300px; }
+  .f-dropdown.medium {
+    max-width: 500px; }
+  .f-dropdown.large {
+    max-width: 800px; }
+
+
+a.chebiId:hover:after, a.chebiId:active:after, a.chebiId:focus:after {
+    color: #FF6600;
+    content: "✔";
+    font-size: 14px;
+}
+
+.chebiIdlist{
+    display: inline;
+    padding-right: 5px;
+}
+
+
+
+/* -----------------------------------------
+    Tracking Changes
+----------------------------------------- */
+
+
+input.datepicker {
+    -moz-box-sizing: border-box;
+    background-color: #FFFFFF;
+    border: 1px solid #CCCCCC;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) inset;
+    color: rgba(0, 0, 0, 0.75);
+    display: block;
+    font-family: inherit;
+    font-size: 0.875em;
+    height: 2.3125em;
+    margin: 0 0 1em;
+    padding: 0.5em;
+    transition: all 0.15s linear 0s;
+    width: 153px;
+}
+
+
+/* -----------------------------------------
+    Entity summaries
+----------------------------------------- */
+
+.wrapper
+{
+    width: 680px;
+    margin: 0 auto;
+}
+
+    .wrapper h1
+    {
+        color: #555;
+        text-align: center;
+        text-shadow: rgba(0, 0, 0, 0.15) 0px 0px 1px;
+        letter-spacing: 2px;
+    }
+
+#compounds
+{
+    width: 650px;
+}
+
+.alphabet
+{
+    margin: 0 0 10px;
+    overflow: hidden;
+}
+
+    .alphabet a, #compounds-table tr
+    {
+        transition: background-color 0.3s ease-in-out;
+        -moz-transition: background-color 0.3s ease-in-out;
+        -webkit-transition: background-color 0.3s ease-in-out;
+    }
+
+    .alphabet a
+    {
+        width: 27px;
+        float: left;
+        color: #333;
+        cursor: pointer;
+        height: 20px;
+        border: 1px solid #CCC;
+        display: block;
+        padding: 2px 2px;
+        font-size: 14px;
+        text-align: center;
+        line-height: 20px;
+        text-shadow: 0 1px 0 rgba(255, 255, 255, .5);
+        border-right: none;
+        text-decoration: none;
+        background-color: #F1F1F1;
+    }
+
+        .alphabet a.first
+        {
+            border-radius: 3px 0 0 3px;
+        }
+
+        .alphabet a.last
+        {
+            border-right: 1px solid silver;
+            border-radius: 0 3px 3px 0;
+        }
+
+        .alphabet a:hover,
+        .alphabet a.active
+        {
+            background: #FBF8E9;
+            font-weight: bold;
+        }
+        .alphabet a.cyp{
+            width: 50px;
+        }
+#compounds-table th, #compounds-table td{
+    text-align: center;
+}
+#cytochrome-c{
+    display: none;
+}
+#cytochrome-c .visible{
+    display: block !important;
+}
+
+/* -----------------------------------------
+    Help
+----------------------------------------- */
+h6.inactive{
+    color: #DDD;
+}
+ol.tutorial li{
+    margin: 40px 0px 10px 0px;
+    font-size: 25px;
+}
+
+.cytoscape_tool{
+    border-top: 1px solid #000;
+}
