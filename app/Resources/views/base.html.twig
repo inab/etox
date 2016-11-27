@@ -14,8 +14,8 @@
 
         <title>{% block title %}Welcome to LimTox{% endblock %}</title>
 
-        {% stylesheets 
-            'stylesheets/base.css' filter='cssrewrite' 
+        {% stylesheets filter='?uglifycss' filter='cssrewrite'
+            'stylesheets/base.css'   
             'stylesheets/foundation.css' 
             'stylesheets/app.css' 
             'stylesheets/jquery-ui-1.8.21.custom.css' 
