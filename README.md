@@ -14,7 +14,7 @@ Limtox installation
 
 3.- Download vendors using Composer
 
-    $ composer.phar update
+    $ composer.phar install
 
 4.- Create app/cache and app/logs and give permissions
 
@@ -52,6 +52,8 @@ Limtox installation
 If you want to use Sentry (https://sentry.io/), you have to add a file "app/conf/sentry.yml" with sentry dsn parameter. i.e:
     sentry:
         dsn: "https://*******@sentry.io/*****"
+        app_path: "%kernel.root_dir%"
+        environment: "%kernel.environment%"
 
 If you don't want to use Sentry you have to delete Sentry import line in config.yml.
 
