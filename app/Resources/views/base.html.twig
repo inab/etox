@@ -27,7 +27,7 @@
             <link rel="stylesheet" href="{{ asset_url }}" />
         {% endstylesheets %}    
             
-        {% javascripts 
+        {% javascripts filter='?uglifyjs2'
             '@FrontendBundle/Resources/public/js/foundation/modernizr.foundation.js'
             '@FrontendBundle/Resources/public/js/foundation/foundation.min.js'
             '@FrontendBundle/Resources/public/js/jquery-ui-1.9.js'
