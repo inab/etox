@@ -60,3 +60,8 @@ If you don't want to use Sentry you have to delete Sentry import line in config.
     //inside app/config/config.yml
     imports:
     - { resource: sentry.yml }   //Delete this line!
+
+Add node_path paramenter to parameters.yml:
+    //inside app/config/paramenters.yml
+    parameters:
+        node_path: /usr/local/bin/node  (or whatever your node path is)
