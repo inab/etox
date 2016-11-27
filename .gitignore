@@ -11,6 +11,8 @@ app/config/sentry.yml
 app/cache/*
 app/logs/*
 app/Resources/node_modules/*
+app/Resources/npm-debug.log
+npm-debug.log
 vendor/*
 web/bundles/*
 web/css/*

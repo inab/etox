@@ -87,6 +87,7 @@ assetic:
     use_controller: false
     bundles:        [ ]
     #java: /usr/bin/java
+    node: /opt/node/current/bin/node
     filters:
         cssrewrite: ~
         uglifyjs2:
@@ -437,3 +438,4 @@ knp_paginator:
 #        syslog:
 #            type: syslog
 #            level: error
+
