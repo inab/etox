@@ -345,7 +345,7 @@ mark.compound a{
 .results-summary{
     float: left;
     margin-top: 10px;
-    width: auto;
+    width: 100%;
 }
 
 .results-summary li{
@@ -359,6 +359,10 @@ mark.compound a{
 #geneAliases{
     display:none;
     border: 1px solid #ddd;
+}
+
+table.summary{
+    width: 100%;
 }
 
 table.summary a{
