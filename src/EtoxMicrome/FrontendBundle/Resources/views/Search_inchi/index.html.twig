@@ -149,7 +149,7 @@
                                     {% set stringStickyTooltip = stringStickyTooltip ~ tooltip  %}
 
                                 {% elseif kind == "epar" %}
-                                    {% set link="www.ema.europa.eu/ema/index.jsp?curl=pages/medicines/landing/epar_search.jsp" %}
+                                    {% set link="http://www.ema.europa.eu/ema/index.jsp?curl=pages/medicines/landing/epar_search.jsp" %}
                                     {% set imageRoute = 'images/epar.png' %}
                                     {% set sid=entity2Document.document.getSentenceId %}
                                     <span data-tooltip='sticky{{ tooltipCounter }}'>
