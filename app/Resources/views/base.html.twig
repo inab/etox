@@ -15,32 +15,32 @@
         <title>{% block title %}Welcome to LimTox{% endblock %}</title>
 
         {% stylesheets filter='?uglifycss' filter='cssrewrite'
-            'stylesheets/base.css'   
-            'stylesheets/foundation.css' 
-            'stylesheets/app.css' 
-            'stylesheets/jquery-ui-1.8.21.custom.css' 
-            'stylesheets/datepicker.css' 
-            'stylesheets/pagerfantaDefault.css' 
-            'stylesheets/tablesorter/themes/blue/style.css' 
-            'stylesheets/stickytooltip.css'  
+            'stylesheets/base.css'
+            'stylesheets/foundation.css'
+            'stylesheets/app.css'
+            'stylesheets/jquery-ui-1.8.21.custom.css'
+            'stylesheets/datepicker.css'
+            'stylesheets/pagerfantaDefault.css'
+            'stylesheets/tablesorter/themes/blue/style.css'
+            'stylesheets/stickytooltip.css'
         %}
             <link rel="stylesheet" href="{{ asset_url }}" />
-        {% endstylesheets %}    
-            
+        {% endstylesheets %}
+
         {% javascripts filter='?uglifyjs2'
+            '@FrontendBundle/Resources/public/js/tablesorter/jquery-latest.js'
             '@FrontendBundle/Resources/public/js/foundation/modernizr.foundation.js'
             '@FrontendBundle/Resources/public/js/foundation/foundation.min.js'
             '@FrontendBundle/Resources/public/js/jquery-ui-1.9.js'
             '@FrontendBundle/Resources/public/js/foundation/app.js'
             '@FrontendBundle/Resources/public/js/foundation/foundation-datepicker.js'
-            '@FrontendBundle/Resources/public/js/tablesorter/jquery-latest.js'
             '@FrontendBundle/Resources/public/js/stickytooltip.js'
         %}
             <script src="{{ asset_url }}"></script>
         {% endjavascripts %}
 
         {# javascript applet for chemical generator #}
-        
+
         {% block stylesheets %}
         {% endblock %}
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
