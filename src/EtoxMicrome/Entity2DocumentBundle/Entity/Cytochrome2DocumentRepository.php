@@ -59,6 +59,7 @@ class Cytochrome2DocumentRepository extends EntityRepository
 
     public function getCytochrome2DocumentFromFieldDQL($field, $entityType, $arrayNames, $arrayCanonicals, $source, $orderBy)
     {
+        $message="inside getCytochrome2DocumentFromFieldDQL";
         $valToSearch=$this->getValToSearch($field);//"i.e hepval, embval... etc"
         //We have to create a query that searchs all over the entityIds inside the $arrayEntityId
         $orderBy=$this->getOrderBy($orderBy, $valToSearch);
@@ -97,7 +98,6 @@ class Cytochrome2DocumentRepository extends EntityRepository
             $query->setParameter("source", $source);
             $query->setMaxResults(10000);
         }
-
         return $query;
 
     }

@@ -17,6 +17,13 @@
                 The LiMTox system is the first text mining approach that tries to extract associations between compounds and a particular toxicological end point at various levels of granularity and evidence types, all inspired by the content of toxicology reports. It integrates direct ranking of associations between compounds and hepatotoxicity through combination of heterogeneous complementary strategies from term co-mention, rules, and patterns to machine learning based text classification.  It also provides indirect associations to hepatotoxicity through the extraction of relations reflecting the effect of compounds at the level of metabolism and liver enzymes. Figure 1 provides a general overview of the LiMTox system.
             </p>
             <p>
+                <h6 class="twelve columns">LimTox pipeline</h6>
+                <img src="{{ asset('images/limtox_flow.png') }}" border="0" />
+                <p>
+                <small>LimTox literature mining system flow chart. The system consists in two main components, the information retrieval pipeline and the information/relation extraction modules. The first component works at the level of articles while the second one is concerned on the identification of semantic labels and their relations at the level of individual sentences</small>
+                </p>
+            </p>
+            <p>
                 The system design was inspired on an initial analysis of information contained in various data resources related to toxicology, covering databases, literature, EPARs and a small sample of printed EFPIA toxicological reports provided by one of the partners. This information was used to define the overall text mining strategy to be followed, the type of entities and methods to be used and which data types contain in the industry reports could be captured from the other document collections. Thereafter followed the document data set construction, automatic retrieval of EPARs, NDAs in addition to the entire PubMed database and a large set of full text articles. These documents were standardized, converted to plain text, pre-processed, tokenized (including sentence boundary recognition).
             </p>
             <p>
@@ -33,16 +40,7 @@
             </p>
         </article>
     </section>
-    <section class="row display">
-        <h6 class="twelve columns">LimTox pipeline</h6>
-    </section>
     <section class="row">
-        <article class="twelve columns">
-            <img src="{{ asset('images/limtox_flow.png') }}" border="0" />
-            <p>
-            <small>LimTox literature mining system flow chart. The system consists in two main components, the information retrieval pipeline and the information/relation extraction modules. The first component works at the level of articles while the second one is concerned on the identification of semantic labels and their relations at the level of individual sentences</small>
-            </p>
-        </article>
     </section>
     {% include 'FrontendBundle:Search_document:scripts_code.html.twig' %}
 {% endblock %}
