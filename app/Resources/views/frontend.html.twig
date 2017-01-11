@@ -28,7 +28,7 @@
                 </ul>
             </nav>
             <div class="clear-both"></div>
-            <div id="user-box">
+            {# <div id="user-box">
                 {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
                     {{ 'layout.logged_in_as'|trans({'%username%': app.user.username}, 'FOSUserBundle') }} |
                     <a href="{{ path('fos_user_security_logout') }}">
@@ -39,6 +39,7 @@
                     <a href="{{ path('fos_user_registration_register') }}">Register</a>
                 {% endif %}
             </div>
+            #}
         </header>
         <section class="content" role="main">
             {% block article %}{% endblock %}
