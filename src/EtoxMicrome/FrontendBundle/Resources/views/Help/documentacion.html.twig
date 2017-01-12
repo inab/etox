@@ -1,0 +1,116 @@
+{% extends '::frontend.html.twig' %}
+
+{% block article %}
+    <section class="row display" role="main">
+        <article class="three columns">
+            <ul>
+                <h3><h6><a href="{{ path("tutorial") }}">Tutorial</a></h6></h3>
+                <h3><h6 style="font-style:itah3c">Documentation</h6></h3>
+                <h3><h6 class="inactive">FAQs</h6></h3>
+                <h3><h6 class="inactive">API</h6></h3>
+            </ul>
+        </article>
+        <article class="nine columns">
+            <h1>LimTox Documentation</h1>
+            <p>
+                <ol class="documentation">
+                    <h2>Sources</h2>
+                        <ul>
+                            <li>All:</li>
+                            <li>Pubmed:</li>
+                            <li>FullText:</li>
+                            <li>NDA:</li>
+                            <li>EPAR:</li>
+                            <li>Abstracts (only for free-text and compound searches):</li>
+                        </ul>
+                    <h2>Scores</h2>
+                        <ul>
+                            <li>SVM:</li>
+                            <li>SVM Confidence:</li>
+                            <li>Pattern:</li>
+                            <li>Term:</li>
+                            <li>Rule:</li>
+                            <li>Nephro:</li>
+                            <li>Cardio:</li>
+                            <li>Toxicology:</li>
+                            <li>Biomarker:</li>
+                        </ul>
+                    <h2>Free-Text search (search by keywords)</h2>
+                        <ul>
+                            <li>Any:</li>
+                            <li>With Compounds:</li>
+                            <li>With CYPs:</li>
+                            <li>With Markers:</li>
+                        </ul>
+                    <h2>Chemical compounds search by:</h2>
+                        <ul>
+                            <li>Compound name:</li>
+                            <li>Chemical identifiers:</li>
+                            <li>Smiles:</li>
+                            <li>InChI:</li>
+                            <li>Any(Free-text search):</li>
+                            <li>With CYPs:</li>
+                            <li>With Markers:</li>
+                            <li>Term Relations:</li>
+                        </ul>
+                    <h2>Cytochromes search by</h2>
+                        <ul>
+                            <li>CYPs name/symbol:</li>
+                            <li>CYPs Uniprot Accession:</li>
+                            <li>CYPs Nomenclature:</li>
+                            <li>Any(Free-text search):</li>
+                            <li>With Compounds:</li>
+                            <li>CYPs-Chemical Relations:</li>
+                        </ul>
+                    <h2>Markers search by</h2>
+                        <ul>
+                            <li>Marker name/symbol:</li>
+                            <li>Marker Identifier:</li>
+                            <li>Any(Free-text search):</li>
+                            <li>With Compounds:</li>
+                            <li>Marker-chemical relations:</li>
+                        </ul>
+                    <h2>Genes search</h2>
+                        <ul>
+                            <li>Gene name:</li>
+                            <li>Entrez Gene ID:</li>
+                        </ul>
+                    <h2>Search different toxic endpoints</h2>
+                        <ul>
+                            <li>Hepatotoxicity:</li>
+                            <li>Nephrotoxicity:</li>
+                            <li>Cardiotoxicity:</li>
+                            <li>Thyroid toxicity:</li>
+                            <li>Phospholipidosis:</li>
+                        </ul>
+                    <h2>Statistics of results</h2>
+                    <h2>View Interaction Network</h2>
+                    <h2>Extra info</h2>
+                        <h3>In case of Compound search</h3>
+                        <ul>
+                            <li>Download mol file:</li>
+                            <li>Basic info + outlinks:</li>
+                            <li>Search Smile in ChemSpider:</li>
+                            <li>Aliases:</li>
+                            <li>Compound Image:</li>
+                            <li>Calculate Tanimoto Coefficient:</li>
+                            <li>List of compounds with a Tanimoto coeff. >= 0.5::</li>
+                        </ul>
+                        <h3>In case of Cytochrome search</h3>
+                        <ul>
+                            <li>name:</li>
+                            <li>UniprotID:</li>
+                            <li>Type:</li>
+                            <li>Tax:</li>
+                            <li>Canonical:</li>
+                        </ul>
+                    <h2>Entity Mentions Highlight</h2>
+                    <h2>Download Results</h2>
+                    <h2>Sorting by Score</h2>
+                    <h2>Simple Curation of Results</h2>
+                </ol>
+            </p>
+        </article>
+    </section>
+    {% include 'FrontendBundle:Search_document:scripts_code.html.twig' %}
+{% endblock %}

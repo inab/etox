@@ -23,4 +23,10 @@ class HelpController extends Controller
         $respuesta = $this->render('FrontendBundle:Help:tutorial.html.twig');
         return $respuesta;
     }
+
+    public function showDocumentacionAction()
+    {
+        $respuesta = $this->render('FrontendBundle:Help:documentacion.html.twig');
+        return $respuesta;
+    }
 }
