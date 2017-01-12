@@ -851,12 +851,15 @@ ol.tutorial li{
     border-top: 1px solid #000;
 }
 
+ol.documentation ul{
+    margin-left: 1.5em;
+}
+
 ol.documentation li{
     display: inline-block;
     margin: 8px 0px 0px 0px;
     font-size: 20px;
     font-weight: bold;
-    text-indent: 1.2em;
     list-style: inside;
 }
 
