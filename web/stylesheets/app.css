@@ -852,10 +852,11 @@ ol.tutorial li{
 }
 
 ol.documentation li{
-    margin: 40px 0px 10px 0px;
+    display: inline-block;
+    margin: 8px 0px 0px 0px;
     font-size: 20px;
     font-weight: bold;
-    text-indent: 1.5em;
+    text-indent: 1.2em;
     list-style: inside;
 }
 
@@ -867,4 +868,8 @@ ol.documentation h2{
 ol.documentation h3{
     text-decoration: underline;
     margin-top: 1.5em;
+}
+
+ol.documentation a{
+    text-decoration: underline !important;
 }

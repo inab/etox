@@ -15,99 +15,102 @@
             <p>
                 <ol class="documentation">
                     <h2>Sources</h2>
+                        <p>
+                            When performing a search inside LimTox, you can select the sources where hepatotoxicity (or <a href="#toxic_endpoint">other toxic endpoint</a>) entities are searched in. You can choose amongst
+                        </p>
                         <ul>
-                            <li>All:</li>
-                            <li>Pubmed:</li>
-                            <li>FullText:</li>
-                            <li>NDA:</li>
-                            <li>EPAR:</li>
-                            <li>Abstracts (only for free-text and compound searches):</li>
+                            <li id="all">All:&nbsp;</li>Select “All” to include all type of sources described below.<br/>
+                            <li id="pubmed">Pubmed:&nbsp;</li>Entities will be searched taking into account only the Pubmed Articles in the system. Nowadays we have 122.997.116 Pubmed articles indexed.<br/>
+                            <li id="fulltext">FullText:&nbsp; </li>Select FullText to search into a large set of full text articles that were used for the dataset construction.<br/>
+                            <li id="nda">NDA:&nbsp; </li>Search entities inside NDA articles. Currently we have 759.621 articles indexed.<br/>
+                            <li id="epar">EPAR:&nbsp; </li>Search entities inside EPAR articles. We have 630.507 EPAR articles indexed.<br/>
+                            <li id="abstracts">Abstracts:&nbsp; </li>You can search compounds inside abstracts. You can also perform <a href="#free_text_searches">free-text searches</a> against abstracts</link>.<br/>
                         </ul>
                     <h2>Scores</h2>
                         <ul>
-                            <li>SVM:</li>
-                            <li>SVM Confidence:</li>
-                            <li>Pattern:</li>
-                            <li>Term:</li>
-                            <li>Rule:</li>
-                            <li>Nephro:</li>
-                            <li>Cardio:</li>
-                            <li>Toxicology:</li>
-                            <li>Biomarker:</li>
+                            <li id="svm">SVM:&nbsp;</li>Support Vector Machine Score. Binary linear kernel SVM classifier score result (SVMLight).Features: word unigram, stop word filter, balanced training set. The higher the more related to the topic. If the output of the scoring function is positive then the text was classified as relevant for adverse hepatobiliary events, while if it has a negative score it was classified as non-relevant. See: <a href="http://svmlight.joachims.org" target="_blank">http://svmlight.joachims.org</a><br/>
+                            <li id="svm_confidence">SVM Confidence:&nbsp;</li>Support Vector Machine confidence score. Binary linear kernel SVM classifier confidence scores (scikit-learn).Features: word 1-4grams, stop word filter, tf-idf weights, balanced training set. The higher the more related to the topic. If the output of the scoring function is positive then the text was classified as relevant for adverse hepatobiliary events, while if it has a negative score it was classified as non-relevant. (See: <a href="http://scikit-learn.org" target="_blank">http://scikit-learn.org</a> and decision_function)<br/>
+                            <li id="pattern">Pattern:&nbsp;</li>Number of adverse hepatobiliary event text patterns detected<br/>
+                            <li id="term">Term:&nbsp;</li>Number of adverse hepatobiliary event terms/phrases detected<br/>
+                            <li id="rule">Rule:&nbsp;</li>Scores of 0.01 correspond to sentences that only mention a term or phrase related to the hepatobiliary system. Scores &gt; 0.01 correspond to sentences that also contain adverse, toxic or disease events. The rule score is a heuristic score that takes into account: (1) the number of co-occurrences between hepatobiliary terms and adverse effect terms in a sentences, (2) their respective relative order within the sentence and (3) their relative distance measured by the number of word tokens between them<br/>
+                            <li id="nephro">Nephro:&nbsp;</li>Nephrotoxicity score. Binary linear kernel SVM classifier score result (SVMLight).Features: word unigram, stop word filter, balanced training set. The higher the more related to the topic. If the output of the scoring function is positive then the text was classified as relevant for adverse nephrologic events, while if it has a negative score it was classified as non-relevant. See: <a href="http://svmlight.joachims.org" target="_blank">http://svmlight.joachims.org</a><br/>
+                            <li id="cardio">Cardio:&nbsp;</li>Cardiotoxicity score. Binary linear kernel SVM classifier score result (SVMLight).Features: word unigram, stop word filter, balanced training set. The higher the more related to the topic. If the output of the scoring function is positive then the text was classified as relevant for adverse cardio events, while if it has a negative score it was classified as non-relevant. See: <a href="http://svmlight.joachims.org" target="_blank">http://svmlight.joachims.org</a><br/>
+                            <li id="toxicology">Toxicology:&nbsp;</li><br/>
+                            <li id="biomarker">Biomarker:&nbsp;</li><br/>
                         </ul>
-                    <h2>Free-Text search (search by keywords)</h2>
+                    <h2 id="free_text_searches">Free-Text search (search by keywords)</h2>
                         <ul>
-                            <li>Any:</li>
-                            <li>With Compounds:</li>
-                            <li>With CYPs:</li>
-                            <li>With Markers:</li>
+                            <li id="any">Any:&nbsp;</li><br/>
+                            <li id="with_compounds">With Compounds:&nbsp;</li><br/>
+                            <li id="with_cyps">With CYPs:&nbsp;</li><br/>
+                            <li id="with_markers">With Markers:&nbsp;</li><br/>
                         </ul>
-                    <h2>Chemical compounds search by:</h2>
+                    <h2>Chemical compounds search by:&nbsp;</h2>
                         <ul>
-                            <li>Compound name:</li>
-                            <li>Chemical identifiers:</li>
-                            <li>Smiles:</li>
-                            <li>InChI:</li>
-                            <li>Any(Free-text search):</li>
-                            <li>With CYPs:</li>
-                            <li>With Markers:</li>
-                            <li>Term Relations:</li>
+                            <li id="compound_name">Compound name:&nbsp;</li><br/>
+                            <li id="chemical_identifiers">Chemical identifiers:&nbsp;</li><br/>
+                            <li id="smiles">Smiles:&nbsp;</li><br/>
+                            <li id="inchi">InChI:&nbsp;</li><br/>
+                            <li id="compound_any">Any(Free-text search):&nbsp;</li><br/>
+                            <li id="compound_with_cyps">With CYPs:&nbsp;</li><br/>
+                            <li id="compound_with_markers">With Markers:&nbsp;</li><br/>
+                            <li id="compound_term_relations">Term Relations:&nbsp;</li><br/>
                         </ul>
                     <h2>Cytochromes search by</h2>
                         <ul>
-                            <li>CYPs name/symbol:</li>
-                            <li>CYPs Uniprot Accession:</li>
-                            <li>CYPs Nomenclature:</li>
-                            <li>Any(Free-text search):</li>
-                            <li>With Compounds:</li>
-                            <li>CYPs-Chemical Relations:</li>
+                            <li id="cyp_name">CYPs name/symbol:&nbsp;</li><br/>
+                            <li id="uniprot_accession">CYPs Uniprot Accession:&nbsp;</li><br/>
+                            <li id="cyp_nomenclature">CYPs Nomenclature:&nbsp;</li><br/>
+                            <li id="cyp_any">Any(Free-text search):&nbsp;</li><br/>
+                            <li id="cyp_with_compounds">With Compounds:&nbsp;</li><br/>
+                            <li id="cyp_compounds_relations">CYPs-Chemical Relations:&nbsp;</li><br/>
                         </ul>
                     <h2>Markers search by</h2>
                         <ul>
-                            <li>Marker name/symbol:</li>
-                            <li>Marker Identifier:</li>
-                            <li>Any(Free-text search):</li>
-                            <li>With Compounds:</li>
-                            <li>Marker-chemical relations:</li>
+                            <li id="marker_name">Marker name/symbol:&nbsp;</li><br/>
+                            <li id="marker_identifier">Marker Identifier:&nbsp;</li><br/>
+                            <li id="marker_any">Any(Free-text search):&nbsp;</li><br/>
+                            <li id="marker_with_compounds">With Compounds:&nbsp;</li><br/>
+                            <li id="marker_compounds_relations">Marker-chemical relations:&nbsp;</li><br/>
                         </ul>
                     <h2>Genes search</h2>
                         <ul>
-                            <li>Gene name:</li>
-                            <li>Entrez Gene ID:</li>
+                            <li id="gene_name">Gene name:&nbsp;</li><br/>
+                            <li id="entrez_gene">Entrez Gene ID:&nbsp;</li><br/>
                         </ul>
-                    <h2>Search different toxic endpoints</h2>
+                    <h2 id="toxic_endpoints">Search different toxic endpoints</h2>
                         <ul>
-                            <li>Hepatotoxicity:</li>
-                            <li>Nephrotoxicity:</li>
-                            <li>Cardiotoxicity:</li>
-                            <li>Thyroid toxicity:</li>
-                            <li>Phospholipidosis:</li>
+                            <li id="hepatotoxicity">Hepatotoxicity:&nbsp;</li><br/>
+                            <li id="nephrotoxicity">Nephrotoxicity:&nbsp;</li><br/>
+                            <li id="cardiotoxicity">Cardiotoxicity:&nbsp;</li><br/>
+                            <li id="thyroid_toxicity">Thyroid toxicity:&nbsp;</li><br/>
+                            <li id="phospholipidosis">Phospholipidosis:&nbsp;</li><br/>
                         </ul>
-                    <h2>Statistics of results</h2>
-                    <h2>View Interaction Network</h2>
-                    <h2>Extra info</h2>
-                        <h3>In case of Compound search</h3>
+                    <h2 id="statistics">Statistics of results</h2>
+                    <h2 id="interaction_network">View Interaction Network</h2>
+                    <h2 id="info">Extra info</h2>
+                        <h3 id="info_compounds_search">In case of Compound search</h3>
                         <ul>
-                            <li>Download mol file:</li>
-                            <li>Basic info + outlinks:</li>
-                            <li>Search Smile in ChemSpider:</li>
-                            <li>Aliases:</li>
-                            <li>Compound Image:</li>
-                            <li>Calculate Tanimoto Coefficient:</li>
-                            <li>List of compounds with a Tanimoto coeff. >= 0.5::</li>
+                            <li id="download_mol_file">Download mol file:&nbsp;</li><br/>
+                            <li id="basic_info_and_outlinks">Basic info + outlinks:&nbsp;</li><br/>
+                            <li id="search_smile_in_chemspider">Search Smile in ChemSpider:&nbsp;</li><br/>
+                            <li id="aliases">Aliases:&nbsp;</li><br/>
+                            <li id="compound_image">Compound Image:&nbsp;</li><br/>
+                            <li id="tanimoto_coefficient">Calculate Tanimoto Coefficient:&nbsp;</li><br/>
+                            <li id="list_compounds_tanimoto_coefficient">List of compounds with a Tanimoto coeff. >= 0.5:&nbsp;:&nbsp;</li><br/>
                         </ul>
-                        <h3>In case of Cytochrome search</h3>
+                        <h3 id="info_cytochromes_search">In case of Cytochrome search</h3>
                         <ul>
-                            <li>name:</li>
-                            <li>UniprotID:</li>
-                            <li>Type:</li>
-                            <li>Tax:</li>
-                            <li>Canonical:</li>
+                            <li id="info_cytochrome_search_name">name:&nbsp;</li><br/>
+                            <li id="uniprot_id">UniprotID:&nbsp;</li><br/>
+                            <li id="info_cytochrome_search_type">Type:&nbsp;</li><br/>
+                            <li id="info_cytochrome_search_tax">Tax:&nbsp;</li><br/>
+                            <li id="info_cytochrome_search_canonical">Canonical:&nbsp;</li><br/>
                         </ul>
-                    <h2>Entity Mentions Highlight</h2>
-                    <h2>Download Results</h2>
-                    <h2>Sorting by Score</h2>
-                    <h2>Simple Curation of Results</h2>
+                    <h2 id="highlight">Entity Mentions Highlight</h2>
+                    <h2 id="download">Download Results</h2>
+                    <h2 id="sorting">Sorting by Score</h2>
+                    <h2 id="simple_curation">Simple Curation of Results</h2>
                 </ol>
             </p>
         </article>
