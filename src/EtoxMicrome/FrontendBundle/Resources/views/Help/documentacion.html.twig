@@ -23,7 +23,7 @@
                             <li id="pubmed">Pubmed:&nbsp;</li>Entities will be searched taking into account only the Pubmed Articles in the system. Nowadays we have 122.997.116 Pubmed articles indexed.<br/>
                             <li id="fulltext">FullText:&nbsp; </li>Select FullText to search into a large set of full text articles that were used for the dataset construction.<br/>
                             <li id="nda">NDA:&nbsp; </li>Search entities inside NDA articles. Currently we have 759.621 articles indexed.<br/>
-                            <li id="epar">EPAR:&nbsp; </li>Search entities inside EPAR articles. We have 630.507 EPAR articles indexed.<br/>
+                            <li id="epar">EPAR:&nbsp; </li>Search entities inside <a href="http://www.ema.europa.eu/ema/index.jsp?curl=pages/medicines/landing/epar_search.jsp" target="_blank">EPAR</a> articles. We have 630.507 EPAR articles indexed.<br/>
                             <li id="abstracts">Abstracts:&nbsp; </li>You can search compounds inside abstracts. You can also perform <a href="#free_text_searches">free-text searches</a> against abstracts</link>.<br/>
                         </ul>
                     <h2>Scores</h2>
@@ -35,15 +35,18 @@
                             <li id="rule">Rule:&nbsp;</li>Scores of 0.01 correspond to sentences that only mention a term or phrase related to the hepatobiliary system. Scores &gt; 0.01 correspond to sentences that also contain adverse, toxic or disease events. The rule score is a heuristic score that takes into account: (1) the number of co-occurrences between hepatobiliary terms and adverse effect terms in a sentences, (2) their respective relative order within the sentence and (3) their relative distance measured by the number of word tokens between them<br/>
                             <li id="nephro">Nephro:&nbsp;</li>Nephrotoxicity score. Binary linear kernel SVM classifier score result (SVMLight).Features: word unigram, stop word filter, balanced training set. The higher the more related to the topic. If the output of the scoring function is positive then the text was classified as relevant for adverse nephrologic events, while if it has a negative score it was classified as non-relevant. See: <a href="http://svmlight.joachims.org" target="_blank">http://svmlight.joachims.org</a><br/>
                             <li id="cardio">Cardio:&nbsp;</li>Cardiotoxicity score. Binary linear kernel SVM classifier score result (SVMLight).Features: word unigram, stop word filter, balanced training set. The higher the more related to the topic. If the output of the scoring function is positive then the text was classified as relevant for adverse cardio events, while if it has a negative score it was classified as non-relevant. See: <a href="http://svmlight.joachims.org" target="_blank">http://svmlight.joachims.org</a><br/>
-                            <li id="toxicology">Toxicology:&nbsp;</li><br/>
-                            <li id="biomarker">Biomarker:&nbsp;</li><br/>
+                            <li id="toxicology">Toxicology:&nbsp;</li>Match found with PubMed Boolean MeSH query search for Toxicology<br/>
+                            <li id="biomarker">Biomarker:&nbsp;</li>Match found with PubMed Boolean MeSH query search for Biomarker<br/>
                         </ul>
                     <h2 id="free_text_searches">Free-Text search (search by keywords)</h2>
+                        <p>
+                            Documents inside LimToX are indexed so free-text searches can be performed using any keyword or set of keywords. The system will return all the documents, taking into account the keyword/set of keywords, sorted by SVM Score, although resorting process can be done by using the <a href=“#sorting_by_score">Sorting by Score</a> functionality.
+                        </p>
                         <ul>
-                            <li id="any">Any:&nbsp;</li><br/>
-                            <li id="with_compounds">With Compounds:&nbsp;</li><br/>
-                            <li id="with_cyps">With CYPs:&nbsp;</li><br/>
-                            <li id="with_markers">With Markers:&nbsp;</li><br/>
+                            <li id="any">Any:&nbsp;</li>A free text search will be performed against all the documents inside the system<br/>
+                            <li id="with_compounds">With Compounds:&nbsp;</li>The free text search will be done inside documents that have chemical compounds co-mentioned in them<br/>
+                            <li id="with_cyps">With CYPs:&nbsp;</li>The free text search will be done against documents that contains mentions to cytochromes<br/>
+                            <li id="with_markers">With Markers:&nbsp;</li>The free text search will be done against documents that contains mentions to markers<br/>
                         </ul>
                     <h2>Chemical compounds search by:&nbsp;</h2>
                         <ul>
