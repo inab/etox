@@ -14,7 +14,7 @@
             <h1>LimTox Documentation</h1>
             <p>
                 <ol class="documentation">
-                    <h2>Sources</h2>
+                    <h2 id="sources">Sources</h2>
                         <p>
                             When performing a search inside LimTox, you can select the sources where hepatotoxicity (or <a href="#toxic_endpoint">other toxic endpoint</a>) entities are searched in. You can choose amongst
                         </p>
@@ -48,16 +48,19 @@
                             <li id="with_cyps">With CYPs:&nbsp;</li>The free text search will be done against documents that contains mentions to cytochromes<br/>
                             <li id="with_markers">With Markers:&nbsp;</li>The free text search will be done against documents that contains mentions to markers<br/>
                         </ul>
-                    <h2>Chemical compounds search by:&nbsp;</h2>
+                    <h2>Chemical compounds search&nbsp;</h2>
+                        <p>
+                        You can search for documents containing an specific chemical compound. Typically you can search by a compound Name or using an identifier (ChemId Plus, ChEBI, cas Registry Number, DrugBank, Kegg Compound, Kegg Drug, Mesh) as well as Smiles and InChi.
+                        </p>
                         <ul>
-                            <li id="compound_name">Compound name:&nbsp;</li><br/>
-                            <li id="chemical_identifiers">Chemical identifiers:&nbsp;</li><br/>
-                            <li id="smiles">Smiles:&nbsp;</li><br/>
-                            <li id="inchi">InChI:&nbsp;</li><br/>
-                            <li id="compound_any">Any(Free-text search):&nbsp;</li><br/>
-                            <li id="compound_with_cyps">With CYPs:&nbsp;</li><br/>
-                            <li id="compound_with_markers">With Markers:&nbsp;</li><br/>
-                            <li id="compound_term_relations">Term Relations:&nbsp;</li><br/>
+                            <li id="compound_name">Compound name:&nbsp;</li>Performs a search by compound name. A compound with that name will be searched and if it is found, a <a href=“#query_expansion">query expansion</a> will be performed to find aliases for that compound and include in the results also the documents containing compounds that are aliases of the search query compound.<br/>
+                            <li id="chemical_identifiers">Chemical identifiers:&nbsp;</li>Use any of the following chemical identifiers to retrieve documents for the chemical compound having that identifier. Allowed identifiers are: ChemId Plus, ChEBI, cas Registry Number, DrugBank, Kegg Compound, Kegg Drug and Mesh<br/>
+                            <li id="smiles">Smiles:&nbsp;</li>Smiles (Simplified Molecular Input Line Entry Specification) strings can be used<br/>
+                            <li id="inchi">InChI:&nbsp;</li>IUPAC International Chemical Identifier strings can also be used<br/>
+                            <li id="compound_any">Any(Free-text search):&nbsp;</li>Free text search against all the documents indexed inside the system (filtered by <a href="#sources">Source</a>)<br/>
+                            <li id="compound_with_cyps">With CYPs:&nbsp;</li>Free-text search inside documents with Cytochrome co-mentions<br/>
+                            <li id="compound_with_markers">With Markers:&nbsp;</li>Free-text search inside documents with Marker co-mentions<br/>
+                            <li id="compound_term_relations">Term Relations:&nbsp;</li>Free-text search inside documents that contains compound-term relations<br/>
                         </ul>
                     <h2>Cytochromes search by</h2>
                         <ul>
@@ -111,6 +114,7 @@
                             <li id="info_cytochrome_search_canonical">Canonical:&nbsp;</li><br/>
                         </ul>
                     <h2 id="highlight">Entity Mentions Highlight</h2>
+                    <h2 id="query_expansion">Query Expansion</h2>
                     <h2 id="download">Download Results</h2>
                     <h2 id="sorting">Sorting by Score</h2>
                     <h2 id="simple_curation">Simple Curation of Results</h2>
