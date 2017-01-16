@@ -42,11 +42,11 @@
                         </p>
                         <ul>
                             <li id="any">Any:&nbsp;</li>A free text search will be performed against all the documents inside the system<br/>
-                            <li id="with_compounds">With Compounds:&nbsp;</li>The free text search will be done inside documents that have chemical compounds co-mentioned in them<br/>
+                            <li id="with_compounds">With Compounds:&nbsp;</li>The free text search will be done inside documents that have chemical compounds comentioned in them<br/>
                             <li id="with_cyps">With CYPs:&nbsp;</li>The free text search will be done against documents that contains mentions to cytochromes<br/>
                             <li id="with_markers">With Markers:&nbsp;</li>The free text search will be done against documents that contains mentions to markers<br/>
                         </ul>
-                    <h2>Chemical compounds search&nbsp;</h2>
+                    <h2 id="chemical_compound_searches">Chemical compounds search&nbsp;</h2>
                         <p>
                         You can search for documents containing an specific chemical compound. Typically you can search by a compound Name or using an identifier (ChemId Plus, ChEBI, cas Registry Number, DrugBank, Kegg Compound, Kegg Drug, Mesh) as well as Smiles and InChi.
                         </p>
@@ -56,11 +56,11 @@
                             <li id="smiles">Smiles:&nbsp;</li>Smiles (Simplified Molecular Input Line Entry Specification) strings can be used<br/>
                             <li id="inchi">InChI:&nbsp;</li>IUPAC International Chemical Identifier strings can also be used<br/>
                             <li id="compound_any">Any(Free-text search):&nbsp;</li>Free text search against all the documents indexed inside the system (filtered by <a href="#sources">Source</a>)<br/>
-                            <li id="compound_with_cyps">With CYPs:&nbsp;</li>Free-text search inside documents with Cytochrome co-mentions<br/>
-                            <li id="compound_with_markers">With Markers:&nbsp;</li>Free-text search inside documents with Marker co-mentions<br/>
+                            <li id="compound_with_cyps">With CYPs:&nbsp;</li>Free-text search inside documents with Cytochrome comentions<br/>
+                            <li id="compound_with_markers">With Markers:&nbsp;</li>Free-text search inside documents with Marker comentions<br/>
                             <li id="compound_term_relations">Term Relations:&nbsp;</li>Free-text search inside documents that contains compound-term relations<br/>
                         </ul>
-                    <h2>Cytochromes search by</h2>
+                    <h2 id="cytochromes_searches">Cytochromes search by</h2>
                         <p>
                             You can search for Cytochromes inside the system using CYP names, CYPs Uniprot Accessions and CYPs nomenclature. Some free text searches involving CYPs are available from here too.
                         </p>
@@ -70,8 +70,38 @@
                             <li id="cyp_nomenclature">CYPs Nomenclature:&nbsp;</li>Search inside LimToX system using the name of the Cytochrome P450 gene according to the standard hierarchical gene naming nomenclature convention (see <a href=“http://www.cypalleles.ki.se” target=“_blank">http://www.cypalleles.ki.se</a>)
 <br/>
                             <li id="cyp_any">Any(Free-text search):&nbsp;</li>A free text search will be performed against all the documents inside the system. It is equivalent to <a href="#free_text_searches">free-text search</a><br/>
-                            <li id="cyp_with_compounds">With Compounds:&nbsp;</li>Free-text search inside documents that contain chemical compound co-mentions<br/>
+                            <li id="cyp_with_compounds">With Compounds:&nbsp;</li>Free-text search inside documents that contain chemical compound comentions<br/>
                             <li id="cyp_compounds_relations">CYPs-Chemical Relations:&nbsp;</li>Free text search inside documents where CYPs and Chemical compounds relations have been found<br/>
+                        </ul>
+                    <h2 id="markers_searches">Markers search</h2>You can search for liver toxicity markers inside the LimToX sources using a marker name/symbol or a marker identifier as a query.
+                        <p>
+                            <li id="marker_name_symbol">Marker name/symbol</li>Name or symbol of the biochemical liver test marker. Correspond to one of 17 enzymes and chemical compounds assayed as biochemical markers of adverse liver reactions (e.g. ALT, AST, SDH, GGT, 5'-NT, LAP, SGPT,...).<br/>
+                            <li id="marker_identifier">Marker Identifier</li>Marker UniProt accession number or PubChem compound Id (e.g. P00441, P04040, P07195, P07203,..)<br/>
+                            <li id="marker_any">Any(Free-text search)</li>A free text search will be performed against all the documents inside the system. It is equivalent to <a href="#free_text_searches">free-text search</a><br/>
+                            <li id="marker_with_compounds">With Compounds.</li> Free-text search inside documents containing Compound comentions<br/>
+                            <li id="marker_compounds_relations">Marker-chemical relations. Free-text search inside documents where Markers and Chemicals are related</li>
+
+                        </p>
+
+                    <h2 id="genes_searches">Genes search</h2>
+                        <p>
+                            You can search for liver toxicity relevant genes inside the LimToX indexed documents. For that matter you can use Gene names and Entrez genes as valid queries. Searching for genes can only be performed against all the documents or against the documents that contain chemical compound comentions
+                        </p>
+                        <ul>
+                            <li id="gene_name">Gene name:&nbsp;</li>Search by Gene name<br/>
+                            <li id="entrez_gene">Entrez Gene ID:&nbsp;</li>Search by Entrez Gene ID<br/>
+                        </ul>
+
+                    <h2 id="toxic_endpoints">Search different toxic endpoints</h2>
+                        <p>
+                            You can search for keywords related to not only hepatotoxicity but also different toxic endpoints.
+                        </p>
+                        <ul>
+                            <li id="hepatotoxicity">Hepatotoxicity:&nbsp;</li>Search keywords for hepatotoxicity endpoint<br/>
+                            <li id="nephrotoxicity">Nephrotoxicity:&nbsp;</li>Search keywords for nephrotoxicity endpoint<br/>
+                            <li id="cardiotoxicity">Cardiotoxicity:&nbsp;</li>Search keywords for cardiotoxicity endpoint<br/>
+                            <li id="thyroid_toxicity">Thyroid toxicity:&nbsp;</li>Search keywords for thyrotoxicity endpoint<br/>
+                            <li id="phospholipidosis">Phospholipidosis:&nbsp;</li>Search keywords for phospholipidosis endpoint<br/>
                         </ul>
                 </ol>
             </p>
