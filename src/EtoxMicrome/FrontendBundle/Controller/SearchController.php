@@ -401,10 +401,7 @@ class SearchController extends Controller
             if($smile!=""){
                 $dictionaryIds['smile']=$smile;
             }
-            $casRegistryNumber=$entity->getCasRegistryNumber();
-            if($casRegistryNumber!=""){
-                $dictionaryIds['casRegistryNumber']=$casRegistryNumber;
-            }
+
             #ld($dictionaryIds);
             $arrayTmp=array();
             foreach ($dictionaryIds as $key => $value) {
@@ -2175,7 +2172,7 @@ Evidences found in Sentences:\n
             $arrayEntityId=$this->queryExpansion($entity, $entityType, $whatToSearch);
             //ld($arrayEntityId);
             //WARNING!!!! DELETE THIS SLICE AFTER QUERY EXPANSION GETS PRACTICABLE
-            $arrayEntityId=array_slice($arrayEntityId, 0, 100);
+            $arrayEntityId=array_slice($arrayEntityId, 0, 10);
             //$arrayEntityId=array();
             //array_push($arrayEntityId, $entity);
             //WARNING!! If the query expansion with a CompoundDict doesn't return any entity, we do the expansion with CompoundMesh!!

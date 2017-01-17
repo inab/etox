@@ -109,7 +109,7 @@
                         </p>
                         <ul>
                             <li id="total_mentions">Total of mentions&nbsp;</li>Total number of mentions returned by the system<br/>
-                            <li id="total_mentions_displayed">Total of mentions displayed:&nbsp;</li>If the total number of mentions displayed is bigger than the total of existing mentions inside of LimToX (this is possible due to some <a href="#limitations_to_number_of_results">limitations in the number of results </a>),  this latter number will be shown. The following values are calculated taking into account the total of mentions displayed<br/>
+                            <li id="total_mentions_displayed">Total of mentions displayed:&nbsp;</li>If the total number of mentions displayed is bigger than the total of existing mentions inside of LimToX, the total of mentions displayed will be shown. The following values are calculated taking into account the total of mentions displayed<br/>
                             <li id="max_score">Max. Score:&nbsp;</li>The maximum value for the score that is taking into account for the <a href="#sorting_by_score">sorting process</a> of the results<br/>
                             <li id="min_score">Minim Score:&nbsp;</li>The minimum value for the score that is taking into account for the <a href="#sorting_by_score">sorting process</a> of the results<br/>
                             <li id="score_mean">Score mean:&nbsp;</li>The mean value for the score that is taking into account for the <a href="#sorting_by_score">sorting process</a><br/>
@@ -120,7 +120,8 @@
                             Access to interaction network of the results. A graph with all compound relations inside LimTox is shown. It is only available for non-freetext chemical compound searches.<br/>
                             The Chemical compound used as query is displayed at the center of the graph as the primary node of the network. The edges of the network represent a relation between the compound and the entity that it is related to. Clicking the edges, some basic info is displayed, showing the number of relations stablished (Weight) and the Type of Relations that the compound has with that entity followed by the number of relations established inside the documents for this type of relation.<br/>
                             The types of relations can be the following: Association, Comention, Induction, Inhibition, Up, etc...<br/>
-                            The higher the number of established relations, the stronger the color of the edge's representation will be.
+                            The higher the number of established relations, the stronger the color of the edge's representation will be.<br/>
+                            Clicking a compound node will center the interaction network on that compound showing its relations inside the system
                         </p>
                     <h2 id="info">Extra info</h2>
                         <p>
@@ -130,8 +131,7 @@
                         <ul>
                             <li id="download_mol_file">Download mol file:&nbsp;</li>Link to download the compound’s information in <a href=“https://metamolecular.com/cheminformatics/molfile-format/">.mol</a> file format
 <br/>
-                            <li id="basic_info_and_outlinks">Basic info + outlinks:&nbsp;</li>Basic info as name and outlinks (links to one or more of the following databases chemIdPlus, chebi, cas Registry Number, inChi,
-drugBank, keggCompound, keggDrug, mesh… ) are provided if they are inside the system
+                            <li id="basic_info_and_outlinks">Basic info + outlinks:&nbsp;</li>Basic info as name and <a href="#outlinks">outlinks</a> (links to one or more of the following databases chemIdPlus, chebi, cas Registry Number, inChi, drugBank, keggCompound, keggDrug, mesh… ) are provided if they are inside the system
 <br/>
                             <li id="search_smile_in_chemspider">Search Smile in ChemSpider:&nbsp;</li>Search for this compound inside <a href="http://www.chemspider.com">Chemspider using Smile format. <br/>
                             <li id="aliases">Aliases:&nbsp;</li>A list of compounds that are aliases for the compound used as query<br/>
@@ -145,12 +145,41 @@ drugBank, keggCompound, keggDrug, mesh… ) are provided if they are inside the 
                                 Basic information related to the CYP used as query
                             </p>
                         <ul>
-                            <li id="info_cytochrome_search_name">name:&nbsp;</li><br/>
-                            <li id="uniprot_id">UniprotID:&nbsp;</li>Uniprot ID and outlink to Uniprot database for the query compound<br/>
+                            <li id="info_cytochrome_search_name">name:&nbsp;</li>Cytochrome P450 name of the query entity<br/>
+                            <li id="uniprot_id">UniprotID:&nbsp;</li>Uniprot ID and outlink to Uniprot database for the query<br/>
                             <li id="info_cytochrome_search_type">Type:&nbsp;</li>Type of cytochrome used <br/>
                             <li id="info_cytochrome_search_tax">Tax:&nbsp;</li>Tax ID an link to Taxonomy Browser<br/>
                             <li id="info_cytochrome_search_canonical">Canonical:&nbsp;</li>Canonical name for the query cytochrome<br/>
                         </ul>
+                        <h2 id="highlight">Entity Mentions Highlight</h2>
+                            <p>
+                                Entity mentions, in the results table, are shown in the sentence that they appear and highlighted as follows:
+                                <em>
+                                    <mark class="termSearched">What you searched</mark>, <mark class="compound">Compounds</mark>, <mark class="cytochrome">Cytochromes</mark>, <mark class="marker">Markers</mark>, <mark class="term">Terms</mark>, <mark class="specie">Species</mark>
+                                </em>
+                                . Curated evidences are indicated by:
+                                <a class="curated" href="#"> </a>
+                            </p>
+                        <h2 id="query_expansion">Query Expansion</h2>
+                            <p>
+                                A query expansion is performed for each entity search. The process depends on the type of entity that is being searched but it tends to widen the results adding aliases.
+                            </p>
+                            <ul>
+                                <li id="compounds_query_expansion">Compounds QE:&nbsp;</li>When searching for compounds using compound names, once retrieved the compound entity, a query searching for compounds with the same identifiers than the entity retrieved is performed. Therefore equivalent compounds sharing at least one identifier with the main compound query are added and will be taking into account as they seem to be the same compound.<br/>
+                                <li id="cytochromes_query_expansion">Cytochromes QE:&nbsp;</li>Once the cytochrome entity searched is found, we search for other cytochromes that have the same entityId or Canonical Name. Resulting entities will be added to final query as they seem to be the same cytochrome<br/>
+                                <li id="markers_query_expansion">Markers QE:&nbsp;</li>Once the marker entity searched is found, markers that have the same entityId are added to the final query. Therefore this marker aliases will also be present in the results.<br/>
+                                <li id="keywords_query_expansion">Keywords QE:&nbsp;</li>The normalised term is recovered and all the terms having the same normalised term are added to take them into account.<br/>
+                            </ul>
+                        <h2 id="outlinks">Outlinks</h2>
+                            <p>
+                                LimToX retrieves the entities inside the documents and try to give as more information as possible. When returning compound entities, it tries to give as much chemical compound database identifiers linked to the original database for you to expand the information i.e: chemIdPlus, chebi, cas Registry Number, inChi, drugBank, keggCompound, keggDrug, Mesh<br/>
+
+                            </p>
+                        <h2 id="download">Download Results</h2>
+                            <p>
+                                Download the results in two different possible file formats, CSV and PDF.
+
+                            </p>
                 </ol>
             </p>
         </article>
