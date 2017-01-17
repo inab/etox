@@ -122,6 +122,35 @@
                             The types of relations can be the following: Association, Comention, Induction, Inhibition, Up, etc...<br/>
                             The higher the number of established relations, the stronger the color of the edge's representation will be.
                         </p>
+                    <h2 id="info">Extra info</h2>
+                        <p>
+                            Some extra info is displayed depending of the entity type used as a query.
+                        </p>
+                        <h3 id="info_compounds_search">In case of Compound search as query</h3>
+                        <ul>
+                            <li id="download_mol_file">Download mol file:&nbsp;</li>Link to download the compound’s information in <a href=“https://metamolecular.com/cheminformatics/molfile-format/">.mol</a> file format
+<br/>
+                            <li id="basic_info_and_outlinks">Basic info + outlinks:&nbsp;</li>Basic info as name and outlinks (links to one or more of the following databases chemIdPlus, chebi, cas Registry Number, inChi,
+drugBank, keggCompound, keggDrug, mesh… ) are provided if they are inside the system
+<br/>
+                            <li id="search_smile_in_chemspider">Search Smile in ChemSpider:&nbsp;</li>Search for this compound inside <a href="http://www.chemspider.com">Chemspider using Smile format. <br/>
+                            <li id="aliases">Aliases:&nbsp;</li>A list of compounds that are aliases for the compound used as query<br/>
+                            <li id="compound_image">Compound Image:&nbsp;</li>Embedded image of the compound if it is present in the system.<br/>
+                            <li id="tanimoto_coefficient">Calculate Tanimoto Coefficient:&nbsp;</li>Here you can calculate the <a href=“https://en.wikipedia.org/wiki/Jaccard_index#Other_definitions_of_Tanimoto_distance">Tanimoto distance</a> existing between the query compound and any other compound inserted in the textbox input field next to it.
+<br/>
+                            <li id="list_compounds_tanimoto_coefficient">List of compounds with a Tanimoto coeff. >= 0.5:&nbsp;:&nbsp;</li><br/>
+                        </ul>
+                        <h3 id="info_cytochromes_search">In case of Cytochrome search as query</h3>
+                            <p>
+                                Basic information related to the CYP used as query
+                            </p>
+                        <ul>
+                            <li id="info_cytochrome_search_name">name:&nbsp;</li><br/>
+                            <li id="uniprot_id">UniprotID:&nbsp;</li>Uniprot ID and outlink to Uniprot database for the query compound<br/>
+                            <li id="info_cytochrome_search_type">Type:&nbsp;</li>Type of cytochrome used <br/>
+                            <li id="info_cytochrome_search_tax">Tax:&nbsp;</li>Tax ID an link to Taxonomy Browser<br/>
+                            <li id="info_cytochrome_search_canonical">Canonical:&nbsp;</li>Canonical name for the query cytochrome<br/>
+                        </ul>
                 </ol>
             </p>
         </article>
