@@ -24,8 +24,7 @@
         {
             e.preventDefault();
         });
-
-        $(".bigSearch").click(function() {
+        function submitForm(){
             //We setup the url to search for. We need field(hepatotoxicity, other), WhatToSearch(name, id, structure, canonical...), entityType (Compound, Cyp, Marker...etc) and entityName
             //Getting field:
             //var field = ($('#searchby').find(":selected").text()).toLowerCase();
@@ -69,7 +68,7 @@
                     }
                     else{
                         link="{{ path('search_interface_search') }}"+"keyword"+"/"+whatToSearch+"/"+source+"/"+entityName+"/";
-                        $('.bigSearch').attr('href',link);
+                        //$('.bigSearch').attr('href',link);
                     }
                     break;
                 case "compound":
@@ -188,9 +187,12 @@
                     break;
             }
 
-            //Once we have all the parameters required for the search, we generate the route
-
-
+            //Once we have all the parameters required for the search, we navigate to that URL
+            window.location.href=link;
+            return false;
+        }
+        $(".bigSearch").click(function() {
+            submitForm();
         });
 
         $("#jumpToAbstracts").click(function(e) {

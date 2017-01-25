@@ -43,7 +43,7 @@
     {% else %}
         <li id="keywordsTab">
     {% endif %}
-
+    <form name="keywordform" class="custom keywordform" onsubmit="return submitForm();">
     <div class="ui-widget">
         <div class="vis-break cntrtxt">
             {% if entityName is defined %}
@@ -56,7 +56,6 @@
     </div>
     <div class="advanceSearch">
         <div class="large-4 columns">
-            <form class="custom">
                 <fieldset>
                     <legend>What are you searching?</legend>
                     {% if whatToSearch=="any" or whatToSearch  == "endpoints" %}
@@ -83,10 +82,8 @@
                         <span data-tooltip class="has-tip" title="Search in text where markers are comentioned"><label for="radioWhatToSearch"><input name="keywordWhatToSearch" type="radio" id="radioKeywordWhatToSearch" style="display:none;" value="withMarkers"><span class="custom radio"></span> With Markers</label></span>
                     {% endif %}
                 </fieldset>
-            </form>
         </div>
         <div class="large-4 columns">
-            <form class="custom">
                 <fieldset>
                     <legend>Source:</legend>
                     {% if source is defined %}
@@ -130,8 +127,8 @@
                         <span data-tooltip class="has-tip" title="Search in PubMed abstracts (chemicals indexed by MeSH)"><label for="radioSource"><input name="keywordSource" type="radio" id="radioKeywordSource" style="display:none;" value="abstract"><span class="custom radio"></span> Abstracts</label></span>
                     {% endif %}
                 </fieldset>
-            </form>
-        </div>
+            </div>
+        </form>
         <div class="large-4 columns">
         </div>
     </div>
@@ -141,6 +138,7 @@
     {% else %}
         <li id="compoundsTab">
     {% endif %}
+    <form name="compoundform" class="custom compoundform" onsubmit="return submitForm();">
     <div class="ui-widget">
         <div class="vis-break cntrtxt">
                 {% if entityName is defined %}
@@ -153,7 +151,6 @@
     </div>
     <div class="advanceSearch">
         <div class="large-4 columns">
-            <form class="custom">
                 <fieldset>
                     <legend>What are you searching?</legend>
                     {% if whatToSearch is not defined %}
@@ -215,10 +212,8 @@
                     {% endif %}
 
                 </fieldset>
-            </form>
         </div>
         <div class="large-4 columns">
-            <form class="custom">
                 <fieldset>
                     <legend>Source:</legend>
                     {% if source is defined %}
@@ -260,8 +255,8 @@
                         <span data-tooltip class="has-tip" title="Search in PubMed abstracts (chemicals indexed by MeSH)"><label for="radioSource"><input name="compoundSource" type="radio" id="radioCompoundSource" style="display:none;" value="abstract"><span class="custom radio"></span> Abstracts</label></span>
                     {% endif %}
                 </fieldset>
-            </form>
-        </div>
+            </div>
+        </form>
         <div class="large-4 columns">
         </div>
     </div>
@@ -271,6 +266,7 @@
     {% else %}
         <li id="cytochromesTab">
     {% endif %}
+    <form name="cytochromeform" class="custom cytochromeform" onsubmit="return submitForm();">
     <div class="ui-widget">
         <div class="vis-break cntrtxt">
             {% if entityName is defined %}
@@ -286,7 +282,6 @@
     </div>
     <div class="advanceSearch">
         <div class="large-4 columns">
-            <form class="custom">
                 <fieldset>
                     <legend>What are you searching?</legend>
                     {% if whatToSearch is not defined %}
@@ -333,10 +328,8 @@
                         <span data-tooltip class="has-tip" title="Search for sentences based CYPs-chemical compound/drug relations detected by a pattern and/or machine learning method. Extracted relations cover induction, inhibition or metabolism interactions. You can query either by names of CYPs or chemicals/drugs""><label for="radioWhatToSearch"><input name="cytochromeWhatToSearch" type="radio" id="radioCytochromeWhatToSearch" style="display:none;" value="compoundsCytochromesRelations"><span class="custom radio"></span> CYPs-chemical relations</label></span>
                     {% endif %}
                 </fieldset>
-            </form>
         </div>
         <div class="large-4 columns">
-            <form class="custom">
                 <fieldset>
                     <legend>Source:</legend>
                     {% if source is defined %}
@@ -374,8 +367,8 @@
                         <span data-tooltip class="has-tip" title="Search in all European public assessment reports (EPAR) sentences"><label for="radioSource"><input name="cytochromeSource" type="radio" id="radioCytochromeSource" style="display:none;" value="epar"><span class="custom radio"></span> EPAR</label></span>
                     {% endif %}
                 </fieldset>
-            </form>
-        </div>
+            </div>
+        </form>
         <div class="large-4 columns">
         </div>
     </div>
@@ -385,6 +378,7 @@
     {% else %}
         <li id="markersTab">
     {% endif %}
+    <form name="markerform" class="custom markerform" onsubmit="return submitForm();">
     <div class="ui-widget">
         <div class="vis-break cntrtxt">
             {% if entityName is defined %}
@@ -400,7 +394,6 @@
     </div>
     <div class="advanceSearch">
         <div class="large-4 columns">
-            <form class="custom">
                 <fieldset>
                     <legend>What are you searching?</legend>
                    {% if whatToSearch is not defined %}
@@ -441,10 +434,8 @@
                         <span data-tooltip class="has-tip" title="Search for sentence based biochemical liver markers-chemical compound/drug relations detected by a pattern and/or machine learning method. Extracted relations cover increase, decrease or alteration interactions. You can enter either names of liver markers or chemicals"><label for="radioWhatToSearch"><input name="markerWhatToSearch" type="radio" id="radioMarkerWhatToSearch" style="display:none;" value="compoundsMarkersRelations"><span class="custom radio"></span> Marker-chemical relations</label></span>
                     {% endif %}
                 </fieldset>
-            </form>
         </div>
         <div class="large-4 columns">
-            <form class="custom">
                 <fieldset>
                     <legend>Source:</legend>
                     {% if source is defined %}
@@ -482,8 +473,8 @@
                         <span data-tooltip class="has-tip" title="Search in all European public assessment reports (EPAR) sentences"><label for="radioSource"><input name="markerSource" type="radio" id="radioMarkerSource" style="display:none;" value="epar"><span class="custom radio"></span> EPAR</label></span>
                     {% endif %}
                 </fieldset>
-            </form>
-        </div>
+            </div>
+        </form>
         <div class="large-4 columns">
         </div>
     </div>
@@ -493,6 +484,7 @@
     {% else %}
         <li id="toxicEndpointsTab">
     {% endif %}
+    <form name="endpointform" class="custom endpointform" onsubmit="return submitForm();">
     <div class="ui-widget">
         <div class="vis-break cntrtxt">
             {% if entityName is defined %}
@@ -506,7 +498,6 @@
     </div>
     <div class="advanceSearch">
         <div class="large-4 columns">
-            <form class="custom">
                 <fieldset>
                     <legend>Select toxicity endpoint:</legend>
                         {% if source not in ["hepatotoxicity","nephrotoxicity","cardiotoxicity","thyrotoxicity","phospholipidosis"] %}
@@ -538,8 +529,8 @@
                         <span data-tooltip class="has-tip" title="Search keywords of phospholipidosis endpoint"><label for="radioSource"><input name="endpoint" type="radio" id="radioEndpoint" style="display:none;" value="phospholipidosis"><span class="custom radio"></span> Phospholipidosis</label></span>
                     {% endif %}
                 </fieldset>
-            </form>
-        </div>
+            </div>
+        </form>
         <div class="large-4 columns">
         </div>
     </div>
@@ -549,7 +540,7 @@
     {% else %}
         <li id="genesTab">
     {% endif %}
-
+    <form name="geneform" class="custom geneform" onsubmit="return submitForm();">
     <div class="ui-widget">
         <div class="vis-break cntrtxt">
             {% if entityName is defined %}
@@ -562,7 +553,6 @@
     </div>
     <div class="advanceSearch">
         <div class="large-4 columns">
-            <form class="custom">
                 <fieldset>
                     <legend>What are you searching?</legend>
                     {% set whatToSearch_gene = default_whatToSearch_gene %}
@@ -578,18 +568,16 @@
                         <span data-tooltip class="has-tip" title="Search in text where compounds are comentioned"><label for="radioWhatToSearch"><input name="geneWhatToSearch" type="radio" id="radioGeneWhatToSearch" style="display:none;" value="withCompounds" disabled><span class="custom radio"></span> With Compounds</label></span>
                     {% endif %}
                 </fieldset>
-            </form>
         </div>
         <div class="large-4 columns">
-            <form class="custom">
                 <fieldset>
                     <legend>Search:</legend>
                         <span data-tooltip class="has-tip" title="Search in PubMed abstracts by gene name"><label for="radioSource"><input name="geneSource" type="radio" id="radioGeneSource" style="display:none;" CHECKED value="geneName"><span class="custom radio"></span>Gene Name</label></span>
                         <span data-tooltip class="has-tip" title="Search in PubMed abstracts by Entrez Gene ID"><label for="radioSource"><input name="geneSource" type="radio" id="radioGeneSource" style="display:none;" value="geneId"><span class="custom radio"></span>Entrez Gene ID</label></span>
 
                 </fieldset>
-            </form>
-        </div>
+            </div>
+        </form>
         <div class="large-4 columns">
         </div>
     </div>

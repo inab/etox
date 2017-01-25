@@ -45,7 +45,7 @@
     </div>
     <div class="advanceSearch">
         <div class="large-4 columns">
-            <form class="custom">
+            <form class="custom keywordform">
                 <fieldset>
                     <legend>What are you searching?</legend>
                     {% set whatToSearch_keyword = default_whatToSearch_keyword %}
@@ -76,7 +76,7 @@
             </form>
         </div>
         <div class="large-4 columns">
-            <form class="custom">
+            <form class="custom keywordform">
                 <fieldset>
                     <legend>Source:</legend>
                     {% if source is defined %}
@@ -144,7 +144,7 @@
     </div>
     <div class="advanceSearch">
         <div class="large-4 columns">
-            <form class="custom">
+            <form class="custom compoundform">
                 <fieldset>
                     <legend>What are you searching?</legend>
                     {% if whatToSearch not in ["name","id","canonical","any", "withCompounds"] %}
@@ -206,7 +206,7 @@
             </form>
         </div>
         <div class="large-4 columns">
-            <form class="custom">
+            <form class="custom compoundform">
                 <fieldset>
                     <legend>Source:</legend>
                     {% if source is defined %}
@@ -276,7 +276,7 @@
     </div>
     <div class="advanceSearch">
         <div class="large-4 columns">
-            <form class="custom">
+            <form class="custom cytochromeform">
                 <fieldset>
                     <legend>What are you searching?</legend>
                     {% if whatToSearch is not defined %}
@@ -325,7 +325,7 @@
             </form>
         </div>
         <div class="large-4 columns">
-            <form class="custom">
+            <form class="custom cytochromeform">
                 <fieldset>
                     <legend>Source:</legend>
                     {% if source is defined %}
@@ -390,7 +390,7 @@
     </div>
     <div class="advanceSearch">
         <div class="large-4 columns">
-            <form class="custom">
+            <form class="custom markerform">
                 <fieldset>
                     <legend>What are you searching?</legend>
                     {% if whatToSearch=="name" %}
@@ -426,7 +426,7 @@
             </form>
         </div>
         <div class="large-4 columns">
-            <form class="custom">
+            <form class="custom markerform">
                 <fieldset>
                     <legend>Source:</legend>
                     {% if source is defined %}
