@@ -262,9 +262,15 @@ section.content {
     text-align: left;
     width: 940px;
 }
+
 section.content a {
     color: #000 !important;
 }
+
+#imageHome {
+    text-align: center !important;
+}
+
 .right-column ul {
     margin: 0;
     padding: 0;
