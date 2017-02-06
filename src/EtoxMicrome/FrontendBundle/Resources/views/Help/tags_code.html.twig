@@ -381,7 +381,7 @@
             {% if entityName is defined %}
                 <input id="tags-markers" class="ui-autocomplete-input text tags" onclick="this.value=''" placeholder="e.g. {{ default_markerName }}" aria-haspopup="true" aria-autocomplete="list" role="textbox" autocomplete="off" value="{{ entityName }}">
             {% else %}
-                <input id="tags-keywords" class="ui-autocomplete-input text tags" onclick="this.value=''" placeholder="e.g. {{ default_markerName }}" aria-haspopup="true" aria-autocomplete="list" role="textbox" autocomplete="off" value="{{ default_markerName }}">
+                <input id="tags-markers" class="ui-autocomplete-input text tags" onclick="this.value=''" placeholder="e.g. {{ default_markerName }}" aria-haspopup="true" aria-autocomplete="list" role="textbox" autocomplete="off" value="{{ default_markerName }}">
             {% endif %}
 
             <a class="button orange bigSearch" >Search</a>
