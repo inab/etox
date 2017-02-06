@@ -27,16 +27,16 @@
                     {% set order =  orderBy | getOrderToSource %}
                     <table>
                         <tr>
-                            <td><strong>Total of mentions displayed:</strong> {{ hitsShowed }}</td>
-                            <td><strong>Max. {{scoreToShow}} score:</strong> {{ maxScore |number_format(2) }}</td>
-                            <td><strong>Minim. {{scoreToShow}} score:</strong> {{ minScore |number_format(2) }}</td>
+                            <td><strong>Total number of mentions displayed:</strong> {{ hitsShowed }}</td>
+                            <td><strong>Maximum {{scoreToShow}} score:</strong> {{ maxScore |number_format(2) }}</td>
+                            <td><strong>Minimum {{scoreToShow}} score:</strong> {{ minScore |number_format(2) }}</td>
                             <td><strong>{{scoreToShow}} mean:</strong> {{ meanScore | number_format(2) }}</td>
                             <td><strong>{{scoreToShow}} median:</strong> {{ medianScore | number_format(2) }}</td>
                         </tr>
                         {% if totalHits > 150  and whatToSearch!="withCytochromes" and whatToSearch!="withMarkers" and whatToSearch!="withCompounds"%}
                             <tr>
                                 {% set totalHits = resultSetDocuments.getTotalHits %}
-                                <td colspan="5"><strong>Total of mentions:</strong> {{ totalHits }}. (All above scores are for the {{hitsShowed}} displayed hits). <br/>Click here to display all results</td>
+                                <td colspan="5"><strong>Total Mentions:</strong> {{ totalHits }}. (All above scores are for the {{hitsShowed}} displayed hits). <br/>Click here to display all results</td>
                             </tr>
                         {% endif %}
                     </table>

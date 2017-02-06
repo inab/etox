@@ -28,9 +28,9 @@
                     {% set order =  orderBy | getOrderToSource %}
                     <table>
                         <tr>
-                            <td><strong>Total of mentions displayed:</strong> {{ totalHits }}</td>
-                            <td><strong>Max. {{scoreToShow}}:</strong> {{ maxScore |number_format(2) }}</td>
-                            <td><strong>Minim. {{scoreToShow}}:</strong> {{ minScore |number_format(2) }}</td>
+                            <td><strong>Total number of mentions displayed:</strong> {{ totalHits }}</td>
+                            <td><strong>Maximum {{scoreToShow}}:</strong> {{ maxScore |number_format(2) }}</td>
+                            <td><strong>Minimum {{scoreToShow}}:</strong> {{ minScore |number_format(2) }}</td>
                             <td><strong>{{scoreToShow}} mean:</strong> {{ meanScore | number_format(2) }}</td>
                             <td><strong>{{scoreToShow}} median:</strong> {{ medianScore | number_format(2) }}</td>
                         </tr>
