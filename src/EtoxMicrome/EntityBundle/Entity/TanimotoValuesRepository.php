@@ -222,6 +222,7 @@ class TanimotoValuesRepository extends EntityRepository
             }
 
             if(($key=="cyps") and (count($dictionaryRelations["cyps"]) != 0)) {
+                $message="Inside CYPs";
                 $dictionaryCyps=$dictionaryRelations["cyps"];
                 foreach($dictionaryCyps as $cyp => $value){
                     $arrayCompoundsFromCypReturned=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Compound2Cyp2Document')->findCompounds2Cyp2DocumentFromCyp($cyp,$dictionaryRelations["compounds"]); //We pass dictionaryRelations["compounds"] as an argument since we just want interactions with compounds that are already in the interaction network

@@ -41,7 +41,8 @@
                     var target = evt.target;
                     var label = target.data.label;
                     var entity_type = target.data.entity_type;
-                    if((entity_type=="CompoundDict") || (entity_type=="Cytochrome")){
+                    //if((entity_type=="CompoundDict") || (entity_type=="Cytochrome")){
+                    if(entity_type=="CompoundDict"){
                         var url = '{{ path('cytoscape', {'entityType': 'xxx', 'entityName': 'yyy'}) }}';
                         url = url.replace('xxx',entity_type);
                         url = url.replace('yyy',label);
