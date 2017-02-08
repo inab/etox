@@ -207,25 +207,6 @@
                             <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityBackup, 'orderBy': 'rule'}) }}"  {% if orderBy == "rule"%} class="active"{% endif %}
                             ><span data-tooltip class="has-tip" title="{{ mouseover_rule}}">Rule</span></a>
                         </th>
-                        <th>
-                            {% if entityType == "Cytochrome" %}
-                                <span data-tooltip class="has-tip" title="{{ mouseover_nephro_cytochrome}}">Nephro</span>
-                            {% else %}
-                                <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityBackup, 'orderBy': 'nephroval'}) }}"  {% if orderBy == "nephroval"%} class="active"{% endif %}>
-                                    <span data-tooltip class="has-tip" title="{{ mouseover_nephro}}">Nephro</span>
-                                </a>
-                            {% endif %}
-
-                        </th>
-                        <th>
-                            {% if entityType == "Cytochrome" %}
-                                <span data-tooltip class="has-tip" title="{{ mouseover_cardio}}">Cardio</span>
-                            {% else %}
-                                <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityBackup, 'orderBy': 'cardioval'}) }}"  {% if orderBy == "cardioval"%} class="active"{% endif %}>
-                                    <span data-tooltip class="has-tip" title="{{ mouseover_cardio}}">Cardio</span>
-                                </a>
-                            {% endif %}
-                        </th>
                         <th>Sentence</th>
                         <th>
                             <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby',{'field':field, 'whatToSearch': whatToSearch, 'entityType': entityType, 'source': source, 'entityName': entityName, 'orderBy': 'curation'}) }}" {% if orderBy == "curation"%} class="active"{% endif %}
@@ -247,12 +228,6 @@
                                 {% set ruleScore = entity2Document.document.getRuleScore %}
                                 {% set ruleScore = ruleScore|number_format(2) %}
                                 {% set ruleScore = ruleScore|colorCodingScore %}
-                                {% set nephroval = entity2Document.document.getNephroval %}
-                                {% set nephroval = nephroval|number_format(2) %}
-                                {% set nephroval = nephroval|colorCodingScore %}
-                                {% set cardioval = entity2Document.document.getCardioval %}
-                                {% set cardioval = cardioval|number_format(2) %}
-                                {% set cardioval = cardioval|colorCodingScore %}
                                 {% set termScore = entity2Document.document.getHepTermVarScore %}
                                 {% set termScore = termScore|colorCodingScore %}
                                 {% set svmConfidence = entity2Document.document.getSvmConfidence %}
@@ -323,12 +298,6 @@
                                 </td>
                                 <td class="center">
                                     {{ ruleScore |raw }}
-                                </td>
-                                <td class="center">
-                                    {{ nephroval |raw }}
-                                </td>
-                                <td class="center">
-                                    {{ cardioval |raw }}
                                 </td>
                                 {% set text=entity2Document.document.getText %}
                                 {% set arrayText= text | highlightEntitiesDocuments (entity2Document.document,entityBackup,field,whatToSearch, source, entityType, tooltipCounter) %}
@@ -500,6 +469,7 @@
                                 <td class="center">
                                     {{ ruleScore |raw }}
                                 </td>
+
                                 <td class="center">
                                     {{ toxicology |raw }}
                                 </td>
