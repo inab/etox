@@ -848,6 +848,17 @@ input.datepicker {
 h6.inactive{
     color: #DDD;
 }
+section.content h1 {
+    color: #2D2D2D;
+    font: bold 28px/30px Helvetica,"Helvetica Neue",sans-serif !important;
+    text-shadow: 1px 1px 0 #FFFFFF;
+}
+section.content h2 {
+    font: bold 24px/28px Helvetica,"Helvetica Neue",sans-serif !important;
+}
+section.content h4 {
+    font: bold 16px/20px Helvetica,"Helvetica Neue",sans-serif;
+}
 ol.tutorial li{
     margin: 40px 0px 10px 0px;
     font-size: 25px;
@@ -856,29 +867,41 @@ ol.tutorial li{
 .cytoscape_tool{
     border-top: 1px solid #000;
 }
+.accordion h1{
+    display: block;
+    padding-left: 1.3em;
+    font: bold 28px/30px Helvetica,"Helvetica Neue",sans-serif !important;
 
-ol.documentation ul{
-    margin-left: 1.5em;
 }
-
-ol.documentation li{
+.accordion h2{
+    display: block;
+    padding-left: 1.3em;
+    font: bold 25px/28px Helvetica,"Helvetica Neue",sans-serif;
+}
+.accordion h3{
+    display: block;
+    padding-left: 1.3em;
+    font: 300 22px/27px Helvetica,"Helvetica Neue",sans-serif !important;
+}
+.accordion h4{
+    display: block;
+    padding-left: 1.3em;
+    font: 300 16px/20px Helvetica,"Helvetica Neue",sans-serif;
+}
+.ui-state-default, .ui-widget-content{
+    border: none !important;
+    background: none !important;
+}
+.ui-accordion .ui-accordion-content {
+    padding: 0.3em 2.2em !important;
+}
+h2.ui-accordion-header-active {
+    	border-bottom: 1px solid blue !important;
+}
+.accordion div {
+    line-height: 1.5em;
+}
+.accordion ul li {
     display: inline-block;
-    margin: 8px 0px 0px 0px;
-    font-size: 20px;
     font-weight: bold;
-    list-style: inside;
-}
-
-ol.documentation h2{
-    text-decoration: underline;
-    margin-top: 2.5em;
-}
-
-ol.documentation h3{
-    text-decoration: underline;
-    margin-top: 1.5em;
-}
-
-ol.documentation a{
-    text-decoration: underline !important;
 }
