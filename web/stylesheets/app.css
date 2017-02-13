@@ -848,17 +848,6 @@ input.datepicker {
 h6.inactive{
     color: #DDD;
 }
-section.content h1 {
-    color: #2D2D2D;
-    font: bold 28px/30px Helvetica,"Helvetica Neue",sans-serif !important;
-    text-shadow: 1px 1px 0 #FFFFFF;
-}
-section.content h2 {
-    font: bold 24px/28px Helvetica,"Helvetica Neue",sans-serif !important;
-}
-section.content h4 {
-    font: bold 16px/20px Helvetica,"Helvetica Neue",sans-serif;
-}
 ol.tutorial li{
     margin: 40px 0px 10px 0px;
     font-size: 25px;
@@ -875,18 +864,20 @@ ol.tutorial li{
 }
 .accordion h2{
     display: block;
-    padding-left: 1.3em;
-    font: bold 25px/28px Helvetica,"Helvetica Neue",sans-serif;
+    padding-left: 1em;
+    font: bold 30px/30px Helvetica,"Helvetica Neue",sans-serif !important;
 }
 .accordion h3{
     display: block;
-    padding-left: 1.3em;
-    font: 300 22px/27px Helvetica,"Helvetica Neue",sans-serif !important;
+    color: #666666;
+    font: bold 24px/27px Helvetica,"Helvetica Neue",sans-serif !important;
+    margin-top: 0.9em;
+    margin-bottom: 1em;
 }
 .accordion h4{
     display: block;
-    padding-left: 1.3em;
-    font: 300 16px/20px Helvetica,"Helvetica Neue",sans-serif;
+    font: 300 16px/20px Helvetica,"Helvetica Neue",sans-serif !important;
+    color: #888;
 }
 .ui-state-default, .ui-widget-content{
     border: none !important;
@@ -898,10 +889,23 @@ ol.tutorial li{
 h2.ui-accordion-header-active {
     	border-bottom: 1px solid blue !important;
 }
-.accordion div {
-    line-height: 1.5em;
+.accordion p, .accordion ul li {
+    line-height: 1.9em;
+    margin-bottom: 0.4em !important;
+}
+.accordion ul {
+    margin-left: 3em;
 }
 .accordion ul li {
-    display: inline-block;
-    font-weight: bold;
+    list-style-type: initial ;
+    color: black;
+    padding-left: 0.6em;
+}
+.accordion ul li ul li {
+    list-style-type: circle ;
+}
+.accordion .small {
+    margin-top: 1em;
+    line-height: 1.7em;
+    padding: 0;
 }

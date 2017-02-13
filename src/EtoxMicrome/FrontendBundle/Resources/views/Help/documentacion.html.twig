@@ -12,137 +12,130 @@
             <h1>LimTox Documentation</h1>
                 <div class="accordion">
                     <h2>How to use LimTox. A search guide.</h2>
-                    <div class="accordion">
+                    <div>
                         <h3 id="sources">Sources</h3>
                         <div>
                             <p>
-                                When performing a search inside LimTox, you can select the sources where hepatotoxicity (or <a href="#toxic_endpoints">other toxic endpoint</a>) entities are searched in. You can choose amongst:
+                                Users can select the data source/s to be used when performing a search in LimTox. At the moment, it is possible to choose amongst:
                                 <ul>
-                                    <li id="all">All:&nbsp;</li>Select “All” to include all type of sources described below.<br/>
-                                    <li id="pubmed">Pubmed:&nbsp;</li>Entities will be searched taking into account only the Pubmed Articles in the system. Nowadays we have 122.997.116 Pubmed articles indexed.<br/>
-                                    <li id="fulltext">FullText:&nbsp; </li>Select FullText to search into a large set of full text articles that were used for the dataset construction.<br/>
-                                    <li id="nda">NDA:&nbsp; </li>Search entities inside NDA articles. Currently we have 759.621 articles indexed.<br/>
-                                    <li id="epar">EPAR:&nbsp; </li>Search entities inside <a href="http://www.ema.europa.eu/ema/index.jsp?curl=pages/medicines/landing/epar_search.jsp" target="_blank">EPAR</a> articles. We have 630.507 EPAR articles indexed.<br/>
-                                    <li id="abstracts">Abstracts:&nbsp; </li>You can search compounds inside abstracts. You can also perform <a href="#free_text_searches">free-text searches</a> against abstracts</link>.<br/>
+                                    <li id="all"><strong>All:&nbsp;</strong>Select “All” to include all type of sources described below.</li>
+                                    <li id="pubmed"><strong>Pubmed:&nbsp;</strong>Entities will be searched taking into account only the Pubmed Articles in the system. Nowadays we have 122.997.116 Pubmed articles indexed.</li>
+                                    <li id="fulltext"><strong>FullText:&nbsp; </strong>Select FullText to search into a large set of full text articles that were used for the dataset construction.</li>
+                                    <li id="nda"><strong>NDA:&nbsp; </strong>Search entities inside NDA articles. Currently we have 759.621 articles indexed.</li>
+                                    <li id="epar"><strong>EPAR:&nbsp; </strong>Search entities inside <a href="http://www.ema.europa.eu/ema/index.jsp?curl=pages/medicines/landing/epar_search.jsp" target="_blank">EPAR</a> articles. We have 630.507 EPAR articles indexed.</li>
+                                    <li id="abstracts"><strong>Abstracts:&nbsp; </strong>You can search compounds inside abstracts. You can also perform <a href="#free_text_searches">free-text searches</a> against abstracts</link>.</li>
                                 </ul>
                             </p>
                             <img src="{{ asset('images/docs/potential_data_sources.png') }}" border="0" />
-                            <p>
-                            <small><strong>Figure 1.</strong> Potential data sources available in LimTox to perform entities searches are highlighted in the image</small>
-                            </p>
+                            <div class="small"><strong>Figure 1.</strong> Potential data sources available in LimTox to perform entities searches are highlighted in the image</div>
                         </div>
-                        <h3>Free-text searches</h3>
+                        <h3>Free-text search (search by keywords)</h3>
                         <div>
                             <p>
-                                Documents inside LimToX are indexed so free-text searches can be performed using any keyword or set of keywords. The system will return all the documents, taking into account the keyword/set of keywords, sorted by SVM Score, although resorting process can be done by using the <a href=“#sorting_by_score">Sorting by Score</a> functionality.
+                                Documents inside LimToX are indexed so free-text searches can be performed using any keyword or set of keywords. The system will return all the documents, taking into account the keyword/set of keywords, sorted by SVM Score, although resorting process can be done by using the <a href="#sorting_by_score">Sorting by Score</a> functionality.
                                 <ul>
-                                    <li id="any">Any:&nbsp;</li>A free text search will be performed against all the documents inside the system<br/>
-                                    <li id="with_compounds">With Compounds:&nbsp;</li>The free text search will be done inside documents that have chemical compounds comentioned in them<br/>
-                                    <li id="with_cyps">With CYPs:&nbsp;</li>The free text search will be done against documents that contains mentions to cytochromes<br/>
-                                    <li id="with_markers">With Markers:&nbsp;</li>The free text search will be done against documents that contains mentions to markers<br/>
+                                    <li id="any"><strong>Any:&nbsp;</strong>A free text search will be performed against all the documents inside the system</li>
+                                    <li id="with_compounds"><strong>With Compounds:&nbsp;</strong>The free text search will be done inside documents that have chemical compounds comentioned in them</li>
+                                    <li id="with_cyps"><strong>With CYPs:&nbsp;</strong>The free text search will be done against documents that contains mentions to cytochromes</li>
+                                    <li id="with_markers"><strong>With Markers:&nbsp;</strong>The free text search will be done against documents that contains mentions to markers</li>
                                 </ul>
                             </p>
                             <img src="{{ asset('images/docs/example_free-text_search.png') }}" border="0" />
-                            <p>
-                            <small><strong>Figure 2. </strong>Example about the relevant information for performing a free-text search using LimTox</small>
-                            </p>
+
+                            <div class="small"><strong>Figure 2. </strong>Example about the relevant information for performing a free-text search using LimTox</div>
                         </div>
                         <h3 id="chemical_compound_searches">Chemical compounds search</h3>
                         <div>
-                          <p>
-                            You can search for documents containing an specific chemical compound. Typically you can search by a compound Name or using an identifier (ChemId Plus, ChEBI, cas Registry Number, DrugBank, Kegg Compound, Kegg Drug, Mesh) as well as Smiles and InChi.
-                            <ul>
-                                <li id="compound_name">Compound name:&nbsp;</li>Performs a search by compound name. A compound with that name will be searched and if it is found, a <a href=“#query_expansion">query expansion</a> will be performed to find aliases for that compound and include in the results also the documents containing compounds that are aliases of the search query compound.<br/>
-                                <li id="chemical_identifiers">Chemical identifiers:&nbsp;</li>Use any of the following chemical identifiers to retrieve documents for the chemical compound having that identifier. Allowed identifiers are: ChemId Plus, ChEBI, cas Registry Number, DrugBank, Kegg Compound, Kegg Drug and Mesh<br/>
-                                <li id="smiles">Smiles:&nbsp;</li>Smiles (Simplified Molecular Input Line Entry Specification) strings can be used<br/>
-                                <li id="inchi">InChI:&nbsp;</li>IUPAC International Chemical Identifier strings can also be used<br/>
-                                <li id="compound_any">Any(Free-text search):&nbsp;</li>Free text search against all the documents indexed inside the system (filtered by <a href="#sources">Source</a>)<br/>
-                                <li id="compound_with_cyps">With CYPs:&nbsp;</li>Free-text search inside documents with Cytochrome comentions<br/>
-                                <li id="compound_with_markers">With Markers:&nbsp;</li>Free-text search inside documents with Marker comentions<br/>
-                                <li id="compound_term_relations">Term Relations:&nbsp;</li>Free-text search inside documents that contains compound-term relations<br/>
-                            </ul>
-                        </p>
-                        <img src="{{ asset('images/docs/chemical_compound_search.png') }}" border="0" />
-                        <p>
-                        <small><strong>Figure 3. </strong> Relevant options when performing a chemical compound search using LimTox.</small>
-                        </p>
+                            <p>
+                                You can search for documents containing an specific chemical compound. Typically you can search by a compound Name or using an identifier (ChemId Plus, ChEBI, cas Registry Number, DrugBank, Kegg Compound, Kegg Drug, Mesh) as well as Smiles and InChi.
+                                <ul>
+                                    <li id="compound_name"><strong>Compound name:&nbsp;</strong>Performs a search by compound name. A compound with that name will be searched and if it is found, a <a href="#query_expansion">query expansion</a> will be performed to find aliases for that compound and include in the results also the documents containing compounds that are aliases of the search query compound.</li>
+                                    <li id="chemical_identifiers"><strong>Chemical identifiers:&nbsp;</strong>Use any of the following chemical identifiers to retrieve documents for the chemical compound having that identifier. Allowed identifiers are: ChemId Plus, ChEBI, cas Registry Number, DrugBank, Kegg Compound, Kegg Drug and Mesh</li>
+                                    <li id="smiles"><strong>Smiles:&nbsp;</strong>Smiles (Simplified Molecular Input Line Entry Specification) strings can be used</li>
+                                    <li id="inchi"><strong>InChI:&nbsp;</strong>IUPAC International Chemical Identifier strings can also be used</li>
+                                    <li id="compound_any"><strong>Any(Free-text search):&nbsp;</strong>Free text search against all the documents indexed inside the system (filtered by <a href="#sources">Source</a>)</li>
+                                    <li id="compound_with_cyps"><strong>With CYPs:&nbsp;</strong>Free-text search inside documents with Cytochrome comentions</li>
+                                    <li id="compound_with_markers"><strong>With Markers:&nbsp;</strong>Free-text search inside documents with Marker comentions</li>
+                                    <li id="compound_term_relations"><strong>Term Relations:&nbsp;</strong>Free-text search inside documents that contains compound-term relations</li>
+                                </ul>
+                            </p>
+                            <img src="{{ asset('images/docs/chemical_compound_search.png') }}" border="0" />
+
+                            <div class="small">
+                                <strong>Figure 3. </strong> Relevant options when performing a chemical compound search using LimTox.
+                            </div>
                         </div>
                         <h3 id="cytochromes_searches">Cytochromes search</h3>
                         <div>
                             <p>
                                 You can search for Cytochromes inside the system using CYP names, CYPs Uniprot Accessions and CYPs nomenclature. Some free text searches involving CYPs are available from here too.
                                 <ul>
-                                    <li id="cyp_name">CYPs name/symbol:&nbsp;</li>Search entities inside documents by Cytochrome P450 gene/protein name or symbol.<br/>
-                                    <li id="uniprot_accession">CYPs Uniprot Accession:&nbsp;</li>Use Cytochrome P450 gene/protein Uniprot database primary accession number<br/>
-                                    <li id="cyp_nomenclature">CYPs Nomenclature:&nbsp;</li>Search inside LimToX system using the name of the Cytochrome P450 gene according to the standard hierarchical gene naming nomenclature convention (see <a href=“http://www.cypalleles.ki.se” target=“_blank">http://www.cypalleles.ki.se</a>)
-        <br/>
-                                    <li id="cyp_any">Any(Free-text search):&nbsp;</li>A free text search will be performed against all the documents inside the system. It is equivalent to <a href="#free_text_searches">free-text search</a><br/>
-                                    <li id="cyp_with_compounds">With Compounds:&nbsp;</li>Free-text search inside documents that contain chemical compound comentions<br/>
-                                    <li id="cyp_compounds_relations">CYPs-Chemical Relations:&nbsp;</li>Free text search inside documents where CYPs and Chemical compounds relations have been found<br/>
+                                    <li id="cyp_name"><strong>CYPs name/symbol:&nbsp;</strong>Search entities inside documents by Cytochrome P450 gene/protein name or symbol.</li>
+                                    <li id="uniprot_accession"><strong>CYPs Uniprot Accession:&nbsp;</strong>Use Cytochrome P450 gene/protein Uniprot database primary accession number</li>
+                                    <li id="cyp_nomenclature"><strong>CYPs Nomenclature:&nbsp;</strong>Search inside LimToX system using the name of the Cytochrome P450 gene according to the standard hierarchical gene naming nomenclature convention (see <a href="http://www.cypalleles.ki.se" target="_blank">http://www.cypalleles.ki.se</a>)</li>
+                                    <li id="cyp_any"><strong>Any(Free-text search):&nbsp;</strong>A free text search will be performed against all the documents inside the system. It is equivalent to <a href="#free_text_searches">free-text search</a></li>
+                                    <li id="cyp_with_compounds"><strong>With Compounds:&nbsp;</strong>Free-text search inside documents that contain chemical compound comentions</li>
+                                    <li id="cyp_compounds_relations"><strong>CYPs-Chemical Relations:&nbsp;</strong>Free text search inside documents where CYPs and Chemical compounds relations have been found</li>
                                 </ul>
                             </p>
                             <img src="{{ asset('images/docs/cytochrome_search.png') }}" border="0" />
-                            <p>
-                            <small><strong>Figure 4. </strong>Relevant information to consider when looking at Cytochrome P450s in LimTox.</small>
-                            </p>
+                            <div class="small"><strong>Figure 4. </strong>Relevant information to consider when looking at Cytochrome P450s in LimTox.</div>
                         </div>
                         <h3 id="markers_searches">Markers search</h3>
                         <div>
-                          You can search for liver toxicity markers inside the LimToX sources using a marker name/symbol or a marker identifier as a query.
                             <p>
-                                <li id="marker_name_symbol">Marker name/symbol</li>Name or symbol of the biochemical liver test marker. Correspond to one of 17 enzymes and chemical compounds assayed as biochemical markers of adverse liver reactions (e.g. ALT, AST, SDH, GGT, 5'-NT, LAP, SGPT,...).<br/>
-                                <li id="marker_identifier">Marker Identifier</li>Marker UniProt accession number or PubChem compound Id (e.g. P00441, P04040, P07195, P07203,..)<br/>
-                                <li id="marker_any">Any(Free-text search)</li>A free text search will be performed against all the documents inside the system. It is equivalent to <a href="#free_text_searches">free-text search</a><br/>
-                                <li id="marker_with_compounds">With Compounds.</li> Free-text search inside documents containing Compound comentions<br/>
-                                <li id="marker_compounds_relations">Marker-chemical relations. Free-text search inside documents where Markers and Chemicals are related</li>
+                                You can search for liver toxicity markers inside the LimToX sources using a marker name/symbol or a marker identifier as a query.
+                                <li id="marker_name_symbol"><strong>Marker name/symbol</strong>Name or symbol of the biochemical liver test marker. Correspond to one of 17 enzymes and chemical compounds assayed as biochemical markers of adverse liver reactions (e.g. ALT, AST, SDH, GGT, 5'-NT, LAP, SGPT,...).</li>
+                                <li id="marker_identifier"><strong>Marker Identifier</strong>Marker UniProt accession number or PubChem compound Id (e.g. P00441, P04040, P07195, P07203,..)</li>
+                                <li id="marker_any"><strong>Any(Free-text search)</strong>A free text search will be performed against all the documents inside the system. It is equivalent to <a href="#free_text_searches">free-text search</a></li>
+                                <li id="marker_with_compounds"><strong>With Compounds.</strong> Free-text search inside documents containing Compound comentions</li>
+                                <li id="marker_compounds_relations"><strong>Marker-chemical relations.</strong> Free-text search inside documents where Markers and Chemicals are related</li>
 
                             </p>
                             <img src="{{ asset('images/docs/marker_search.png') }}" border="0" />
-                            <p>
-                            <small><strong>Figure 5. </strong>Relevant information when performing a markers search at LimTox.</small>
-                            </p>
+                            <div class="small"><strong>Figure 5. </strong>Relevant information when performing a markers search at LimTox.</div>
                         </div>
                         <h3 id="genes_searches">Genes search</h3>
                         <div>
                             <p>
                                 You can search for liver toxicity relevant genes inside the LimToX indexed documents. For that matter you can use Gene names and Entrez genes as valid queries. Searching for genes can only be performed against all the documents or against the documents that contain chemical compound comentions
+                                <ul>
+                                    <li id="gene_name"><strong>Gene name:&nbsp;</strong>Search by Gene name</li>
+                                    <li id="entrez_gene"><strong>Entrez Gene ID:&nbsp;</strong>Search by Entrez Gene ID</li>
+                                </ul>
                             </p>
-                            <ul>
-                                <li id="gene_name">Gene name:&nbsp;</li>Search by Gene name<br/>
-                                <li id="entrez_gene">Entrez Gene ID:&nbsp;</li>Search by Entrez Gene ID<br/>
-                            </ul>
                         </div>
                         <h3 id="toxic_endpoints">Search different toxic endpoints</h3>
                         <div>
-                          <p>
+                            <p>
                                 You can search for keywords related to not only hepatotoxicity but also different toxic endpoints.
+                                <ul>
+                                    <li id="hepatotoxicity"><strong>Hepatotoxicity:&nbsp;</strong>Search keywords for hepatotoxicity endpoint</li>
+                                    <li id="nephrotoxicity"><strong>Nephrotoxicity:&nbsp;</strong>Search keywords for nephrotoxicity endpoint</li>
+                                    <li id="cardiotoxicity"><strong>Cardiotoxicity:&nbsp;</strong>Search keywords for cardiotoxicity endpoint</li>
+                                    <li id="thyroid_toxicity"><strong>Thyroid toxicity:&nbsp;</strong>Search keywords for thyrotoxicity endpoint</li>
+                                    <li id="phospholipidosis"><strong>Phospholipidosis:&nbsp;</strong>Search keywords for phospholipidosis endpoint</li>
+                                </ul>
                             </p>
-                            <ul>
-                                <li id="hepatotoxicity">Hepatotoxicity:&nbsp;</li>Search keywords for hepatotoxicity endpoint<br/>
-                                <li id="nephrotoxicity">Nephrotoxicity:&nbsp;</li>Search keywords for nephrotoxicity endpoint<br/>
-                                <li id="cardiotoxicity">Cardiotoxicity:&nbsp;</li>Search keywords for cardiotoxicity endpoint<br/>
-                                <li id="thyroid_toxicity">Thyroid toxicity:&nbsp;</li>Search keywords for thyrotoxicity endpoint<br/>
-                                <li id="phospholipidosis">Phospholipidosis:&nbsp;</li>Search keywords for phospholipidosis endpoint<br/>
-                            </ul>
                         </div>
                     </div>
-                    <h2 id="understanding_results">How to use LimTox. Understanding obtained results.</h2>
-                    <div class="accordion">
+                    <h2 id="understanding_results">How to use LimTox. Understanding results.</h2>
+                    <div>
                         <h3 id="statistics">Results Statistics</h3>
                         <div>
                             <p>
-                            <img src="{{ asset('images/docs/understanding_results.png.png') }}" border="0" />
+                            <img src="{{ asset('images/docs/understanding_results.png') }}" border="0" />
                             </p>
                             <p>
                                 Right before the results, a simple statistics table is returned containing:
                             </p>
                             <ul>
-                                <li id="total_mentions">Total Mentions&nbsp;</li>Total number of mentions returned by the system<br/>
-                                <li id="total_mentions_displayed">Total number of mentions displayed:&nbsp;</li>If the total number of mentions displayed is bigger than the total of existing mentions inside of LimToX, the total number of mentions displayed will be shown. The following values are calculated taking into account the total number of mentions displayed<br/>
-                                <li id="max_score">Maximum Score:&nbsp;</li>The maximum value for the score that is taking into account for the <a href="#sorting_by_score">sorting process</a> of the results<br/>
-                                <li id="min_score">Minimum Score:&nbsp;</li>The minimum value for the score that is taking into account for the <a href="#sorting_by_score">sorting process</a> of the results<br/>
-                                <li id="score_mean">Mean score:&nbsp;</li>The mean value for the score that is taking into account for the <a href="#sorting_by_score">sorting process</a><br/>
-                                <li id="score_median">Median score:&nbsp;</li>The median of the score that is taking into account for the <a href="#sorting_by_score">sorting process</a><br/>
+                                <li id="total_mentions"><strong>Total Mentions&nbsp;</strong>Total number of mentions returned by the system</li>
+                                <li id="total_mentions_displayed"><strong>Total number of mentions displayed:&nbsp;</strong>If the total number of mentions displayed is bigger than the total of existing mentions inside of LimToX, the total number of mentions displayed will be shown. The following values are calculated taking into account the total number of mentions displayed</li>
+                                <li id="max_score"><strong>Maximum Score:&nbsp;</strong>The maximum value for the score that is taking into account for the <a href="#sorting_by_score">sorting process</a> of the results</li>
+                                <li id="min_score"><strong>Minimum Score:&nbsp;</strong>The minimum value for the score that is taking into account for the <a href="#sorting_by_score">sorting process</a> of the results</li>
+                                <li id="score_mean"><strong>Mean score:&nbsp;</strong>The mean value for the score that is taking into account for the <a href="#sorting_by_score">sorting process</a></li>
+                                <li id="score_median"><strong>Median score:&nbsp;</strong>The median of the score that is taking into account for the <a href="#sorting_by_score">sorting process</a></li>
                             </ul>
                         </div>
                         <h3 id="interaction_network">View Interaction Network</h3>
@@ -161,73 +154,56 @@
                                 LimTox has made an extensive use of SVMLight for recognizing and annotating relationships among chemical compounds and adverse toxicological episodes. Therefore, additional information about SVM scores can be found at http://svmlight.joachims.org.
                             </p>
                             <ul>
-                                <li id="svm">SVM:&nbsp;</li>Support Vector Machine Score. Binary linear kernel SVM classifier score result (SVMLight).Features: word unigram, stop word filter, balanced training set. The higher the more related to the topic. If the output of the scoring function is positive then the text was classified as relevant for adverse hepatobiliary events, while if it has a negative score it was classified as non-relevant. See: <a href="http://svmlight.joachims.org" target="_blank">http://svmlight.joachims.org</a><br/>
-                                <li id="svm_confidence">SVM Confidence:&nbsp;</li>Support Vector Machine confidence score. Binary linear kernel SVM classifier confidence scores (scikit-learn).Features: word 1-4grams, stop word filter, tf-idf weights, balanced training set. The higher the more related to the topic. If the output of the scoring function is positive then the text was classified as relevant for adverse hepatobiliary events, while if it has a negative score it was classified as non-relevant. (See: <a href="http://scikit-learn.org" target="_blank">http://scikit-learn.org</a> and decision_function)<br/>
-                                <li id="pattern">Pattern:&nbsp;</li>Number of adverse hepatobiliary event text patterns detected<br/>
-                                <li id="term">Term:&nbsp;</li>Number of adverse hepatobiliary event terms/phrases detected<br/>
-                                <li id="rule">Rule:&nbsp;</li>Scores of 0.01 correspond to sentences that only mention a term or phrase related to the hepatobiliary system. Scores &gt; 0.01 correspond to sentences that also contain adverse, toxic or disease events. The rule score is a heuristic score that takes into account: (1) the number of co-occurrences between hepatobiliary terms and adverse effect terms in a sentences, (2) their respective relative order within the sentence and (3) their relative distance measured by the number of word tokens between them<br/>
-                                <li id="end_points">Other toxicological endpoints</li>
-                                <div class="accordion">
-                                    <h4 id="nephro">Nephro</h4>
-                                    <div>
-                                        Nephrotoxicity score. Binary linear kernel SVM classifier score result (SVMLight).Features: word unigram, stop word filter, balanced training set. The higher the more related to the topic. If the output of the scoring function is positive then the text was classified as relevant for adverse nephrologic events, while if it has a negative score it was classified as non-relevant. See: <a href="http://svmlight.joachims.org" target="_blank">http://svmlight.joachims.org</a>
-                                    </div>
-                                    <h4 id="cardio">Cardio</h4>
-                                    <div>
-                                        Cardiotoxicity score. Binary linear kernel SVM classifier score result (SVMLight).Features: word unigram, stop word filter, balanced training set. The higher the more related to the topic. If the output of the scoring function is positive then the text was classified as relevant for adverse cardiological events, while if it has a negative score it was classified as non-relevant. See: <a href="http://svmlight.joachims.org" target="_blank">http://svmlight.joachims.org</a>
-                                    </div>
-                                    <h4 id="thyro">Thyro</h4>
-                                    <div>
-                                        Thyrotoxicity score. Binary linear kernel SVM classifier score result (SVMLight). Features: word unigram, stop word filter, balanced training set. The higher, the more related to the topic. If the output of the scoring function is positive then the text was classified as relevant for adverse thyroid events, while if it has a negative score it was classified as non-relevant.
-                                    </div>
-                                    <h4 id="phospho">Phospho</h4>
-                                    <div>
-                                        Phospholipidosis score. Binary linear kernel SVM classifier score result (SVMLight). Features: word unigram, stop word filter, balanced training set. The higher, the more related to the topic. If the output of the scoring function is positive then the text was classified as relevant for adverse phospholipidic events, while if it has a negative score it was classified as non-relevant.
-
-                                    </div>
-                                    <h4 id="toxicology">Toxicology</h4>
-                                    <div>
-                                        Match found with PubMed Boolean MeSH query search for Toxicology
-                                    </div>
-                                    <h4 id="biomarker">Biomarker</h4>
-                                    <div>
-                                        Match found with PubMed Boolean MeSH query search for Biomarker
-                                    </div>
-                                </div>
+                                <li id="svm"><strong>SVM:&nbsp;</strong>Support Vector Machine Score. Binary linear kernel SVM classifier score result (SVMLight).Features: word unigram, stop word filter, balanced training set. The higher the more related to the topic. If the output of the scoring function is positive then the text was classified as relevant for adverse hepatobiliary events, while if it has a negative score it was classified as non-relevant. See: <a href="http://svmlight.joachims.org" target="_blank">http://svmlight.joachims.org</a></li>
+                                <li id="svm_confidence"><strong>SVM Confidence:&nbsp;</strong>Support Vector Machine confidence score. Binary linear kernel SVM classifier confidence scores (scikit-learn).Features: word 1-4grams, stop word filter, tf-idf weights, balanced training set. The higher the more related to the topic. If the output of the scoring function is positive then the text was classified as relevant for adverse hepatobiliary events, while if it has a negative score it was classified as non-relevant. (See: <a href="http://scikit-learn.org" target="_blank">http://scikit-learn.org</a> and decision_function)</li>
+                                <li id="pattern"><strong>Pattern:&nbsp;</strong>Number of adverse hepatobiliary event text patterns detected</li>
+                                <li id="term"><strong>Term:&nbsp;</strong>Number of adverse hepatobiliary event terms/phrases detected</li>
+                                <li id="rule"><strong>Rule:&nbsp;</strong>Scores of 0.01 correspond to sentences that only mention a term or phrase related to the hepatobiliary system. Scores &gt; 0.01 correspond to sentences that also contain adverse, toxic or disease events. The rule score is a heuristic score that takes into account: (1) the number of co-occurrences between hepatobiliary terms and adverse effect terms in a sentences, (2) their respective relative order within the sentence and (3) their relative distance measured by the number of word tokens between them</li>
+                                <li id="end_points">Other toxicological endpoints
+                                    <ul>
+                                        <li id="nephro"><strong>Nephro:</strong> Nephrotoxicity score. Binary linear kernel SVM classifier score result (SVMLight).Features: word unigram, stop word filter, balanced training set. The higher the more related to the topic. If the output of the scoring function is positive then the text was classified as relevant for adverse nephrologic events, while if it has a negative score it was classified as non-relevant. See: <a href="http://svmlight.joachims.org" target="_blank">http://svmlight.joachims.org</a></li>
+                                        <li id="cardio"><strong>Cardio:</strong> Cardiotoxicity score. Binary linear kernel SVM classifier score result (SVMLight).Features: word unigram, stop word filter, balanced training set. The higher the more related to the topic. If the output of the scoring function is positive then the text was classified as relevant for adverse cardiological events, while if it has a negative score it was classified as non-relevant. See: <a href="http://svmlight.joachims.org" target="_blank">http://svmlight.joachims.org</a>
+                                        </li>
+                                        <li id="thyro"><strong>Thyro:</strong> Thyrotoxicity score. Binary linear kernel SVM classifier score result (SVMLight). Features: word unigram, stop word filter, balanced training set. The higher, the more related to the topic. If the output of the scoring function is positive then the text was classified as relevant for adverse thyroid events, while if it has a negative score it was classified as non-relevant.
+                                        </li>
+                                        <li id="phospho"><strong>Phospho:</strong> Phospholipidosis score. Binary linear kernel SVM classifier score result (SVMLight). Features: word unigram, stop word filter, balanced training set. The higher, the more related to the topic. If the output of the scoring function is positive then the text was classified as relevant for adverse phospholipidic events, while if it has a negative score it was classified as non-relevant.
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li id="toxicology"><strong>Toxicology: </strong>Match found with PubMed Boolean MeSH query search for Toxicology</li>
+                                <li id="biomarker"><strong>Biomarker: </strong>Match found with PubMed Boolean MeSH query search for Biomarker</li>
                             </ul>
                         </div>
                         <h3 id="info">Additional Information</h3>
                         <div>
                             Some extra info is displayed depending of the entity type used as a query.
-                            <div class="accordion">
-                                <h4 id="info_compounds_search">In case of Compound search as query</h4>
-                                <div>
-                                    <ul>
-                                        <li id="download_mol_file">Download mol file:&nbsp;</li>Link to download the compound’s information in <a href=“https://metamolecular.com/cheminformatics/molfile-format/">.mol</a> file format
-            <br/>
-                                        <li id="basic_info_and_outlinks">Basic info + outlinks:&nbsp;</li>Basic info as name and <a href="#outlinks">outlinks</a> (links to one or more of the following databases chemIdPlus, chebi, cas Registry Number, inChi, drugBank, keggCompound, keggDrug, mesh… ) are provided if they are inside the system
-            <br/>
-                                        <li id="search_smile_in_chemspider">Search Smile in ChemSpider:&nbsp;</li>Search for this compound inside <a href="http://www.chemspider.com">Chemspider using Smile format. <br/>
-                                        <li id="aliases">Aliases:&nbsp;</li>A list of compounds that are aliases for the compound used as query<br/>
-                                        <li id="compound_image">Compound Image:&nbsp;</li>Embedded image of the compound if it is present in the system.<br/>
-                                        <li id="tanimoto_coefficient">Calculate Tanimoto Coefficient:&nbsp;</li>Here you can calculate the <a href=“https://en.wikipedia.org/wiki/Jaccard_index#Other_definitions_of_Tanimoto_distance">Tanimoto distance</a> existing between the query compound and any other compound inserted in the textbox input field next to it.
-            <br/>
-                                        <li id="list_compounds_tanimoto_coefficient">List of compounds with a Tanimoto coeff. >= 0.5:&nbsp;:&nbsp;</li><br/>
-                                    </ul>
-                                </div>
-                                <h4 id="info_cytochromes_search">In case of Cytochrome search as query</h4>
-                                <div>
-                                    <p>
-                                        Basic information related to the CYP used as query
-                                    </p>
-                                    <ul>
-                                        <li id="info_cytochrome_search_name">name:&nbsp;</li>Cytochrome P450 name of the query entity<br/>
-                                        <li id="uniprot_id">UniprotID:&nbsp;</li>Uniprot ID and outlink to Uniprot database for the query<br/>
-                                        <li id="info_cytochrome_search_type">Type:&nbsp;</li>Type of cytochrome used <br/>
-                                        <li id="info_cytochrome_search_tax">Tax:&nbsp;</li>Tax ID an link to Taxonomy Browser<br/>
-                                        <li id="info_cytochrome_search_canonical">Canonical:&nbsp;</li>Canonical name for the query cytochrome<br/>
-                                    </ul>
-                                </div>
+                            <h4 id="info_compounds_search">In case of Compound search as query</h4>
+                            <div>
+                                <ul>
+                                    <li id="download_mol_file"><strong>Download mol file:&nbsp;</strong>Link to download the compound’s information in <a href="https://metamolecular.com/cheminformatics/molfile-format/">.mol</a> file format
+        </li>
+                                    <li id="basic_info_and_outlinks"><strong>Basic info + outlinks:&nbsp;</strong>Basic info as name and <a href="#outlinks">outlinks</a> (links to one or more of the following databases chemIdPlus, chebi, cas Registry Number, inChi, drugBank, keggCompound, keggDrug, mesh… ) are provided if they are inside the system
+        </li>
+                                    <li id="search_smile_in_chemspider"><strong>Search Smile in ChemSpider:&nbsp;</strong>Search for this compound inside <a href="http://www.chemspider.com">Chemspider using Smile format. </li>
+                                    <li id="aliases"><strong>Aliases:&nbsp;</strong>A list of compounds that are aliases for the compound used as query</li>
+                                    <li id="compound_image"><strong>Compound Image:&nbsp;</strong>Embedded image of the compound if it is present in the system.</li>
+                                    <li id="tanimoto_coefficient"><strong>Calculate Tanimoto Coefficient:&nbsp;</strong>Here you can calculate the <a href="https://en.wikipedia.org/wiki/Jaccard_index#Other_definitions_of_Tanimoto_distance">Tanimoto distance</a> existing between the query compound and any other compound inserted in the textbox input field next to it.
+        </li>
+                                    <li id="list_compounds_tanimoto_coefficient">List of compounds with a Tanimoto coeff. >= 0.5</li>
+                                </ul>
+                            </div>
+                            <h4 id="info_cytochromes_search">In case of Cytochrome search as query</h4>
+                            <div>
+                                <p>
+                                    Basic information related to the CYP used as query
+                                </p>
+                                <ul>
+                                    <li id="info_cytochrome_search_name"><strong>Name:&nbsp;</strong>Cytochrome P450 name of the query entity</li>
+                                    <li id="uniprot_id"><strong>UniprotID:&nbsp;</strong>Uniprot ID and outlink to Uniprot database for the query</li>
+                                    <li id="info_cytochrome_search_type"><strong>Type:&nbsp;</strong>Type of cytochrome used </li>
+                                    <li id="info_cytochrome_search_tax"><strong>Tax:&nbsp;</strong>Tax ID an link to Taxonomy Browser</li>
+                                    <li id="info_cytochrome_search_canonical"><strong>Canonical:&nbsp;</strong>Canonical name for the query cytochrome</li>
+                                </ul>
                             </div>
                         </div>
                         <h3 id="highlight">Entity Mentions Highlight</h3>
@@ -244,7 +220,7 @@
                         <h3 id="outlinks">Outlinks</h3>
                         <div>
                             <p>
-                                LimToX retrieves the entities inside the documents and try to give as more information as possible. When returning compound entities, it tries to give as much chemical compound database identifiers linked to the original database for you to expand the information i.e: chemIdPlus, chebi, cas Registry Number, inChi, drugBank, keggCompound, keggDrug, Mesh<br/>
+                                LimToX retrieves the entities inside the documents and try to give as more information as possible. When returning compound entities, it tries to give as much chemical compound database identifiers linked to the original database for you to expand the information i.e: chemIdPlus, chebi, cas Registry Number, inChi, drugBank, keggCompound, keggDrug, Mesh
 
                             </p>
                         </div>
@@ -270,13 +246,13 @@
                     <h2 id="query_expansion">Understanding LimTox. Query Expansion</h2>
                     <div>
                         <p>
-                            A query expansion is performed for each entity search. The process depends on the type of entity that is being searched but it tends to widen the results adding aliases.
+                            A query expansion (QE) is performed for each entity search. The process depends on the type of entity that is being searched but it tends to widen the results adding aliases and/or linguistic variants.
                         </p>
                         <ul>
-                            <li id="compounds_query_expansion">Compounds QE:&nbsp;</li>When searching for compounds using compound names, once retrieved the compound entity, a query searching for compounds with the same identifiers than the entity retrieved is performed. Therefore equivalent compounds sharing at least one identifier with the main compound query are added and will be taking into account as they seem to be the same compound.<br/>
-                            <li id="cytochromes_query_expansion">Cytochromes QE:&nbsp;</li>Once the cytochrome entity searched is found, we search for other cytochromes that have the same entityId or Canonical Name. Resulting entities will be added to final query as they seem to be the same cytochrome<br/>
-                            <li id="markers_query_expansion">Markers QE:&nbsp;</li>Once the marker entity searched is found, markers that have the same entityId are added to the final query. Therefore this marker aliases will also be present in the results.<br/>
-                            <li id="keywords_query_expansion">Keywords QE:&nbsp;</li>The normalised term is recovered and all the terms having the same normalised term are added to take them into account.<br/>
+                            <li id="compounds_query_expansion"><strong>Compounds QE:&nbsp;</strong>When searching for compounds using compound names, once retrieved the compound entity, a query searching for compounds with the same identifiers than the entity retrieved is performed. Therefore equivalent compounds sharing at least one identifier with the main compound query are added and will be taking into account as they seem to be the same compound.</li>
+                            <li id="cytochromes_query_expansion"><strong>Cytochromes QE:&nbsp;</strong>Once the cytochrome entity searched is found, we search for other cytochromes that have the same entityId or Canonical Name. Resulting entities will be added to final query as they seem to be the same cytochrome</li>
+                            <li id="markers_query_expansion"><strong>Markers QE:&nbsp;</strong>Once the marker entity searched is found, markers that have the same entityId are added to the final query. Therefore this marker aliases will also be present in the results.</li>
+                            <li id="keywords_query_expansion"><strong>Keywords QE:&nbsp;</strong>The normalised term is recovered and all the terms having the same normalised term are added to take them into account.</li>
                         </ul>
                     </div>
                 </div>
