@@ -43,9 +43,9 @@ class MarkerRepository extends EntityRepository
         $query = $this->_em->createQuery("
             SELECT a
             FROM EtoxMicromeEntityBundle:Marker a
-            WHERE a.name= :entityName
+            WHERE LOWER(a.name) LIKE :entityName
         ");
-        $query->setParameter('entityName', $entityName);
+        $query->setParameter('entityName', strtolower($entityName));
         $query->setMaxResults(2);
         $marker=$query->getResult();
         if(count($marker)==0){
@@ -107,7 +107,7 @@ class MarkerRepository extends EntityRepository
         if(count($compound)!=1){
             $errorMessage="There are more than one entityId for '$entityId'";
             //ld($errorMessage);
-            return $compound[0]; 
+            return $compound[0];
         }
         //We return only one entity. Later on we will make the query expansion so we will collect all of them
         $entity=$compound[0];

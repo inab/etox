@@ -404,6 +404,7 @@ class SearchController extends Controller
 
             #ld($dictionaryIds);
             $arrayTmp=array();
+            $arrayEntityId[]=$entity->getId();//We add the first entityId which we already know that fits.
             foreach ($dictionaryIds as $key => $value) {
                 //We get id for each key->value in CompoundDict.
                 //We call getEntityFromGenericId($key, $value); That search the id from DocumentDict which have a field $key=$value.
@@ -412,7 +413,6 @@ class SearchController extends Controller
                 $arrayTmp=$em->getRepository('EtoxMicromeEntityBundle:'.$entityType)->getIdFromGenericField($key, $value, $arrayEntityId);
                 $arrayEntityId=array_merge($arrayEntityId,$arrayTmp);
             }
-            $arrayEntityId[]=$entity->getId();//We add the first entityId which we already know that fits.
             $arrayEntityId=array_unique($arrayEntityId);//We get rid of the duplicates
             return $arrayEntityId;
     }
@@ -445,6 +445,7 @@ class SearchController extends Controller
             $dictionaryIds['mehsUi']=$identifier;
         }
         $arrayTmp=array();
+        $arrayEntityId[]=$entity->getName();//We add the first entityId which we already know that fits.
         foreach ($dictionaryIds as $key => $value) {
             //We get id for each key->value in CompoundDict.
             //We call getEntityFromGenericId($key, $value); That search the id from DocumentDict which have a field $key=$value.
@@ -452,7 +453,6 @@ class SearchController extends Controller
             $arrayTmp=$em->getRepository('EtoxMicromeEntityBundle:CompoundMesh')->getNameFromGenericField($key, $value, $arrayEntityId);
             $arrayEntityId=array_merge($arrayEntityId,$arrayTmp);
         }
-        $arrayEntityId[]=$entity->getName();//We add the first entityId which we already know that fits.
         $arrayEntityId=array_unique($arrayEntityId);//We get rid of the duplicates
         return $arrayEntityId;
     }
@@ -481,6 +481,7 @@ class SearchController extends Controller
 
 
         $arrayTmp=array();
+        $arrayEntityId[]=$entity->getId();//We add the first entityId which we already know that fits.
         foreach ($dictionaryIds as $key => $value) {
             //We get id for each key->value in CompoundDict.
             //We call getEntityFromGenericId($key, $value); That search the id from DocumentDict which have a field $key=$value.
@@ -489,7 +490,6 @@ class SearchController extends Controller
             $arrayTmp=$em->getRepository('EtoxMicromeEntityBundle:'.$entityType)->getIdFromGenericField($key, $value, $arrayEntityId);
             $arrayEntityId=array_merge($arrayEntityId,$arrayTmp);
         }
-        $arrayEntityId[]=$entity->getId();//We add the first entityId which we already know that fits.
         $arrayEntityId=array_unique($arrayEntityId);//We get rid of the duplicates
         return $arrayEntityId;
     }
@@ -502,7 +502,7 @@ class SearchController extends Controller
         $arrayEntityId=array();
         //We create a dictionary with key=numberOfId, value=id. We keep it only if it's not "". After we will iterate over this pairs to extend the query
 
-        //Query expansion for HepatotoxKeyword differs dependingo on the $whatToSearch parameter.
+        //Query expansion for HepatotoxKeyword differs depending on the $whatToSearch parameter.
         if($whatToSearch=="name"){
             //we have to search for all the names that have the same entityId
             $dictionaryIds['entityId']=$entity->getEntityId();
@@ -517,6 +517,7 @@ class SearchController extends Controller
 
         //ld($dictionaryIds);
         $arrayTmp=array();
+        $arrayEntityId[]=$entity->getId();//We add the first entityId which we already know that fits. We add it at first positions so we assure that it will be present after any possible trimming of the array.
         foreach ($dictionaryIds as $key => $value) {
             //We get id for each key->value in CompoundDict.
             //We call getEntityFromGenericId($key, $value); That search the id from DocumentDict which have a field $key=$value.
@@ -525,7 +526,6 @@ class SearchController extends Controller
             $arrayTmp=$em->getRepository('EtoxMicromeEntityBundle:'.$entityType)->getIdFromGenericField($key, $value, $arrayEntityId);
             $arrayEntityId=array_merge($arrayEntityId,$arrayTmp);
         }
-        $arrayEntityId[]=$entity->getId();//We add the first entityId which we already know that fits.
         $arrayEntityId=array_unique($arrayEntityId);//We get rid of the duplicates
         return $arrayEntityId;
     }
