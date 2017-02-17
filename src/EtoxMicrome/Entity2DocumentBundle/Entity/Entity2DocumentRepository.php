@@ -12,7 +12,7 @@ use Monolog\Handler\StreamHandler;
  * repository methods below.
  */
 class Entity2DocumentRepository extends EntityRepository
-{    
+{
     public function getValToSearch($field)
     {
         switch ($field) {
@@ -1045,7 +1045,7 @@ class Entity2DocumentRepository extends EntityRepository
         $dictionary=array();
         $stringOutput="";
         if ($qualifier=="CompoundDict"){
-            $entity=$em->getRepository("EtoxMicromeEntityBundle:CompoundDict")->findOneByName($name);
+            $entity=$em->getRepository("EtoxMicromeEntityBundle:CompoundDict")->getEntityFromName($name);
             if ($entity!=null){
                 //Once we have the entity itself we have to create a dictionary to save with key=field, value=field_value which can be processed to create the string to the mouseover
                 $name=$entity->getName();
@@ -1109,7 +1109,7 @@ class Entity2DocumentRepository extends EntityRepository
         }
 
         if($qualifier=="Marker"){
-            $entity=$em->getRepository("EtoxMicromeEntityBundle:Marker")->findOneByName($name);
+            $entity=$em->getRepository("EtoxMicromeEntityBundle:Marker")->getEntityFromName($name);
             //Once we have the entity itself we have to create a dictionary to save with key=field, value=field_value which can be processed to create the string to the mouseover
             if($entity!=null){
                 $name=$entity->getName();
@@ -1175,7 +1175,7 @@ class Entity2DocumentRepository extends EntityRepository
 
         if($qualifier=="Cytochrome"){
             $message="inside getEntitySummaryFromName for the cytochrome entityType";
-            $entity=$em->getRepository("EtoxMicromeEntityBundle:Cytochrome")->findOneByName($name);
+            $entity=$em->getRepository("EtoxMicromeEntityBundle:Cytochrome")->getEntityFromName($name);
             //Once we have the entity itself we have to create a dictionary to save with key=field, value=field_value which can be processed to create the string to the mouseover
             if ($entity!=null){
                 $name=$entity->getName();

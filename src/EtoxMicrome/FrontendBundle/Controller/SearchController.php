@@ -402,14 +402,14 @@ class SearchController extends Controller
                 $dictionaryIds['smile']=$smile;
             }
 
-            #ld($dictionaryIds);
+            //ld($dictionaryIds);
             $arrayTmp=array();
             $arrayEntityId[]=$entity->getId();//We add the first entityId which we already know that fits.
+            $em = $this->getDoctrine()->getManager();
             foreach ($dictionaryIds as $key => $value) {
                 //We get id for each key->value in CompoundDict.
                 //We call getEntityFromGenericId($key, $value); That search the id from DocumentDict which have a field $key=$value.
                 //e.g getEntityFromGenericId("chebi", "(DMSO)");
-                $em = $this->getDoctrine()->getManager();
                 $arrayTmp=$em->getRepository('EtoxMicromeEntityBundle:'.$entityType)->getIdFromGenericField($key, $value, $arrayEntityId);
                 $arrayEntityId=array_merge($arrayEntityId,$arrayTmp);
             }
@@ -539,6 +539,17 @@ class SearchController extends Controller
         return $arrayEntityId;
     }
 
+    public function queryExpansionGene($entity, $entityType, $whatToSearch){
+        //We get a Gene entityType, we recover its geneId term and create an array with all the genes having that geneId in order to search with all of them
+        $message = "inside queryExpansionGene";
+        ldd($message);
+        $em = $this->getDoctrine()->getManager();
+        $norm=$entity->getNorm();
+        $arrayEntityId = array();
+        $arrayEntityId=$em->getRepository('EtoxMicromeEntityBundle:HepatotoxKeyword')->getIdFromGenericField("norm", $norm, $arrayEntityId);
+        return $arrayEntityId;
+    }
+
 
      public function queryExpansion($entity, $entityType, $whatToSearch)
     {
@@ -566,6 +577,10 @@ class SearchController extends Controller
             case "HepatotoxKeyword":
                 //HepatotoxKeyword query expansion
                 $arrayEntityId=$this->queryExpansionHepatotoxKeyword($entity, $entityType, $whatToSearch);
+                break;
+            case "Gene":
+                //HepatotoxKeyword query expansion
+                $arrayEntityId=$this->queryExpansionGene($entity, $entityType, $whatToSearch);
                 break;
 
 
@@ -1349,7 +1364,6 @@ Evidences found in Sentences:\n
         $arrayNames=[];
         if ($source=="geneName"){
             $arrayGenes=$em->getRepository('EtoxMicromeEntityBundle:GeneDictionary')->findByGeneName($entityName);
-            //ld($arrayGenes);
             //We generate an array of geneIds that will be used as the result of the query expansion
             foreach($arrayGenes as $gene){
                 array_push($arrayGeneIds, $gene->getGeneId());
@@ -1358,7 +1372,8 @@ Evidences found in Sentences:\n
             array_push($arrayGeneIds, $entityName);
         }
         $arrayGeneIds=array_unique($arrayGeneIds);
-        //ld($arrayGeneIds);
+
+        //$arrayEntityId=$this->queryExpansion($entity, $entityType, $whatToSearch);
         //Searching for genes can only be performed against either abstracts(any) or abstractswithcompounds(withCompounds)
 
         //For the $whatToSearch == "any" part, we search against abstracts table using each gene_id in $arrayGeneIds
@@ -1380,7 +1395,6 @@ Evidences found in Sentences:\n
         }else{
             //We have an arrayGeneIds and we want a list of abstracts that have those geneIds. So we generate it using getAbstractsFromGeneIds method.
             $arrayAbstracts = $em->getRepository('EtoxMicromeEntity2AbstractBundle:Gene2Abstract')->getAbstractsFromGeneIDs($arrayGeneIds, $orderBy);
-            //ld(count($arrayAbstracts));
             $arrayAliases = $em->getRepository('EtoxMicromeEntity2AbstractBundle:Gene2Abstract')->getAliasesFromGeneIDs($arrayGeneIds, $orderBy);
             //ld(count($arrayAliases));
             $arrayPaginatedAbstracts = $paginator
@@ -2170,7 +2184,6 @@ Evidences found in Sentences:\n
         if(count($entity)!=0){
             #We have the entityId. We need to do a QUERY EXPANSION depending on the typeOfEntity we have
             $arrayEntityId=$this->queryExpansion($entity, $entityType, $whatToSearch);
-            //ld($arrayEntityId);
             //WARNING!!!! DELETE THIS SLICE AFTER QUERY EXPANSION GETS PRACTICABLE
             $arrayEntityId=array_slice($arrayEntityId, 0, 10);
             //$arrayEntityId=array();
@@ -2227,7 +2240,7 @@ Evidences found in Sentences:\n
 
         }else{
             //For Compounds and Markers
-            //In order to relate entities with documents, we have to use the names of the entities instead of their entityId. Therefore we translate $arrayEntityId to $arrayEntityName
+            //In order to link entities with documents, we have to use the names of the entities instead of their entityId. Therefore we translate $arrayEntityId to $arrayEntityName
             $arrayEntityName=array();
             $em = $this->getDoctrine()->getManager();
             foreach($arrayEntityId as $entityId){
@@ -2239,12 +2252,8 @@ Evidences found in Sentences:\n
                 }
             }
             $arrayEntityName=array_unique($arrayEntityName);//We get rid of the duplicates
-            //ldd($arrayEntityName);
             if($entityType=="CompoundDict" or $entityType=="CompoundMesh"){
                 //We search into Abstracts only if we are looking for Compounds
-
-
-
                 /*//Set query for elasticsearch solution
                 $elasticaQueryString  = new \Elastica\Query\QueryString();
                 $entityName=$arrayEntityName[0];
@@ -2268,23 +2277,6 @@ Evidences found in Sentences:\n
                 */
                 if (in_array($source, $arraySourcesDocuments)){
                     $compound2Documents=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntity2DocumentFromFieldDQL($field, $entityType, $arrayEntityName, $source, $orderBy)->getResult();
-                    //ld(count($compound2Documents));
-                    /*$entity2documentTest=$compound2Documents[0];
-                    ld($entity2documentTest);
-                    $curation=$entity2documentTest->getCuration();
-                    ld($curation);
-                    $curation++;
-                    ld($curation);
-                    $entity2documentTest->setCuration($curation);
-                    $em->persist($entity2documentTest);
-                    $em->flush();
-                    ldd($message);
-                    */
-                    ///Temporary function to get rid of the duplicated entries. Duplicates should be removed from the entity2document table itself
-                    //$compound2Documents=$this->getRidOfDuplicatedEntries($compound2Documents);
-
-                    //When dealing with withRelations arrays, we only have this array to get the needed values that we retreive in interface using resultSetArrays... Which are: totalHits, Max. Score, Min. Score
-                    //So we implement a function to get all this info inside an arrayTotalMaxMin. Being arrayTotalMaxMin[0]=totalHits, arrayTotalMaxMin[1]=Max.score, arrayTotalMaxMin[2]=Min.score
                     $arrayTotalMaxMin=$this->getTotalMaxMinArrayForEntities($compound2Documents, $orderBy, $field);
                     $meanScore=$this->getMmmrScoreFromEntities($compound2Documents, $orderBy, 'mean');
                     $medianScore=$this->getMmmrScoreFromEntities($compound2Documents, $orderBy, 'median');
@@ -2307,7 +2299,6 @@ Evidences found in Sentences:\n
                     }
 
                     $arrayTanimotos=array();
-
                     if ($entityType=="CompoundDict"){
 	                	$arrayTanimotos=$em->getRepository('EtoxMicromeEntityBundle:TanimotoValues')->getCompoundsWithTanimotos($entity->getId());
 	                    //$arrayTanimotos=$em->getRepository('EtoxMicromeEntityBundle:TanimotoValues')->sortArrayByTanimoto($arrayTanimotos);
