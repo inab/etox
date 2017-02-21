@@ -107,27 +107,27 @@
                     <legend>What are you searching?</legend>
                     {% set whatToSearch_keyword = default_whatToSearch_keyword %}
                     {% if whatToSearch_keyword=="any" %}
-                        <span data-tooltip class="has-tip" title="Search all documents"><label for="radioWhatToSearch"><input name="keywordWhatToSearch" type="radio" id="radioKeywordWhatToSearch" style="display:none;" CHECKED value="any"><span class="custom radio"></span>  Any</label></span>
+                        <span data-tooltip class="has-tip" title="Search all documents" data-options="disable_for_touch:true"><label for="radioWhatToSearch"><input name="keywordWhatToSearch" type="radio" id="radioKeywordWhatToSearch" style="display:none;" CHECKED value="any"><span class="custom radio"></span>  Any</label></span>
                     {% else %}
-                        <span data-tooltip class="has-tip" title="Search all documents"><label for="radioWhatToSearch"><input name="keywordWhatToSearch" type="radio" id="radioKeywordWhatToSearch" style="display:none;" value="any"><span class="custom radio"></span> Any</label></span>
+                        <span data-tooltip class="has-tip" title="Search all documents" data-options="disable_for_touch:true"><label for="radioWhatToSearch"><input name="keywordWhatToSearch" type="radio" id="radioKeywordWhatToSearch" style="display:none;" value="any"><span class="custom radio"></span> Any</label></span>
                     {% endif %}
 
                     {% if whatToSearch_keyword=="withCompound" %}
-                        <span data-tooltip class="has-tip" title="Search in text where compounds are comentioned"> <label for="radioWhatToSearch"><input name="keywordWhatToSearch" type="radio" id="radioKeywordWhatToSearch" style="display:none;" CHECKED value="withCompounds"><span class="custom radio checked"></span> With Compounds</label></span>
+                        <span data-tooltip class="has-tip" title="Search in text where compounds are comentioned" data-options="disable_for_touch:true"> <label for="radioWhatToSearch"><input name="keywordWhatToSearch" type="radio" id="radioKeywordWhatToSearch" style="display:none;" CHECKED value="withCompounds"><span class="custom radio checked"></span> With Compounds</label></span>
                     {% else %}
-                        <span data-tooltip class="has-tip" title="Search in text where compounds are comentioned"><label for="radioWhatToSearch"><input name="keywordWhatToSearch" type="radio" id="radioKeywordWhatToSearch" style="display:none;" value="withCompounds"><span class="custom radio"></span> With Compounds</label></span>
+                        <span data-tooltip class="has-tip" title="Search in text where compounds are comentioned" data-options="disable_for_touch:true"><label for="radioWhatToSearch"><input name="keywordWhatToSearch" type="radio" id="radioKeywordWhatToSearch" style="display:none;" value="withCompounds"><span class="custom radio"></span> With Compounds</label></span>
                     {% endif %}
 
                     {% if whatToSearch_keyword=="withCytochrome" %}
-                        <span data-tooltip class="has-tip" title="Search in text where CYPs are comentioned"><label for="radioWhatToSearch"><input name="keywordWhatToSearch" type="radio" id="radioKeywordWhatToSearch" style="display:none;" CHECKED value="withCytochromes"><span class="custom radio"></span> With CYPs</label></span>
+                        <span data-tooltip class="has-tip" title="Search in text where CYPs are comentioned" data-options="disable_for_touch:true"><label for="radioWhatToSearch"><input name="keywordWhatToSearch" type="radio" id="radioKeywordWhatToSearch" style="display:none;" CHECKED value="withCytochromes"><span class="custom radio"></span> With CYPs</label></span>
                     {% else %}
-                        <span data-tooltip class="has-tip" title="Search in text where CYPs are comentioned"><label for="radioWhatToSearch"><input name="keywordWhatToSearch" type="radio" id="radioKeywordWhatToSearch" style="display:none;" value="withCytochromes"><span class="custom radio"></span> With CYPs</label></span>
+                        <span data-tooltip class="has-tip" title="Search in text where CYPs are comentioned" data-options="disable_for_touch:true"><label for="radioWhatToSearch"><input name="keywordWhatToSearch" type="radio" id="radioKeywordWhatToSearch" style="display:none;" value="withCytochromes"><span class="custom radio"></span> With CYPs</label></span>
                     {% endif %}
 
                     {% if whatToSearch_keyword=="withMarker" %}
-                        <span data-tooltip class="has-tip" title="Search in text where markers are comentioned"><label for="radioWhatToSearch"><input name="keywordWhatToSearch" type="radio" id="radioKeywordWhatToSearch" style="display:none;" CHECKED value="withMarkers"><span class="custom radio"></span> With Markers</label></span>
+                        <span data-tooltip class="has-tip" title="Search in text where markers are comentioned" data-options="disable_for_touch:true"><label for="radioWhatToSearch"><input name="keywordWhatToSearch" type="radio" id="radioKeywordWhatToSearch" style="display:none;" CHECKED value="withMarkers"><span class="custom radio"></span> With Markers</label></span>
                     {% else %}
-                        <span data-tooltip class="has-tip" title="Search in text where markers are comentioned"><label for="radioWhatToSearch"><input name="keywordWhatToSearch" type="radio" id="radioKeywordWhatToSearch" style="display:none;" value="withMarkers"><span class="custom radio"></span> With Markers</label></span>
+                        <span data-tooltip class="has-tip" title="Search in text where markers are comentioned" data-options="disable_for_touch:true"><label for="radioWhatToSearch"><input name="keywordWhatToSearch" type="radio" id="radioKeywordWhatToSearch" style="display:none;" value="withMarkers"><span class="custom radio"></span> With Markers</label></span>
                     {% endif %}
                 </fieldset>
             </div>
