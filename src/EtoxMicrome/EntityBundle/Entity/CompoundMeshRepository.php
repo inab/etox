@@ -37,9 +37,9 @@ class CompoundMeshRepository extends EntityRepository
         $query = $this->_em->createQuery("
             SELECT c
             FROM EtoxMicromeEntityBundle:CompoundMesh c
-            WHERE LOWER(c.name)= :entityName
+            WHERE c.name= :entityName
         ");
-        $query->setParameter('entityName', strtolower($entityName));
+        $query->setParameter('entityName', $entityName);
         $compound=$query->getResult();
         if(count($compound)==0){
             $errorMessage="There is no entity with that name ($entityName)";
@@ -59,9 +59,9 @@ class CompoundMeshRepository extends EntityRepository
         $query = $this->_em->createQuery("
             SELECT c
             FROM EtoxMicromeEntityBundle:CompoundMesh c
-            WHERE  LOWER(c.$key)= :value
+            WHERE c.$key= :value
         ");
-        $query->setParameter('value', strtolower($value));
+        $query->setParameter('value', $value);
         $compounds=$query->getResult();
         if(count($compounds)==0){
             return $arrayEntityId;
