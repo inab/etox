@@ -110,7 +110,7 @@
                     }
 
                     link='{{ path('search_interface_search') }}'+field+'/'+whatToSearch+'/'+entityType+'/'+source+'/'+entityName+'/';
-                    $('.bigSearch').attr('href',link);
+                    //$('.bigSearch').attr('href',link);
                     break;
                 case "cytochrome":
                     whatToSearch=$('input[name=cytochromeWhatToSearch]:checked').val();
@@ -129,7 +129,8 @@
                         alert("You have to check a source to continue");
                         return false;
                     }
-                    $('.bigSearch').attr('href','{{ path('search_interface_search') }}'+field+'/'+whatToSearch+'/'+entityType+'/'+source+'/'+entityName+'/');
+                    link='{{ path('search_interface_search') }}'+field+'/'+whatToSearch+'/'+entityType+'/'+source+'/'+entityName+'/';
+                    //$('.bigSearch').attr('href',link);
                     break;
                 case "marker":
                     whatToSearch=$('input[name=markerWhatToSearch]:checked').val();
@@ -148,7 +149,8 @@
                         alert("You have to check a source to continue");
                         return false;
                     }
-                    $('.bigSearch').attr('href','{{ path('search_interface_search') }}'+field+'/'+whatToSearch+'/'+entityType+'/'+source+'/'+entityName+'/');
+                    link='{{ path('search_interface_search') }}'+field+'/'+whatToSearch+'/'+entityType+'/'+source+'/'+entityName+'/';
+                    //$('.bigSearch').attr('href',link);
                     break;
 
                 case "toxicEndpoint":
@@ -160,7 +162,7 @@
                     entityName = $('#tags-endpoints').val();
                     entityName = entityName.trim();
                     link="{{ path('search_interface_search') }}"+'keyword/endpoints/'+whatToSearch+'/'+entityName+'/';
-                    $('.bigSearch').attr('href', link);
+                    //$('.bigSearch').attr('href', link);
                     break;
 
                 case "gene":
@@ -182,7 +184,7 @@
                     }
                     else{
                         link="{{ path('search_interface_search') }}"+"gene"+"/"+whatToSearch+"/"+source+"/"+entityName+"/";
-                        $('.bigSearch').attr('href',link);
+                        //$('.bigSearch').attr('href',link);
                     }
                     break;
             }
@@ -193,6 +195,15 @@
         }
         $(".bigSearch").click(function() {
             submitForm();
+        });
+        $( ".ui-autocomplete-input" ).keypress(function(event) {
+            if ( event.which == 13 ) {
+                $(".sk-folding-cube").css( {position:"absolute", top:event.pageY, left: event.pageX, display:"block"});
+            }
+
+        });
+        $(".termSearched span, .compound span, .cytochrome span, .marker span, .term span").click(function(event) {
+            $(".sk-folding-cube").css( {position:"absolute", top:event.pageY, left: event.pageX, display:"block"});
         });
 
         $("#jumpToAbstracts").click(function(e) {
