@@ -18,12 +18,11 @@ class AliasRepository extends EntityRepository
         $query = $this->_em->createQuery("
             SELECT a
             FROM EtoxMicromeEntityBundle:Alias a
-            WHERE LOWER(a.name)= :name
+            WHERE a.name= :name
         ");
-        $query->setParameter('name', strtolower($name));
-        //$alias=$query->getSingleResult();
-        $alias=$query->getResult();
-        $aliases=$alias[0]->getAlias();
+        $query->setParameter('name', $name);
+        $alias=$query->getSingleResult();
+        $aliases=$alias->getAlias();
         //We return all the Compounds with the InChI given.
         return $aliases;
     }

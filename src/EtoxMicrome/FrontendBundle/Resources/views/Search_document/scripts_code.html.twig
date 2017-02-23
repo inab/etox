@@ -193,8 +193,7 @@
             window.location.href=link;
             return false;
         }
-        $(".bigSearch").click(function(event) {
-            $(".sk-folding-cube").css( {position:"absolute", top:event.pageY, left: event.pageX, display:"block"});
+        $(".bigSearch").click(function() {
             submitForm();
         });
         $( ".ui-autocomplete-input" ).keypress(function(event) {

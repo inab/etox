@@ -40,9 +40,9 @@ class HepatotoxKeywordRepository extends EntityRepository
         $query = $this->_em->createQuery("
             SELECT a
             FROM EtoxMicromeEntityBundle:HepatotoxKeyword a
-            WHERE LOWER(a.term) = :entityName
+            WHERE a.term= :entityName
         ");
-        $query->setParameter('entityName', strtolower($entityName));
+        $query->setParameter('entityName', $entityName);
         $query->setMaxResults(2);
         $term=$query->getResult();
         if(count($term)==0){
