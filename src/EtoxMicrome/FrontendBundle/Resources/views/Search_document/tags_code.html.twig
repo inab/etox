@@ -47,39 +47,39 @@
         {% set genes = default_gene %}
     {% endif %}
   {% if entityType=="keyword" %}
-   <dd class="active"><a href="#keywords" name="keyword" title="Free text search for Hepatotoxicity" data-options="disable_for_touch:true"><span data-tooltip >Keywords</span></a></dd>
+    <dd class="active"><a href="#keywords" name="keyword"><span data-tooltip class="has-tip"  title="Free text search for Hepatotoxicity" data-options="hover_delay:5000" >Keywords</span></a></dd>
   {% else %}
-    <dd><a href="#keywords" name="keyword"><span data-tooltip title="Free text search for Hepatotoxicity" data-options="disable_for_touch:true" aria-haspopup="true">Keywords</span></a></dd>
+    <dd><a href="#keywords" name="keyword"><span data-tooltip class="has-tip"  title="Free text search for Hepatotoxicity" data-options="hover_delay:5000" >Keywords</span></a></dd>
   {% endif %}
 
   {% if entityType in arrayCompounds %}
-    <dd class="active"><a href="#compounds" name="compoundDict"><span data-tooltip  title="Chemical compound search for Hepatotoxicity" data-options="disable_for_touch:true" aria-haspopup="true">Compounds</span></a></dd>
+    <dd class="active"><a href="#compounds" name="compoundDict"><span data-tooltip class="has-tip" title="Chemical compound search for Hepatotoxicity">Compounds</span></a></dd>
   {% else %}
-    <dd><a href="#compounds" name="compoundDict"><span data-tooltip  title="Chemical compound search for Hepatotoxicity" data-options="disable_for_touch:true" aria-haspopup="true">Compounds</span></a></dd>
+    <dd><a href="#compounds" name="compoundDict"><span data-tooltip class="has-tip" title="Chemical compound search for Hepatotoxicity">Compounds</span></a></dd>
   {% endif %}
 
   {% if entityType=="Cytochrome" %}
-    <dd class="active"><a href="#cytochromes" name="cytochrome"><span data-tooltip  title="Cytochromes P450 (CYPs) search for Hepatotoxicity" data-options="disable_for_touch:true" aria-haspopup="true">Cytochromes</span></a></dd>
+    <dd class="active"><a href="#cytochromes" name="cytochrome"><span data-tooltip class="has-tip" title="Cytochromes P450 (CYPs) search for Hepatotoxicity">Cytochromes</span></a></dd>
   {% else %}
-    <dd><a href="#cytochromes" name="cytochrome"><span data-tooltip  title="Cytochromes P450 (CYPs) search for Hepatotoxicity"data-options="disable_for_touch:true" aria-haspopup="true">Cytochromes</span></a></dd>
+    <dd><a href="#cytochromes" name="cytochrome"><span data-tooltip class="has-tip" title="Cytochromes P450 (CYPs) search for Hepatotoxicity">Cytochromes</span></a></dd>
   {% endif %}
 
   {% if entityType=="Marker" %}
-    <dd class="active"><a href="#markers" name="marker"><span data-tooltip  title="Liver toxicity marker search for Hepatotoxicity" data-options="disable_for_touch:true" aria-haspopup="true">Markers</span></a></dd>
+    <dd class="active"><a href="#markers" name="marker"><span data-tooltip class="has-tip" title="Liver toxicity marker search for Hepatotoxicity">Markers</span></a></dd>
   {% else %}
-    <dd class="hide-for-small"><a href="#markers" name="marker"><span data-tooltip  title="Liver toxicity marker search for Hepatotoxicity" data-options="disable_for_touch:true" aria-haspopup="true">Markers</span></a></dd>
+    <dd class="hide-for-small"><a href="#markers" name="marker"><span data-tooltip class="has-tip" title="Liver toxicity marker search for Hepatotoxicity">Markers</span></a></dd>
   {% endif %}
 
    {% if entityType=="toxicEndpoints" %}
-    <dd class="active"><a href="#toxicEndpoints" name="toxicEndpoint"><span data-tooltip  title="Search different toxic endpoints: Hepatotoxicity, Nephrotoxicity, Cardiotoxicity, Thyroid toxicity, Phopholipidosis" data-options="disable_for_touch:true">Tox. Endpoints</span></a></dd>
+    <dd class="active"><a href="#toxicEndpoints" name="toxicEndpoint"><span data-tooltip class="has-tip" title="Search different toxic endpoints: Hepatotoxicity, Nephrotoxicity, Cardiotoxicity, Thyroid toxicity, Phopholipidosis">Tox. Endpoints</span></a></dd>
   {% else %}
-    <dd><a href="#toxicEndpoints" name="toxicEndpoint"><span data-tooltip  title="Search different toxic endpoints: Hepatotoxicity, Nephrotoxicity, Cardiotoxicity, Thyroid toxicity, Phopholipidosis" data-options="disable_for_touch:true">Tox. Endpoints</span></a></dd>
+    <dd><a href="#toxicEndpoints" name="toxicEndpoint"><span data-tooltip class="has-tip" title="Search different toxic endpoints: Hepatotoxicity, Nephrotoxicity, Cardiotoxicity, Thyroid toxicity, Phopholipidosis">Tox. Endpoints</span></a></dd>
   {% endif %}
 
   {% if entityType=="gene" %}
-    <dd class="active"><a href="#genes" name="gene"><span data-tooltip  title="Liver toxicity gene search" data-options="disable_for_touch:true">Genes</span></a></dd>
+    <dd class="active"><a href="#genes" name="gene"><span data-tooltip class="has-tip" title="Liver toxicity gene search">Genes</span></a></dd>
   {% else %}
-    <dd class="hide-for-small"><a href="#genes" name="gene"><span data-tooltip  title="Liver toxicity gene search" data-options="disable_for_touch:true">Genes</span></a></dd>
+    <dd class="hide-for-small"><a href="#genes" name="gene"><span data-tooltip class="has-tip" title="Liver toxicity gene search">Genes</span></a></dd>
   {% endif %}
 
 
