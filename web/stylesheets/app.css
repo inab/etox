@@ -922,8 +922,8 @@ h2.ui-accordion-header-active {
   display: none;
   -webkit-transform: rotateZ(45deg);
           transform: rotateZ(45deg);
-}
 
+}
 .sk-folding-cube .sk-cube {
   float: left;
   width: 50%;
