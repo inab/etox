@@ -154,6 +154,7 @@ class UtilityExtension extends \Twig_Extension
         //This function should return an array with both, $array[0] = the text highlighted, $array[1] = the html for the divs containing the sticky tooltips and $array[2] = the tooltipCounter number
         //the parameters $field, $whatToSearch, $entityType are used to create the url to link the entities for searching themselves
         $message="highlightEntitiesDocuments!!!";
+
         $em=$this->doctrine->getManager();
         //We need all the entities involved in the same document
         $mouseoverDivs="";
@@ -184,7 +185,6 @@ class UtilityExtension extends \Twig_Extension
         //Next two lines are done to avoid repeated elements and start highlighting from the longest term to the shortest (to avoid "short-tagging")
         $arrayHepKeywordTermVariant2Document=array_unique($arrayHepKeywordTermVariant2Document);
         uasort($arrayHepKeywordTermVariant2Document,array($this, 'name_length_sort_termVariant'));
-
         foreach ($arrayHepKeywordTermVariant2Document as $term2Document){
             $entityName=$term2Document->getTermVariant();
             //If the name==entityBackup, we don't do anything, we'll change it at the end
@@ -202,7 +202,7 @@ class UtilityExtension extends \Twig_Extension
                         $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermVariant");
                         $mouseoverDivs=$mouseoverDivs."<div id=\"sticky$tooltipCounter\"  class=\"atip\">$mouseoverSummary</div>";
                         //We generate the route to a free search with the entityName.
-                        $link=$this->generator->generate('elasticSearch_keyword', array('whatToSearch' => $whatToSearch, 'source' => $source, 'keyword' => $entityName,));
+                        $link=$this->generator->generate('elasticSearch_keyword', array('whatToSearch' => 'any', 'source' => $source, 'keyword' => $entityName,));
                         $text = str_ireplace($entityName, "<span data-tooltip=\"sticky$tooltipCounter\"><a href=\"$link\">".$entityName."</a></span>", $text);
                         $tooltipCounter=$tooltipCounter+1;
                         $arrayText[$place]=$text;
@@ -224,7 +224,7 @@ class UtilityExtension extends \Twig_Extension
                             $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermVariant");
                             $mouseoverDivs=$mouseoverDivs."<div id=\"sticky$tooltipCounter\" class=\"atip\">$mouseoverSummary</div>";
                             //We generate the route to a free search with the entityName.
-                            $link=$this->generator->generate('elasticSearch_keyword', array('whatToSearch' => $whatToSearch, 'source' => $source, 'keyword' => $entityName,));
+                            $link=$this->generator->generate('elasticSearch_keyword', array('whatToSearch' => 'any', 'source' => $source, 'keyword' => $entityName,));
                             $text = str_ireplace($arrayEntityName[0], "<span data-tooltip=\"sticky$tooltipCounter\"><a href=\"$link\">".$arrayEntityName[0], $text);
                             $tooltipCounter=$tooltipCounter+1;
                             $arrayText[$place]=$text;
@@ -257,8 +257,10 @@ class UtilityExtension extends \Twig_Extension
                             $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermNorm");
                         }elseif($entityType=="HepatotoxKeyword"){
                             $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepatotoxKeyword");
+                        }elseif($entityType=="keyword"){
+                            $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepKeywordTermVariant");
                         }
-                        $link=$this->generator->generate('elasticSearch_keyword', array('whatToSearch' => $whatToSearch, 'source' => $source, 'keyword' => $entityBackup,));
+                        $link=$this->generator->generate('elasticSearch_keyword', array('whatToSearch' => 'any', 'source' => $source, 'keyword' => $entityBackup,));
                         $text = str_ireplace($entityBackup, "<span data-tooltip=\"sticky$tooltipCounter\"><a href=\"$link\">".$entityBackup."</a></span>", $text);
                         $mouseoverDivs=$mouseoverDivs."<div id=\"sticky$tooltipCounter\" class=\"atip\">$mouseoverSummary</div>";
 
@@ -285,7 +287,7 @@ class UtilityExtension extends \Twig_Extension
                                 $text = str_ireplace($arrayEntityName[0], '<mark class="termSearched">'.$arrayEntityName[0], $text);
                                 $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($term2DocumentId,"HepatotoxKeyword");
                             }
-                            $link=$this->generator->generate('elasticSearch_keyword', array('whatToSearch' => $whatToSearch, 'source' => $source, 'keyword' => $entityBackup,));
+                            $link=$this->generator->generate('elasticSearch_keyword', array('whatToSearch' => 'any', 'source' => $source, 'keyword' => $entityBackup,));
                             $text = str_ireplace($arrayEntityName[0], "<span data-tooltip=\"sticky$tooltipCounter\"><a href=\"$link\">".$arrayEntityName[0], $text);
                             $mouseoverDivs=$mouseoverDivs."<div id=\"sticky$tooltipCounter\" class=\"atip\">$mouseoverSummary</div>";
 
@@ -328,7 +330,7 @@ class UtilityExtension extends \Twig_Extension
                         $text = str_ireplace($entityName, '<mark class="cytochrome">'.$entityName.'</mark>', $text);
                         $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($cytochrome2DocumentId,"Cytochrome");
                         $entityNameUrlEncoded=urlencode($entityName);
-                        $link=$this->generator->generate('search_interface_search_field_whatToSearch_entityType_source_entity', array('field' => $field, 'whatToSearch' => $whatToSearch, 'entityType' => 'Cytochrome', 'source' => $source, 'entityName' => $entityNameUrlEncoded,));
+                        $link=$this->generator->generate('search_interface_search_field_whatToSearch_entityType_source_entity', array('field' => $field, 'whatToSearch' => $whatToSearch, 'entityType' => 'cytochrome', 'source' => $source, 'entityName' => $entityNameUrlEncoded,));
                         $text = str_ireplace($entityName, "<span data-tooltip=\"sticky$tooltipCounter\"><a href=\"$link\">".$entityName."</a></span>", $text);
                         $mouseoverDivs=$mouseoverDivs."<div id=\"sticky$tooltipCounter\" class=\"atip\">$mouseoverSummary</div>";
 
@@ -349,7 +351,7 @@ class UtilityExtension extends \Twig_Extension
                             $text = str_ireplace($arrayEntityName[0], '<mark class="cytochrome">'.$arrayEntityName[0], $text);
                             $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($cytochrome2DocumentId,"Cytochrome");
                             $entityNameUrlEncoded=urlencode($entityName);
-                            $link=$this->generator->generate('search_interface_search_field_whatToSearch_entityType_source_entity', array('field' => $field, 'whatToSearch' => $whatToSearch, 'entityType' => 'Cytochrome', 'source' => $source, 'entityName' => $entityNameUrlEncoded, ));
+                            $link=$this->generator->generate('search_interface_search_field_whatToSearch_entityType_source_entity', array('field' => $field, 'whatToSearch' => $whatToSearch, 'entityType' => 'cytochrome', 'source' => $source, 'entityName' => $entityNameUrlEncoded, ));
                             $text = str_ireplace($arrayEntityName[0], "<span data-tooltip=\"sticky$tooltipCounter\"><a href=\"$link\">".$arrayEntityName[0], $text);
                             $mouseoverDivs=$mouseoverDivs."<div id=\"sticky$tooltipCounter\" class=\"atip\">$mouseoverSummary</div>";
 
@@ -379,7 +381,7 @@ class UtilityExtension extends \Twig_Extension
                         $text = str_ireplace($entityBackup, '<mark class="termSearched">'.$entityBackup.'</mark>', $text);
                         $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($cytochrome2DocumentId,"Cytochrome");
                         $entityNameUrlEncoded=urlencode($entityName);
-                        $link=$this->generator->generate('search_interface_search_field_whatToSearch_entityType_source_entity', array('field' => $field, 'whatToSearch' => $whatToSearch, 'entityType' => 'Cytochrome', 'source' => $source, 'entityName' => $entityNameUrlEncoded, ));
+                        $link=$this->generator->generate('search_interface_search_field_whatToSearch_entityType_source_entity', array('field' => $field, 'whatToSearch' => $whatToSearch, 'entityType' => 'cytochrome', 'source' => $source, 'entityName' => $entityNameUrlEncoded, ));
                         $text = str_ireplace($entityBackup, "<span data-tooltip=\"sticky$tooltipCounter\"><a href=\"$link\">".$entityBackup."</a></span>", $text);
                         $mouseoverDivs=$mouseoverDivs."<div id=\"sticky$tooltipCounter\" class=\"atip\">$mouseoverSummary</div>";
 
@@ -398,7 +400,7 @@ class UtilityExtension extends \Twig_Extension
                             $text = str_ireplace($arrayEntityName[0], '<mark class="termSearched">'.$arrayEntityName[0], $text);
                             $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummary($cytochrome2DocumentId,"Cytochrome");
                             $entityNameUrlEncoded=urlencode($entityName);
-                            $link=$this->generator->generate('search_interface_search_field_whatToSearch_entityType_source_entity', array('field' => $field, 'whatToSearch' => $whatToSearch, 'entityType' => 'Cytochrome', 'source' => $source, 'entityName' => $entityNameUrlEncoded, ));
+                            $link=$this->generator->generate('search_interface_search_field_whatToSearch_entityType_source_entity', array('field' => $field, 'whatToSearch' => $whatToSearch, 'entityType' => 'cytochrome', 'source' => $source, 'entityName' => $entityNameUrlEncoded, ));
                             $text = str_ireplace($arrayEntityName[0], "<span data-tooltip=\"sticky$tooltipCounter\"><a href=\"$link\">".$arrayEntityName[0], $text);
                             $mouseoverDivs=$mouseoverDivs."<div id=\"sticky$tooltipCounter\" class=\"atip\">$mouseoverSummary</div>";
 
@@ -709,7 +711,7 @@ class UtilityExtension extends \Twig_Extension
                                     array(
                                         'field' => $field,
                                         'whatToSearch' => $whatToSearch,
-                                        'entityType' => $entityType,
+                                        'entityType' => 'compoundDict',
                                         'source' => $source,
                                         'entityName' => $entityNameUrlEncoded,
                                     )
@@ -734,7 +736,7 @@ class UtilityExtension extends \Twig_Extension
                                     array(
                                         'field' => $field,
                                         'whatToSearch' => $whatToSearch,
-                                        'entityType' => $entityType,
+                                        'entityType' => 'compoundDict',
                                         'source' => $source,
                                         'entityName' => $entityNameUrlEncoded,
                                     )
@@ -899,8 +901,6 @@ class UtilityExtension extends \Twig_Extension
                 }
             }
         }
-
-        //ld($entityBackup);
         $text=implode(" ", $arrayText);
         //$text=str_ireplace($entityBackup, '<mark class="termSearched">'.$entityBackup.'</mark>' , $text);
         $arrayReturn=array();
