@@ -43,9 +43,9 @@ class CytochromeRepository extends EntityRepository
         $query = $this->_em->createQuery("
             SELECT a
             FROM EtoxMicromeEntityBundle:Cytochrome a
-            WHERE a.name= :entityName
+            WHERE lower(a.name) = :entityName
         ");
-        $query->setParameter('entityName', $entityName);
+        $query->setParameter('entityName', strtolower($entityName));
         $query->setMaxResults(2);
         $cytochrome=$query->getResult();
         if(count($cytochrome)==0){

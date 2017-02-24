@@ -46,11 +46,11 @@ class CompoundDictRepository extends EntityRepository
         $query = $this->_em->createQuery("
             SELECT c
             FROM EtoxMicromeEntityBundle:CompoundDict c
-            WHERE c.name= :entityName
+            WHERE lower(c.name) = :entityName
         ");
 
-        $query->setParameter('entityName', $entityName);
-        $query->setMaxResults(2);
+        $query->setParameter('entityName', strtolower($entityName));
+        $query->setMaxResults(1);
         $compound=$query->getResult();
         if(count($compound)==0){
             $errorMessage="There is no entity with that name ($entityName)";
@@ -58,11 +58,6 @@ class CompoundDictRepository extends EntityRepository
             $entity=array();
             return $entity;
         }
-        if(count($compound)!=1){
-            $errorMessage="There are more than one entityName for '$entityName'";
-            //ld($errorMessage);
-        }
-        //We return all the CompoundDict with the entityName given. By now we supose its only one entity!!!
         $entity=$compound[0];
         return $entity;
     }
