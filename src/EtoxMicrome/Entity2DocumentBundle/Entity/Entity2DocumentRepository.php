@@ -1402,7 +1402,6 @@ class Entity2DocumentRepository extends EntityRepository
         $dictionaryTypeRelations=array();
 
         $em = $this->getEntityManager();
-
         if($entityType=="Cytochrome"){
             //We have to see all interactions between this cytochrome and the rest of the entities if possible.
             //We start loading relations with compounds and keep the documents in which they are present. Then searching for entities inside those documents, we can load the other relations. So we'll use the arrayDocuments to load the document_id
@@ -1453,11 +1452,11 @@ class Entity2DocumentRepository extends EntityRepository
             //We start loading the terms relations
             $sql="SELECT c2t2d
                 FROM EtoxMicromeEntity2DocumentBundle:Compound2Term2Document c2t2d
-                WHERE c2t2d.compoundName = (:entityName)
+                WHERE lower(c2t2d.compoundName) = (:entityName)
                 ORDER BY c2t2d.relationScore DESC
                 ";
             $query = $this->_em->createQuery($sql);
-            $query->setParameter("entityName", $entityName);
+            $query->setParameter("entityName", strtolower($entityName));
             $query->setMaxResults(50);
             $arrayCompound2Term2Document= $query->getResult();
             foreach($arrayCompound2Term2Document as $compound2Term2Document){
@@ -1488,11 +1487,11 @@ class Entity2DocumentRepository extends EntityRepository
             //We load now the cytochromes relations
             $sql="SELECT c2c2d
                 FROM EtoxMicromeEntity2DocumentBundle:Compound2Cyp2Document c2c2d
-                WHERE c2c2d.compoundName = (:entityName)
+                WHERE lower(c2c2d.compoundName) = (:entityName)
                 ORDER BY c2c2d.sumScore DESC
                 ";
             $query = $this->_em->createQuery($sql);
-            $query->setParameter("entityName", $entityName);
+            $query->setParameter("entityName", strtolower($entityName));
             $query->setMaxResults(50);
             $arrayCompound2Cyp2Document= $query->getResult();
             foreach($arrayCompound2Cyp2Document as $compound2Cyp2Document){
@@ -1520,16 +1519,15 @@ class Entity2DocumentRepository extends EntityRepository
             }
             $diccionarioRelations["cyps"]=$diccionarioCytochromes;
             $dictionaryTypeRelations["cyps"]=$dictionaryTypeRelationsCyp;
-
             //We do the equivalent for the Markers
             $sql="SELECT c2m2d
                 FROM EtoxMicromeEntity2DocumentBundle:Compound2Marker2Document c2m2d
-                WHERE c2m2d.compoundName = (:entityName)
+                WHERE lower(c2m2d.compoundName) = (:entityName)
                 ORDER BY c2m2d.relationScore DESC
                 ";
 
             $query = $this->_em->createQuery($sql);
-            $query->setParameter("entityName", $entityName);
+            $query->setParameter("entityName", strtolower($entityName));
             $query->setMaxResults(50);
             $arrayCompound2Marker2Document= $query->getResult();
             foreach($arrayCompound2Marker2Document as $compound2Marker2Document){
@@ -1554,15 +1552,15 @@ class Entity2DocumentRepository extends EntityRepository
             }
             $diccionarioRelations["markers"]=$diccionarioMarkers;
             $dictionaryTypeRelations["markers"]=$dictionaryTypeRelationsMarker;
-
             //We do the equivalent for the Compounds based in their Tanimoto coefficient for structural similarity
             //First we need to get the id from the compoundName($entityName)
-            $compound=$em->getRepository('EtoxMicromeEntityBundle:CompoundDict')->findOneByName($entityName);
+            $compound=$em->getRepository('EtoxMicromeEntityBundle:CompoundDict')->getEntityFromName($entityName);
             $idCompound=$compound->getId();
             $sql="SELECT tv
                 FROM EtoxMicromeEntityBundle:TanimotoValues tv
                 WHERE tv.compound1 = :idCompound
                 OR tv.compound2 = :idCompound
+                AND tv.tanimoto != 1
                 ORDER BY tv.tanimoto DESC
                 ";
             $query = $this->_em->createQuery($sql);
@@ -1574,12 +1572,12 @@ class Entity2DocumentRepository extends EntityRepository
                 $compoundName2=$tanimotoValue->getCompound2()->getName();
                 $tanimotoCoeff=$tanimotoValue->getTanimoto();
                 //We have to choose the compoundName which is not our entityName, that will be the compound structurally related
-                if ($compoundName1 == $entityName){
+                if (strtolower($compoundName1) == strtolower($entityName)){
                     $compoundName = $compoundName2;
                 }else{
                     $compoundName = $compoundName1;
                 }
-                if($compoundName1 != $compoundName2){//To avoid loop in graph. A compound always have best tanimoto with itself!
+                if(strtolower($compoundName1) != strtolower($compoundName2)){//To avoid loop in graph. A compound always have best tanimoto with itself!
                     $diccionarioCompounds[$compoundName]=$tanimotoCoeff;
                 }
 
