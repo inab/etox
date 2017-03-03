@@ -35,7 +35,7 @@
                         {% if totalHits > 150  and whatToSearch!="withCytochromes" and whatToSearch!="withMarkers" and whatToSearch!="withCompounds"%}
                             <tr>
                                 {% set totalHits = resultSetDocuments.getTotalHits %}
-                                <td colspan="5"><strong>Total mentions:</strong> {{ totalHits }}. (All above scores are for the {{hitsShowed}} displayed hits). <br/>Click here to display all results</td>
+                                <td colspan="5"><strong>Total mentions:</strong> {{ totalHits }}. (All above scores are for the {{hitsShowed}} displayed hits). <br/><!-- Click here to display all results--></td>
                             </tr>
                         {% endif %}
                     </table>
@@ -234,7 +234,7 @@
                         {% if totalHits > 150 %}
                             <tr>
                                 {% set totalHits = resultSetAbstracts.getTotalHits %}
-                                <td colspan="5"><strong>Total mentions:</strong> {{ totalHits }}. (All above scores are for the {{hitsShowed}} displayed hits). <br/>Click here to display all results</td>
+                                <td colspan="5"><strong>Total mentions:</strong> {{ totalHits }}. (All above scores are for the {{hitsShowed}} displayed hits). <!-- <br/>Click here to display all results --></td>
                             </tr>
                         {% endif %}
                     </table>
