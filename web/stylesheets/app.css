@@ -916,12 +916,14 @@ h2.ui-accordion-header-active {
 ----------------------------------------- */
 
 .sk-folding-cube {
-  margin: 20px auto;
+  position: fixed;
+  margin: 0px auto;
   width: 40px;
   height: 40px;
   display: none;
   -webkit-transform: rotateZ(45deg);
           transform: rotateZ(45deg);
+  z-index: 2;
 
 }
 .sk-folding-cube .sk-cube {

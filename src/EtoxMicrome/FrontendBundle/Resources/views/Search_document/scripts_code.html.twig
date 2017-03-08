@@ -194,17 +194,18 @@
             return false;
         }
         $(".bigSearch").click(function(event) {
-            $(".sk-folding-cube").css( {position:"absolute", top:event.pageY, left: event.pageX, display:"block"});
+            $(".sk-folding-cube").css( { top:$(window).height()/2+"px", left:$(window).width()/2+"px" , display:"block"});
             submitForm();
         });
         $( ".ui-autocomplete-input" ).keypress(function(event) {
             if ( event.which == 13 ) {
-                $(".sk-folding-cube").css( {position:"absolute", top:event.pageY, left: event.pageX, display:"block"});
+                $(".sk-folding-cube").css( { top:$(window).height()/2+"px", left:$(window).width()/2+"px" , display:"block"});
             }
 
         });
         $(".termSearched span, .compound span, .cytochrome span, .marker span, .term span").click(function(event) {
-            $(".sk-folding-cube").css( {position:"absolute", top:event.pageY, left: event.pageX, display:"block"});
+            $(".sk-folding-cube").css( { top:$(window).height()/2+"px", left:$(window).width()/2+"px" , display:"block"});
+
         });
 
         $("#jumpToAbstracts").click(function(e) {
