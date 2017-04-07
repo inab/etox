@@ -30,7 +30,8 @@
         "friendsofsymfony/elastica-bundle": "*",
         "knplabs/knp-paginator-bundle": "~2.4",
         "sentry/sentry": "^1.5",
-        "sentry/sentry-symfony": "^0.6.0"
+        "sentry/sentry-symfony": "^0.6.0",
+        "friendsofsymfony/rest-bundle": "^2.1"
 
     },
     "require-dev": {

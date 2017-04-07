@@ -32,6 +32,8 @@ class AppKernel extends Kernel
             new EtoxMicrome\ToxicEndpointBundle\EtoxMicromeToxicEndpointBundle(),
             new EtoxMicrome\Entity2AbstractBundle\EtoxMicromeEntity2AbstractBundle(),
             new EtoxMicrome\ElasticSearchBundle\EtoxMicromeElasticSearchBundle(),
+            new JMS\SerializerBundle\JMSSerializerBundle(),
+            new FOS\RestBundle\FOSRestBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
