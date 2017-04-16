@@ -81,7 +81,7 @@ class Cytochrome2DocumentRepository extends EntityRepository
                 ";
             $query = $this->_em->createQuery($sql);
             $query->setParameter("arrayNames", $arrayNames);
-            $query->setMaxResults(10000);
+            $query->setMaxResults(1000);
             //$query->setParameter("arrayCanonicals", $arrayCanonicals);
         }
         else{ //we filter to documents of certain kind = source(pubmed, fulltext,...etc)
@@ -96,7 +96,7 @@ class Cytochrome2DocumentRepository extends EntityRepository
             $query->setParameter("arrayNames", $arrayNames);
             //$query->setParameter("arrayCanonicals", $arrayCanonicals);
             $query->setParameter("source", $source);
-            $query->setMaxResults(10000);
+            $query->setMaxResults(1000);
         }
         return $query;
 

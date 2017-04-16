@@ -757,9 +757,9 @@ Evidences found in Sentences:\n
             $rule=$entity2Document->getRuleScore();
             $text=$entity2Document->getDocument()->getText();
             $line="$count\t$score\t$svmConfidence\t$patternCount\t$term\t$rule\t$text\n";
-            if($score>0){
+            //if($score>0){
                 fwrite($fp, $line);
-            }
+            //}
             $count=$count+1;
             /*
             if ($count==5){
@@ -785,9 +785,9 @@ Evidences found in Abstracts:(Output fields:\t\"#registry\"\t\"Abstract text\"\t
             $score=$this->getPropertyScore($entity2Abstract, $valToSearch);
             $line=$line.$score."\t";
             $line=$line."\n";
-            if($score>0){
+            //if($score>0){
                 fwrite($fp, $line);
-            }
+            //}
             $count=$count+1;
         }
         fclose($fp);
@@ -801,7 +801,6 @@ Evidences found in Abstracts:(Output fields:\t\"#registry\"\t\"Abstract text\"\t
     public function writeFileWithArrayDocument($arrayEntity2Document, $field, $whatToSearch, $entityType, $entityName)
     {
         $message="inside writeFileWithArrayDocument";
-        //ld(count($arrayEntity2Abstract));
         //ld(count($arrayEntity2Document));
         $zip = new \ZipArchive();
 
@@ -822,11 +821,13 @@ Evidences found in Abstracts:(Output fields:\t\"#registry\"\t\"Abstract text\"\t
 \tTerm:\t $entityName\n
 ***********************************************************************************************\n
 Evidences found in Sentences:\n
-#registry\"\t\"SVM\"\t\"Confidence\"\t\"Pattern Count\"\t\"Term\"\t\"Rule score\"\t\"Sentence\")\n
+#registry\"\t\"Source\"\t\"SourceId\"\t\"SVM\"\t\"Confidence\"\t\"Pattern Count\"\t\"Term\"\t\"Rule score\"\t\"Sentence\"\n
 ***********************************************************************************************\n";
         fwrite($fp, $line);
         foreach($arrayEntity2Document as $entity2Document){
             if ($entityType=="Cytochrome"){
+                $source=$entity2Document->getDocument()->getKind();
+                $sourceId=$entity2Document->getDocument()->getId();
                 $valToSearch=$this->getValToSearch($field);
                 $score=$this->getPropertyScore($entity2Document, $valToSearch);
                 $text=$entity2Document->getDocument()->getText();
@@ -835,16 +836,22 @@ Evidences found in Sentences:\n
                 $term=$entity2Document->getHepTermVarScore();
                 $rule=$entity2Document->getRuleScore();
                 $text=$entity2Document->getDocument()->getText();
-                $line="$count\t$score\t$svmConfidence\t$patternCount\t$term\t$rule\t$text\n";
+                $line="$count\t$source\t$sourceId\t$score\t$svmConfidence\t$patternCount\t$term\t$rule\t$text\n";
+            }elseif($entityType=="Marker"){//SVM 	Conf. 	Pattern 	Term 	Rule 	Sentence
+                $source=$entity2Document->getDocument()->getKind();
+                $sourceId=$entity2Document->getDocument()->getId();
+                $score=$entity2Document->getHepval();
+                $text=$entity2Document->getDocument()->getText();
+                $svmConfidence=$entity2Document->getSvmConfidence();
+                $patternCount=$entity2Document->getPatternCount();
+                $term=$entity2Document->getHepTermVarScore();
+                $rule=$entity2Document->getRuleScore();
+                $text=$entity2Document->getDocument()->getText();
+                $line="$count\t$source\t$sourceId\t$score\t$svmConfidence\t$patternCount\t$term\t$rule\t$text\n";
             }
-            $line="$count\t".$entity2Document->getDocument()->getText()."\t";
-
-
-            $line=$line.$score."\t";
-            $line=$line."\n";
-            if($score>0){
+            //if($score>0){
                 fwrite($fp, $line);
-            }
+            //}
             $count=$count+1;
             /*
             if ($count==5){
@@ -913,6 +920,401 @@ Evidences found in Sentences:\n
         return ($filename.".zip");
     }
 
+    public function writeFileWithArrayResult($resultSet, $field, $source, $whatToSearch, $entityType, $keyword, $from)
+    {
+        $message="inside writeFileWithResultSet";
+        $message="Good Place to write!!";
+        //ld(count($arrayEntity2Abstract));
+        //ld(count($arrayEntity2Document));
+        $zip = new \ZipArchive();
+
+        $path = $this->get('kernel')->getRootDir(). "/../web/files";
+        $date=date("Y-m-d_H:i:s");
+        $filename = "etoxOutputFile-".$date;
+        $pathToFile="$path/$filename";
+        $pathToZip="$pathToFile.zip";
+        if ($zip->open($pathToZip, \ZIPARCHIVE::CREATE | \ZIPARCHIVE::CREATE)!==TRUE) {
+            exit("cannot open <$pathToZip>\n");
+        }
+        $fp = fopen($pathToFile, 'w');
+        $count=1;
+        if($from=="documents"){
+            $line="Searching parameters:\n
+                \tToxicity type:\t $field\n
+                \tWhat to search:\t $whatToSearch\n
+                \tType of entity:\t $entityType\n
+                \tKeyword/Keywords:\t $keyword\n
+                ***********************************************************************************************\n
+                Evidences found in Sentences:\n
+                #registry\"\t\"Source\"\t\"SourceId\"\t\"SVM\"\t\"Confidence\"\t\"Pattern Count\"\t\"Term\"\t\"Rule score\"\t\"Sentence\"\n
+                ***********************************************************************************************\n";
+        }elseif($from=="abstracts"){
+            $line="Searching parameters:\n
+                \tToxicity type:\t $field\n
+                \tWhat to search:\t $whatToSearch\n
+                \tType of entity:\t $entityType\n
+                \tEntity name:\t $keyword\n
+                ***********************************************************************************************\n
+                Evidences found in Sentences:\n
+                #registry\"\t\"Source\"\t\"SourceId\"\t\"SVM\"\t\"Confidence\"\t\"Pattern Count\"\t\"Term\"\t\"Rule score\"\t\"Toxicology\"\t\"Biomarker\"\t\"Sentence\"\n
+                ***********************************************************************************************\n";
+        }
+        //Source id_source 	SVM 	Conf. 	Pattern 	Term 	Rule 	Sentence
+        fwrite($fp, $line);
+        foreach($resultSet as $result){
+            $data=$result->getData();
+            $score=$data["hepval"];
+            $svmConfidence=$data["svmConfidence"];
+            $patternCount=$data["patternCount"];
+            $term=$data["hepTermVarScore"];
+            $rule=$data["ruleScore"];
+            $text=$data["text"];
+            if($from=="documents"){
+                $source=$data["kind"];
+                $sourceId=$data["uid"];
+                $line="$count\t$source\t$sourceId\t$score\t$svmConfidence\t$patternCount\t$term\t$rule\t$text\n";
+            }elseif($from=="abstracts"){
+                $source="Pubmed Abstracts";
+                $sourceId=$data["pmid"];
+                $toxicology=$data["toxicology"];
+                $biomarker=$data["biomarker"];
+                $line="$count\t$source\t$sourceId\t$score\t$svmConfidence\t$patternCount\t$term\t$rule\t$toxicology\t$biomarker\t$text\n";
+            }
+            /*if($score>0){
+                fwrite($fp, $line);
+            }*/
+            fwrite($fp, $line);
+            $count=$count+1;
+            /*
+            if ($count==5){
+                ldd($message);
+            }
+            */
+        }
+        fclose($fp);
+
+        $zip->addFile($pathToFile, basename($pathToFile));
+        $zip->close();
+
+        return ($filename.".zip");
+    }
+
+    public function writeFileWithResultSet($resultSet, $field, $source, $whatToSearch, $entityType, $keyword, $from)
+    {
+        $message="inside writeFileWithResultSet";
+        $message="Good Place to write!!";
+        //ld(count($arrayEntity2Abstract));
+        //ld(count($arrayEntity2Document));
+        $zip = new \ZipArchive();
+
+        $path = $this->get('kernel')->getRootDir(). "/../web/files";
+        $date=date("Y-m-d_H:i:s");
+        $filename = "etoxOutputFile-".$date;
+        $pathToFile="$path/$filename";
+        $pathToZip="$pathToFile.zip";
+        if ($zip->open($pathToZip, \ZIPARCHIVE::CREATE | \ZIPARCHIVE::CREATE)!==TRUE) {
+            exit("cannot open <$pathToZip>\n");
+        }
+        $fp = fopen($pathToFile, 'w');
+        $count=1;
+        if($whatToSearch=="endpoints"){
+            $line="Searching parameters:\n
+                \tToxicity type:\t $field\n
+                \tWhat to search:\t $whatToSearch\n
+                \tType of entity:\t $entityType\n
+                \tKeyword/Keywords:\t $keyword\n
+                ***********************************************************************************************\n
+                Evidences found in Sentences:\n
+                    #registry\"\t\"Source\"\t\"SourceId\"\t\"Hepatotoxicity Score\"\t\"Confidence\"\t\"Pattern Count\"\t\"Term\"\t\"Rule score\"\t\"Nephrotoxicity\"\t\"Cardiotoxicity\"\t\"Tyrotoxicity\"\t\"Phospholipidosis\"\t\"Sentence\"\n
+                    ***********************************************************************************************\n";
+        }else {
+            if($from=="documents"){
+                $line="Searching parameters:\n
+                    \tToxicity type:\t $field\n
+                    \tWhat to search:\t $whatToSearch\n
+                    \tType of entity:\t $entityType\n
+                    \tKeyword/Keywords:\t $keyword\n
+                    ***********************************************************************************************\n
+                    Evidences found in Sentences:\n
+                    #registry\"\t\"Source\"\t\"SourceId\"\t\"SVM\"\t\"Confidence\"\t\"Pattern Count\"\t\"Term\"\t\"Rule score\"\t\"Sentence\"\n
+                    ***********************************************************************************************\n";
+            }elseif($from=="abstracts"){
+                $line="Searching parameters:\n
+                    \tToxicity type:\t $field\n
+                    \tWhat to search:\t $whatToSearch\n
+                    \tType of entity:\t $entityType\n
+                    \tKeyword/Keywords:\t $keyword\n
+                    ***********************************************************************************************\n
+                    Evidences found in Sentences:\n
+                    #registry\"\t\"Source\"\t\"SourceId\"\t\"SVM\"\t\"Confidence\"\t\"Pattern Count\"\t\"Term\"\t\"Rule score\"\t\"Toxicology\"\t\"Biomarker\"\t\"Sentence\"\n
+                    ***********************************************************************************************\n";
+            }
+        }
+        //Source id_source 	SVM 	Conf. 	Pattern 	Term 	Rule 	Sentence
+        fwrite($fp, $line);
+        $results=$resultSet->getResults();
+        //ldd(count($results));
+        foreach($results as $result){
+            $data=$result->getData();
+            $score=$data["hepval"];
+            $svmConfidence=$data["svmConfidence"];
+            $patternCount=$data["patternCount"];
+            $term=$data["hepTermVarScore"];
+            $rule=$data["ruleScore"];
+            $text=$data["text"];
+            if($whatToSearch=="endpoints"){
+                $source=$data["kind"];
+                $sourceId=$data["uid"];
+                $nephro=$data["nephval"];
+                $cardio=$data["cardioval"];
+                $thyro=$data["thyroval"];
+                $phospho=$data["phosphoval"];
+                $line="$count\t$source\t$sourceId\t$score\t$svmConfidence\t$patternCount\t$term\t$rule\t$nephro\t$cardio\t$thyro\t$phospho\t$text\n";
+
+            }else{
+                if($from=="documents"){
+                    $source=$data["kind"];
+                    $sourceId=$data["uid"];
+                    $line="$count\t$source\t$sourceId\t$score\t$svmConfidence\t$patternCount\t$term\t$rule\t$text\n";
+                }elseif($from=="abstracts"){
+                    $source="Pubmed Abstracts";
+                    $sourceId=$data["pmid"];
+                    $toxicology=$data["toxicology"];
+                    $biomarker=$data["biomarker"];
+                    $line="$count\t$source\t$sourceId\t$score\t$svmConfidence\t$patternCount\t$term\t$rule\t$toxicology\t$biomarker\t$text\n";
+                }
+            }
+            /*if($score>0){
+                fwrite($fp, $line);
+            }*/
+            fwrite($fp, $line);
+            $count=$count+1;
+            /*
+            if ($count==5){
+                ldd($message);
+            }
+            */
+        }
+        fclose($fp);
+
+        $zip->addFile($pathToFile, basename($pathToFile));
+        $zip->close();
+
+        return ($filename.".zip");
+    }
+
+    public function writeFileWithArrayResults ($arrayResults, $field, $source, $whatToSearch, $entityType, $entityName, $from)
+    {
+        $message="inside writeFileWithArrayResults";
+        $message="Good Place to write!!";
+        //ld(count($arrayEntity2Abstract));
+        //ld(count($arrayEntity2Document));
+        $zip = new \ZipArchive();
+        $path = $this->get('kernel')->getRootDir(). "/../web/files";
+        $date=date("Y-m-d_H:i:s");
+        $filename = "etoxOutputFile-".$date;
+        $pathToFile="$path/$filename";
+        $pathToZip="$pathToFile.zip";
+        if ($zip->open($pathToZip, \ZIPARCHIVE::CREATE | \ZIPARCHIVE::CREATE)!==TRUE) {
+            exit("cannot open <$pathToZip>\n");
+        }
+        $fp = fopen($pathToFile, 'w');
+        $count=1;
+        if($entityType=="gene"){
+            $line="Searching parameters:\n
+                    \tToxicity type:\t $field\n
+                    \tWhat to search:\t $whatToSearch\n
+                    \tType of entity:\t $entityType\n
+                    \tEntity Name:\t $entityName\n
+                    ***********************************************************************************************\n
+                    Evidences found in Sentences:\n
+                    #registry\"\t\"Source\"\t\"SourceId\"\t\"SVM\"\t\"Confidence\"\t\"Pattern Count\"\t\"Toxicology\"\t\"Biomarker\"\t\"Sentence\"\n
+                    ***********************************************************************************************\n";
+        }
+        else{
+            if($from=="documents"){
+                $line="Searching parameters:\n
+                    \tToxicity type:\t $field\n
+                    \tWhat to search:\t $whatToSearch\n
+                    \tType of entity:\t $entityType\n
+                    \tEntity Name:\t $entityName\n
+                    ***********************************************************************************************\n
+                    Evidences found in Sentences:\n
+                    #registry\"\t\"Source\"\t\"SourceId\"\t\"SVM\"\t\"Confidence\"\t\"Pattern Count\"\t\"Term\"\t\"Rule score\"\t\"Sentence\"\n
+                    ***********************************************************************************************\n";
+            }elseif($from=="abstracts"){
+                $line="Searching parameters:\n
+                    \tToxicity type:\t $field\n
+                    \tWhat to search:\t $whatToSearch\n
+                    \tType of entity:\t $entityType\n
+                    \Entity Name:\t $entityName\n
+                    ***********************************************************************************************\n
+                    Evidences found in Sentences:\n
+                    #registry\"\t\"Source\"\t\"SourceId\"\t\"SVM\"\t\"Confidence\"\t\"Pattern Count\"\t\"Term\"\t\"Rule score\"\t\"Toxicology\"\t\"Biomarker\"\t\"Sentence\"\n
+                    ***********************************************************************************************\n";
+            }
+        }
+        fwrite($fp, $line);
+        foreach($arrayResults as $result){
+            //ld($result);
+            $score=$result->getHepval();
+            $svmConfidence=$result->getSvmConfidence();
+            $patternCount=$result->getPatternCount();
+
+            if($entityType=="gene"){
+                 $toxicology=$result->getToxicology();
+                 $biomarker=$result->getBiomarker();
+                 $source="Pubmed Abstracts";
+                 $sourceId=$result->getPmid();
+                 $text=$result->getText();
+                 $line="$count\t$source\t$sourceId\t$score\t$patternCount\t$svmConfidence\t$toxicology\t$biomarker\t$text\n";
+            }else{
+                if($from=="documents"){
+                    $term=$result->getHepTermVarScore();
+                    $rule=$result->getRuleScore();
+                    $text=$result->getDocument()->getText();
+                    $source=$result->getDocument()->getKind();
+                    $sourceId=$result->getDocument()->getId();
+                    $line="$count\t$source\t$sourceId\t$score\t$svmConfidence\t$patternCount\t$term\t$rule\t$text\n";
+                }elseif($from=="abstracts"){
+                    $term=$result->getHepTermVarScore();
+                    $rule=$result->getRuleScore();
+                    $text=$result->getAbstracts()->getText();
+                    $source="Pubmed Abstracts";
+                    $sourceId=$result->getAbstracts()->getPmid();
+                    $toxicology=$result->getAbstracts()->getToxicology();
+                    $biomarker=$result->getAbstracts()->getBiomarker();
+
+                    $line="$count\t$source\t$sourceId\t$score\t$svmConfidence\t$patternCount\t$term\t$rule\t$toxicology\t$biomarker\t$text\n";
+                }
+            }
+
+            /*if($score>0){
+                fwrite($fp, $line);
+            }*/
+            fwrite($fp, $line);
+            $count=$count+1;
+            /*
+            if ($count==5){
+                ldd($message);
+            }
+            */
+        }
+        fclose($fp);
+        $zip->addFile($pathToFile, basename($pathToFile));
+        $zip->close();
+
+        return ($filename.".zip");
+    }
+
+
+    public function writeFileWithRelations ($arrayResults, $field, $source, $whatToSearch, $entityType, $entityName, $from)
+    {
+        $message="inside writeFileWithRelations";
+        //ld(count($arrayEntity2Abstract));
+        //ld(count($arrayEntity2Document));
+        $zip = new \ZipArchive();
+
+        $path = $this->get('kernel')->getRootDir(). "/../web/files";
+        $date=date("Y-m-d_H:i:s");
+        $filename = "etoxOutputFile-".$date;
+        $pathToFile="$path/$filename";
+        $pathToZip="$pathToFile.zip";
+        if ($zip->open($pathToZip, \ZIPARCHIVE::CREATE | \ZIPARCHIVE::CREATE)!==TRUE) {
+            exit("cannot open <$pathToZip>\n");
+        }
+        $fp = fopen($pathToFile, 'w');
+        $count=1;
+        if($whatToSearch=="compoundsTermsRelations"){
+            if($from=="documents"){
+                $line="Searching parameters:\n
+                    \tToxicity type:\t $field\n
+                    \tWhat to search:\t $whatToSearch\n
+                    \tType of entity:\t $entityType\n
+                    \tEntity Name:\t $entityName\n
+                    ***********************************************************************************************\n
+                    Evidences found in Sentences:\n
+                    #registry\"\t\"Source\"\t\"SourceId\"\t\"Compound\"\t\"Relation\"\t\"Term\"\t\"Score\"\t\"Sentence\"\t\"Qualifier\"\n
+                    ***********************************************************************************************\n";
+            }elseif($from=="abstracts"){
+                $line="Searching parameters:\n
+                    \tToxicity type:\t $field\n
+                    \tWhat to search:\t $whatToSearch\n
+                    \tType of entity:\t $entityType\n
+                    \Entity Name:\t $entityName\n
+                    ***********************************************************************************************\n
+                    Evidences found in Sentences:\n
+                    #registry\"\t\"Source\"\t\"SourceId\"\t\"Compound\"\t\"Relation\"\t\"Term\"\t\"Score\"\t\"Sentence\"\t\"Qualifier\"\n
+                    ***********************************************************************************************\n";
+            }
+        }
+        elseif($whatToSearch=="compoundsCytochromesRelations"){
+            $line="Searching parameters:\n
+                \tToxicity type:\t $field\n
+                \tWhat to search:\t $whatToSearch\n
+                \tType of entity:\t $entityType\n
+                \tEntity Name:\t $entityName\n
+                ***********************************************************************************************\n
+                Evidences found in Sentences:\n
+                #registry\"\t\"Source\"\t\"SourceId\"\t\"Compound\"\t\"Relation\"\t\"Cytochrome\"\t\"Induct/Activ./Enhancement\"\t\"Inhib/Repression/Inactiv\"\t\"Metabolism/Substrate/Product\"\t\"Sentence\"\t\"Qualifier\"\n
+                ***********************************************************************************************\n";
+        }
+        elseif($whatToSearch=="compoundsMarkersRelations"){
+            $line="Searching parameters:\n
+                \tToxicity type:\t $field\n
+                \tWhat to search:\t $whatToSearch\n
+                \tType of entity:\t $entityType\n
+                \tEntity Name:\t $entityName\n
+                ***********************************************************************************************\n
+                Evidences found in Sentences:\n
+                #registry\"\t\"Source\"\t\"SourceId\"\t\"Compound\"\t\"Relation\"\t\"Marker\"\t\"Sentence\"\t\"Qualifier\"\n
+                ***********************************************************************************************\n";
+        }
+        fwrite($fp, $line);
+        foreach($arrayResults as $result){
+            $source=$result->getDocument()->getKind();
+            $sourceId=$result->getDocument()->getId();
+            $compoundName=$result->getCompoundName();
+            $text=$result->getDocument()->getText();
+            $relationQualifier=$result->getRelationQualifier();
+            if($whatToSearch=="compoundsTermsRelations"){
+                $term=$result->getTerm();
+                $score=$result->getCompound2TermConfidence();
+                $relationType=$result->getRelationType();
+                $line="$count\t$source\t$sourceId\t$compoundName\t$relationType\t$term\t$score\t$text\t$relationQualifier\n";
+            }
+            if($whatToSearch=="compoundsCytochromesRelations"){
+                $cytochrome=$result->getCypsMention();
+                $induction=$result->getInductionScore();
+                $inhibition=$result->getInhibitionScore();
+                $metabolism=$result->getMetabolismScore();
+                $patternRelation=$result->getPatternRelation();
+                $line="$count\t$source\t$sourceId\t$compoundName\t$patternRelation\t$cytochrome\t$induction\t$inhibition\t$metabolism\t$text\t$relationQualifier\n";
+            }
+            if($whatToSearch=="compoundsMarkersRelations"){
+                $marker=$result->getLiverMarkerName();
+                $score=$result->getRelationScore();
+                $line="$count\t$source\t$sourceId\t$compoundName\t$score\t$marker\t$text\t$relationQualifier\n";
+            }
+        }
+
+        /*if($score>0){
+            fwrite($fp, $line);
+        }*/
+        fwrite($fp, $line);
+        $count=$count+1;
+        /*
+        if ($count==5){
+            ldd($message);
+        }
+        */
+        fclose($fp);
+        $zip->addFile($pathToFile, basename($pathToFile));
+        $zip->close();
+
+        return ($filename.".zip");
+    }
+
 
     public function exportFunction($field, $whatToSearch, $entityType, $entityName, $source, $orderBy){
         $message="exportFunction";
@@ -923,8 +1325,8 @@ Evidences found in Sentences:\n
         //////////////////////////////////////////////////////////////
         //First of all we generate the file that will be downloaded.//
         //////////////////////////////////////////////////////////////
-
         //We get first of all the evidences found in Abstracts
+
         $entityBackup=$entityName;
         /*ld($field);
         ld($whatToSearch);
@@ -945,13 +1347,18 @@ Evidences found in Sentences:\n
         }elseif($whatToSearch=="canonical"){
             //We get the entity from the canonical
             $entity=$em->getRepository('EtoxMicromeEntityBundle:'.$entityType)->searchEntityGivenACanonical($entityName);
+        }elseif($whatToSearch=="withCompounds"){
+            //We get the entity from the canonical
+            $entity=$em->getRepository('EtoxMicromeEntityBundle:'.$entityType)->getEntityFromName($entityName);
+        }elseif($whatToSearch=="compoundsCytochromesRelations"){
+            //We get the entity from the canonical
+            $entity=$em->getRepository('EtoxMicromeEntityBundle:'.$entityType)->getEntityFromName($entityName);
         }
         if(count($entity)!=0){
             #We have the entityId. We need to do a QUERY EXPANSION depending on the typeOfEntity we have
             $arrayEntityId=$this->queryExpansion($entity, $entityType, $whatToSearch);
             //WARNING!!!! DELETE THIS SLICE AFTER QUERY EXPANSION GETS PRACTICABLE
             $arrayEntityId=array_slice($arrayEntityId, 0, 10);
-
             //$arrayEntityId=array();
             //array_push($arrayEntityId, $entity);
             //WARNING!! If the query expansion with a CompoundDict doesn't return any entity, we do the expansion with CompoundMesh!!
@@ -974,7 +1381,6 @@ Evidences found in Sentences:\n
                 'entityName' => $entityName,
             ));
         }
-
         $arrayEntityId=array_unique($arrayEntityId);//We get rid of the duplicates
         if($entityType=="Cytochrome"){
             //We create an array of cytochromes from an array with their enityId
@@ -987,7 +1393,6 @@ Evidences found in Sentences:\n
                 $arrayNames[] = $cytochrome->getName();
                 $arrayCanonicals[] = $cytochrome->getCanonical();
             }
-
             $arrayNames=array_unique($arrayNames);//We get rid of the duplicates
             $arrayCanonicals=array_unique($arrayCanonicals);//We get rid of the duplicates
 
@@ -1023,10 +1428,10 @@ Evidences found in Sentences:\n
 
             }else{//Neither Compounds nor Cytochromes
                 //We just search into Documents
-                $arrayEntity2Document = $em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntity2DocumentFromField($field, $entityType, $arrayEntityName);
-
+                $arrayEntity2Document = $em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntity2DocumentFromField($field, $entityType, $arrayEntityName, $source, $orderBy);
                 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 //////////////////////////////save inside file///////////////////////////////////////////////////////////////////////
+                ldd(count($arrayEntity2Document));
                 $filename=$this->writeFileWithArrayDocument($arrayEntity2Document, $field, $whatToSearch, $entityType, $entityName);
                 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1035,6 +1440,117 @@ Evidences found in Sentences:\n
         return ($filename);
 
 
+    }
+
+    public function exportKeywordsResults($field, $whatToSearch, $entityType, $keyword, $source, $orderBy, $resultSetDocuments, $resultSetAbstracts){
+        $message="exportKeywordsResults";
+        $em = $this->getDoctrine()->getManager();
+        //////////////////////////////////////////////////////////////
+        //First of all we generate the file that will be downloaded.//
+        //////////////////////////////////////////////////////////////
+        //In this function we already have the resultSetDocuments or resultSetAbstracts
+        //////////////////////////////////////////////////////////////
+        //EntityBackup no longer exists since what we are looking for could be an entity or not... it's just free-text
+        //////////////////////////////////////////////////////////////
+        //Whatever we look for, we already have the array with the results, documents or abstracts
+        //////////////////////////////////////////////////////////////
+        //Query expansion doesn't have any meaning in this context
+
+        if(count($resultSetDocuments)==0 && count($resultSetAbstracts)==0 ){
+            $message="No results,neither documents nor abstracts.";
+            //We don't have entities. We render the template with No results
+            return("");
+        }
+        $message="There are documents or abstracts in the free-text search results";
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //////////////////////////////save inside file///////////////////////////////////////////////////////////////////////
+        if(count($resultSetDocuments)!=0){
+            $filename=$this->writeFileWithResultSet($resultSetDocuments, $field, $source, $whatToSearch, $entityType, $keyword, "documents");
+        }
+        if(count($resultSetAbstracts)!=0){
+            $filename=$this->writeFileWithResultSet($resultSetAbstracts, $field, $source, $whatToSearch, $entityType, $keyword, "abstracts");
+        }
+        return ($filename);
+
+
+    }
+
+    public function exportCompoundsResults($field, $whatToSearch, $entityType, $entityName, $source, $orderBy, $arrayResults,$from){
+        $message="exportCompoundResults";
+        $em = $this->getDoctrine()->getManager();
+        //////////////////////////////////////////////////////////////
+        //First of all we generate the file that will be downloaded.//
+        //////////////////////////////////////////////////////////////
+        //In this function we already have the resultSetDocuments or resultSetAbstracts
+        //////////////////////////////////////////////////////////////
+        //EntityBackup no longer exists since what we are looking for could be an entity or not... it's just free-text
+        //////////////////////////////////////////////////////////////
+        //Whatever we look for, we already have the array with the results, documents or abstracts
+        //////////////////////////////////////////////////////////////
+        //Query expansion doesn't have any meaning in this context
+
+        if(count($arrayResults)==0 ){
+            $message="No results,neither documents nor abstracts.";
+            //We don't have entities. We will render the template with No results
+            return("");
+        }else{
+            $message="There are documents or abstracts in the free-text search results";
+
+            if($from=="documents"){
+                $filename=$this->writeFileWithArrayResults($arrayResults, $field, $source, $whatToSearch, $entityType, $entityName, "documents");
+            }elseif($from=="abstracts"){
+                $filename=$this->writeFileWithArrayResults($arrayResults, $field, $source, $whatToSearch, $entityType, $entityName, "abstracts");
+            }
+        }
+        return ($filename);
+    }
+
+    public function exportCompoundsRelations($field, $whatToSearch, $entityType, $entityName, $source, $orderBy, $arrayResults,$from){
+        $message="exportCompoundRelations";
+        $em = $this->getDoctrine()->getManager();
+        //////////////////////////////////////////////////////////////
+        //First of all we generate the file that will be downloaded.//
+        //////////////////////////////////////////////////////////////
+        //In this function we already have the resultSetDocuments or resultSetAbstracts
+        //////////////////////////////////////////////////////////////
+        //EntityBackup no longer exists since what we are looking for could be an entity or not... it's just free-text
+        //////////////////////////////////////////////////////////////
+        //Whatever we look for, we already have the array with the results, documents or abstracts
+        //////////////////////////////////////////////////////////////
+        //Query expansion doesn't have any meaning in this context
+
+        if(count($arrayResults)==0 ){
+            $message="No results,neither documents nor abstracts.";
+            //We don't have entities. We will render the template with No results
+            return("");
+        }else{
+            $message="There are documents in relations";
+            if($from=="documents"){
+                $filename=$this->writeFileWithRelations($arrayResults, $field, $source, $whatToSearch, $entityType, $entityName, "documents");
+            }elseif($from=="abstracts"){
+                $filename=$this->writeFileWithRelations($arrayResults, $field, $source, $whatToSearch, $entityType, $entityName, "abstracts");
+            }
+        }
+        return ($filename);
+    }
+
+    public function exportCompoundsArrayResults($field, $whatToSearch, $entityType, $entityName, $source, $orderBy, $arrayResults,$from){
+        $message="exportCompoundsArrayResults";
+
+        if(count($arrayResults)==0 ){
+            $message="No results,neither documents nor abstracts.";
+            //We don't have entities. We will render the template with No results
+            return("");
+        }else{
+            $message="There are documents or abstracts in the free-text search results";
+            if($from=="documents"){
+
+                $filename=$this->writeFileWithArrayResult($arrayResults, $field, $source, $whatToSearch, $entityType, $entityName, "documents");
+            }elseif($from=="abstracts"){
+                $filename=$this->writeFileWithArrayResult($arrayResults, $field, $source, $whatToSearch, $entityType, $entityName, "abstracts");
+            }
+        }
+        return ($filename);
     }
 
     public function downloadCuratedTermRelationsAction(){
@@ -1350,7 +1866,9 @@ Evidences found in Sentences:\n
         $entityType="gene";
         //$source="geneName" or "geneId";
         //$whatToSearch="any","withCompounds"...etc
-
+        $request = $this->get('request');
+        $download=$request->query->get('download');
+        $arrayFormats=array("csv","pdf","xls");
         $message="inside searchGeneOrderByAction";
         $entityBackup=$entityName;
         $em = $this->getDoctrine()->getManager();
@@ -1381,7 +1899,6 @@ Evidences found in Sentences:\n
         //$arrayTotalMaxMin=$this->getTotalMaxMinArrayForEntities($compound2Abstracts, $orderBy, $field);
         //$meanScore=$this->getMmmrScoreFromEntities($compound2Abstracts, $orderBy, 'mean');
         //$medianScore=$this->getMmmrScoreFromEntities($compound2Abstracts, $orderBy, 'median');
-
         if (count($arrayGeneIds) == 0){
             return $this->render('FrontendBundle:Default:no_results.html.twig', array(
                 'field' => $field,
@@ -1393,6 +1910,32 @@ Evidences found in Sentences:\n
         }else{
             //We have an arrayGeneIds and we want a list of abstracts that have those geneIds. So we generate it using getAbstractsFromGeneIds method.
             $arrayAbstracts = $em->getRepository('EtoxMicromeEntity2AbstractBundle:Gene2Abstract')->getAbstractsFromGeneIDs($arrayGeneIds, $orderBy);
+            if (in_array($download, $arrayFormats)){
+                $filename=$this->exportCompoundsResults($field, $whatToSearch, $entityType, $entityName, $source, $orderBy, $arrayAbstracts,"abstracts");
+                if($filename==""){
+                    return $this->render('FrontendBundle:Default:no_results.html.twig', array(
+                        'field' => $field,
+                        'whatToSearch' => $whatToSearch,
+                        'entityType' => $entityType,
+                        'entity' => $entityBackup,
+                        'entityName' => $entityName,
+                        'source' => $source,
+                    ));
+                    exit();
+                }else{
+                    return $this->render('FrontendBundle:Default:download_file.html.twig', array(
+                        'field' => $field,
+                        'whatToSearch' => $whatToSearch,
+                        'entityType' => $entityType,
+                        'entityName' => $entityName,
+                        'filename' => $filename,
+                        'orderBy' => $orderBy,
+                        'source' => $source,
+
+                    ));
+                    exit();
+                }
+            }
             //ld(count($arrayAbstracts));
             $arrayAliases = $em->getRepository('EtoxMicromeEntity2AbstractBundle:Gene2Abstract')->getAliasesFromGeneIDs($arrayGeneIds, $orderBy);
             //ld(count($arrayAliases));
@@ -1469,24 +2012,7 @@ Evidences found in Sentences:\n
         $arrayFormats=array("csv","pdf","xls");
         //$entityName=strtolower($entityName);
         //ldd($entityName);
-        if (in_array($download, $arrayFormats)){
-            $filename=$this->exportFunction($field, $whatToSearch, $entityType, $entityName, $source, $orderBy);
-            return $this->render('FrontendBundle:Default:download_file.html.twig', array(
-            'field' => $field,
-            'whatToSearch' => $whatToSearch,
-            'entityType' => $entityType,
-            'entity' => $entityName,
-            'filename' => $filename,
-            'orderBy' => $orderBy,
-            'format' => $download,
-            'source' => $source,
-            ));
-        exit();
-        }
-        //$field = $this->container->getParameter('etoxMicrome.default_field');//{"hepatotoxicity","embryotoxicity", etc...}
-        //$whatToSearch = $this->container->getParameter('etoxMicrome.default_whatToSearch');//{"name","id", "structure", "canonical"}
-        //$entityType= $this->container->getParameter('etoxMicrome.default_entityType');//{compound","cyp","marker","keyword"}
-        //$entityName = $this->container->getParameter('etoxMicrome.default_entityName');
+
         $em = $this->getDoctrine()->getManager();
         //We add the paginator
         $paginator = $this->get('ideup.simple_paginator');
@@ -1497,19 +2023,24 @@ Evidences found in Sentences:\n
         if($whatToSearch=="name"){
             //We get the entity from the entity
             $entity=$em->getRepository('EtoxMicromeEntityBundle:'.$entityType)->getEntityFromName($entityName);
-        }elseif($whatToSearch=="id"){
+        }
+        elseif($whatToSearch=="id"){
             //We get the entity from the entityId
             $entity=$em->getRepository('EtoxMicromeEntityBundle:'.$entityType)->searchEntityGivenAnId($entityName);
-        }elseif($whatToSearch=="structure"){
+        }
+        elseif($whatToSearch=="structure"){
             //We get the entity from the structure
             $entity=$em->getRepository('EtoxMicromeEntityBundle:'.$entityType)->searchEntityGivenAnStructureText($entityName);
-        }elseif($whatToSearch=="canonical"){
+        }
+        elseif($whatToSearch=="canonical"){
             //We get the entity from the canonical
             $entity=$em->getRepository('EtoxMicromeEntityBundle:'.$entityType)->searchEntityGivenACanonical($entityName);
-        }elseif(($whatToSearch=="smile") or ($whatToSearch == "inChi")){
+        }
+        elseif(($whatToSearch=="smile") or ($whatToSearch == "inChi")){
             //We get the entity from the smile
             $entity=$em->getRepository('EtoxMicromeEntityBundle:'.$entityType)->searchEntityGivenAnStructureText($entityName);
-        }elseif($whatToSearch=="any" or $whatToSearch=="withCompounds" or $whatToSearch=="withCytochromes" or $whatToSearch=="withMarkers"){
+        }
+        elseif($whatToSearch=="any" or $whatToSearch=="withCompounds" or $whatToSearch=="withCytochromes" or $whatToSearch=="withMarkers"){
             ////////////////////////////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////////////////////////////
             ///  If we are searching for Cytochromes or Markers, with the any or WithCompounds//////
@@ -1654,7 +2185,7 @@ Evidences found in Sentences:\n
                 if($entityType=="Cytochrome"){
                     //We have to make a free search against the intersection of documentswithcompounds with documentswithcytochromes
                     //In order to perform the intersection we change the size of the results
-                    $elasticaQuery->setSize(1500);
+                    $elasticaQuery->setSize(1000);
                     $finder = false;
 
                     $documentsInfo = $this->container->get('fos_elastica.index.etoxindex2.documentswithcompounds');/** To get resultSet to get values for summary**/
@@ -1679,6 +2210,32 @@ Evidences found in Sentences:\n
                     //When dealing with withIntersection arrays, we only have this array to get the needed values that we retreive in interface using resultSetArrays... Which are: totalHits, Max. Score, Min. Score
                     //So we implement a function to get all this info inside an arrayTotalMaxMin. Being arrayTotalMaxMin[0]=totalHits, arrayTotalMaxMin[1]=Max.score, arrayTotalMaxMin[2]=Min.score
                     $arrayTotalMaxMin=$this->getTotalMaxMinArray($arrayDocumentsIntersection, $orderBy, $field);
+
+                    if (in_array($download, $arrayFormats)){
+                        $filename=$this->exportCompoundsArrayResults($field, $whatToSearch, $entityType, $entityName, $source, $orderBy, $arrayDocumentsIntersection,"documents");
+                        if($filename==""){
+                            return $this->render('FrontendBundle:Default:no_results.html.twig', array(
+                                'field' => $field,
+                                'whatToSearch' => $whatToSearch,
+                                'entityType' => $entityType,
+                                'entity' => $entityBackup,
+                                'entityName' => $entityName,
+                                'source' => $source,
+                            ));
+                            exit();
+                        }else{
+                            return $this->render('FrontendBundle:Default:download_file.html.twig', array(
+                                'field' => $field,
+                                'whatToSearch' => $whatToSearch,
+                                'entityType' => $entityType,
+                                'filename' => $filename,
+                                'orderBy' => $orderBy,
+                                'source' => $source,
+                                'entityName' => $entityName,
+                            ));
+                            exit();
+                        }
+                    }
                     return $this->render('FrontendBundle:Search_keyword:indexWithIntersection.html.twig', array(
                         'field' => $field,
                         'entityType' => $entityType,
@@ -1697,7 +2254,7 @@ Evidences found in Sentences:\n
                 if($entityType=="Marker"){
                     //We have to make a free search against the intersection of documentswithcompounds with documentswithmarkers
                     //In order to perform the intersection we change the size of the results
-                    $elasticaQuery->setSize(1500);
+                    $elasticaQuery->setSize(1000);
                     $finder = false;
                     $finderDocWithCompounds = $this->container->get('fos_elastica.index.etoxindex2.documentswithcompounds');
                     $finderDocWithMarkers = $this->container->get('fos_elastica.index.etoxindex2.documentswithmarkers');
@@ -1705,6 +2262,34 @@ Evidences found in Sentences:\n
                     $resultSetDocuments=$arrayDocumentsWithCompounds;////// WARNING!! DELETE THIS LINE
                     $arrayDocumentsWithMarkers=$finderDocWithMarkers->search($elasticaQuery);
                     $arrayDocumentsIntersection=$this->performIntersectionArrayDocuments($arrayDocumentsWithCompounds, $arrayDocumentsWithMarkers);
+
+                    if (in_array($download, $arrayFormats)){
+                        $filename=$this->exportCompoundsArrayResults($field, $whatToSearch, $entityType, $entityName, $source, $orderBy, $arrayDocumentsIntersection,"documents");
+                        if($filename==""){
+                            return $this->render('FrontendBundle:Default:no_results.html.twig', array(
+                                'field' => $field,
+                                'whatToSearch' => $whatToSearch,
+                                'entityType' => $entityType,
+                                'entity' => $entityBackup,
+                                'entityName' => $entityName,
+                                'source' => $source,
+                            ));
+                            exit();
+                        }else{
+                            return $this->render('FrontendBundle:Default:download_file.html.twig', array(
+                                'field' => $field,
+                                'whatToSearch' => $whatToSearch,
+                                'entityType' => $entityType,
+                                'entityName' => $entityName,
+                                'filename' => $filename,
+                                'orderBy' => $orderBy,
+                                'source' => $source,
+                            ));
+                            exit();
+                        }
+
+                    }
+
                     $arrayResultsDoc = $paginator
                         ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), 'documents')
                         ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), 'documents')
@@ -1738,7 +2323,7 @@ Evidences found in Sentences:\n
                 if($entityType=="CompoundDict"){
                     //We have to make a free search against the intersection of documentswithcompounds with documentswithcytochromes
                     //In order to perform the intersection we change the size of the results
-                    $elasticaQuery->setSize(1500);
+                    $elasticaQuery->setSize(1000);
                     $finder = false;
                     $documentsInfo = $this->container->get('fos_elastica.index.etoxindex2.documentswithcompounds');
                     $resultSetDocuments = $documentsInfo->search($elasticaQuery);
@@ -1763,6 +2348,35 @@ Evidences found in Sentences:\n
                     //When dealing with withIntersection arrays, we only have this array to get the needed values that we retreive in interface using resultSetArrays... Which are: totalHits, Max. Score, Min. Score
                     //So we implement a function to get all this info inside an arrayTotalMaxMin. Being arrayTotalMaxMin[0]=totalHits, arrayTotalMaxMin[1]=Max.score, arrayTotalMaxMin[2]=Min.score
                     $arrayTotalMaxMin=$this->getTotalMaxMinArray($arrayDocumentsIntersection, $orderBy, $field);
+
+
+                    if (in_array($download, $arrayFormats)){
+                        $filename=$this->exportCompoundsArrayResults($field, $whatToSearch, $entityType, $entityName, $source, $orderBy, $arrayDocumentsIntersection,"documents");
+                        if($filename==""){
+                            return $this->render('FrontendBundle:Default:no_results.html.twig', array(
+                                'field' => $field,
+                                'whatToSearch' => $whatToSearch,
+                                'entityType' => $entityType,
+                                'entity' => $entityBackup,
+                                'entityName' => $entityName,
+                                'source' => $source,
+                            ));
+                            exit();
+                        }else{
+                            return $this->render('FrontendBundle:Default:download_file.html.twig', array(
+                                'field' => $field,
+                                'whatToSearch' => $whatToSearch,
+                                'entityType' => $entityType,
+                                'filename' => $filename,
+                                'orderBy' => $orderBy,
+                                'source' => $source,
+                                'entityName' => $entityName,
+                            ));
+                            exit();
+                        }
+
+                    }
+
                     return $this->render('FrontendBundle:Search_keyword:indexWithIntersection.html.twig', array(
                         'field' => $field,
                         'entityType' => $entityType,
@@ -1782,7 +2396,7 @@ Evidences found in Sentences:\n
                 if($entityType=="CompoundDict"){
                     //We have to make a free search against the intersection of documentswithcompounds with documentswithcytochromes
                     //In order to perform the intersection we change the size of the results
-                    $elasticaQuery->setSize(1500);
+                    $elasticaQuery->setSize(1000);
                     $finder = false;
                     $resultSetAbstracts = false;
                     $arrayResultsAbs =array();
@@ -1809,6 +2423,34 @@ Evidences found in Sentences:\n
                     //When dealing with withIntersection arrays, we only have this array to get the needed values that we retreive in interface using resultSetArrays... Which are: totalHits, Max. Score, Min. Score
                     //So we implement a function to get all this info inside an arrayTotalMaxMin. Being arrayTotalMaxMin[0]=totalHits, arrayTotalMaxMin[1]=Max.score, arrayTotalMaxMin[2]=Min.score
                     $arrayTotalMaxMin=$this->getTotalMaxMinArray($arrayDocumentsIntersection, $orderBy, $field);
+
+                    if (in_array($download, $arrayFormats)){
+                        $filename=$this->exportCompoundsArrayResults($field, $whatToSearch, $entityType, $entityName, $source, $orderBy, $arrayDocumentsIntersection,"documents");
+                        if($filename==""){
+                            return $this->render('FrontendBundle:Default:no_results.html.twig', array(
+                                'field' => $field,
+                                'whatToSearch' => $whatToSearch,
+                                'entityType' => $entityType,
+                                'entity' => $entityBackup,
+                                'entityName' => $entityName,
+                                'source' => $source,
+                            ));
+                            exit();
+                        }else{
+                            return $this->render('FrontendBundle:Default:download_file.html.twig', array(
+                                'field' => $field,
+                                'whatToSearch' => $whatToSearch,
+                                'entityType' => $entityType,
+                                'entityName' => $entityName,
+                                'filename' => $filename,
+                                'orderBy' => $orderBy,
+                                'source' => $source,
+                            ));
+                            exit();
+                        }
+
+                    }
+
                     return $this->render('FrontendBundle:Search_keyword:indexWithIntersection.html.twig', array(
                         'field' => $field,
                         'entityType' => $entityType,
@@ -1841,7 +2483,8 @@ Evidences found in Sentences:\n
                 'meanScore' => $meanScore,
                 'medianScore' => $medianScore,
                 ));
-        }elseif($whatToSearch=="compoundsTermsRelations"){
+        }
+        elseif($whatToSearch=="compoundsTermsRelations"){
             $curated=$request->query->get('curated');
             if($entityType=="CompoundDict"){
                 $entity=$em->getRepository('EtoxMicromeEntityBundle:'.$entityType)->getEntityFromName($entityName);
@@ -1865,7 +2508,6 @@ Evidences found in Sentences:\n
                         $arrayTotalMaxMin=$this->getTotalMaxMinArrayForRelations($compound2Term2Documents, $orderBy, $field);
                         $meanScore=$this->getMmmrScoreFromRelation($compound2Term2Documents, $orderBy, 'mean');
                         $medianScore=$this->getMmmrScoreFromRelation($compound2Term2Documents, $orderBy, 'median');
-
                         $arrayEntity2Document = $paginator
                                 ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "documents")
                                 ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "documents")
@@ -1874,6 +2516,35 @@ Evidences found in Sentences:\n
                         ;
                         $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummaryFromName($entityName,"Term");
                         $allias=array();
+
+                        if (in_array($download, $arrayFormats)){
+                            $field="hepatotoxicity";
+                            $entityType="free-text";
+                            $message="we want to download the data";
+                            $filename=$this->exportKeywordsResults($field, $whatToSearch, $entityType, $keyword, $source, $orderBy, $resultSetDocuments, $resultSetAbstracts);
+                            if($filename==""){
+                                return $this->render('FrontendBundle:Default:no_results.html.twig', array(
+                                        'field' => $field,
+                                        'whatToSearch' => $whatToSearch,
+                                        'entityType' => $entityType,
+                                        'entity' => $keyword,
+                                        'entityName' => $keyword,
+                                    ));
+                            }else{
+                                return $this->render('FrontendBundle:Default:download_file.html.twig', array(
+                                    'field' => $field,
+                                    'whatToSearch' => $whatToSearch,
+                                    'entityType' => $entityType,
+                                    'entityName' => $entityName,
+                                    'filename' => $filename,
+                                    'orderBy' => $orderBy,
+                                    'format' => $download,
+                                    'source' => $source,
+                                ));
+                            }
+                            exit();
+                        }
+
                         return $this->render('FrontendBundle:Search_document:indexRelations.html.twig', array(
                             'field' => $field,
                             'whatToSearch' => $whatToSearch,
@@ -1941,7 +2612,7 @@ Evidences found in Sentences:\n
                         'curated' => $curated,
                     ));
                 }
-                else{
+                else{ //Rest of sources except for abstracts...
                     $compound2Term2Documents=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getCompound2TermRelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy, $curated)->getResult();
                     //When dealing with withRelations arrays, we only have this array to get the needed values that we retreive in interface using resultSetArrays... Which are: totalHits, Max. Score, Min. Score
                     //So we implement a function to get all this info inside an arrayTotalMaxMin. Being arrayTotalMaxMin[0]=totalHits, arrayTotalMaxMin[1]=Max.score, arrayTotalMaxMin[2]=Min.score
@@ -1956,6 +2627,33 @@ Evidences found in Sentences:\n
                     ;
                     $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummaryFromName($entityName,"CompoundDict");
                     $allias=$em->getRepository('EtoxMicromeEntityBundle:Alias')->getAliasFromName($entityName);
+
+                    if (in_array($download, $arrayFormats)){
+                        $filename=$this->exportCompoundsRelations($field, $whatToSearch, $entityType, $entityName, $source, $orderBy, $compound2Term2Documents, "documents");
+
+                        if($filename==""){
+                            return $this->render('FrontendBundle:Default:no_results.html.twig', array(
+                                    'field' => $field,
+                                    'whatToSearch' => $whatToSearch,
+                                    'entityType' => $entityType,
+                                    'entity' => $keyword,
+                                    'entityName' => $keyword,
+                                ));
+                        }else{
+                            return $this->render('FrontendBundle:Default:download_file.html.twig', array(
+                                'field' => $field,
+                                'whatToSearch' => $whatToSearch,
+                                'entityType' => $entityType,
+                                'entityName' => $entityName,
+                                'filename' => $filename,
+                                'orderBy' => $orderBy,
+                                'format' => $download,
+                                'source' => $source,
+                            ));
+                        }
+                        exit();
+                    }
+
                     return $this->render('FrontendBundle:Search_document:indexRelations.html.twig', array(
                     'field' => $field,
                     'whatToSearch' => $whatToSearch,
@@ -1975,7 +2673,8 @@ Evidences found in Sentences:\n
                 ));
                 }
             }
-        }elseif($whatToSearch=="compoundsCytochromesRelations"){
+        }
+        elseif($whatToSearch=="compoundsCytochromesRelations"){
             $curated=$request->query->get('curated');
             if($entityType=="Cytochrome"){
                 $entity=$em->getRepository('EtoxMicromeEntityBundle:'.$entityType)->getEntityFromName($entityName);
@@ -2059,6 +2758,31 @@ Evidences found in Sentences:\n
                 ;
                 $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummaryFromName($entityName,"Cytochrome");
                 $allias=array();
+
+                if (in_array($download, $arrayFormats)){
+                    $filename=$this->exportCompoundsRelations($field, $whatToSearch, $entityType, $entityName, $source, $orderBy, $compound2Cytochrome2Documents,"documents");
+                    if($filename==""){
+                        return $this->render('FrontendBundle:Default:no_results.html.twig', array(
+                                'field' => $field,
+                                'whatToSearch' => $whatToSearch,
+                                'entityType' => $entityType,
+                                'entity' => $keyword,
+                                'entityName' => $entityName,
+                            ));
+                    }else{
+                        return $this->render('FrontendBundle:Default:download_file.html.twig', array(
+                            'field' => $field,
+                            'whatToSearch' => $whatToSearch,
+                            'entityType' => $entityType,
+                            'entityName' => $entityName,
+                            'filename' => $filename,
+                            'orderBy' => $orderBy,
+                            'format' => $download,
+                            'source' => $source,
+                        ));
+                    }
+                    exit();
+                }
                 return $this->render('FrontendBundle:Search_document:indexRelations.html.twig', array(
                     'field' => $field,
                     'whatToSearch' => $whatToSearch,
@@ -2077,7 +2801,8 @@ Evidences found in Sentences:\n
                     'curated' => $curated,
                 ));
             }
-        }elseif($whatToSearch=="compoundsMarkersRelations"){
+        }
+        elseif($whatToSearch=="compoundsMarkersRelations"){
             $curated=$request->query->get('curated');
             if($entityType=="Marker"){
                 $entity=$em->getRepository('EtoxMicromeEntityBundle:'.$entityType)->getEntityFromName($entityName);
@@ -2105,6 +2830,32 @@ Evidences found in Sentences:\n
                         ;
                         $mouseoverSummary=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntitySummaryFromName($entityName,"CompoundDict");
                         $allias=array();
+
+                        if (in_array($download, $arrayFormats)){
+                            $filename=$this->exportCompoundsRelations($field, $whatToSearch, $entityType, $entityName, $source, $orderBy, $compound2Marker2Documents,"documents");
+                            if($filename==""){
+                                return $this->render('FrontendBundle:Default:no_results.html.twig', array(
+                                        'field' => $field,
+                                        'whatToSearch' => $whatToSearch,
+                                        'entityType' => $entityType,
+                                        'entity' => $keyword,
+                                        'entityName' => $entityName,
+                                    ));
+                            }else{
+                                return $this->render('FrontendBundle:Default:download_file.html.twig', array(
+                                    'field' => $field,
+                                    'whatToSearch' => $whatToSearch,
+                                    'entityType' => $entityType,
+                                    'entityName' => $entityName,
+                                    'filename' => $filename,
+                                    'orderBy' => $orderBy,
+                                    'format' => $download,
+                                    'source' => $source,
+                                ));
+                            }
+                            exit();
+                        }
+
                         return $this->render('FrontendBundle:Search_document:indexRelations.html.twig', array(
                             'field' => $field,
                             'whatToSearch' => $whatToSearch,
@@ -2147,6 +2898,30 @@ Evidences found in Sentences:\n
                 $compound2Marker2Documents=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getCompound2MarkerRelationsDQL($field, $entityType, $arrayEntityName, $source, $orderBy, $curated)->getResult();
                 //When dealing with withRelations arrays, we only have this array to get the needed values that we retreive in interface using resultSetArrays... Which are: totalHits, Max. Score, Min. Score
                 //So we implement a function to get all this info inside an arrayTotalMaxMin. Being arrayTotalMaxMin[0]=totalHits, arrayTotalMaxMin[1]=Max.score, arrayTotalMaxMin[2]=Min.score
+                if (in_array($download, $arrayFormats)){
+                    $filename=$this->exportCompoundsRelations($field, $whatToSearch, $entityType, $entityName, $source, $orderBy, $compound2Marker2Documents,"documents");
+                    if($filename==""){
+                        return $this->render('FrontendBundle:Default:no_results.html.twig', array(
+                                'field' => $field,
+                                'whatToSearch' => $whatToSearch,
+                                'entityType' => $entityType,
+                                'entity' => $keyword,
+                                'entityName' => $entityName,
+                            ));
+                    }else{
+                        return $this->render('FrontendBundle:Default:download_file.html.twig', array(
+                            'field' => $field,
+                            'whatToSearch' => $whatToSearch,
+                            'entityType' => $entityType,
+                            'entityName' => $entityName,
+                            'filename' => $filename,
+                            'orderBy' => $orderBy,
+                            'format' => $download,
+                            'source' => $source,
+                        ));
+                    }
+                    exit();
+                }
                 $arrayTotalMaxMin=$this->getTotalMaxMinArrayForRelations($compound2Marker2Documents, $orderBy, $field);
                 $meanScore=$this->getMmmrScoreFromRelation($compound2Marker2Documents, $orderBy, 'mean');
                 $medianScore=$this->getMmmrScoreFromRelation($compound2Marker2Documents, $orderBy, 'median');
@@ -2199,7 +2974,8 @@ Evidences found in Sentences:\n
                     $arrayEntityId[]=$entityId;
                 }
             }
-        }else{//We don't have entities. We render the template with No results
+        }
+        else{//We don't have entities. We render the template with No results
             return $this->render('FrontendBundle:Default:no_results.html.twig', array(
                 'field' => $field,
                 'whatToSearch' => $whatToSearch,
@@ -2228,6 +3004,33 @@ Evidences found in Sentences:\n
             $arrayTotalMaxMin=$this->getTotalMaxMinArrayForEntities($cytochrome2Documents, $orderBy, $field);
             $meanScore=$this->getMmmrScoreFromEntities($cytochrome2Documents, $orderBy, 'mean');
             $medianScore=$this->getMmmrScoreFromEntities($cytochrome2Documents, $orderBy, 'median');
+
+            if (in_array($download, $arrayFormats)){
+                $filename=$this->exportCompoundsResults($field, $whatToSearch, $entityType, $entityName, $source, $orderBy, $cytochrome2Documents,"documents");//Only documents are available sources whe searching for cytochromes.
+                if($filename==""){
+                    return $this->render('FrontendBundle:Default:no_results.html.twig', array(
+                            'field' => $field,
+                            'whatToSearch' => $whatToSearch,
+                            'entityType' => $entityType,
+                            'entity' => $keyword,
+                            'entityName' => $keyword,
+                        ));
+                    exit();
+                }else{
+                    return $this->render('FrontendBundle:Default:download_file.html.twig', array(
+                        'field' => $field,
+                        'whatToSearch' => $whatToSearch,
+                        'entityType' => $entityType,
+                        'entityName' => $entityName,
+                        'filename' => $filename,
+                        'orderBy' => $orderBy,
+                        'format' => $download,
+                        'source' => $source,
+                    ));
+                    exit();
+                }
+            }
+
             $arrayEntity2Document = $paginator
                 ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "documents")
                 ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "documents")
@@ -2238,7 +3041,8 @@ Evidences found in Sentences:\n
 
             $allias=array();
 
-        }else{
+        }
+        else{
             //For Compounds and Markers
             //In order to link entities with documents, we have to use the names of the entities instead of their entityId. Therefore we translate $arrayEntityId to $arrayEntityName
             $arrayEntityName=array();
@@ -2254,28 +3058,6 @@ Evidences found in Sentences:\n
             $arrayEntityName=array_unique($arrayEntityName);//We get rid of the duplicates
             //ldd($arrayEntityName);
             if($entityType=="CompoundDict" or $entityType=="CompoundMesh"){
-                //We search into Abstracts only if we are looking for Compounds
-                /*//Set query for elasticsearch solution
-                $elasticaQueryString  = new \Elastica\Query\QueryString();
-                $entityName=$arrayEntityName[0];
-                ld($entityName);
-                //'And' or 'Or' default : 'Or'
-                $elasticaQueryString->setDefaultOperator('AND');
-                $elasticaQueryString->setQuery($entityName);
-                // Create the actual search object with some data.
-                $elasticaQuery  = new \Elastica\Query();
-                $elasticaQuery->setSort(array('hepval' => array('order' => 'desc')));
-                $elasticaQuery->setQuery($elasticaQueryString);
-                //Search on the index.
-                $elasticaQuery->setSize($this->container->getParameter('etoxMicrome.total_documents_elasticsearch_retrieval'));
-                ld($elasticaQuery);
-                $finder = $this->container->get('fos_elastica.finder.etoxindex2.entity2document');
-                $arrayResult = $finder->find($elasticaQuery);
-                ldd(count($arrayResult));
-
-                $arrayEntity2Document=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntity2DocumentElastica($field, $entityType, $arrayEntityName, $orderBy)->getResult();
-                ldd($arrayEntity2Document);
-                */
                 if (in_array($source, $arraySourcesDocuments)){
                     $compound2Documents=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntity2DocumentFromFieldDQL($field, $entityType, $arrayEntityName, $source, $orderBy)->getResult();
                     $arrayTotalMaxMin=$this->getTotalMaxMinArrayForEntities($compound2Documents, $orderBy, $field);
@@ -2304,6 +3086,21 @@ Evidences found in Sentences:\n
 	                	$arrayTanimotos=$em->getRepository('EtoxMicromeEntityBundle:TanimotoValues')->getCompoundsWithTanimotos($entity->getId());
 	                    //$arrayTanimotos=$em->getRepository('EtoxMicromeEntityBundle:TanimotoValues')->sortArrayByTanimoto($arrayTanimotos);
                     }
+
+                    if (in_array($download, $arrayFormats)){
+                        $filename=$this->exportCompoundsResults($field, $whatToSearch, $entityType, $entityName, $source, $orderBy, $compound2Documents, "documents");
+                        return $this->render('FrontendBundle:Default:download_file.html.twig', array(
+                        'field' => $field,
+                        'whatToSearch' => $whatToSearch,
+                        'entityType' => $entityType,
+                        'entityName' => $entityName,
+                        'filename' => $filename,
+                        'orderBy' => $orderBy,
+                        'source' => $source,
+                        'entityName' => $entityName,
+                        ));
+                        exit();
+                    }
                     return $this->render('FrontendBundle:Search_document:index.html.twig', array(
                         'field' => $field,
                         'whatToSearch' => $whatToSearch,
@@ -2323,7 +3120,7 @@ Evidences found in Sentences:\n
 
                     ));
                 }
-                if (in_array($source, $arraySourcesAbstracts)){
+                elseif (in_array($source, $arraySourcesAbstracts)){
                     $compound2Abstracts=$em->getRepository('EtoxMicromeEntity2AbstractBundle:Entity2Abstract')->getEntity2AbstractFromFieldDQL($field, "CompoundMesh", $arrayEntityName, $orderBy)->getResult();
                     //When dealing with withRelations arrays, we only have this array to get the needed values that we retreive in interface using resultSetArrays... Which are: totalHits, Max. Score, Min. Score
                     //So we implement a function to get all this info inside an arrayTotalMaxMin. Being arrayTotalMaxMin[0]=totalHits, arrayTotalMaxMin[1]=Max.score, arrayTotalMaxMin[2]=Min.score
@@ -2336,24 +3133,38 @@ Evidences found in Sentences:\n
                         ->paginate($compound2Abstracts, 'abstracts')
                         ->getResult()
                     ;
-                    return $this->render('FrontendBundle:Search_document:index.html.twig', array(
+
+                    if (in_array($download, $arrayFormats)){
+                        $filename=$this->exportCompoundsResults($field, $whatToSearch, $entityType, $entityName, $source, $orderBy, $compound2Abstracts, "abstracts");
+                        return $this->render('FrontendBundle:Default:download_file.html.twig', array(
                         'field' => $field,
                         'whatToSearch' => $whatToSearch,
                         'entityType' => $entityType,
-                        'source' => $source,
-                        'entity' => $entity,
-                        'entityBackup' => $entityBackup,
-                        'arrayEntity2Abstract' => $arrayEntity2Abstract,
                         'entityName' => $entityName,
-                        'arrayTotalMaxMin' => $arrayTotalMaxMin,
+                        'filename' => $filename,
                         'orderBy' => $orderBy,
-                        'meanScore' => $meanScore,
-                        'medianScore' => $medianScore,
-                    ));
+                        'source' => $source,
+                        ));
+                        exit();
+                    }else{
+                        return $this->render('FrontendBundle:Search_document:index.html.twig', array(
+                            'field' => $field,
+                            'whatToSearch' => $whatToSearch,
+                            'entityType' => $entityType,
+                            'source' => $source,
+                            'entity' => $entity,
+                            'entityBackup' => $entityBackup,
+                            'arrayEntity2Abstract' => $arrayEntity2Abstract,
+                            'entityName' => $entityName,
+                            'arrayTotalMaxMin' => $arrayTotalMaxMin,
+                            'orderBy' => $orderBy,
+                            'meanScore' => $meanScore,
+                            'medianScore' => $medianScore,
+                        ));
+                    }
                 }
-
-
-            }else{//Neither Compounds nor Cytochromes
+            }
+            else{//Neither Compounds nor Cytochromes
                 //We just search into Documents
                 if($entityType=="Marker"){
                     $marker2Documents=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntity2DocumentFromFieldDQL($field, $entityType, $arrayEntityName, $source, $orderBy)->getResult();
@@ -2363,6 +3174,30 @@ Evidences found in Sentences:\n
                     //ld($arrayTotalMaxMin);
                     $meanScore=$this->getMmmrScoreFromEntities($marker2Documents, $orderBy, 'mean');
                     $medianScore=$this->getMmmrScoreFromEntities($marker2Documents, $orderBy, 'median');
+                    if (in_array($download, $arrayFormats)){
+                        $filename=$this->exportCompoundsResults($field, $whatToSearch, $entityType, $entityName, $source, $orderBy, $marker2Documents,"documents");
+                        if($filename==""){
+                            return $this->render('FrontendBundle:Default:no_results.html.twig', array(
+                                    'field' => $field,
+                                    'whatToSearch' => $whatToSearch,
+                                    'entityType' => $entityType,
+                                    'entity' => $keyword,
+                                    'entityName' => $keyword,
+                                ));
+                        }else{
+                            return $this->render('FrontendBundle:Default:download_file.html.twig', array(
+                                'field' => $field,
+                                'whatToSearch' => $whatToSearch,
+                                'entityType' => $entityType,
+                                'entityName' => $entityName,
+                                'filename' => $filename,
+                                'orderBy' => $orderBy,
+                                'format' => $download,
+                                'source' => $source,
+                            ));
+                        }
+                        exit();
+                    }
                     $arrayEntity2Document = $paginator
                     ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "documents")
                     ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "documents")
@@ -2391,20 +3226,20 @@ Evidences found in Sentences:\n
             }
         }
         return $this->render('FrontendBundle:Search_document:index.html.twig', array(
-        'field' => $field,
-        'whatToSearch' => $whatToSearch,
-        'entityType' => $entityType,
-        'source' => $source,
-        'entity' => $entity,
-        'entityBackup' => $entityBackup,
-        'arrayEntity2Document' => $arrayEntity2Document,
-        'entityName' => $entityName,
-        'arrayTotalMaxMin' => $arrayTotalMaxMin,
-        'orderBy' => $orderBy,
-        'meanScore' => $meanScore,
-        'medianScore' => $medianScore,
-        'mouseoverSummary' => $mouseoverSummary,
-        'allias' => $allias,
+            'field' => $field,
+            'whatToSearch' => $whatToSearch,
+            'entityType' => $entityType,
+            'source' => $source,
+            'entity' => $entity,
+            'entityBackup' => $entityBackup,
+            'arrayEntity2Document' => $arrayEntity2Document,
+            'entityName' => $entityName,
+            'arrayTotalMaxMin' => $arrayTotalMaxMin,
+            'orderBy' => $orderBy,
+            'meanScore' => $meanScore,
+            'medianScore' => $medianScore,
+            'mouseoverSummary' => $mouseoverSummary,
+            'allias' => $allias,
         ));
     }
 
@@ -2420,6 +3255,12 @@ Evidences found in Sentences:\n
 
     public function searchKeywordOrderByAction($whatToSearch, $source, $keyword, $orderBy)
     {
+        $request = $this->get('request');
+        $download=$request->query->get('download');
+        $arraySourcesDocuments=array("all","pubmed","fulltext", "epar","nda");
+        $arraySourcesAbstracts=array("abstract");
+        $arrayFormats=array("csv","pdf","xls");
+        $message="Inside searchKeywordOrderByAction";
         if (isset($_GET['page'])) {
             $page=$_GET['page'];
         }else {
@@ -2436,7 +3277,6 @@ Evidences found in Sentences:\n
         }else{
             $field = $source;
         }
-
         $valToSearch=$this->getValToSearch($field);//"i.e hepval, embval... etc"
         $orderBy=$this->getOrderBy($orderBy, $valToSearch);
         $entityType= "keyword";//{"specie","compound","enzyme","protein","cyp","mutation","goterm","keyword","marker"}
@@ -2458,27 +3298,38 @@ Evidences found in Sentences:\n
         }
         if($orderBy=="hepval"){
             $elasticaQuery->setSort(array('hepval' => array('order' => 'desc')));
-        }elseif($orderBy=="patternCount"){
+        }
+        elseif($orderBy=="patternCount"){
             $elasticaQuery->setSort(array('patternCount' => array('order' => 'desc')));
-        }elseif($orderBy=="ruleScore"){
+        }
+        elseif($orderBy=="ruleScore"){
             $elasticaQuery->setSort(array('ruleScore' => array('order' => 'desc')));
-        }elseif($orderBy=="nephroval"){
+        }
+        elseif($orderBy=="nephroval"){
             $elasticaQuery->setSort(array('nephroval' => array('order' => 'desc')));
-        }elseif($orderBy=="cardioval"){
+        }
+        elseif($orderBy=="cardioval"){
             $elasticaQuery->setSort(array('cardioval' => array('order' => 'desc')));
-        }elseif($orderBy=="thyroval"){
+        }
+        elseif($orderBy=="thyroval"){
             $elasticaQuery->setSort(array('thyroval' => array('order' => 'desc')));
-        }elseif($orderBy=="phosphoval"){
+        }
+        elseif($orderBy=="phosphoval"){
             $elasticaQuery->setSort(array('phosphoval' => array('order' => 'asc')));
-        }elseif($orderBy=="hepTermNormScore"){
+        }
+        elseif($orderBy=="hepTermNormScore"){
             $elasticaQuery->setSort(array('hepTermNormScore' => array('order' => 'desc')));
-        }elseif($orderBy=="hepTermVarScore"){
+        }
+        elseif($orderBy=="hepTermVarScore"){
             $elasticaQuery->setSort(array('hepTermVarScore' => array('order' => 'desc')));
-        }elseif($orderBy=="svmConfidence"){
+        }
+        elseif($orderBy=="svmConfidence"){
             $elasticaQuery->setSort(array('svmConfidence' => array('order' => 'desc')));
-        }elseif($orderBy=="toxicology"){
+        }
+        elseif($orderBy=="toxicology"){
             $elasticaQuery->setSort(array('toxicology' => array('order' => 'desc')));
-        }elseif($orderBy=="biomarker"){
+        }
+        elseif($orderBy=="biomarker"){
             $elasticaQuery->setSort(array('biomarker' => array('order' => 'desc')));
         }
 
@@ -2672,7 +3523,31 @@ Evidences found in Sentences:\n
                 ->paginate($arrayDocuments,'documents')
                 ->getResult()
             ;
-
+            if (in_array($download, $arrayFormats)){
+                $resultSetAbstracts=array();
+                $filename=$this->exportKeywordsResults($field, $whatToSearch, $entityType, $keyword, $source, $orderBy, $resultSetDocuments, $resultSetAbstracts);
+                if($filename==""){
+                    return $this->render('FrontendBundle:Default:no_results.html.twig', array(
+                            'field' => $field,
+                            'whatToSearch' => $whatToSearch,
+                            'entityType' => $entityType,
+                            'entity' => $keyword,
+                            'entityName' => $keyword,
+                        ));
+                }else{
+                    return $this->render('FrontendBundle:Default:download_file.html.twig', array(
+                        'field' => $field,
+                        'whatToSearch' => $whatToSearch,
+                        'entityType' => $entityType,
+                        'entityName' => $keyword,
+                        'filename' => $filename,
+                        'orderBy' => $orderBy,
+                        'format' => $download,
+                        'source' => $source,
+                    ));
+                }
+                exit();
+            }
             $entityName=$keyword;
             return $this->render('FrontendBundle:Search_keyword:index_endpoints.html.twig', array(
                 'field' => $field,
@@ -2697,6 +3572,34 @@ Evidences found in Sentences:\n
         //$paginator->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'));
         //$paginator->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'));
         $entityName=$keyword;
+        //At this point we can query if what we really want is to download the  data so we create the filename to download...
+        if (in_array($download, $arrayFormats)){
+            $field="hepatotoxicity";
+            $message="we want to download the data";
+            $filename=$this->exportKeywordsResults($field, $whatToSearch, $entityType, $keyword, $source, $orderBy, $resultSetDocuments, $resultSetAbstracts);
+            if($filename==""){
+                return $this->render('FrontendBundle:Default:no_results.html.twig', array(
+                        'field' => $field,
+                        'whatToSearch' => $whatToSearch,
+                        'entityType' => $entityType,
+                        'entity' => $keyword,
+                        'entityName' => $keyword,
+                    ));
+            }else{
+                return $this->render('FrontendBundle:Default:download_file.html.twig', array(
+                    'field' => $field,
+                    'whatToSearch' => $whatToSearch,
+                    'entityType' => $entityType,
+                    'entityName' => $entityName,
+                    'filename' => $filename,
+                    'orderBy' => $orderBy,
+                    'format' => $download,
+                    'source' => $source,
+                ));
+            }
+            exit();
+        }
+
         return $this->render('FrontendBundle:Search_keyword:index.html.twig', array(
             'field' => $field,
             'entityType' => $entityType,

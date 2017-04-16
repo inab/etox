@@ -1,7 +1,8 @@
 {% extends '::frontend.html.twig' %}
 {% block title %}Listing Evidences {% endblock %}
 {% block article %}
-    {% include 'FrontendBundle:Default:tags_code.html.twig' %}
+    {% set entityBackup = entityName %}
+    {% include 'FrontendBundle:Search_document:tags_code.html.twig' %}
 
     <div id="evidences">
         {% set entityName=entity %}
@@ -14,7 +15,13 @@
             {% set entityTypeBackup="" %}
         {% endif %}
 
-        <h3>No {{ field | capitalize }} evidences found for {{entityTypeBackup}}s when searching {{ whatToSearch }} "{{ entityName }}" </h3>
+        <h3>No {{ field | capitalize }} evidences found for
+        {% if entityType=="free-text" %}
+            {{entityTypeBackup}} search
+        {% else %}
+            {{entityTypeBackup}}s
+        {% endif %}
+            when searching for "{{ whatToSearch }}" "{{ entityName }}" </h3>
         <div class="btmspc-dbl">
             <small>
                 <em>

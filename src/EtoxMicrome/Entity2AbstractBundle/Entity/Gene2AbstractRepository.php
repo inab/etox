@@ -76,7 +76,7 @@ class Gene2AbstractRepository extends EntityRepository
         $query = $this->_em->createQuery($sql);
         $query->setParameter("arrayGeneIds", $arrayGeneIds);
 
-        $query->setMaxResults(10000);
+        $query->setMaxResults(1000);
         return $query;
 
     }
@@ -93,7 +93,7 @@ class Gene2AbstractRepository extends EntityRepository
         $query = $this->_em->createQuery($sql);
         $query->setParameter("abstract_id", $abstract_id);
 
-        $query->setMaxResults(10000);
+        $query->setMaxResults(1000);
         return $query->execute();
 
     }
@@ -174,7 +174,7 @@ class Gene2AbstractRepository extends EntityRepository
         $query = $this->_em->createQuery($sql);
         $query->setParameter("arrayGeneIds", $arrayGeneIds);
 
-        $query->setMaxResults(10000);
+        $query->setMaxResults(1000);
         $arrayGene2DuplicatedAbstracts=$query->getResult();
 
         //We have to gather abstracts (unique)

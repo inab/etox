@@ -39,6 +39,25 @@
                                 <td colspan="5"><strong>Total Mentions:</strong> {{ totalHits }}. (All above scores are for the {{hitsShowed}} displayed hits). <br/><!-- Click here to display all results --></td>
                             </tr>
                         {% endif %}
+                        <tr>
+                            <td colspan="5">
+                                <span data-tooltip="stickyDownload">
+                                    <a href="#"><strong>Download results</strong></a>
+                                </span>
+                                {%
+                                set tooltip =  "
+                                    <div id='stickyDownload' class='atip'>
+                                        <ul class='download-list'>
+                                            <li><a  href="~path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby', {'field': field, 'whatToSearch': whatToSearch, 'source': source, 'entityType': entityType, 'entityName': entityName, 'orderBy': orderBy}) ~'?download=csv'~">
+                                                    <img src="~ asset('images/icons/csv.png')~" border='0' />
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>"
+                                %}
+                                {% set stringStickyTooltip = stringStickyTooltip ~ tooltip  %}
+                            </td>
+                        </tr>
                     </table>
                 </div>
                 <div class="clear-both"></div>
