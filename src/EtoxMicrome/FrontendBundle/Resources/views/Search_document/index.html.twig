@@ -51,21 +51,25 @@
                         {% endif %}
                         <tr>
                             <td colspan="5">
+                                <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby', {'field': field, 'whatToSearch': whatToSearch, 'source': source, 'entityType': entityType, 'entityName': entityBackup, 'orderBy': orderBy})}}?download=csv"><strong>Download results</strong></a>
+                                {# Uncomment this to enable multiple download formats. Just add new block for new formats
                                 <span data-tooltip="stickyDownload">
                                     <a href="#"><strong>Download results</strong></a>
                                 </span>
-                                {%
-                                set tooltip =  "
-                                    <div id='stickyDownload' class='atip'>
-                                        <ul class='download-list'>
-                                            <li><a  href="~path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby', {'field': field, 'whatToSearch': whatToSearch, 'source': source, 'entityType': entityType, 'entityName': entityBackup, 'orderBy': orderBy}) ~'?download=csv'~">
-                                                    <img src="~ asset('images/icons/csv.png')~" border='0' />
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>"
-                                %}
-                                {% set stringStickyTooltip = stringStickyTooltip ~ tooltip  %}
+
+                                    {%
+                                    set tooltip =  "
+                                        <div id='stickyDownload' class='atip'>
+                                            <ul class='download-list'>
+                                                <li><a  href="~path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby', {'field': field, 'whatToSearch': whatToSearch, 'source': source, 'entityType': entityType, 'entityName': entityBackup, 'orderBy': orderBy}) ~'?download=csv'~">
+                                                        <img src="~ asset('images/icons/csv.png')~" border='0' />
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>"
+                                    %}
+                                    {% set stringStickyTooltip = stringStickyTooltip ~ tooltip  %}
+                                #}
                             </td>
                         </tr>
                         {% if (entityType=="CompoundDict" and whatToSearch=="name") or (entityType=="CompoundDict" and whatToSearch=="id") or (entityType=="Cytochrome" and whatToSearch=="name") or (entityType=="Marker" and whatToSearch=="name") %}
@@ -355,21 +359,24 @@
                         </tr>
                         <tr>
                             <td colspan="5">
-                                <span data-tooltip="stickyDownload">
-                                    <a href="#"><strong>Download results</strong></a>
-                                </span>
-                                {%
-                                set tooltip =  "
-                                    <div id='stickyDownload' class='atip'>
-                                        <ul class='download-list'>
-                                            <li><a  href="~path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby', {'field': field, 'whatToSearch': whatToSearch, 'source': source, 'entityType': entityType, 'entityName': entityName, 'orderBy': orderBy}) ~'?download=csv'~">
-                                                    <img src="~ asset('images/icons/csv.png')~" border='0' />
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>"
-                                %}
-                                {% set stringStickyTooltip = stringStickyTooltip ~ tooltip  %}
+                                <a href="{{ path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby', {'field': field, 'whatToSearch': whatToSearch, 'source': source, 'entityType': entityType, 'entityName': entityBackup, 'orderBy': orderBy})}}?download=csv"><strong>Download results</strong></a>
+                                {# Uncomment this to enable multiple download formats. Just add new block for new formats
+                                    <span data-tooltip="stickyDownload">
+                                        <a href="#"><strong>Download results</strong></a>
+                                    </span>
+                                    {%
+                                    set tooltip =  "
+                                        <div id='stickyDownload' class='atip'>
+                                            <ul class='download-list'>
+                                                <li><a  href="~path('search_interface_search_field_whatToSearch_entityType_source_entity_orderby', {'field': field, 'whatToSearch': whatToSearch, 'source': source, 'entityType': entityType, 'entityName': entityName, 'orderBy': orderBy}) ~'?download=csv'~">
+                                                        <img src="~ asset('images/icons/csv.png')~" border='0' />
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>"
+                                    %}
+                                    {% set stringStickyTooltip = stringStickyTooltip ~ tooltip  %}
+                                #}
                             </td>
                         </tr>
                     </table>

@@ -40,21 +40,24 @@
                         {% endif %}
                         <tr>
                             <td colspan="5">
-                                <span data-tooltip="stickyDownload">
-                                    <a href="#"><strong>Download results</strong></a>
-                                </span>
-                                {%
-                                set tooltip =  "
-                                    <div id='stickyDownload' class='atip'>
-                                        <ul class='download-list'>
-                                            <li><a  href="~path('elasticSearch_keyword_orderby', {'whatToSearch': whatToSearch, 'source': source, 'keyword': entityName, 'orderBy': orderBy }) ~'?download=csv'~">
-                                                    <img src="~ asset('images/icons/csv.png')~" border='0' />
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>"
-                                %}
-                                {% set stringStickyTooltip = stringStickyTooltip ~ tooltip  %}
+                                <a href="{{ path('elasticSearch_keyword_orderby', {'whatToSearch': whatToSearch, 'source': source, 'keyword': entityName, 'orderBy': orderBy})}}?download=csv"><strong>Download results</strong></a>
+                                {# Uncomment this to enable multiple download formats. Just add new block for new formats
+                                    <span data-tooltip="stickyDownload">
+                                        <a href="#"><strong>Download results</strong></a>
+                                    </span>
+                                    {%
+                                    set tooltip =  "
+                                        <div id='stickyDownload' class='atip'>
+                                            <ul class='download-list'>
+                                                <li><a  href="~path('elasticSearch_keyword_orderby', {'whatToSearch': whatToSearch, 'source': source, 'keyword': entityName, 'orderBy': orderBy }) ~'?download=csv'~">
+                                                        <img src="~ asset('images/icons/csv.png')~" border='0' />
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>"
+                                    %}
+                                    {% set stringStickyTooltip = stringStickyTooltip ~ tooltip  %}
+                                #}
                             </td>
                         </tr>
                     </table>
