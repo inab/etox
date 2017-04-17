@@ -1,5 +1,8 @@
 {% block javascripts_footer %}
     <script type="text/javascript">
+        function hidePreloader(){
+            $(".sk-folding-cube").css( { display:"none"});
+        }
         $(".open-c").click(function(){
           $("#cytochrome-c").toggle(300);
         });
@@ -50,20 +53,24 @@
                     source=$('input[name=keywordSource]:checked').val();
                     if (whatToSearch=="withCytochromes" && source=="abstract"){
                         alert("You cannot look for Keywords inside Abstracts containing CYPs. Use All, Pubmed, Fulltext, NDA or EPAR instead");
+                        hidePreloader();
                         return false;
                     }
 
                     if (whatToSearch=="withMarkers" && source=="abstract"){
                         alert("You cannot look for Keywords inside Abstracts containing Markers. Use All, Pubmed, Fulltext, NDA or EPAR instead");
+                        hidePreloader();
                         return false;
                     }
 
                     if(source==""){
                         alert("You have to check a source to continue");
+                        hidePreloader();
                         return false;
                     }
                     if (entityName==""){
                         alert("Please type the entity to search for");
+                        hidePreloader();
                         return false;
                     }
                     else{
@@ -76,6 +83,7 @@
                     whatToSearch=$('input[name=compoundWhatToSearch]:checked').val();
                     if(whatToSearch==null){
                         alert("You have mark \"What are you searching?\" option");
+                        hidePreloader();
                         return false;
                     }
                     entityName = $('#tags-compounds').val();
@@ -83,24 +91,29 @@
                     source=$('input[name=compoundSource]:checked').val();
                     if(entityName==""){
                         alert("You have to type a Compound name, id or structure to continue");
+                        hidePreloader();
                         return false;
                     }
                     if(source==""){
                         alert("You have to check a source to continue");
+                        hidePreloader();
                         return false;
                     }
                     if (whatToSearch=="withCytochromes" && source=="abstract"){
                         alert("You cannot look for compounds inside Abstracts containing CYPs. Use All, Pubmed, Fulltext, NDA or EPAR instead");
+                        hidePreloader();
                         return false;
                     }
 
                     if (whatToSearch=="withMarkers" && source=="abstract"){
                         alert("You cannot look for compounds inside Abstracts containing Markers. Use All, Pubmed, Fulltext, NDA or EPAR instead");
+                        hidePreloader();
                         return false;
                     }
 
                     if (whatToSearch=="compoundsTermsRelations" && source=="abstract"){
                         alert("You cannot look for compounds inside Abstracts containing terms relations. Use All, Pubmed, Fulltext, NDA or EPAR instead");
+                        hidePreloader();
                         return false;
                     }
 
@@ -116,6 +129,7 @@
                     whatToSearch=$('input[name=cytochromeWhatToSearch]:checked').val();
                     if(whatToSearch==null){
                         alert("You have to mark \"What are you searching?\" option");
+                        hidePreloader();
                         return false;
                     }
                     entityName = $('#tags-cytochromes').val();
@@ -123,10 +137,12 @@
                     source=$('input[name=cytochromeSource]:checked').val();
                     if(entityName==""){
                         alert("You have to type a Cytochrome name, id or canonical to continue");
+                        hidePreloader();
                         return false;
                     }
                     if(source==""){
                         alert("You have to check a source to continue");
+                        hidePreloader();
                         return false;
                     }
                     link='{{ path('search_interface_search') }}'+field+'/'+whatToSearch+'/'+entityType+'/'+source+'/'+entityName+'/';
@@ -136,6 +152,7 @@
                     whatToSearch=$('input[name=markerWhatToSearch]:checked').val();
                     if(whatToSearch==null){
                         alert("You have to mark \"What are you searching?\" option");
+                        hidePreloader();
                         return false;
                     }
                     entityName = $('#tags-markers').val();
@@ -143,10 +160,12 @@
                     source=$('input[name=markerSource]:checked').val();
                     if(entityName==""){
                         alert("You have to type a Marker name, id or structure to continue");
+                        hidePreloader();
                         return false;
                     }
                     if(source==""){
                         alert("You have to check a source to continue");
+                        hidePreloader();
                         return false;
                     }
                     link='{{ path('search_interface_search') }}'+field+'/'+whatToSearch+'/'+entityType+'/'+source+'/'+entityName+'/';
@@ -157,6 +176,7 @@
                     whatToSearch=$('input[name=endpoint]:checked').val();
                     if(whatToSearch==null){
                         alert("You have to mark \"Select toxicity endpoint\" option");
+                        hidePreloader();
                         return false;
                     }
                     entityName = $('#tags-endpoints').val();
@@ -169,6 +189,7 @@
                     whatToSearch = $('input[name=geneWhatToSearch]:checked').val();
                     if(whatToSearch==null){
                         alert("You have to mark \"What are you searching?\" option");
+                        hidePreloader();
                         return false;
                     }
                     entityName = $('#tags-genes').val();
@@ -176,10 +197,12 @@
                     source=$('input[name=geneSource]:checked').val();
                     if(source==""){
                         alert("You have to check a source to continue");
+                        hidePreloader();
                         return false;
                     }
                     if (entityName==""){
                         alert("Please type the entity to search for");
+                        hidePreloader();
                         return false;
                     }
                     else{

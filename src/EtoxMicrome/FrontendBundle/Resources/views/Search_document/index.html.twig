@@ -383,17 +383,10 @@
                     </div>
                 {% endif %}
                 <h3>Ranked Abstracts for {{foundFor}}: <span class="underline">{{ entityBackup }}</span> search</h3>
-                <div class="btmspc-dbl">
-                    <small>
-                        <em>
-                            Entity mentions are highlighted as follows:
-                            <mark class="termSearched">What you searched</mark>, <mark class="compound">Compounds</mark>, <mark class="cytochrome">CYPs</mark>, <mark class="marker">Markers</mark>, <mark class="keyword">Keywords</mark>, <mark class="specie">Species</mark>
-                        </em>
-                        . Curated evidences are indicated by:
-                        <a class="curated" href="#"> </a>
-                    </small>
+                <div data-alert class="alert-box info radius">
+                  Entity mentions <strong>ARE NOT highlighted</strong> when searching <strong>inside Abstracts</strong>
+                  <a href="#" class="close">&times;</a>
                 </div>
-
                 <table id="tableResults" class="tablesorter">
                     <thead>
                         <th><span data-tooltip class="has-tip" title="{{ mouseover_source}}">Source</span></th>
