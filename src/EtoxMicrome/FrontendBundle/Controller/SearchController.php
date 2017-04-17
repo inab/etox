@@ -1234,7 +1234,7 @@ Evidences found in Sentences:\n
                     \tEntity Name:\t $entityName\n
                     ***********************************************************************************************\n
                     Evidences found in Sentences:\n
-                    #registry\"\t\"Source\"\t\"SourceId\"\t\"Compound\"\t\"Relation\"\t\"Term\"\t\"Score\"\t\"Sentence\"\t\"Qualifier\"\n
+                    #registry\"\t\"Source\"\t\"SourceId\"\t\"Compound\"\t\"Relation\"\t\"Term\"\t\"Score\"\t\"Sentence\"\t\"Rel. evidence:\"\t\"Qualifier\"\n
                     ***********************************************************************************************\n";
             }elseif($from=="abstracts"){
                 $line="Searching parameters:\n
@@ -1256,7 +1256,7 @@ Evidences found in Sentences:\n
                 \tEntity Name:\t $entityName\n
                 ***********************************************************************************************\n
                 Evidences found in Sentences:\n
-                #registry\"\t\"Source\"\t\"SourceId\"\t\"Compound\"\t\"Relation\"\t\"Cytochrome\"\t\"Induct/Activ./Enhancement\"\t\"Inhib/Repression/Inactiv\"\t\"Metabolism/Substrate/Product\"\t\"Sentence\"\t\"Qualifier\"\n
+                #registry\"\t\"Source\"\t\"SourceId\"\t\"Compound\"\t\"Relation\"\t\"Cytochrome\"\t\"Induct/Activ./Enhancement\"\t\"Inhib/Repression/Inactiv\"\t\"Metabolism/Substrate/Product\"\t\"Sentence\"\t\"Rel. evidence\"\t\"Qualifier\"\n
                 ***********************************************************************************************\n";
         }
         elseif($whatToSearch=="compoundsMarkersRelations"){
@@ -1267,7 +1267,7 @@ Evidences found in Sentences:\n
                 \tEntity Name:\t $entityName\n
                 ***********************************************************************************************\n
                 Evidences found in Sentences:\n
-                #registry\"\t\"Source\"\t\"SourceId\"\t\"Compound\"\t\"Relation\"\t\"Marker\"\t\"Sentence\"\t\"Qualifier\"\n
+                #registry\"\t\"Source\"\t\"SourceId\"\t\"Compound\"\t\"Relation\"\t\"Marker\"\t\"Sentence\"\t\"Rel. evidence\"\t\"Qualifier\"\n
                 ***********************************************************************************************\n";
         }
         fwrite($fp, $line);
@@ -1279,9 +1279,10 @@ Evidences found in Sentences:\n
             $relationQualifier=$result->getRelationQualifier();
             if($whatToSearch=="compoundsTermsRelations"){
                 $term=$result->getTerm();
+                $relationEvidence=$result->getRelationEvidence();
                 $score=$result->getCompound2TermConfidence();
                 $relationType=$result->getRelationType();
-                $line="$count\t$source\t$sourceId\t$compoundName\t$relationType\t$term\t$score\t$text\t$relationQualifier\n";
+                $line="$count\t$source\t$sourceId\t$compoundName\t$relationType\t$term\t$score\t$text\t$relationEvidence\t$relationQualifier\n";
             }
             if($whatToSearch=="compoundsCytochromesRelations"){
                 $cytochrome=$result->getCypsMention();
@@ -1289,20 +1290,23 @@ Evidences found in Sentences:\n
                 $inhibition=$result->getInhibitionScore();
                 $metabolism=$result->getMetabolismScore();
                 $patternRelation=$result->getPatternRelation();
-                $line="$count\t$source\t$sourceId\t$compoundName\t$patternRelation\t$cytochrome\t$induction\t$inhibition\t$metabolism\t$text\t$relationQualifier\n";
+                $patternEvidence=$result->getPatternEvidence();
+                $line="$count\t$source\t$sourceId\t$compoundName\t$patternRelation\t$cytochrome\t$induction\t$inhibition\t$metabolism\t$text\t$patternEvidence\t$relationQualifier\n";
             }
             if($whatToSearch=="compoundsMarkersRelations"){
                 $marker=$result->getLiverMarkerName();
                 $score=$result->getRelationScore();
-                $line="$count\t$source\t$sourceId\t$compoundName\t$score\t$marker\t$text\t$relationQualifier\n";
+                $relationEvidence=$result->getRelationEvidence();
+                $line="$count\t$source\t$sourceId\t$compoundName\t$score\t$marker\t$text\t$relationEvidence\t$relationQualifier\n";
             }
+            fwrite($fp, $line);
+            $count=$count+1;
         }
 
         /*if($score>0){
             fwrite($fp, $line);
         }*/
-        fwrite($fp, $line);
-        $count=$count+1;
+
         /*
         if ($count==5){
             ldd($message);
@@ -2693,6 +2697,30 @@ Evidences found in Sentences:\n
                         //ld($compound2Cytochrome2Documents);
                             //When dealing with withRelations arrays, we only have this array to get the needed values that we retreive in interface using resultSetArrays... Which are: totalHits, Max. Score, Min. Score
                             //So we implement a function to get all this info inside an arrayTotalMaxMin. Being arrayTotalMaxMin[0]=totalHits, arrayTotalMaxMin[1]=Max.score, arrayTotalMaxMin[2]=Min.score
+                        if (in_array($download, $arrayFormats)){
+                            $filename=$this->exportCompoundsRelations($field, $whatToSearch, $entityType, $entityName, $source, $orderBy, $compound2Cytochrome2Documents,"documents");
+                            if($filename==""){
+                                return $this->render('FrontendBundle:Default:no_results.html.twig', array(
+                                        'field' => $field,
+                                        'whatToSearch' => $whatToSearch,
+                                        'entityType' => $entityType,
+                                        'entity' => $keyword,
+                                        'entityName' => $entityName,
+                                    ));
+                            }else{
+                                return $this->render('FrontendBundle:Default:download_file.html.twig', array(
+                                    'field' => $field,
+                                    'whatToSearch' => $whatToSearch,
+                                    'entityType' => $entityType,
+                                    'entityName' => $entityName,
+                                    'filename' => $filename,
+                                    'orderBy' => $orderBy,
+                                    'format' => $download,
+                                    'source' => $source,
+                                ));
+                            }
+                            exit();
+                        }
                         $arrayTotalMaxMin=$this->getTotalMaxMinArrayForRelations($compound2Cytochrome2Documents, $orderBy, $field);
                         $meanScore=$this->getMmmrScoreFromRelation($compound2Cytochrome2Documents, $orderBy, 'mean');
                         $medianScore=$this->getMmmrScoreFromRelation($compound2Cytochrome2Documents, $orderBy, 'median');
