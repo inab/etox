@@ -40,7 +40,7 @@
                         {% endif %}
                         <tr>
                             <td colspan="5">
-                                <a href="{{ path('elasticSearch_keyword_orderby', {'whatToSearch': whatToSearch, 'source': source, 'keyword': entityName, 'orderBy': orderBy})}}?download=csv"><strong>Download results</strong></a>
+                                <a href="{{ path('elasticSearch_keyword_orderby', {'whatToSearch': whatToSearch, 'source': source, 'keyword': entityName, 'orderBy': orderBy})}}?download=csv" class="start-preload"><strong>Download results</strong></a>
                                 {# Uncomment this to enable multiple download formats. Just add new block for new formats
                                     <span data-tooltip="stickyDownload">
                                         <a href="#"><strong>Download results</strong></a>

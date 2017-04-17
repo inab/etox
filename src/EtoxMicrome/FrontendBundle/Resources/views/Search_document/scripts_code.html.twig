@@ -3,6 +3,12 @@
         function hidePreloader(){
             $(".sk-folding-cube").css( { display:"none"});
         }
+        function showPreloader(){
+            $(".sk-folding-cube").css( { top:$(window).height()/2+"px", left:$(window).width()/2+"px" , display:"block"});
+        }
+        $(".start-preload").click(function(event) {
+            showPreloader();
+        });
         $(".open-c").click(function(){
           $("#cytochrome-c").toggle(300);
         });
