@@ -13,7 +13,7 @@
 
         <div id="documentsResults">
             <a name="documents"></a>
-            <h3>Ranked sentences in Abstracts for {{source}}: {{ entityBackup }}</h3>
+                <h3>Ranked sentences in Abstracts for {{source}}: {{ entityBackup }}</h3>
                     <table>
                         <tr>
                             <td colspan="5">
@@ -50,14 +50,10 @@
                         </tr>
                     </table>
             <div class="btmspc-dbl">
-                <small>
-                    <em>
-                        Entity mentions are highlighted as follows:
-                        <mark class="termSearched">What you searched</mark>, <mark class="compound">Compounds</mark>, <mark class="cytochrome">Cytochromes</mark>, <mark class="marker">Markers</mark>, <mark class="term">Terms</mark>, <mark class="specie">Species</mark>
-                    </em>
-                    . Curated evidences are indicated by:
-                    <a class="curated" href="#"> </a>
-                </small>
+                <div data-alert class="alert-box info radius">
+                    Entity mentions <strong>ARE NOT highlighted</strong> when searching <strong>inside Abstracts</strong>
+                          <a href="#" class="close">&times;</a>
+                </div>
             </div>
             <table id="tableResults" class="tablesorter">
                 <thead>
@@ -140,7 +136,17 @@
                 </tbody>
             </table>
 
-
+            <!-- here pagination block for Abstracts -->
+               <div class="pagination">
+                    {{ simple_paginator_render(
+                        'search_interface_search_genes_orderby', 'abstracts',
+                            {
+                                'routeParams' : {'whatToSearch' : whatToSearch, 'source' : source,  'entityName' : entityName, 'orderBy': orderBy},
+                                'container_class' : 'pagination'
+                            }
+                        )
+                    }}
+                </div>
 
 
 

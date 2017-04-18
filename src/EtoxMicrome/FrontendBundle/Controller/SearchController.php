@@ -1884,7 +1884,7 @@ Evidences found in Sentences:\n
         $arrayNames=[];
         if ($source=="geneName"){
             $arrayGenes=$em->getRepository('EtoxMicromeEntityBundle:GeneDictionary')->findByGeneName($entityName);
-            //ld($arrayGenes);
+            #ldd(count($arrayGenes));
             //We generate an array of geneIds that will be used as the result of the query expansion
             foreach($arrayGenes as $gene){
                 array_push($arrayGeneIds, $gene->getGeneId());
@@ -1893,7 +1893,7 @@ Evidences found in Sentences:\n
             array_push($arrayGeneIds, $entityName);
         }
         $arrayGeneIds=array_unique($arrayGeneIds);
-        //ld($arrayGeneIds);
+        //ldd(count($arrayGeneIds));
         //Searching for genes can only be performed against either abstracts(any) or abstractswithcompounds(withCompounds)
 
         //For the $whatToSearch == "any" part, we search against abstracts table using each gene_id in $arrayGeneIds
@@ -1961,6 +1961,33 @@ Evidences found in Sentences:\n
                 }
             }
             $arrayAbstracts=$arrayAbstractsWithCompounds;
+
+            if (in_array($download, $arrayFormats) && ($whatToSearch=="WithCompounds")){
+                $filename=$this->exportCompoundsResults($field, $whatToSearch, $entityType, $entityName, $source, $orderBy, $arrayAbstractsWithCompounds,"abstracts");
+                if($filename==""){
+                    return $this->render('FrontendBundle:Default:no_results.html.twig', array(
+                        'field' => $field,
+                        'whatToSearch' => $whatToSearch,
+                        'entityType' => $entityType,
+                        'entity' => $entityBackup,
+                        'entityName' => $entityName,
+                        'source' => $source,
+                    ));
+                    exit();
+                }else{
+                    return $this->render('FrontendBundle:Default:download_file.html.twig', array(
+                        'field' => $field,
+                        'whatToSearch' => $whatToSearch,
+                        'entityType' => $entityType,
+                        'entityName' => $entityName,
+                        'filename' => $filename,
+                        'orderBy' => $orderBy,
+                        'source' => $source,
+
+                    ));
+                    exit();
+                }
+            }
             $arrayPaginatedAbstracts = $paginator
                 ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), "abstracts")
                 ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), "abstracts")

@@ -121,7 +121,9 @@ class Gene2AbstractRepository extends EntityRepository
         }elseif($orderBy=="biomarker"){
             $orderBy="biomarker desc, g2a.hepval desc";
         }
-        $sql="SELECT g2a
+
+        /*
+         $sql="SELECT g2a
                 FROM EtoxMicromeEntity2AbstractBundle:Gene2Abstract g2a
                 WHERE g2a.geneId IN (:arrayGeneIds)
                 ORDER BY g2a.$orderBy
@@ -130,9 +132,27 @@ class Gene2AbstractRepository extends EntityRepository
         $query = $this->_em->createQuery($sql);
         $query->setParameter("arrayGeneIds", $arrayGeneIds);
 
-        $query->setMaxResults(150);
+        $query->setMaxResults(1000);
         $arrayGene2DuplicatedAbstracts=$query->getResult();
 
+        */
+        //Testing speed for disambled queries, without using array is much faster than using arrays with "where in construction"
+
+        $arrayGene2DuplicatedAbstracts=[];
+        foreach($arrayGeneIds as $geneId){
+            $sql="SELECT g2a
+            FROM EtoxMicromeEntity2AbstractBundle:Gene2Abstract g2a
+            WHERE g2a.geneId = (:geneId)
+            ORDER BY g2a.$orderBy
+            ";
+            $query = $this->_em->createQuery($sql);
+            //$query->setParameter("arrayGeneIds", $arrayGeneIds);
+            $query->setParameter("geneId", $geneId);
+
+            $query->setMaxResults(1000);
+            $arrayGene2DuplicatedAbstracts=array_merge($arrayGene2DuplicatedAbstracts,$query->getResult());
+        }
+        //ldd(count($arrayGene2DuplicatedAbstracts));
         //We have to gather abstracts (unique)
         $arrayAbstracts=[];
         $arrayAbstractsIDs=[];
