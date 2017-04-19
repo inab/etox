@@ -390,7 +390,8 @@ parameters:
     etoxMicrome.default_orderby:  "hepval"
     etoxMicrome.default_toxicEndpoints: "Troglitazone"
     etoxMicrome.default_endpoint: "hepatotoxicity"
-    etoxMicrome.total_documents_elasticsearch_retrieval: 1000
+    etoxMicrome.total_documents_elasticsearch_retrieval: 10000
+#You can see that, in a distributed system, the cost of sorting results grows exponentially the deeper we page. There is a good reason that web search engines don’t return more than 1,000 results for any query.
     etoxMicrome.evidences_per_page: 10
     etoxMicrome.cytochromes_per_page: 100
     etoxMicrome.summaries_per_page: 50

@@ -76,4 +76,21 @@ class CompoundMeshRepository extends EntityRepository
         //We return all the Compounds with the entityName given. By now we supose its only one entity!!!
         return $arrayEntityId;
     }
+
+    public function getNamesFromGenericField($key, $value){
+        $query = $this->_em->createQuery("
+            SELECT c
+            FROM EtoxMicromeEntityBundle:CompoundMesh c
+            WHERE LOWER(c.$key) = :value
+        ");
+
+        $query->setParameter('value', strtolower($value));
+        //$query->setMaxResults(1);
+        $compounds=$query->getResult();
+        $arrayNames=array();
+        foreach($compounds as $compound){
+            array_push($arrayNames, $compound->getName());
+        }
+        return $arrayNames;
+    }
 }

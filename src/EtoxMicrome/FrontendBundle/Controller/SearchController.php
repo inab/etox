@@ -416,6 +416,73 @@ class SearchController extends Controller
             $arrayEntityId=array_unique($arrayEntityId);//We get rid of the duplicates
             return $arrayEntityId;
     }
+    public function queryExpansionCompoundDictFreeText ($search, $entity, $whatToSearch){
+            $message="query expansion CompoundDictFreeText";
+            //CompoundDict query expansion. We get all the possible names for the compound related to the $entity->name
+            $dictionaryIds=array();
+            $arrayNames=array();
+            //We create a dictionary with key=numberOfId, value=id. We keep it only if it's not "". After we will iterate over this pairs to extend the query
+            $chemIdPlus=$entity->getChemIdPlus();
+            if($chemIdPlus!=""){
+                $dictionaryIds['chemIdPlus']=$chemIdPlus;
+            }
+            $chebi=$entity->getChebi();
+            if($chebi!=""){
+                $dictionaryIds['chebi']=$chebi;
+            }
+            $casRegistryNumber=$entity->getCasRegistryNumber();
+            if($casRegistryNumber!=""){
+                $dictionaryIds['casRegistryNumber']=$casRegistryNumber;
+            }
+            $pubChemCompound=$entity->getPubChemCompound();
+            if($pubChemCompound!=""){
+                $dictionaryIds['pubChemCompound']=$pubChemCompound;
+            }
+            $pubChemSubstance=$entity->getPubChemSubstance();
+            if($pubChemSubstance!=""){
+                $dictionaryIds['pubChemSubstance']=$pubChemSubstance;
+            }
+            $inChi=$entity->getInChi();
+            if($inChi!=""){
+                $dictionaryIds['inChi']=$inChi;
+            }
+            $drugBank=$entity->getDrugBank();
+            if($drugBank!=""){
+                $dictionaryIds['drugBank']=$drugBank;
+            }
+            $humanMetabolome=$entity->getHumanMetabolome();
+            if($humanMetabolome!=""){
+                $dictionaryIds['humanMetabolome']=$humanMetabolome;
+            }
+            $keggCompound=$entity->getKeggCompound();
+            if($keggCompound!=""){
+                $dictionaryIds['keggCompound']=$keggCompound;
+            }
+            $keggDrug=$entity->getKeggDrug();
+            if($keggDrug!=""){
+                $dictionaryIds['keggDrug']=$keggDrug;
+            }
+            $mesh=$entity->getMesh();
+            if($mesh!=""){
+                $dictionaryIds['mesh']=$mesh;
+            }
+            $smile=$entity->getSmile();
+            if($smile!=""){
+                $dictionaryIds['smile']=$smile;
+            }
+            $arrayTmp=array();
+            $em = $this->getDoctrine()->getManager();
+            foreach ($dictionaryIds as $key => $value) {
+                //We get id for each key->value in CompoundDict.
+                //We call getEntityFromGenericId($key, $value); That search the id from DocumentDict which have a field $key=$value.
+                //e.g getEntityFromGenericId("chebi", "(DMSO)");
+                $arrayTmp=$em->getRepository('EtoxMicromeEntityBundle:CompoundDict')->getNamesFromGenericField($key, $value);
+                $arrayNames=array_merge($arrayNames,$arrayTmp);
+            }
+            $arrayNames[]=$entity->getName();//We add the first entityId which we already know that fits.
+            $arrayNames=array_unique($arrayNames);//We get rid of the duplicates
+            return $arrayNames;
+    }
 
     public function queryExpansionCompoundMesh($entity, $entityType, $whatToSearch){
         //First we take the name of the entity and search for a compoundMesh with that name
@@ -457,6 +524,35 @@ class SearchController extends Controller
         return $arrayEntityId;
     }
 
+    public function queryExpansionCompoundMeshFreeText($search, $entity, $whatToSearch){
+        //First we take the name of the entity and search for a compoundMesh with that name
+        $name=$search;
+        //ld($name);
+        $em = $this->getDoctrine()->getManager();
+        $entity=$em->getRepository('EtoxMicromeEntityBundle:CompoundMesh')->getEntityFromName($name);
+        //ld($entity);
+        //CompoundDict query expansion. We get all the possible id related to the name
+        $dictionaryIds=array();
+        $arrayNames=array();
+        //We create a dictionary with key=numberOfId, value=id. We keep it only if it's not "". After we will iterate over this pairs to extend the query
+        $identifier=$entity->getIdentifier();
+        if($identifier!=""){
+            $dictionaryIds['identifier']=$identifier;
+        }
+        $meshUi=$entity->getMeshUi();
+        if($meshUi!=""){
+            $dictionaryIds['meshUi']=$meshUi;
+        }
+        foreach ($dictionaryIds as $key => $value) {
+            //We get id for each key->value in CompoundMesh.
+            //We call getNamesFromGenericId($key, $value); That search the id from compoundMesh which have a field $key=$value.
+            $arrayTmp=$em->getRepository('EtoxMicromeEntityBundle:CompoundMesh')->getNamesFromGenericField($key, $value, $arrayEntityId);
+            $arrayNames=array_merge($arrayNames,$arrayTmp);
+        }
+        $arrayEntityId[]=$entity->getName();//We add the first entityId which we already know that fits.
+        $arrayEntityId=array_unique($arrayEntityId);//We get rid of the duplicates
+        return $arrayEntityId;
+    }
     public function queryExpansionCytochrome($entity, $entityType, $whatToSearch){
         $message="inside queryExpansionCytochrome";
         //CompoundDict query expansion. We get all the possible id related to the name
@@ -494,6 +590,32 @@ class SearchController extends Controller
         return $arrayEntityId;
     }
 
+    public function queryExpansionCytochromeFreeText($search, $entity, $whatToSearch){
+        $message="inside queryExpansionCytochrome";
+        $dictionaryIds=array();
+        $arrayNames=array();
+        //We create a dictionary with key=numberOfId, value=id. We keep it only if it's not "". After we will iterate over this pairs to extend the query
+        $entityId=$entity->getEntityId();
+        if($entityId!=""){
+            $dictionaryIds['entityId']=$entityId;
+        }
+        $canonical=$entity->getCanonical();
+        if($canonical!=""){
+            $dictionaryIds['canonical']=$canonical;
+        }
+        $arrayTmp=array();
+        $em = $this->getDoctrine()->getManager();
+        foreach ($dictionaryIds as $key => $value) {
+            //We call getEntityFromGenericId($key, $value); That search the Name from cytochrome which have a field $key=$value.
+            $arrayTmp=$em->getRepository('EtoxMicromeEntityBundle:Cytochrome')->getNamesFromGenericField($key, $value);
+            $arrayNames=array_merge($arrayNames,$arrayTmp);
+        }
+        $arrayNames[]=$entity->getName();//We add the first entityId which we already know that fits.
+        $arrayNames=array_unique($arrayNames);//We get rid of the duplicates
+        return $arrayNames;
+    }
+
+
     public function queryExpansionMarker($entity, $entityType, $whatToSearch){
         $message="inside queryExpansionMarker";
         //ld($entity->getName());
@@ -528,6 +650,28 @@ class SearchController extends Controller
         $arrayEntityId[]=$entity->getId();//We add the first entityId which we already know that fits.
         $arrayEntityId=array_unique($arrayEntityId);//We get rid of the duplicates
         return $arrayEntityId;
+    }
+
+    public function queryExpansionMarkerFreeText($search, $entity, $whatToSearch){
+        $message="inside queryExpansionMarkerFreeText";
+        $dictionaryIds=array();
+        $arrayNames=array();
+        //We create a dictionary with key=numberOfId, value=id. We keep it only if it's not "". After we will iterate over this pairs to extend the query
+        $entityId=$entity->getEntityId();
+        if($entityId!=""){
+            $dictionaryIds['entityId']=$entityId;
+        }
+
+        $arrayTmp=array();
+        $em = $this->getDoctrine()->getManager();
+        foreach ($dictionaryIds as $key => $value) {
+            //We call getEntityFromGenericId($key, $value); That search the Name from cytochrome which have a field $key=$value.
+            $arrayTmp=$em->getRepository('EtoxMicromeEntityBundle:Marker')->getNamesFromGenericField($key, $value);
+            $arrayNames=array_merge($arrayNames,$arrayTmp);
+        }
+        $arrayNames[]=$entity->getName();//We add the first entityId which we already know that fits.
+        $arrayNames=array_unique($arrayNames);//We get rid of the duplicates
+        return $arrayNames;
     }
 
     public function queryExpansionHepatotoxKeyword($entity, $entityType, $whatToSearch){
@@ -584,6 +728,58 @@ class SearchController extends Controller
 
         }
         return $arrayEntityId;
+
+    }
+    public function queryExpansionFreeText($search, $entityType, $whatToSearch)
+    {
+        $message="Inside of queryExpansionFreeText";
+        //Function that receives a search query term and a entityType and creates an array with all the search query terms after a query expansion is done
+        //First of all we have to find out if the search term corresponds to an entity or it is just simple text. If it is simple text we will return the simple search text but if it is an entity, we will proceed to perform a query expansion(Note that query expansion depends on entityType.)
+        $em = $this->getDoctrine()->getManager();
+        $entity=$em->getRepository('EtoxMicromeEntityBundle:'.$entityType)->getEntityFromName($search);
+        if(gettype($entity)!="array"){
+            switch ($entityType) {
+                case "CompoundDict":
+                    //CompoundDict query expansion
+                    $arrayQueryTerms=$this->queryExpansionCompoundDictFreeText($search, $entity, $whatToSearch);
+                    break;
+                case "CompoundMesh":
+                    //CompoundMesh query expansion
+                    $arrayQueryTerms=$this->queryExpansionCompoundMeshFreeText($search, $entity, $whatToSearch);
+                    break;
+                case "Cytochrome":
+                    //Cytochrome query expansion.
+                    //$arrayQueryTerms=$this->queryExpansionCytochromeFreeText($search, $entity, $whatToSearch);
+                    $arrayQueryTerms=array($search);
+                    break;
+                case "Marker":
+                    //Marker query expansion
+                    //$arrayQueryTerms=$this->queryExpansionMarkerFreeText($search, $entity, $whatToSearch);
+                    $arrayQueryTerms=array($search);
+                    break;
+                case "HepatotoxKeyword":
+                    //HepatotoxKeyword query expansion
+                    $arrayQueryTerms=$this->queryExpansionHepatotoxKeywordFreeText($search, $entity, $whatToSearch);
+                    break;
+                case "Gene":
+                    //HepatotoxKeyword query expansion
+                    $arrayQueryTerms=$this->queryExpansionGeneFreeText($search, $entity, $whatToSearch);
+                    break;
+
+            }
+
+        }else{
+            //getType returns an array. This means that this is not an entity (or could be an array of entities)
+            if (count($entity)==0){
+                return array($search);
+            }
+            else{
+                $message="This must be an error. Take a look at posible array with more than one object while searching for entity";
+                ldd($message);
+            }
+        }
+        //Now we add the new entityIds as a result of the query expansion.
+        return $arrayQueryTerms;
 
     }
 
@@ -2078,14 +2274,34 @@ Evidences found in Sentences:\n
             ///  We prepare a elasticsearch and use the search/keyword interface////////////////////
             ////////////////////////////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////////////////////////////
-            $elasticaQueryString  = new \Elastica\Query\QueryString();
-            //'And' or 'Or' default : 'Or'
-            $elasticaQueryString->setDefaultOperator('AND');
-            $elasticaQueryString->setQuery($entityName);
-            // Create the actual search object with some data.
-            $elasticaQuery  = new \Elastica\Query();
-            $elasticaQuery->setSort(array('hepval' => array('order' => 'desc')));
-            $elasticaQuery->setQuery($elasticaQueryString);
+            $elasticaQuery = new \Elastica\Query();
+            $elasticaQuery->setSize($this->container->getParameter('etoxMicrome.total_documents_elasticsearch_retrieval'));
+            $boolQuery= new \Elastica\Query\BoolQuery();
+            ////////////////////////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////////////
+            /////////////////////This is how we  manage for single search///////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////////////
+            //$elasticaQueryMatch  = new \Elastica\Query\Match();///////////////////////////////////
+            //$elasticaQueryMatch->setFieldOperator('text', 'OR');//This is the field where we are looking at
+            ////$elasticaQueryMatch->setFieldMinimumShouldMatch('text', "75%");/////////////////////
+            //$elasticaQueryMatch->setFieldQuery('text', "Viagra");//Where and what to search!//////
+            //But we should search not only for compound but for "Query expanded compound"//////////
+            //$elasticaQueryMatch->setFieldQuery('text', "Viagra Sildenafil etc etc...")////////////
+            ////////////////////////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////////////
+            /////////////////////All the search process has been refactorized //////////////////////
+            //////////////////////////through all the available options ////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////////////
+            //$elasticaQueryMatch->setFieldQuery('text', $query);
+            //$elasticaQuery->setQuery($elasticaQueryMatch);
+            ////$elasticaQuery->setSort(array('hepval' => array('order' => 'desc')));
+            //$documentsInfo = $this->container->get('fos_elastica.index.etoxindex2.documentswithcompounds');
+            //$resultSetDocuments = $documentsInfo->search($elasticaQuery);
+            //ldd($resultSetDocuments->count());
+            //$arrayDocumentsWithCompounds=$resultSetDocuments->getResults();
+            //ldd(count($arrayDocumentsWithCompounds));
+
             if($source!="all" and $source!="abstract"){
                 $elasticaFilterBool = new \Elastica\Filter\Bool();
                 $filter1 = new \Elastica\Filter\Term();
@@ -2095,8 +2311,10 @@ Evidences found in Sentences:\n
             }
             if($orderBy=="hepval"){
                 $elasticaQuery->setSort(array('hepval' => array('order' => 'desc')));
-            }elseif($orderBy=="pattern"){
+            }
+            elseif($orderBy=="pattern"){
                 $elasticaQuery->setSort(array('patternCount' => array('order' => 'desc')));
+
                 $elasticaFilterBool = new \Elastica\Filter\Bool();
                 $filter2 = new \Elastica\Filter\Missing();
                 $filter2->setParam('field', "patternCount");
@@ -2104,8 +2322,10 @@ Evidences found in Sentences:\n
                 $filter2->setParam('null_value', true);
                 $elasticaFilterBool->addMustNot($filter2);
                 $elasticaQuery->setFilter($elasticaFilterBool);
-            }elseif($orderBy=="rule"){
+            }
+            elseif($orderBy=="rule"){
                 $elasticaQuery->setSort(array('ruleScore' => array('order' => 'desc')));
+
                 $elasticaFilterBool = new \Elastica\Filter\Bool();
                 $filter2 = new \Elastica\Filter\Missing();
                 $filter2->setParam('field', "ruleScore");
@@ -2113,8 +2333,10 @@ Evidences found in Sentences:\n
                 $filter2->setParam('null_value', true);
                 $elasticaFilterBool->addMustNot($filter2);
                 $elasticaQuery->setFilter($elasticaFilterBool);
-            }elseif($orderBy=="term"){
+            }
+            elseif($orderBy=="term"){
                 $elasticaQuery->setSort(array('hepTermVarScore' => array('order' => 'desc')));
+
                 $elasticaFilterBool = new \Elastica\Filter\Bool();
                 $filter2 = new \Elastica\Filter\Missing();
                 $filter2->setParam('field', "hepTermVarScore");
@@ -2122,7 +2344,8 @@ Evidences found in Sentences:\n
                 $filter2->setParam('null_value', true);
                 $elasticaFilterBool->addMustNot($filter2);
                 $elasticaQuery->setFilter($elasticaFilterBool);
-            }elseif($orderBy=="svmConfidence"){
+            }
+            elseif($orderBy=="svmConfidence"){
                 $elasticaQuery->setSort(array('svmConfidence' => array('order' => 'desc')));
                 $elasticaFilterBool = new \Elastica\Filter\Bool();
                 $filter2 = new \Elastica\Filter\Missing();
@@ -2134,10 +2357,25 @@ Evidences found in Sentences:\n
             }
 
             //Search on the index.
-            $elasticaQuery->setSize($this->container->getParameter('etoxMicrome.total_documents_elasticsearch_retrieval'));
+
             if($whatToSearch=="any"){
                 if($entityType=="CompoundDict"){
-                     if ($source=="abstract"){
+                    //We have to make a free search against elastica documentswithcompounds or abstractswithcompounds  indexes
+                    //First we need the query expansion
+                    $arrayNames = $this->queryExpansionFreeText($entityName, $entityType, $whatToSearch);
+                    //ld(count($arrayNames));
+                    //We should add a QueryMatch per name in arrayNames as a should clause of the QueryBoolean
+                    //In that way we can get sure that any document with at least one of the should clause will be retrieved.
+                    foreach($arrayNames as $name){
+                        $elasticaQueryMatch  = new \Elastica\Query\Match();
+                        //ldd($elasticaQueryMatch);
+                        $elasticaQueryMatch->setFieldOperator('text', 'AND');
+                        ////$elasticaQueryMatch->setFieldMinimumShouldMatch('text', "75%");
+                        $elasticaQueryMatch->setFieldQuery('text', $name);
+                        $boolQuery->addShould($elasticaQueryMatch);
+                    }
+                    $elasticaQuery->setQuery($boolQuery);
+                    if ($source=="abstract"){
                         $abstractsInfo = $this->container->get('fos_elastica.index.etoxindex2.abstractswithcompounds');/** To get resultSet to get values for summary**/
                         $resultSetAbstracts = $abstractsInfo->search($elasticaQuery);
                         $arrayAbstracts=$resultSetAbstracts->getResults();
@@ -2154,7 +2392,7 @@ Evidences found in Sentences:\n
                         $meanScore=$this->getMmmrScore($resultSetAbstracts, $orderBy, 'mean');
                         $medianScore=$this->getMmmrScore($resultSetAbstracts, $orderBy, 'median');
                         $rangeScore=$this->getMmmrScore($resultSetAbstracts, $orderBy, 'range');
-                     }else{
+                    }else{
                         $documentsInfo = $this->container->get('fos_elastica.index.etoxindex2.documentswithcompounds');/** To get resultSet to get values for summary**/
                         $resultSetDocuments = $documentsInfo->search($elasticaQuery);
                         $arrayDocuments=$resultSetDocuments->getResults();//$results has an array of results objects, data can be obtained by the getSource metho
@@ -2176,6 +2414,11 @@ Evidences found in Sentences:\n
                      }
                 }
                 if($entityType=="Cytochrome"){
+                    //We have to make a free search against elastica documentswithcytochromes indexes
+                    //First we need the query expansion
+                    //$arrayNames = $this->queryExpansionFreeText($entityName, $entityType, $whatToSearch);
+                    $elasticaQueryMatch->setFieldQuery('text', $entityName);
+                    $elasticaQuery->setQuery($elasticaQueryMatch);
                     $finder = false;
                     $resultSetAbstracts = array();//There is no abstractsWithCytochromes nor abstractsWithMarkers information in the database
                     $arrayResultsAbs=array();
@@ -2195,6 +2438,11 @@ Evidences found in Sentences:\n
                 }
                 if($entityType=="Marker"){
                     //We have to make a free search against elastica documentswithmarkers indexes
+                    //First we need the query expansion
+                    //$arrayNames = $this->queryExpansionFreeText($entityName, $entityType, $whatToSearch);
+                    $elasticaQueryMatch->setFieldQuery('text', $entityName);
+                    $elasticaQuery->setQuery($elasticaQueryMatch);
+
                     $finder = false;
                     $resultSetAbstracts = array();//There is no abstractsWithCytochromes nor abstractsWithMarkers information in the database
                     $arrayResultsAbs=array();
@@ -2212,11 +2460,14 @@ Evidences found in Sentences:\n
                     $medianScore=$this->getMmmrScore($resultSetDocuments, $orderBy, 'median');
                     $rangeScore=$this->getMmmrScore($resultSetDocuments, $orderBy, 'range');
                 }
-            }elseif($whatToSearch=="withCompounds"){
+            }
+            elseif($whatToSearch=="withCompounds"){
                 if($entityType=="Cytochrome"){
                     //We have to make a free search against the intersection of documentswithcompounds with documentswithcytochromes
-                    //In order to perform the intersection we change the size of the results
-                    $elasticaQuery->setSize(1000);
+                    //First we need the query expansion
+                    //$arrayNames = $this->queryExpansionFreeText($entityName, $entityType, $whatToSearch);
+                    $elasticaQueryMatch->setFieldQuery('text', $entityName);
+                    $elasticaQuery->setQuery($elasticaQueryMatch);
                     $finder = false;
 
                     $documentsInfo = $this->container->get('fos_elastica.index.etoxindex2.documentswithcompounds');/** To get resultSet to get values for summary**/
@@ -2284,8 +2535,11 @@ Evidences found in Sentences:\n
                 }
                 if($entityType=="Marker"){
                     //We have to make a free search against the intersection of documentswithcompounds with documentswithmarkers
-                    //In order to perform the intersection we change the size of the results
-                    $elasticaQuery->setSize(1000);
+                    //First we need the query expansion
+                    //$arrayNames = $this->queryExpansionFreeText($entityName, $entityType, $whatToSearch);
+                    $elasticaQueryMatch->setFieldQuery('text', $entityName);
+                    $elasticaQuery->setQuery($elasticaQueryMatch);
+
                     $finder = false;
                     $finderDocWithCompounds = $this->container->get('fos_elastica.index.etoxindex2.documentswithcompounds');
                     $finderDocWithMarkers = $this->container->get('fos_elastica.index.etoxindex2.documentswithmarkers');
@@ -2350,11 +2604,23 @@ Evidences found in Sentences:\n
                         'medianScore' => $medianScore,
                     ));
                 }
-            }elseif($whatToSearch=="withCytochromes"){
+            }
+            elseif($whatToSearch=="withCytochromes"){
                 if($entityType=="CompoundDict"){
                     //We have to make a free search against the intersection of documentswithcompounds with documentswithcytochromes
                     //In order to perform the intersection we change the size of the results
-                    $elasticaQuery->setSize(1000);
+                    //First we need the query expansion for the compound used for the query
+                    $arrayNames = $this->queryExpansionFreeText($entityName, $entityType, $whatToSearch);
+                    //We should add a QueryMatch per name in arrayNames as a should clause of the QueryBoolean
+                    //In that way we can get sure that any document with at least one of the should clause will be retrieved.
+                    foreach($arrayNames as $name){
+                        $elasticaQueryMatch  = new \Elastica\Query\Match();
+                        $elasticaQueryMatch->setFieldOperator('text', 'AND');
+                        $elasticaQueryMatch->setFieldQuery('text', $name);
+                        $boolQuery->addShould($elasticaQueryMatch);
+                    }
+                    $elasticaQuery->setQuery($boolQuery);
+
                     $finder = false;
                     $documentsInfo = $this->container->get('fos_elastica.index.etoxindex2.documentswithcompounds');
                     $resultSetDocuments = $documentsInfo->search($elasticaQuery);
@@ -2425,9 +2691,18 @@ Evidences found in Sentences:\n
                 }
             }elseif($whatToSearch=="withMarkers"){
                 if($entityType=="CompoundDict"){
-                    //We have to make a free search against the intersection of documentswithcompounds with documentswithcytochromes
-                    //In order to perform the intersection we change the size of the results
-                    $elasticaQuery->setSize(1000);
+                    //We have to make a free search against the intersection of documentswithcompounds with documentswithmarkers
+                    //First we need the query expansion for the compound used for the query
+                    $arrayNames = $this->queryExpansionFreeText($entityName, $entityType, $whatToSearch);
+                    //We should add a QueryMatch per name in arrayNames as a should clause of the QueryBoolean
+                    //In that way we can get sure that any document with at least one of the should clause will be retrieved.
+                    foreach($arrayNames as $name){
+                        $elasticaQueryMatch  = new \Elastica\Query\Match();
+                        $elasticaQueryMatch->setFieldOperator('text', 'AND');
+                        $elasticaQueryMatch->setFieldQuery('text', $name);
+                        $boolQuery->addShould($elasticaQueryMatch);
+                    }
+                    $elasticaQuery->setQuery($boolQuery);
                     $finder = false;
                     $resultSetAbstracts = false;
                     $arrayResultsAbs =array();
@@ -2435,11 +2710,11 @@ Evidences found in Sentences:\n
                     $resultSetDocuments = $documentsInfo->search($elasticaQuery);
                     $arrayDocumentsWithCompounds=$resultSetDocuments->getResults();//$results has an array of results objects, data can be obtained by the getSource method
 
-                    $finderDocWithCytochromes = $this->container->get('fos_elastica.index.etoxindex2.documentswithmarkers');
-                    $resultSetCytochromes = $finderDocWithCytochromes->search($elasticaQuery);
-                    $arrayDocumentsWithCytochromes=$resultSetCytochromes->getResults();//$results has an array of results objects, data can be obtained by the getSource method
+                    $finderDocWithMarkers = $this->container->get('fos_elastica.index.etoxindex2.documentswithmarkers');
+                    $resultSetMarkers = $finderDocWithMarkers->search($elasticaQuery);
+                    $arrayDocumentsWithMarkers=$resultSetMarkers->getResults();//$results has an array of results objects, data can be obtained by the getSource method
 
-                    $arrayDocumentsIntersection=$this->performIntersectionArrayDocuments($arrayDocumentsWithCompounds, $arrayDocumentsWithCytochromes);
+                    $arrayDocumentsIntersection=$this->performIntersectionArrayDocuments($arrayDocumentsWithCompounds, $arrayDocumentsWithMarkers);
                     $arrayResultsDoc = $paginator
                         ->setMaxPagerItems($this->container->getParameter('etoxMicrome.number_of_pages'), 'documents')
                         ->setItemsPerPage($this->container->getParameter('etoxMicrome.evidences_per_page'), 'documents')
@@ -3007,6 +3282,7 @@ Evidences found in Sentences:\n
                 ));
             }
         }
+
         ////////////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////////
@@ -3279,7 +3555,7 @@ Evidences found in Sentences:\n
                     'allias' => $allias,
                 ));
             }
-        }
+        }//This was for Compounds and Markers!! //(Comment for folding block @ Coda)
         return $this->render('FrontendBundle:Search_document:index.html.twig', array(
             'field' => $field,
             'whatToSearch' => $whatToSearch,

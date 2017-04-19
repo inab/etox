@@ -87,6 +87,23 @@ class CytochromeRepository extends EntityRepository
         return $arrayEntityId;
     }
 
+    public function getNamesFromGenericField($key, $value){
+        $query = $this->_em->createQuery("
+            SELECT c
+            FROM EtoxMicromeEntityBundle:Cytochrome c
+            WHERE LOWER(c.$key) = :value
+        ");
+
+        $query->setParameter('value', strtolower($value));
+        //$query->setMaxResults(1);
+        $cytochromes=$query->getResult();
+        $arrayNames=array();
+        foreach($cytochromes as $cytochrome){
+            array_push($arrayNames, $cytochrome->getName());
+        }
+        return $arrayNames;
+    }
+
     public function searchEntityGivenAnId($entityId)
     {
         $message="Inside searchEntityGivenAnId at CytochromeRepository";

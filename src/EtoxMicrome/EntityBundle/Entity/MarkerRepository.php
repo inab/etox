@@ -86,6 +86,24 @@ class MarkerRepository extends EntityRepository
         return $arrayEntityId;
     }
 
+
+    public function getNamesFromGenericField($key, $value){
+        $query = $this->_em->createQuery("
+            SELECT c
+            FROM EtoxMicromeEntityBundle:Marker c
+            WHERE LOWER(c.$key) = :value
+        ");
+
+        $query->setParameter('value', strtolower($value));
+        //$query->setMaxResults(1);
+        $markers=$query->getResult();
+        $arrayNames=array();
+        foreach($markers as $marker){
+            array_push($arrayNames, $marker->getName());
+        }
+        return $arrayNames;
+    }
+
     public function searchEntityGivenAnId($entityId)
     {
         //Given an entityId, we return the entity associated
