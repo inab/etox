@@ -16,6 +16,17 @@
         {% endif %}
         {% set entityId = entity.getId %}
         {% if arrayEntity2Document is defined %}
+            <h3>Ranked sentences in Documents for {{foundFor}}: <span class="underline">{{ entityBackup }}</span> search</h3>
+            <div class="btmspc-dbl">
+                <small>
+                    <em>
+                        Entity mentions are highlighted as follows:
+                        <mark class="termSearched">What you searched</mark>, <mark class="compound">Compounds</mark>, <mark class="cytochrome">Cytochromes</mark>, <mark class="marker">Markers</mark>, <mark class="term">Terms</mark>, <mark class="specie">Species</mark>
+                        . Curated evidences are indicated by:
+                        <a class="curated" href="#"> </a>
+                    </em>
+                </small>
+            </div>
             <div class="results-summary">
                     {% set totalHits = arrayTotalMaxMin[0] %}
                     {% if entityType=="CompoundDict" or entityType=="Marker"%}
@@ -142,19 +153,11 @@
                 {% elseif entityType =="Marker" %}
                     {% set mentioning="compound-liver marker" %}
                 {% endif %}
-
-
-                <h3>Ranked sentences in Documents for {{foundFor}}: <span class="underline">{{ entityBackup }}</span> search in sentences with {{ mentioning }} relations</h3>
-                <div class="btmspc-dbl">
-                    <small>
-                        <em>
-                            Entity mentions are highlighted as follows:
-                            <mark class="termSearched">What you searched</mark>, <mark class="compound">Compounds</mark>, <mark class="cytochrome">Cytochromes</mark>, <mark class="marker">Markers</mark>, <mark class="term">Terms</mark>, <mark class="specie">Species</mark>
-                        </em>
-                        . Curated evidences are indicated by:
-                        <a class="curated" href="#"> </a>
-                    </small>
-                </div>
+                <small>
+                    <em>
+                        <span class="left">Color coding for scores:&nbsp;&nbsp; </span>{% include 'FrontendBundle:Search_document:score_color_coding.html.twig' %}
+                    </em>
+                </small>
                 <table id="tableResults" class="tablesorter">
                     <thead>
                         <th><span data-tooltip class="has-tip" title="{{ mouseover_source}}">Source</span></th>
@@ -441,7 +444,6 @@
             </div>
         {% endif %}
         {% if arrayEntity2Abstract is defined %}
-            Entra!!!!
             <div id="abstractsResults">
                 <a name="abstracts"></a>
                 {% if arrayEntity2Document is defined %}
@@ -457,10 +459,11 @@
                             <mark class="termSearched">What you searched</mark>, <mark class="compound">Compounds</mark>, <mark class="cytochrome">CYPs</mark>, <mark class="marker">Markers</mark>, <mark class="keyword">Keywords</mark>, <mark class="specie">Species</mark>
                         </em>
                         . Curated evidences are indicated by:
-                        <a class="curated" href="#"> </a>
+                        <a class="curated" href="#"> </a> <br/>
+                            <span class="left">Color coding for scores:&nbsp;&nbsp; </span>{% include 'FrontendBundle:Search_document:score_color_coding.html.twig' %}
+                        </em>
                     </small>
                 </div>
-
                 <table id="tableResults" class="tablesorter">
                     <thead>
                         <th><span data-tooltip class="has-tip" title="{{ mouseover_source}}">Source</span></th>

@@ -68,7 +68,7 @@ class HepKeywordTermNorm2DocumentRepository extends EntityRepository
         //ld($sql);
         $query = $this->_em->createQuery($sql);
         $query->setParameter("arrayNames", $arrayNames);
-        $query->setMaxResults(1000);
+        $query->setMaxResults(10000);
         return $query;
 
     }

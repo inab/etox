@@ -153,6 +153,7 @@ class SearchController extends Controller
                 array_push($intersectionArray, $document);
             }
         }
+        //ldd(json_encode($intersectionArray[1]->getSource(), JSON_PRETTY_PRINT));
         return $intersectionArray;
     }
 
@@ -2417,6 +2418,7 @@ Evidences found in Sentences:\n
                     //We have to make a free search against elastica documentswithcytochromes indexes
                     //First we need the query expansion
                     //$arrayNames = $this->queryExpansionFreeText($entityName, $entityType, $whatToSearch);
+                    $elasticaQueryMatch  = new \Elastica\Query\Match();
                     $elasticaQueryMatch->setFieldQuery('text', $entityName);
                     $elasticaQuery->setQuery($elasticaQueryMatch);
                     $finder = false;
@@ -2440,6 +2442,7 @@ Evidences found in Sentences:\n
                     //We have to make a free search against elastica documentswithmarkers indexes
                     //First we need the query expansion
                     //$arrayNames = $this->queryExpansionFreeText($entityName, $entityType, $whatToSearch);
+                    $elasticaQueryMatch  = new \Elastica\Query\Match();
                     $elasticaQueryMatch->setFieldQuery('text', $entityName);
                     $elasticaQuery->setQuery($elasticaQueryMatch);
 
@@ -2466,6 +2469,7 @@ Evidences found in Sentences:\n
                     //We have to make a free search against the intersection of documentswithcompounds with documentswithcytochromes
                     //First we need the query expansion
                     //$arrayNames = $this->queryExpansionFreeText($entityName, $entityType, $whatToSearch);
+                    $elasticaQueryMatch  = new \Elastica\Query\Match();
                     $elasticaQueryMatch->setFieldQuery('text', $entityName);
                     $elasticaQuery->setQuery($elasticaQueryMatch);
                     $finder = false;
@@ -2537,6 +2541,7 @@ Evidences found in Sentences:\n
                     //We have to make a free search against the intersection of documentswithcompounds with documentswithmarkers
                     //First we need the query expansion
                     //$arrayNames = $this->queryExpansionFreeText($entityName, $entityType, $whatToSearch);
+                    $elasticaQueryMatch  = new \Elastica\Query\Match();
                     $elasticaQueryMatch->setFieldQuery('text', $entityName);
                     $elasticaQuery->setQuery($elasticaQueryMatch);
 
@@ -3252,6 +3257,7 @@ Evidences found in Sentences:\n
                     }
                     exit();
                 }
+
                 $arrayTotalMaxMin=$this->getTotalMaxMinArrayForRelations($compound2Marker2Documents, $orderBy, $field);
                 $meanScore=$this->getMmmrScoreFromRelation($compound2Marker2Documents, $orderBy, 'mean');
                 $medianScore=$this->getMmmrScoreFromRelation($compound2Marker2Documents, $orderBy, 'median');

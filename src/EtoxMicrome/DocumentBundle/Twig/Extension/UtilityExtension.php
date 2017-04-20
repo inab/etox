@@ -1640,47 +1640,49 @@ class UtilityExtension extends \Twig_Extension
         }
         $score=(float)$score;
         switch ($score) {
-            case (int)$score === 0:
-                    $score ="<mark class=''>$score</mark>";
-                    break;
-            case $score>5:
+            case ($score>=6):
                     $score ="<mark class='score-green-5'>$score</mark>";
                     break;
-            case $score>4:
+            case ((6>$score)and($score>=5)):
                     $score ="<mark class='score-green-4'>$score</mark>";
                     break;
-            case $score>3:
+            case ((5>$score)and($score>=4)):
                     $score ="<mark class='score-green-3'>$score</mark>";
                     break;
-            case $score>2:
+            case ((4>$score)and($score>=3)):
                     $score ="<mark class='score-green-2'>$score</mark>";
                     break;
-            case $score>1:
+            case ((3>$score)and($score>=2)):
                     $score ="<mark class='score-green-1'>$score</mark>";
                     break;
-            case $score>0:
+            case ((2>$score)and($score>=1)):
                     $score ="<mark class='score-green-0'>$score</mark>";
                     break;
-            case $score < -5:
-                    $score ="<mark class='score-red-5'>$score</mark>";
+
+
+            case ((1>$score)and($score>=0)):
+                    $score ="<mark class='transparent'>$score</mark>";
                     break;
-            case $score < -4:
-                    $score ="<mark class='score-red-4'>$score</mark>";
-                    break;
-            case $score < -3:
-                    $score ="<mark class='score-red-3'>$score</mark>";
-                    break;
-            case $score < -2:
-                    $score ="<mark class='score-red-2'>$score</mark>";
-                    break;
-            case $score < -1:
-                    $score ="<mark class='score-red-1'>$score</mark>";
-                    break;
-            case $score < 0:
+
+
+            case ((0>$score)and ($score>=-1)):
                     $score ="<mark class='score-red-0'>$score</mark>";
                     break;
-
-
+            case ((-1>$score)and ($score>=-2)):
+                    $score ="<mark class='score-red-1'>$score</mark>";
+                    break;
+            case ((-2>$score)and ($score>=-3)):
+                    $score ="<mark class='score-red-2'>$score</mark>";
+                    break;
+            case ((-3>$score)and ($score>=-4)):
+                    $score ="<mark class='score-red-3'>$score</mark>";
+                    break;
+            case ((-4>$score)and ($score>=-5)):
+                    $score ="<mark class='score-red-4'>$score</mark>";
+                    break;
+            case (-5>$score):
+                    $score ="<mark class='score-red-5'>$score</mark>";
+                    break;
         }
         return ($score);
     }

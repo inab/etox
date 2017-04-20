@@ -241,6 +241,7 @@ footer#bottom nav {
 ----------------------------------------- */
 .pagination{
     margin-bottom: 30px;
+    margin-top: 30px;
 }
 
 .pagination .current {
@@ -448,7 +449,17 @@ li.marker{
     background-color: #dffcff;
     padding: 5px;
 }
-
+table.score-color-coding th{
+    line-height: 6px;
+}
+table.score-color-coding{
+    line-height: 6px;
+    margin-bottom: 0px;
+}
+.transparent{
+    background-color: transparent;
+    padding: 1px 5px 1px 5px;
+}
 .score-green-0{
     background-color: #008800;
     padding: 1px 5px 1px 5px;
@@ -498,13 +509,9 @@ li.marker{
     padding: 1px 5px 1px 5px;
 }
 
-
-
-#abstractsResults{
-
+.score-color-coding tbody tr td{
+    padding: 0px 4px;
 }
-
-
 
 #evidenceText{
     background-color: #F1F1F1;

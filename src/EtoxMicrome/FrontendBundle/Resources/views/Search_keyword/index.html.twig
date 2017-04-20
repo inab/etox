@@ -19,6 +19,7 @@
                         <a class="curated" href="#"> </a>
                     </small>
                 </div>
+
                 <div class="results-summary">
                     {% set totalHits = resultSetDocuments.getTotalHits %}
                     {% set scoreToShow = orderBy | getScoreToShow %}
@@ -63,6 +64,11 @@
                     </table>
                 </div>
                 <div class="clear-both"></div>
+                <small>
+                    <em>
+                        <span class="left">Color coding for scores:&nbsp;&nbsp; </span>{% include 'FrontendBundle:Search_document:score_color_coding.html.twig' %}
+                    </em>
+                </small>
                 <table id="tableResults" class="tablesorter">
                 <thead>
                     <th><span data-tooltip class="has-tip" title="{{ mouseover_source}}">Source</span></th>
@@ -278,6 +284,11 @@
                     </table>
                 </div>
                     <div class="clear-both"></div>
+                    <small>
+                        <em>
+                            <span class="left">Color coding for scores:&nbsp;&nbsp; </span>{% include 'FrontendBundle:Search_document:score_color_coding.html.twig' %}
+                        </em>
+                    </small>
                     <table id="tableResults" class="tablesorter">
                         <thead>
                             <th><span data-tooltip class="has-tip" title="{{ mouseover_source}}">Source</span></th>
