@@ -214,7 +214,20 @@
                                     <mark class="termSearched">What you searched</mark>, <mark class="compound">Compounds</mark>, <mark class="cytochrome">Cytochromes</mark>, <mark class="marker">Markers</mark>, <mark class="term">Terms</mark>, <mark class="specie">Species</mark>
                                 </em>
                                 . Curated evidences are indicated by:
-                                <a class="curated" href="#"> </a>
+
+                            </p>
+                        </div>
+                         <h3 id="color_key_scores">Color Key for Scores</h3>
+                        <div>
+                            <p>
+                                In order to improve the readability of the results, a color key for highlighting the scores of the results is applied.
+                                The coloring of the scores helps to give you an idea, at a glance, of the significance of the values. If the score has a value greater than 1, the color is green. If it is negative it will be red. Between 0 and 1 has no color.
+                                In addition, according to the gradient of the green and red colors, the color intensity is linked to the high/low value of the score. Following this key:
+                                <small>
+                                    <em>
+                                        <span class="left">Color key for scores:&nbsp;&nbsp; </span>{% include 'FrontendBundle:Search_document:score_color_coding.html.twig' %}
+                                    </em>
+                                </small>
                             </p>
                         </div>
                         <h3 id="outlinks">Outlinks</h3>
