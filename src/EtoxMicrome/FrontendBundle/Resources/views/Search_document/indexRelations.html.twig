@@ -348,11 +348,28 @@
                                 {% elseif kind == "nda" %}
                                     {% set link="http://www.accessdata.fda.gov/scripts/cder/drugsatfda/index.cfm" %}
                                     {% set imageRoute = 'images/nda.png' %}
-                                    <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/ alt="FDA New Drug Approvals (NDAs)" title="FDA New Drug Approvals (NDAs)"></a>
+                                    {% set sid=entity2Document.document.getSentenceId %}
+
+                                    <span data-tooltip='sticky{{ tooltipCounter }}'>
+                                        <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/ alt="FDA New Drug Approvals (NDAs)" title="FDA New Drug Approvals (NDAs)"></a>
+                                    </span>
+                                    {% set tooltip =  "<div id='sticky"~tooltipCounter~"' class='atip' >Sentence Id: "~ sid ~"<br/></div>" %}
+                                    {% set tooltipCounter = tooltipCounter + 1 %}
+                                    {% set stringStickyTooltip = stringStickyTooltip ~ tooltip  %}
+
+
                                 {% elseif kind == "epar" %}
                                     {% set link="http://www.ema.europa.eu/ema/index.jsp?curl=pages/medicines/landing/epar_search.jsp" %}
                                     {% set imageRoute = 'images/epar.png' %}
-                                     <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/ alt="European Public Assessment Reports (EPARs)" title="European Public Assessment Reports (EPARs)"></a>
+                                    {% set sid=entity2Document.document.getSentenceId %}
+
+                                    <span data-tooltip='sticky{{ tooltipCounter }}'>
+                                        <a href="{{ link }}" target="_blank"><img src="{{ asset(imageRoute) }}" class="outlinkLogo"/ alt="European Public Assessment Reports (EPARs)"></a>
+                                    </span>
+                                    {% set tooltip =  "<div id='sticky"~tooltipCounter~"' class='atip' >Sentence Id: "~ sid ~"<br/></div>" %}
+                                    {% set tooltipCounter = tooltipCounter + 1 %}
+                                    {% set stringStickyTooltip = stringStickyTooltip ~ tooltip  %}
+
                                 {% endif %}
                                 </td>
                                 <td class="center">
