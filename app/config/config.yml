@@ -99,7 +99,6 @@ assetic:
         uglifycss:
             bin: %kernel.root_dir%/Resources/node_modules/uglifycss/uglifycss
 
-
 # Doctrine Configuration
 doctrine:
     dbal:
