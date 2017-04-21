@@ -42,11 +42,11 @@ class GeneRepository extends EntityRepository
         $query = $this->_em->createQuery("
             SELECT a
             FROM EtoxMicromeEntityBundle:Gene a
-            WHERE a.name= :entityName
+            WHERE lower(a.name) = :entityName
         ");
-        $query->setParameter('entityName', $entityName);
-        $gene=$query->getResult();
+        $query->setParameter('entityName', strtolower($entityName));
         $query->setMaxResults(2);
+        $gene=$query->getResult();
         if(count($gene)==0){
             $errorMessage="There is no entity with that name ($entityName)";
             ldd($errorMessage);

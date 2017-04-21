@@ -12,4 +12,38 @@ use Doctrine\ORM\EntityRepository;
  */
 class AbstractWithCompoundRepository extends EntityRepository
 {
+        public function returnAbstractsWithCompounds($arrayAbstracts){
+            $message="Inside returnAbstractsWithCompounds";
+            //This function filters the $arrayAbstracts and returns only the abstracts that are inside table abstractsWithCompounds
+            $arrayAbstractsWithCompounds=array();
+            $arrayPmids=array();
+            foreach($arrayAbstracts as $abstract){
+                $arrayPmids[]=$abstract->getPmid();
+            }
+            /*foreach($arrayPmids as $pmid){
+                $query = $this->_em->createQuery("
+                    SELECT a
+                    FROM EtoxMicromeDocumentBundle:AbstractWithCompound a
+                    WHERE a.pmid = :pmid
+                ");
+                $query->setParameter('pmid', $pmid);
+                $query->setMaxResults(1);
+                $abstractWithCompounds=$query->getResult();
+                $arrayAbstractsWithCompounds[]=$abstractWithCompounds;
+            }
+            $arrayReturn=array_merge(...$abstractWithCompounds);
+            ldd(count($arrayReturn));
+            */
+            $query = $this->_em->createQuery("
+                    SELECT a
+                    FROM EtoxMicromeDocumentBundle:AbstractWithCompound a
+                    WHERE a.pmid in (:arrayPmids)
+                ");
+            $query->setParameter('arrayPmids', $arrayPmids);
+            $abstractsWithCompounds=$query->getResult();
+            ldd(count($abstractsWithCompounds));
+            return($abstractsWithCompounds);
+
+        }
+
 }

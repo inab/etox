@@ -2080,7 +2080,7 @@ Evidences found in Sentences:\n
         $arrayAbstracts=[];
         $arrayNames=[];
         if ($source=="geneName"){
-            $arrayGenes=$em->getRepository('EtoxMicromeEntityBundle:GeneDictionary')->findByGeneName($entityName);
+            $arrayGenes=$em->getRepository('EtoxMicromeEntityBundle:GeneDictionary')->findByGeneName(strtolower($entityName));
             #ldd(count($arrayGenes));
             //We generate an array of geneIds that will be used as the result of the query expansion
             foreach($arrayGenes as $gene){

@@ -12,5 +12,32 @@ use Doctrine\ORM\EntityRepository;
  */
 class GeneDictionaryRepository extends EntityRepository
 {
+    public function getEntitiesFromName($entityName)
+    {
+        $message="Inside getEntityFromName at GeneDictionaryRepository";
+        $query = $this->_em->createQuery("
+            SELECT a
+            FROM EtoxMicromeEntityBundle:GeneDictionary a
+            WHERE lower(a.geneName) = :entityName
+        ");
+        $query->setParameter('entityName', strtolower($entityName));
+        $query->setMaxResults(10000);
+        $genes=$query->getResult();
+        return $genes;
 
+        /*
+        if(count($gene)==0){
+            $errorMessage="There is no entity with that name ($entityName)";
+            ldd($errorMessage);
+        }
+        if(count($gene)!=1){
+            $errorMessage="There are more than one entityName for '$entityName'";
+            ldd($gene);
+            ldd($errorMessage);
+        }
+        //We return all the CompoundDict with the entityName given. By now we supose its only one entity!!!
+        $entity=$gene[0];
+        ldd($entity);
+        return $entity;*/
+    }
 }
