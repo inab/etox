@@ -1,0 +1,24 @@
+{% extends '::frontend.html.twig' %}
+
+{% block article %}
+    <section class="row display" role="main">
+        <article class="three columns">
+            <ul>
+                <h3><a href="{{ path("tutorial") }}">Downloads</a></h3>
+                <h3 style="font-style:itah3c">Files</h3>
+            </ul>
+        </article>
+        <article class="nine columns">
+            <h1>LimTox Resources</h1>
+        </article>
+    </section>
+    <script>
+      $( function() {
+        $( ".accordion" ).accordion({
+          heightStyle: "content",
+          collapsible: true
+        });
+      } );
+    </script>
+        {% include 'FrontendBundle:Search_document:scripts_code.html.twig' %}
+    {% endblock %}
