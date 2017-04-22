@@ -152,6 +152,48 @@ fos_elastica:
     clients:
         default: { host: limtox.cnio.es, port: 9204 }
     indexes:
+        etoxindex3:
+            client: default
+            finder: ~
+            types:
+                abstracts:
+                    mappings:
+                        pmid: { type: integer }
+                        title: {type: string, boost: 6, index_analyzer : my_analyzer, search_analyzer : my_analyzer}
+                        text: {type: string, index_analyzer : my_analyzer, search_analyzer : my_analyzer}
+                        hepval: { type: float }
+                        patternCount: { type: float }
+                        ruleScore: { type: float }
+                        hepTermNormScore: { type: float }
+                        hepTermVarScore: { type: float }
+                        svmConfidence: { type: float }
+                        toxicology: { type: float }
+                        biomarker: { type: float }
+                    persistence:
+                        driver: orm
+                        model: EtoxMicrome\DocumentBundle\Entity\Abstracts
+                        provider: ~
+                        finder: ~
+                        listener:
+                            insert: true
+                            update: true
+                            delete: true
+            settings:
+                index:
+                  analysis:
+                       analyzer:
+                            my_analyzer :
+                                type     :    custom
+                                tokenizer:    standard
+                                filter   :    [ "standard", "lowercase", "stop", "kstem" ]
+                            custom_search_analyzer :
+                                type     :    custom
+                                tokenizer:    standard
+                                filter   :    [ "standard", "lowercase", "stop", "kstem" ]
+                            custom_search_analyzer :
+                                type     :    custom
+                                tokenizer:    standard
+                                filter   :    [ "standard", "lowercase", "stop", "kstem" ]
         etoxindex2:
             client: default
             finder: ~
