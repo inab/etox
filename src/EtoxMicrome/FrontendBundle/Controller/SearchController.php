@@ -13,6 +13,22 @@ use Symfony\Component\Debug\ExceptionHandler;
 
 class SearchController extends Controller
 {
+    public function genRandomNumber($length = 15, $formatted = true) {
+        $nums = '0123456789';
+
+        // First number shouldn't be zero
+            $out = $nums[mt_rand( 1, strlen($nums)-1 )];  
+
+        // Add random numbers to your string
+            for ($p = 0; $p < $length-1; $p++)
+                $out .= $nums[mt_rand( 0, strlen($nums)-1 )];
+
+        // Format the output with commas if needed, otherwise plain output
+            if ($formatted)
+                return number_format($out);
+            return $out;
+    }
+
     public function getOrderBy($orderBy, $valToSearch)
     {
         switch ($orderBy) {
@@ -926,7 +942,8 @@ class SearchController extends Controller
 
         $path = $this->get('kernel')->getRootDir(). "/../web/files";
         $date=date("Y-m-d_H:i:s");
-        $filename = "etoxOutputFile-".$date;
+        $randomNumberStr=$this->genRandomNumber(14,false);
+        $filename = "etoxOutputFile-".$date."_$randomNumberStr."."csv";
         $pathToFile="$path/$filename";
         $pathToZip="$pathToFile.zip";
         if ($zip->open($pathToZip, \ZIPARCHIVE::CREATE | \ZIPARCHIVE::CREATE)!==TRUE) {
@@ -1003,7 +1020,8 @@ Evidences found in Abstracts:(Output fields:\t\"#registry\"\t\"Abstract text\"\t
 
         $path = $this->get('kernel')->getRootDir(). "/../web/files";
         $date=date("Y-m-d_H:i:s");
-        $filename = "etoxOutputFile-".$date;
+        $randomNumberStr=$this->genRandomNumber(14,false);
+        $filename = "etoxOutputFile-".$date."_$randomNumberStr."."csv";
         $pathToFile="$path/$filename";
         $pathToZip="$pathToFile.zip";
         if ($zip->open($pathToZip, \ZIPARCHIVE::CREATE | \ZIPARCHIVE::CREATE)!==TRUE) {
@@ -1076,7 +1094,8 @@ Evidences found in Sentences:\n
 
         $path = $this->get('kernel')->getRootDir(). "/../web/files/curated_reports";
         $date=date("Y-m-d_H:i:s");
-        $filename = "compound2termRelations-".$date;
+        $randomNumberStr=$this->genRandomNumber(14,false);
+        $filename = "etoxOutputFile-".$date."_$randomNumberStr."."csv";
         $pathToFile="$path/$filename";
         $pathToZip="$pathToFile.zip";
         if ($zip->open($pathToZip, \ZIPARCHIVE::CREATE | \ZIPARCHIVE::CREATE)!==TRUE) {
@@ -1120,14 +1139,14 @@ Evidences found in Sentences:\n
     public function writeFileWithArrayResult($resultSet, $field, $source, $whatToSearch, $entityType, $keyword, $from)
     {
         $message="inside writeFileWithResultSet";
-        $message="Good Place to write!!";
         //ld(count($arrayEntity2Abstract));
         //ld(count($arrayEntity2Document));
         $zip = new \ZipArchive();
 
         $path = $this->get('kernel')->getRootDir(). "/../web/files";
         $date=date("Y-m-d_H:i:s");
-        $filename = "etoxOutputFile-".$date;
+        $randomNumberStr=$this->genRandomNumber(14,false);
+        $filename = "etoxOutputFile-".$date."_$randomNumberStr."."csv";
         $pathToFile="$path/$filename";
         $pathToZip="$pathToFile.zip";
         if ($zip->open($pathToZip, \ZIPARCHIVE::CREATE | \ZIPARCHIVE::CREATE)!==TRUE) {
@@ -1206,7 +1225,8 @@ Evidences found in Sentences:\n
 
         $path = $this->get('kernel')->getRootDir(). "/../web/files";
         $date=date("Y-m-d_H:i:s");
-        $filename = "etoxOutputFile-".$date;
+        $randomNumberStr=$this->genRandomNumber(14,false);
+        $filename = "etoxOutputFile-".$date."_$randomNumberStr."."csv";
         $pathToFile="$path/$filename";
         $pathToZip="$pathToFile.zip";
         if ($zip->open($pathToZip, \ZIPARCHIVE::CREATE | \ZIPARCHIVE::CREATE)!==TRUE) {
@@ -1309,7 +1329,8 @@ Evidences found in Sentences:\n
         $zip = new \ZipArchive();
         $path = $this->get('kernel')->getRootDir(). "/../web/files";
         $date=date("Y-m-d_H:i:s");
-        $filename = "etoxOutputFile-".$date;
+        $randomNumberStr=$this->genRandomNumber(14,false);
+        $filename = "etoxOutputFile-".$date."_$randomNumberStr."."csv";
         $pathToFile="$path/$filename";
         $pathToZip="$pathToFile.zip";
         if ($zip->open($pathToZip, \ZIPARCHIVE::CREATE | \ZIPARCHIVE::CREATE)!==TRUE) {
@@ -1414,7 +1435,8 @@ Evidences found in Sentences:\n
 
         $path = $this->get('kernel')->getRootDir(). "/../web/files";
         $date=date("Y-m-d_H:i:s");
-        $filename = "etoxOutputFile-".$date;
+        $randomNumberStr=$this->genRandomNumber(14,false);
+        $filename = "etoxOutputFile-".$date."_$randomNumberStr."."csv";
         $pathToFile="$path/$filename";
         $pathToZip="$pathToFile.zip";
         if ($zip->open($pathToZip, \ZIPARCHIVE::CREATE | \ZIPARCHIVE::CREATE)!==TRUE) {
@@ -1632,7 +1654,6 @@ Evidences found in Sentences:\n
                 $arrayEntity2Document = $em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntity2DocumentFromField($field, $entityType, $arrayEntityName, $source, $orderBy);
                 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 //////////////////////////////save inside file///////////////////////////////////////////////////////////////////////
-                ldd(count($arrayEntity2Document));
                 $filename=$this->writeFileWithArrayDocument($arrayEntity2Document, $field, $whatToSearch, $entityType, $entityName);
                 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1737,7 +1758,6 @@ Evidences found in Sentences:\n
 
     public function exportCompoundsArrayResults($field, $whatToSearch, $entityType, $entityName, $source, $orderBy, $arrayResults,$from){
         $message="exportCompoundsArrayResults";
-
         if(count($arrayResults)==0 ){
             $message="No results,neither documents nor abstracts.";
             //We don't have entities. We will render the template with No results
