@@ -35,4 +35,10 @@ class HelpController extends Controller
         $respuesta = $this->render('FrontendBundle:Help:resources.html.twig');
         return $respuesta;
     }
+
+    public function showHowToCiteAction()
+    {
+        $respuesta = $this->render('FrontendBundle:Help:how-to-cite.html.twig');
+        return $respuesta;
+    }
 }

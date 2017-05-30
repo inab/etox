@@ -17,7 +17,7 @@ class SearchController extends Controller
         $nums = '0123456789';
 
         // First number shouldn't be zero
-            $out = $nums[mt_rand( 1, strlen($nums)-1 )];  
+            $out = $nums[mt_rand( 1, strlen($nums)-1 )];
 
         // Add random numbers to your string
             for ($p = 0; $p < $length-1; $p++)
@@ -3413,10 +3413,11 @@ Evidences found in Sentences:\n
                 }
             }
             $arrayEntityName=array_unique($arrayEntityName);//We get rid of the duplicates
-            //ldd($arrayEntityName);
+            //ld($arrayEntityName);
             if($entityType=="CompoundDict" or $entityType=="CompoundMesh"){
                 if (in_array($source, $arraySourcesDocuments)){
                     $compound2Documents=$em->getRepository('EtoxMicromeEntity2DocumentBundle:Entity2Document')->getEntity2DocumentFromFieldDQL($field, $entityType, $arrayEntityName, $source, $orderBy)->getResult();
+                    //ld(count($compound2Documents));
                     $arrayTotalMaxMin=$this->getTotalMaxMinArrayForEntities($compound2Documents, $orderBy, $field);
                     $meanScore=$this->getMmmrScoreFromEntities($compound2Documents, $orderBy, 'mean');
                     $medianScore=$this->getMmmrScoreFromEntities($compound2Documents, $orderBy, 'median');

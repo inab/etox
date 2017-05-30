@@ -235,6 +235,10 @@ resources:
     pattern: /resources/
     defaults: { _controller: FrontendBundle:Help:showResources}
 
+how-to-cite:
+    pattern: /how-to-cite/
+    defaults: { _controller: FrontendBundle:Help:showHowToCite}
+
 retrieve_image:
     pattern: /myimage/{image_id}/
     defaults: { _controller: EtoxMicromeEntityBundle:Image:retrieveImage }
