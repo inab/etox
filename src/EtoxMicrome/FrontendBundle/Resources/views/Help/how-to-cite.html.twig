@@ -1,0 +1,35 @@
+{% extends '::frontend.html.twig' %}
+
+{% block article %}
+    <section class="row display" role="main">
+        <article class="three columns">
+            <ul>
+                <li><h6><a href="{{ path("tutorial") }}">Tutorial</a></h6></li>
+                <li><h6><a href="{{ path("documentation") }}">Documentation</a></h6></li>
+                <li><h6 style="font-style:italic;text-decoration:underline">How to cite</h6></li>
+            </ul>
+        </article>
+        <article class="nine columns">
+            <h1>Reference/How to cite LimTox</h1>
+            <p>
+            Please cite the following when publishing work that uses LimTox: </p>
+            <p>
+            Cañada, A., Capella, S., Rabal, O., Valencia, A., and Martin Krallinger, M.* (2017).<br/>
+            LimTox: a web tool for applied text mining of adverse event and toxicity associations <br/>
+            of compounds, drugs and genes. Nucleic Acids Research, 7 Web Server Issue, doi: 10.1093/nar/gkx462<br/>
+            </p>
+            <a href="https://www.ncbi.nlm.nih.gov/pubmed/28531339" target="_blank">Pubmed Link</a>
+
+
+        </article>
+    </section>
+    <script>
+      $( function() {
+        $( ".accordion" ).accordion({
+          heightStyle: "content",
+          collapsible: true
+        });
+      } );
+    </script>
+        {% include 'FrontendBundle:Search_document:scripts_code.html.twig' %}
+    {% endblock %}
