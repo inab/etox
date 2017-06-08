@@ -163,7 +163,7 @@ header#top nav ul li a {
     color: #000000;
     display: inline-block;
     font-size: 14px;
-    margin: 0 30px 0 0;
+    margin: 0 20px 0 0;
     padding: 8px;
 }
 
@@ -916,8 +916,22 @@ h2.ui-accordion-header-active {
     line-height: 1.7em;
     padding: 0;
 }
-
-
+table#table_press tbody tr td {
+    color: #333;
+    padding: 15px 15px;
+    vertical-align: top;
+    border: none;
+}
+.fecha{
+    font-weight: bold;
+}
+.medio{
+    font-style: italic;
+}
+a.versionPdf, a.versionWeb {
+    text-decoration: underline !important;
+    font-style: italic;
+}
 /* -----------------------------------------
     Waiting animation
 ----------------------------------------- */

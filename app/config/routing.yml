@@ -239,6 +239,14 @@ how-to-cite:
     pattern: /how-to-cite/
     defaults: { _controller: FrontendBundle:Help:showHowToCite}
 
+news:
+    pattern: /news/
+    defaults: { _controller: FrontendBundle:Default:showNews}
+
+download_pdf:
+    pattern: /download_pdf/{filename}/
+    defaults: { _controller: FrontendBundle:Default:downloadPDF}
+
 retrieve_image:
     pattern: /myimage/{image_id}/
     defaults: { _controller: EtoxMicromeEntityBundle:Image:retrieveImage }

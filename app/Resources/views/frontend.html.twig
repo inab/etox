@@ -41,6 +41,11 @@
                         </a>
                     </li>
                     <li>
+                        <a href="{{ path('news') }}">
+                            News
+                        </a>
+                    </li>
+                    <li>
                         {% set titleHelp = "Tutorial/Documentation" %}
                         <span data-tooltip class="has-tip" title="{{ titleHelp }}" style="border-bottom:none">
                             <a href="{{ path('help') }}" style="font-weight:initial">Help</a>
@@ -72,6 +77,12 @@
 					   &copy; {{ 'now'|date('Y') }} - Spanish National Cancer Research Centre. CNIO Structural Biology and BioComputing Programme - <a href="{{ path('download_curated_termrelations') }}">LimTox DB</a><br/>
 
 					</li>
+					<li>
+					   <a target="_blank" href="http://openminted.eu/"><img src="{{ asset('images/omtd_logo_grey.png') }}" class="rollover" border="0" style="width:256px"/></a>
+				    </li>
+				    <li>
+					   <a target="_blank" href="http://www.agendadigital.gob.es/tecnologias-lenguaje/Paginas/plan-impulso-tecnologias-lenguaje.aspx"><img src="{{ asset('images/PlanTL_logo_grey.png') }}" class="rollover" border="0" style="width:128px" /></a>
+				    </li>
 					<li>
     					<a target="_blank" href="http://www.etoxproject.eu/"><img src="{{ asset('images/etox-off.png') }}" class="rollover" border="0" /></a>
 					</li>

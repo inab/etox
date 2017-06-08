@@ -5,6 +5,9 @@ namespace EtoxMicrome\FrontendBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class DefaultController extends Controller
 {
@@ -22,6 +25,20 @@ class DefaultController extends Controller
     {
         $respuesta = $this->render('FrontendBundle:Default:tutorial.html.twig');
         return $respuesta;
+    }
+
+    public function showNewsAction()
+    {
+        $respuesta = $this->render('FrontendBundle:Default:news.html.twig');
+        return $respuesta;
+    }
+
+    public function downloadPDFAction($filename){
+        $request = $this->get('request');
+        $path = $this->get('kernel')->getRootDir(). "/../web/limtoxpdf/$filename";
+        $response = new BinaryFileResponse($path);
+        $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT,"$filename");
+        return $response;
     }
 
     public function compoundName2CasAction()
